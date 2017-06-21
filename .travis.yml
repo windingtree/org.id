@@ -1,0 +1,12 @@
+dist: trusty
+sudo: false
+group: beta
+language: node_js
+node_js:
+  - "7"
+before_install:
+  - npm i -g jshint
+script:
+  - set -e
+  - jshint --show-non-errors test/*.js || echo "Errors in jshint ignored bc it doesn't support async/await"
+  - npm test

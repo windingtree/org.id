@@ -1,0 +1,31 @@
+{
+  "name": "wt-contracts",
+  "version": "0.1.0",
+  "description": "Smart contracts of the Winding Tree platform",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "scripts/test.sh",
+    "postinstall": "scripts/install.sh",
+    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc"
+  },
+  "keywords": [
+    "winding-tree",
+    "security",
+    "encryption",
+    "smart-contracts"
+  ],
+  "author": "Winding Tree Developers <dev@windingtree.com>",
+  "license": "MIT",
+  "dependencies": {
+    "abi-decoder": "^1.0.8",
+    "chai": "^3.5.0",
+    "truffle-hdwallet-provider": "0.0.3",
+    "zeppelin-solidity": "1.0.7"
+  },
+  "devDependencies": {
+    "ethereumjs-testrpc": "3.0.3",
+    "truffle": "3.2.2"
+  }
+}
