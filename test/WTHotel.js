@@ -256,6 +256,7 @@ contract('WTHotel & WTHotelUnitType', function(accounts) {
     let callUnitData = wtHotelUnitType.contract.addUnit.getData('Room1', 'Room with basic amenities', 1, 2, '20 USD');
     let callIndexData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callIndexData, {from: accounts[2]});
+    assert.equal(1, parseInt(await wtHotelUnitType.totalUnits()));
     let hotelUnit = await wtHotelUnitType.units.call(1);
     if (DEBUG) console.log('Unit added:', hotelUnit, '\n');
     assert.equal('Room1', hotelUnit[0]);
@@ -298,6 +299,7 @@ contract('WTHotel & WTHotelUnitType', function(accounts) {
     callUnitData = wtHotelUnitType.contract.removeUnit.getData(1);
     callIndexData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callIndexData, {from: accounts[2]});
+    assert.equal(0, parseInt(await wtHotelUnitType.totalUnits()));
     hotelUnit = await wtHotelUnitType.units.call(1);
     if (DEBUG) console.log('Unit removed:', hotelUnit, '\n');
     assert.equal('', hotelUnit[0]);
