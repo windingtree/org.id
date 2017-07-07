@@ -45,7 +45,6 @@ contract WTHotelUnitType is PrivateCall {
 	function WTHotelUnitType(address _owner, bytes32 _unitType){
 		owner = _owner;
 		unitType = _unitType;
-		totalUnits ++;
 	}
 
 	// Only owner public calls
@@ -58,6 +57,7 @@ contract WTHotelUnitType is PrivateCall {
     string price
   ) onlyOwner() {
 		uint[] memory empty = new uint[](0);
+    totalUnits ++;
 		units[totalUnits] = Unit(
       name,
       description,
@@ -68,7 +68,6 @@ contract WTHotelUnitType is PrivateCall {
       empty
     );
 		units[totalUnits].amenities.length ++;
-		totalUnits ++;
 	}
 
 	function editUnit(
@@ -93,7 +92,7 @@ contract WTHotelUnitType is PrivateCall {
 	}
 
 	function unitActive(uint unitIndex, bool _active) onlyOwner() {
-		if ((unitIndex >= totalUnits) || (unitIndex == 0))
+		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		units[unitIndex].active = _active;
 	}
@@ -104,7 +103,7 @@ contract WTHotelUnitType is PrivateCall {
     uint fromDay,
     uint daysAmount
   ) onlyOwner() {
-		if ((unitIndex >= totalUnits) || (unitIndex == 0))
+		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		uint toDay = fromDay+daysAmount;
 		for (uint i = fromDay; i <= toDay; i++)
@@ -112,21 +111,22 @@ contract WTHotelUnitType is PrivateCall {
 	}
 
 	function addAmenity(uint unitIndex, uint amenity) onlyOwner() {
-		if ((unitIndex >= totalUnits) || (unitIndex == 0))
+		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		units[unitIndex].amenities.push(amenity);
 	}
 
 	function removeAmenity(uint unitIndex, uint amenityIndex) onlyOwner() {
-		if ((unitIndex >= totalUnits) || (unitIndex == 0))
+		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		delete units[unitIndex].amenities[amenityIndex];
 	}
 
 	function removeUnit(uint unitIndex) onlyOwner() {
-		if ((unitIndex >= totalUnits) || (unitIndex == 0))
+		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		delete units[unitIndex];
+    totalUnits --;
 	}
 
 	// From private call
