@@ -25,6 +25,7 @@ contract WTHotelUnitType is PrivateCall {
 		string price;
 		bool active;
 		uint[] amenities;
+    mapping(uint => uint) amenitiesIndex;
 		// An array of all days avaliability after 01-01-1970
 		mapping(uint => UnitDay) reservations;
   }
@@ -109,13 +110,15 @@ contract WTHotelUnitType is PrivateCall {
 	function addAmenity(uint unitIndex, uint amenity) onlyOwner() {
 		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
+    units[unitIndex].amenitiesIndex[amenity] = units[unitIndex].amenities.length;
 		units[unitIndex].amenities.push(amenity);
 	}
 
-	function removeAmenity(uint unitIndex, uint amenityIndex) onlyOwner() {
+	function removeAmenity(uint unitIndex, uint amenity) onlyOwner() {
 		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
-		delete units[unitIndex].amenities[amenityIndex];
+		delete units[unitIndex].amenities[ units[unitIndex].amenitiesIndex[amenity] ];
+    units[unitIndex].amenitiesIndex[amenity] = 0;
 	}
 
 	function removeUnit(uint unitIndex) onlyOwner() {

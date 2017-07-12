@@ -288,7 +288,7 @@ contract('WTHotel & WTHotelUnitType', function(accounts) {
     assert.equal(8, parseInt(hotelUnitAmenities[1]));
 
     // Remove amenity
-    callUnitData = wtHotelUnitType.contract.removeAmenity.getData(1, 1);
+    callUnitData = wtHotelUnitType.contract.removeAmenity.getData(1, 8);
     callIndexData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callIndexData, {from: accounts[2]});
     hotelUnitAmenities = await wtHotelUnitType.getAmenities(1);
