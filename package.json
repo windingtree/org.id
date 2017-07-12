@@ -24,7 +24,7 @@
     "abi-decoder": "^1.0.8",
     "chai": "^3.5.0",
     "truffle-hdwallet-provider": "0.0.3",
-    "zeppelin-solidity": "1.0.7"
+    "zeppelin-solidity": "1.1.0"
   },
   "devDependencies": {
     "ethereumjs-testrpc": "3.0.3",

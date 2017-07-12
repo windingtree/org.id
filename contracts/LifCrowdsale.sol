@@ -1,10 +1,11 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.11;
 
-import "./zeppelin/ownership/Ownable.sol";
-import "./zeppelin/payment/PullPayment.sol";
-import "./zeppelin/token/ERC20Basic.sol";
-import "./zeppelin/SafeMath.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/payment/PullPayment.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "./LifInterface.sol";
 import "./FuturePayment.sol";
+import "./LifDAOInterface.sol";
 
 /*
  * Líf Crowdsale
@@ -37,7 +38,7 @@ contract LifCrowdsale is Ownable, PullPayment {
     uint public minCap;
     uint public maxCap;
     uint public totalTokens;
-    uint public presaleDiscount;
+    uint public presaleBonusRate;
     uint public ownerPercentage;
     uint public totalPresaleWei;
     uint public weiRaised;
@@ -61,7 +62,7 @@ contract LifCrowdsale is Ownable, PullPayment {
     function LifCrowdsale(address _tokenAddress, uint _startBlock, uint _endBlock,
                           uint _startPrice, uint _changePerBlock, uint _changePrice,
                           uint _minCap, uint _maxCap, uint _totalTokens,
-                          uint _presaleDiscount, uint _ownerPercentage) {
+                          uint _presaleBonusRate, uint _ownerPercentage) {
       tokenAddress = _tokenAddress;
       startBlock = _startBlock;
       endBlock = _endBlock;
@@ -71,7 +72,7 @@ contract LifCrowdsale is Ownable, PullPayment {
       minCap = _minCap;
       maxCap = _maxCap;
       totalTokens = _totalTokens;
-      presaleDiscount = _presaleDiscount;
+      presaleBonusRate = _presaleBonusRate;
       ownerPercentage = _ownerPercentage;
       status = 1;
     }
@@ -98,43 +99,52 @@ contract LifCrowdsale is Ownable, PullPayment {
       } else throw;
     }
 
-    // Add an address that would be able to spend certain amounts of ethers with discount
-    function addDiscount(address target, uint amount) external onlyOwner() onStatus(1,2) {
+    // calculates absolute max tokens that can be distributed from the crowdsale, including bids,
+    // founders vesting compensation and presale payments
+    function getMaxTokens() public returns (uint) {
+      uint minTokenPrice = minCap.div(totalTokens);
+      uint maxWithBonusTokens = totalPresaleWei.div(minTokenPrice).mul(presaleBonusRate.add(100).div(100));
+      uint maxFoundersTokens = maxWithBonusTokens.mul(ownerPercentage).div(1000);
 
-      if (presaleDiscount == 0)
+      return totalTokens + maxWithBonusTokens + maxFoundersTokens;
+    }
+
+    // Add an address that would be able to spend certain amounts of ethers with a bonus rate
+    function addPresalePayment(address target, uint amount) external onlyOwner() onStatus(1,2) {
+
+      if (presaleBonusRate == 0)
         throw;
 
       totalPresaleWei = totalPresaleWei.add(amount);
       presalePayments[target] = amount;
 
-      // check that crowdsale balance is AT LEAST max(discounted)tokens at lowest possible valuation +
+      // check that crowdsale balance is AT LEAST max(with bonus)tokens at lowest possible valuation +
       // founders tokens
-      uint minTokenPrice = minCap.div(totalTokens);
-      uint maxDiscountedTokens = totalPresaleWei.div(minTokenPrice).mul(presaleDiscount.add(100).div(100));
-      uint maxFoundersTokens = maxDiscountedTokens.mul(ownerPercentage).div(1000);
-      uint crowdsaleBalance = ERC20Basic(tokenAddress).balanceOf(address(this)).div(LONG_DECIMALS);
+      uint crowdsaleBalance = LifInterface(tokenAddress).balanceOf(address(this)).div(LONG_DECIMALS);
 
-      if (crowdsaleBalance < totalTokens + maxDiscountedTokens + maxFoundersTokens)
+      if (crowdsaleBalance < getMaxTokens())
         throw;
     }
 
-    function distributeTokens(address buyer, bool discount) external onStatus(3, 0) {
+    function getBuyerPresaleTokens(address buyer) public returns (uint) {
+        return presalePayments[buyer].
+            mul(uint(100).add(presaleBonusRate)).
+            div(lastPrice).
+            div(uint(100));
+    }
 
-      if (discount){
+    function distributeTokens(address buyer, bool withBonus) external onStatus(3, 0) {
+
+      if (withBonus){
 
         if (presalePayments[buyer] == 0)
           throw;
 
-        uint tokensQty = presalePayments[buyer].div(
-            lastPrice.div(100).mul(uint(100).sub(presaleDiscount))
-        );
+        uint tokensQty = getBuyerPresaleTokens(buyer);
 
         tokensSold = tokensSold.add(tokensQty);
 
-        // use a call instead of instantiate contract, to avoid out of gas issues
-        //lifToken.transfer(buyer, tokensQty.mul(LONG_DECIMALS));
-        if (!tokenAddress.call(bytes4(sha3("transfer(address,uint256)")), buyer, tokensQty.mul(LONG_DECIMALS)))
-          throw;
+        LifInterface(tokenAddress).transfer(buyer, tokensQty.mul(LONG_DECIMALS));
 
         totalPresaleWei = totalPresaleWei.sub(presalePayments[buyer]);
         presalePayments[buyer] = 0;
@@ -150,10 +160,7 @@ contract LifCrowdsale is Ownable, PullPayment {
           safeSend(buyer, weiChange);
         }
 
-        // use a call instead of instantiate contract, to avoid out of gas issues
-        //lifToken.transfer(buyer, tokensToTransfer);
-        if (!tokenAddress.call(bytes4(sha3("transfer(address,uint256)")), buyer, tokens[buyer].mul(LONG_DECIMALS)))
-          throw;
+        LifInterface(tokenAddress).transfer(buyer, tokens[buyer].mul(LONG_DECIMALS));
 
         weiPayed[buyer] = 0;
         tokens[buyer] = 0;
@@ -167,21 +174,24 @@ contract LifCrowdsale is Ownable, PullPayment {
       uint price = 0;
 
       if ((startBlock < block.number) && (block.number < endBlock)) {
-        price = block.number.sub(startBlock);
-        price = price.div(changePerBlock);
-        price = price.mul(changePrice);
-        price = startPrice.sub(price);
+        price = startPrice.sub(
+          block.number.sub(startBlock).div(changePerBlock).mul(changePrice)
+        );
       }
 
       return price;
     }
 
-    function getPresaleTokens(uint tokenPrice) returns(uint) {
-      if (presaleDiscount > 0){
+    function getPresaleTokens(uint tokenPrice) public returns(uint) {
+      if (presaleBonusRate > 0){
         // Calculate how much presale tokens would be distributed at this price
-        return totalPresaleWei.div(tokenPrice.div(100).mul(uint(100).sub(presaleDiscount)));
-      } else
-          return 0;
+        return totalPresaleWei.
+            mul(uint(100).add(presaleBonusRate)).
+            div(tokenPrice).
+            div(uint(100));
+      } else {
+        return 0;
+      }
     }
 
     // Creates a bid spending the ethers send by msg.sender.
@@ -233,15 +243,14 @@ contract LifCrowdsale is Ownable, PullPayment {
 
         if (ownerPercentage > 0) {
           foundingTeamTokens = presaleTokens.add(tokensSold).
-                                             div(1000).
                                              mul(ownerPercentage).
-                                             mul(LONG_DECIMALS);
+                                             mul(LONG_DECIMALS).
+                                             div(1000);
 
           for (uint i = block.number.add(5); i <= block.number.add(40); i = i.add(5)) {
             address futurePayment = new FuturePayment(owner, i, tokenAddress);
 
-            if (!tokenAddress.call(bytes4(sha3("transfer(address,uint256)")), address(futurePayment), foundingTeamTokens.div(8)))
-              throw;
+            LifInterface(tokenAddress).transfer(futurePayment, foundingTeamTokens.div(8));
 
             foundersFuturePayments[foundersFuturePayments.length ++] = address(futurePayment);
           }
@@ -254,24 +263,20 @@ contract LifCrowdsale is Ownable, PullPayment {
           ownerPercentage = 0;
         }
         // Return not used tokens to LifToken
-        uint toReturnTokens = ERC20Basic(tokenAddress).balanceOf(address(this)).
+        uint toReturnTokens = LifInterface(tokenAddress).balanceOf(address(this)).
             sub(presaleTokens.mul(LONG_DECIMALS)).sub(tokensSold.mul(LONG_DECIMALS));
 
-        if (!tokenAddress.call(bytes4(sha3("transfer(address,uint256)")), tokenAddress, toReturnTokens))
-          throw;
+        LifInterface(tokenAddress).transfer(tokenAddress, toReturnTokens);
 
-      } else if (weiRaised < minCap) { // return all tokens
-        // use a call instead of instantiate contract, to avoid out of gas issues
-        //lifToken.transfer(tokenAddress, totalTokens);
-        if (!tokenAddress.call(bytes4(sha3("transfer(address,uint256)")), tokenAddress, totalTokens))
-          throw;
+      } else if (weiRaised < minCap) {
+        // return all tokens
+        LifInterface(tokenAddress).transfer(tokenAddress, totalTokens);
       }
 
     }
 
     function transferVotes() external onlyOwner() {
-      if (!tokenAddress.call(bytes4(sha3("giveVotes(address,uint256)")), owner, 0))
-        throw;
+      LifDAOInterface(tokenAddress).giveVotes(owner, 0);
     }
 
     // Function that allows a buyer to claim the ether back of a failed crowdsale
