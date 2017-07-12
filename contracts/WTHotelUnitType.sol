@@ -13,7 +13,7 @@ contract WTHotelUnitType is PrivateCall {
 	bytes32 public unitType;
 	uint public totalUnits;
 
-	// The flight routes that the airline has.
+	// The units that the hotels has of this type.
 	mapping(uint => Unit) public units;
 
 	struct Unit {
@@ -34,20 +34,16 @@ contract WTHotelUnitType is PrivateCall {
 		address bookedBy;
 	}
 
-	modifier fromSelf(){
-		if (msg.sender != address(this))
-			throw;
-		_;
-	}
-
 	event Book(address from, uint unitIndex, uint fromDay, uint daysAmount);
+
+  // Constructor
 
 	function WTHotelUnitType(address _owner, bytes32 _unitType){
 		owner = _owner;
 		unitType = _unitType;
 	}
 
-	// Only owner public calls
+	// Owner methods
 
 	function addUnit(
     string name,
@@ -129,7 +125,7 @@ contract WTHotelUnitType is PrivateCall {
     totalUnits --;
 	}
 
-	// From private call
+	// Methods from private call
 
 	function book(
     address from,
@@ -156,7 +152,24 @@ contract WTHotelUnitType is PrivateCall {
 		}
 	}
 
-	// Public calls
+	// Public methods
+
+  function getUnit( uint unitIndex ) constant returns(
+    string, string, uint, uint, string, bool
+  ) {
+		return (
+      units[unitIndex].name,
+  		units[unitIndex].description,
+  		units[unitIndex].minGuests,
+  		units[unitIndex].maxGuests,
+  		units[unitIndex].price,
+  		units[unitIndex].active
+    );
+	}
+
+  function getAmenities(uint unitIndex) constant returns(uint[]) {
+		return (units[unitIndex].amenities);
+	}
 
 	function getReservation(
     uint unitIndex,
@@ -166,10 +179,6 @@ contract WTHotelUnitType is PrivateCall {
       units[unitIndex].reservations[day].specialPrice,
       units[unitIndex].reservations[day].bookedBy
     );
-	}
-
-	function getAmenities(uint unitIndex) constant returns(uint[]) {
-		return (units[unitIndex].amenities);
 	}
 
 }

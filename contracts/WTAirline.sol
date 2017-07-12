@@ -3,7 +3,7 @@ pragma solidity ^0.4.8;
 import "./Indexed.sol";
 
 /*
- * WTHotel
+ * WTAirline
  * An indexed contract on the WT Index taht contains the airline information
  * and the addresses of his Flight Routes contracts.
  */
@@ -19,10 +19,14 @@ contract WTAirline is Indexed {
 	// The flight routes that the airline has.
 	mapping(bytes12 => mapping(bytes12 => address)) routes;
 
+  // Constructor
+
 	function WTAirline(string _name, string _description) {
 		name = _name;
 		description = _description;
 	}
+
+  // Owner methods
 
 	function editInfo(
     string _name,
@@ -72,6 +76,8 @@ contract WTAirline is Indexed {
 		if (!routes[from][to].call(data))
 			throw;
 	}
+
+  // Public methods
 
 	function getRoute(bytes12 from, bytes12 to) constant returns (address) {
 		return routes[from][to];

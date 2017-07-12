@@ -14,6 +14,12 @@ contract PrivateCall is Ownable {
 
 	bool public waitConfirmation;
 
+  modifier fromSelf(){
+		if (msg.sender != address(this))
+			throw;
+		_;
+	}
+
 	struct CallPending {
 		bytes callData;
 		address sender;

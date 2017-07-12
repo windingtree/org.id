@@ -21,12 +21,6 @@ contract WTAirRoute is PrivateCall {
 	// The flights id refering their position on flights mapping
 	mapping(bytes12 => uint) public ids;
 
-	modifier fromSelf(){
-		if (msg.sender != address(this))
-			throw;
-		_;
-	}
-
 	event Book(bytes12 flightId);
 
 	struct Flight {
@@ -38,12 +32,16 @@ contract WTAirRoute is PrivateCall {
     bool active;
   }
 
+  // Constructor
+
 	function WTAirRoute(address _owner, bytes12 _from, bytes12 _to) {
 		owner = _owner;
 		from = _from;
 		to = _to;
 		totalFlights ++;
 	}
+
+  // Owner methods
 
 	function active(bool _active) onlyOwner() {
 		active = _active;
@@ -85,6 +83,8 @@ contract WTAirRoute is PrivateCall {
 
 	}
 
+  // Methods from private call
+
 	function book(bytes12 id) fromSelf() {
 
 		if (ids[id] == 0)
@@ -94,5 +94,20 @@ contract WTAirRoute is PrivateCall {
 		Book(id);
 
 	}
+
+  // Public methods
+
+  function getFlight(bytes12 id) constant returns(
+    uint, uint, uint, uint, bool
+  ) {
+      Flight flight = flights[ ids[id] ];
+      return(
+        flight.start,
+        flight.end,
+        flight.seatsFree,
+        flight.seats,
+        flight.active
+      );
+    }
 
 }
