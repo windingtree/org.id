@@ -1,6 +1,6 @@
 pragma solidity ^0.4.8;
 
-import "./zeppelin/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
  * PrivateCall
@@ -13,6 +13,12 @@ contract PrivateCall is Ownable {
 	mapping(bytes32 => CallPending) public callsPending;
 
 	bool public waitConfirmation;
+
+  modifier fromSelf(){
+		if (msg.sender != address(this))
+			throw;
+		_;
+	}
 
 	struct CallPending {
 		bytes callData;

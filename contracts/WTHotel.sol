@@ -12,6 +12,7 @@ contract WTHotel is Indexed {
 	// Main information
 	string public name;
 	string public description;
+  uint public created;
 
 	// Address and Location
 	string public lineOne;
@@ -22,12 +23,11 @@ contract WTHotel is Indexed {
 	uint public latitude;
 	uint public longitude;
 
-	// Extra info
-	uint public created;
-
 	// The units that the hotel have for rent.
 	mapping(bytes32 => address) public unitTypes;
 	bytes32[] public unitTypeNames;
+
+  // Constructor
 
 	function WTHotel(string _name, string _description) {
 		name = _name;
@@ -35,6 +35,8 @@ contract WTHotel is Indexed {
 		created = block.number;
 		unitTypeNames.length ++;
 	}
+
+  // Owner methods
 
 	function editInfo(
     string _name,
@@ -108,7 +110,7 @@ contract WTHotel is Indexed {
 			throw;
 	}
 
-	// Public constant calls
+	// Public constant methods
 
 	function getUnitType(bytes32 unitType) constant returns (address) {
 		return unitTypes[unitType];
