@@ -1,9 +1,8 @@
 pragma solidity ^0.4.8;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./WTHotel.sol";
-import "./WTAirline.sol";
-import "./WTAirRoute.sol";
+import "./hotel/Hotel.sol";
+import "./airline/Airline.sol";
 
 /*
  * WTIndex
@@ -13,10 +12,10 @@ import "./WTAirRoute.sol";
  */
 contract WTIndex is Ownable {
 
-	WTHotel[] public hotels;
+	Hotel[] public hotels;
 	mapping(address => address[]) public hotelsByOwner;
 
-	WTAirline[] public airlines;
+	Airline[] public airlines;
 	mapping(address => address[]) public airlinesByOwner;
 
 	event log();
@@ -27,7 +26,7 @@ contract WTIndex is Ownable {
 	}
 
 	function registerHotel(string name, string description) external {
-		WTHotel newHotel = new WTHotel(name, description);
+		Hotel newHotel = new Hotel(name, description);
 		hotels.push(newHotel);
 		hotelsByOwner[msg.sender].push(newHotel);
 		log();
@@ -41,7 +40,7 @@ contract WTIndex is Ownable {
 	}
 
 	function registerAirline(string name, string description) external {
-		WTAirline newAirline = new WTAirline(name, description);
+		Airline newAirline = new Airline(name, description);
 		airlines.push(newAirline);
 		airlinesByOwner[msg.sender].push(newAirline);
 		log();
@@ -54,11 +53,11 @@ contract WTIndex is Ownable {
 			log();
 	}
 
-	function getHotels() constant returns(WTHotel[]){
+	function getHotels() constant returns(Hotel[]){
 		return hotels;
 	}
 
-	function getAirlines() constant returns(WTAirline[]){
+	function getAirlines() constant returns(Airline[]){
 		return airlines;
 	}
 

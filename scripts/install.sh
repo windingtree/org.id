@@ -1,1 +1,1 @@
-cp -r LifToken/contracts/* contracts
+cp -r LifToken/contracts/*.sol contracts/lif

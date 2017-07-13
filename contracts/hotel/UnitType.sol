@@ -1,13 +1,13 @@
 pragma solidity ^0.4.8;
 
-import "./PrivateCall.sol";
+import "../PrivateCall.sol";
 
 /*
- * WTHotelUnitType
+ * UnitType
  * A type of unit that a Hotel has in his inventory, with all the units
  * information and avaliability.
  */
-contract WTHotelUnitType is PrivateCall {
+contract UnitType is PrivateCall {
 
 	bool public active;
 	bytes32 public unitType;
@@ -39,7 +39,7 @@ contract WTHotelUnitType is PrivateCall {
 
   // Constructor
 
-	function WTHotelUnitType(address _owner, bytes32 _unitType){
+	function UnitType(address _owner, bytes32 _unitType){
 		owner = _owner;
 		unitType = _unitType;
 	}
@@ -157,7 +157,7 @@ contract WTHotelUnitType is PrivateCall {
 
 	// Public methods
 
-  function getUnit( uint unitIndex ) constant returns(
+  function getUnit(uint unitIndex) constant returns(
     string, string, uint, uint, string, bool
   ) {
 		return (
