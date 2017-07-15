@@ -9,9 +9,9 @@ var assert = chai.assert;
 var help = require('../LifToken/test/helpers.js');
 
 var WTIndex = artifacts.require('../contracts/WTIndex.sol');
-var WTAirline = artifacts.require('../contracts/WTAirline.sol');
-var WTAirRoute = artifacts.require('../contracts/WTAirRoute.sol');
-var LifToken = artifacts.require('../contracts/LifToken.sol');
+var WTAirline = artifacts.require('../contracts/airline/Airline.sol');
+var WTAirRoute = artifacts.require('../contracts/airline/Route.sol');
+var LifToken = artifacts.require('../contracts/lif/LifToken.sol');
 var PrivateCall = artifacts.require('../contracts/PrivateCall.sol');
 
 var augustoKey, airlineKey;

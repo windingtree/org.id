@@ -1,13 +1,13 @@
 pragma solidity ^0.4.8;
 
-import "./Indexed.sol";
+import "../Indexed.sol";
 
 /*
- * WTHotel
+ * Hotel
  * An indexed contract on the WT Index taht contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract WTHotel is Indexed {
+contract Hotel is Indexed {
 
 	// Main information
 	string public name;
@@ -29,7 +29,7 @@ contract WTHotel is Indexed {
 
   // Constructor
 
-	function WTHotel(string _name, string _description) {
+	function Hotel(string _name, string _description) {
 		name = _name;
 		description = _description;
 		created = block.number;

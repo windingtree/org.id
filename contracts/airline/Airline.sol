@@ -1,13 +1,13 @@
 pragma solidity ^0.4.8;
 
-import "./Indexed.sol";
+import "../Indexed.sol";
 
 /*
- * WTAirline
+ * Airline
  * An indexed contract on the WT Index taht contains the airline information
  * and the addresses of his Flight Routes contracts.
  */
-contract WTAirline is Indexed {
+contract Airline is Indexed {
 
 	// Airline information
 	string public name;
@@ -21,7 +21,7 @@ contract WTAirline is Indexed {
 
   // Constructor
 
-	function WTAirline(string _name, string _description) {
+	function Airline(string _name, string _description) {
 		name = _name;
 		description = _description;
 	}

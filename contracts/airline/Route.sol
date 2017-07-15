@@ -1,13 +1,13 @@
 pragma solidity ^0.4.8;
 
-import "./PrivateCall.sol";
+import "../PrivateCall.sol";
 
 /*
- * WTAirRoute
+ * Route
  * A flight route owned by an Airline, it keep record of all future and passed
  * flights in the route.
  */
-contract WTAirRoute is PrivateCall {
+contract Route is PrivateCall {
 
 	// Route information
 	bytes12 public from;
@@ -34,7 +34,7 @@ contract WTAirRoute is PrivateCall {
 
   // Constructor
 
-	function WTAirRoute(address _owner, bytes12 _from, bytes12 _to) {
+	function Route(address _owner, bytes12 _from, bytes12 _to) {
 		owner = _owner;
 		from = _from;
 		to = _to;
