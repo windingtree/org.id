@@ -38,7 +38,7 @@ Steps Augusto wants to make a booking on a Flight published by WTAir:
 
 ## Platform
 
-![WT Platform](http://i67.tinypic.com/2wc40lw.png)
+![WT Platform](https://lh6.googleusercontent.com/MZyX0oP3VdsUXoYqKe4FNkuD5WnN2dTYQzmXvAX5MfGZgfRx0EbpS8zTTJS5s_DeTeLAZ8Dccj9LX1s=w1920-h918)
 
 ### Hotels
 
