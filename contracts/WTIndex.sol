@@ -18,17 +18,32 @@ contract WTIndex is Ownable {
 	Airline[] public airlines;
 	mapping(address => address[]) public airlinesByOwner;
 
+  mapping(address => bool) private childs;
+
+  address DAO;
+
 	event log();
+
+  event voteGiven(address);
 
 	function WTIndex() {
 		hotels.length ++;
 		airlines.length ++;
 	}
 
+  // Only owner methods
+
+  function setDAO(address _DAO) onlyOwner() {
+    DAO = _DAO;
+  }
+
+  // Public external methods
+
 	function registerHotel(string name, string description) external {
 		Hotel newHotel = new Hotel(name, description);
 		hotels.push(newHotel);
 		hotelsByOwner[msg.sender].push(newHotel);
+    childs[newHotel] = true;
 		log();
 	}
 
@@ -43,6 +58,7 @@ contract WTIndex is Ownable {
 		Airline newAirline = new Airline(name, description);
 		airlines.push(newAirline);
 		airlinesByOwner[msg.sender].push(newAirline);
+    childs[newAirline] = true;
 		log();
 	}
 
@@ -52,6 +68,16 @@ contract WTIndex is Ownable {
 		else
 			log();
 	}
+
+  // Only childs methods
+
+  function giveVote(address userAddress) {
+    if (childs[msg.sender]){
+      voteGiven(msg.sender);
+    }
+  }
+
+  // Public constant methods
 
 	function getHotels() constant returns(Hotel[]){
 		return hotels;

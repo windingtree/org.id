@@ -27,6 +27,8 @@ contract Hotel is Indexed {
 	mapping(bytes32 => address) public unitTypes;
 	bytes32[] public unitTypeNames;
 
+  mapping(address => bool) private childs;
+
   // Constructor
 
 	function Hotel(string _name, string _description) {
@@ -76,6 +78,7 @@ contract Hotel is Indexed {
 			throw;
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
+    childs[addr] = true;
 	}
 
 	function removeUnitType(
@@ -87,6 +90,7 @@ contract Hotel is Indexed {
       (unitTypeNames[index] != unitType)
     )
 			throw;
+    childs[unitTypes[unitType]] = false;
 		delete unitTypes[unitType];
 		delete unitTypeNames[index];
 	}
@@ -109,6 +113,15 @@ contract Hotel is Indexed {
 		if (!unitTypes[unitType].call(data))
 			throw;
 	}
+
+  // Only child methods
+
+  function callIndex(bytes data) {
+    if (childs[msg.sender])
+      throw;
+    if (!index.call(data))
+      throw;
+  }
 
 	// Public constant methods
 

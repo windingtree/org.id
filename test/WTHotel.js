@@ -88,8 +88,8 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Add a unit on the unit types
     let addUnitData = wtHotelUnitType.contract.addUnit.getData('Room1', 'Room with basic amenities', 1, 2, '20 USD');
-    let callUnitTypeData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), addUnitData);
-    await wtIndex.callHotel(0, callUnitTypeData, {from: accounts[2]});
+    addUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), addUnitData);
+    await wtIndex.callHotel(0, addUnitData, {from: accounts[2]});
     let hotelUnit = await wtHotelUnitType.getUnit(1);
     if (DEBUG) console.log('Unit added:', hotelUnit, '\n');
     assert.equal('Room1', hotelUnit[0]);
@@ -115,9 +115,13 @@ contract('WTHotel & UnitType', function(accounts) {
     };
     let originalHash = web3.sha3();
 
+    // Build giveVote call data
+    let giveVoteData = wtIndex.contract.giveVote.getData( await wtHotel.owner());
+    giveVoteData = wtHotel.contract.callIndex.getData(giveVoteData);
+
     // Encode Augusto's private data and create the data to call the public function
     let privateData = web3.toHex(JSON.stringify(dataToSend));
-    let publicData = await wtHotelUnitType.contract.book.getData(accounts[1], 1, 60, 5);
+    let publicData = await wtHotelUnitType.contract.book.getData(accounts[1], 1, 60, 5, giveVoteData);
     if (DEBUG) console.log('Private data:', privateData);
     if (DEBUG) console.log('Public data:', publicData, '\n');
 
@@ -130,7 +134,7 @@ contract('WTHotel & UnitType', function(accounts) {
     if (DEBUG) console.log('Begin Call event:', beginCallEvent.events);
     assert.equal(accounts[1], beginCallEvent.events[0].value);
     let pendingCallHash = beginCallEvent.events[1].value;
-    let pendingCall = await wtHotelUnitType.callsPending.call(beginCallEvent.events[1].value);
+    let pendingCall = await wtHotelUnitType.callsPending.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending:', pendingCall, '\n');
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
@@ -146,8 +150,8 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
     let continueCallData = await wtHotelUnitType.contract.continueCall.getData(pendingCallHash);
-    callUnitTypeData = await wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), continueCallData);
-    let continueCalltx = await wtIndex.callHotel(0, callUnitTypeData, {from: accounts[2]});
+    continueCallData = await wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), continueCallData);
+    let continueCalltx = await wtIndex.callHotel(0, continueCallData, {from: accounts[2]});
     if (DEBUG) console.log('Continue Call tx:', continueCalltx,'\n');
 
     // Check book was done

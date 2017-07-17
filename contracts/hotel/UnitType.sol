@@ -134,7 +134,8 @@ contract UnitType is PrivateCall {
     address from,
     uint unitIndex,
     uint fromDay,
-    uint daysAmount
+    uint daysAmount,
+    bytes finalDataCall
   ) fromSelf() {
 		if (!units[unitIndex].active)
 			throw;
@@ -152,6 +153,7 @@ contract UnitType is PrivateCall {
 			for (i = fromDay; i <= toDay ; i++)
 				units[unitIndex].reservations[i].bookedBy = from;
 			Book(from, unitIndex, fromDay, toDay);
+      owner.call(finalDataCall);
 		}
 	}
 
