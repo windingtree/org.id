@@ -1,13 +1,14 @@
 pragma solidity ^0.4.8;
 
 import "../Indexed.sol";
+import "../Father.sol";
 
 /*
  * Hotel
  * An indexed contract on the WT Index taht contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract Hotel is Indexed {
+contract Hotel is Indexed, Father {
 
 	// Main information
 	string public name;
@@ -26,8 +27,6 @@ contract Hotel is Indexed {
 	// The units that the hotel have for rent.
 	mapping(bytes32 => address) public unitTypes;
 	bytes32[] public unitTypeNames;
-
-  mapping(address => bool) private childs;
 
   // Constructor
 
@@ -78,7 +77,7 @@ contract Hotel is Indexed {
 			throw;
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
-    childs[addr] = true;
+    addChild(addr);
 	}
 
 	function removeUnitType(
@@ -90,7 +89,7 @@ contract Hotel is Indexed {
       (unitTypeNames[index] != unitType)
     )
 			throw;
-    childs[unitTypes[unitType]] = false;
+    removeChild(unitTypes[unitType]);
 		delete unitTypes[unitType];
 		delete unitTypeNames[index];
 	}
@@ -101,7 +100,9 @@ contract Hotel is Indexed {
   ) troughIndex() onlyOwner() {
 		if (unitTypes[unitType] == address(0))
 			throw;
+    removeChild(unitTypes[unitType]);
 		unitTypes[unitType] = newAddr;
+    addChild(newAddr);
 	}
 
 	function callUnitType(
@@ -116,9 +117,7 @@ contract Hotel is Indexed {
 
   // Only child methods
 
-  function callIndex(bytes data) {
-    if (childs[msg.sender])
-      throw;
+  function callIndex(bytes data) onlyChild() {
     if (!index.call(data))
       throw;
   }
