@@ -1,13 +1,14 @@
-pragma solidity ^0.4.8;
+pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
+import "../Father.sol";
 
 /*
  * Hotel
  * An indexed contract on the WT Index taht contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract Hotel is Indexed {
+contract Hotel is Indexed, Father {
 
 	// Main information
 	string public name;
@@ -76,6 +77,7 @@ contract Hotel is Indexed {
 			throw;
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
+    addChild(addr);
 	}
 
 	function removeUnitType(
@@ -87,6 +89,7 @@ contract Hotel is Indexed {
       (unitTypeNames[index] != unitType)
     )
 			throw;
+    removeChild(unitTypes[unitType]);
 		delete unitTypes[unitType];
 		delete unitTypeNames[index];
 	}
@@ -97,7 +100,9 @@ contract Hotel is Indexed {
   ) troughIndex() onlyOwner() {
 		if (unitTypes[unitType] == address(0))
 			throw;
+    removeChild(unitTypes[unitType]);
 		unitTypes[unitType] = newAddr;
+    addChild(newAddr);
 	}
 
 	function callUnitType(
@@ -109,6 +114,13 @@ contract Hotel is Indexed {
 		if (!unitTypes[unitType].call(data))
 			throw;
 	}
+
+  // Only child methods
+
+  function callIndex(bytes data) onlyChild() {
+    if (!index.call(data))
+      throw;
+  }
 
 	// Public constant methods
 

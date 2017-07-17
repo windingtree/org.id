@@ -10,11 +10,11 @@ This conrracts are used to index only the necessary information in so its easily
 
 This contract will list and provide each important contract of the platform, saving his name, address and version and it will be only accessible by the WT founding team.
 
-#### WT Index
+### WT Index
 
 This contract will index and list every hotel and airline of the platform, it will index hotels by geological location, country, city and name. And it will index all airlines by their name and flight routes.
 
-#### WT Keys Registry
+### WT Keys Registry
 
 On WT the users will eb available to send value and data using Líf tokens. The users can send data beetwen each otehr without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WT-Keys-Registry that will be used by another users to send encrypted data between them.
 In short terms: This contract will allow the sending of encrypted data between users.
@@ -22,6 +22,10 @@ In short terms: This contract will allow the sending of encrypted data between u
 ### Indexed
 
 The Indexed smart contract is an extension of the Ownable contract from zeppelin-solidity that also sets a index address, a contract that is indexed can require calls to go through the index contract and that calls should be sent by the owner of the destination contract. This allow us to delegate the ownership of the hotels and airlines contracts and keep records of all changes on them outside the blockchain.
+
+### Father
+
+A contract that can childs contracts registered by address. The contract provides a childs private variable with add/remove child methods and a modifier to request only child contracts as msg.sender on functions.
 
 ### PrivateCall
 
