@@ -28,6 +28,9 @@ contract Hotel is Indexed, Father {
 	mapping(bytes32 => address) public unitTypes;
 	bytes32[] public unitTypeNames;
 
+  // Hotel images
+	string[] public images;
+
   // Constructor
 
 	function Hotel(string _name, string _description) {
@@ -80,6 +83,14 @@ contract Hotel is Indexed, Father {
     addChild(addr);
 	}
 
+  function addImage(string url) troughIndex() onlyOwner() {
+		images.push(url);
+	}
+
+  function removeImage(uint index) troughIndex() onlyOwner() {
+		delete images[index];
+	}
+
 	function removeUnitType(
     bytes32 unitType,
     uint index
@@ -130,6 +141,14 @@ contract Hotel is Indexed, Father {
 
   function getUnitTypeNames() constant returns (bytes32[]) {
 		return unitTypeNames;
+	}
+
+  function getImage(uint i) constant returns (string) {
+		return images[i];
+	}
+
+  function getImagesLength() constant returns (uint) {
+		return images.length;
 	}
 
 }
