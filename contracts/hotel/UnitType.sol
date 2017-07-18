@@ -28,6 +28,7 @@ contract UnitType is PrivateCall {
     mapping(uint => uint) amenitiesIndex;
 		// An array of all days avaliability after 01-01-1970
 		mapping(uint => UnitDay) reservations;
+    string[] images;
   }
 
 	struct UnitDay {
@@ -54,6 +55,7 @@ contract UnitType is PrivateCall {
     string price
   ) onlyOwner() {
 		uint[] memory empty = new uint[](0);
+    string[] memory emptyImgs = new string[](0);
     totalUnits ++;
 		units[totalUnits] = Unit(
       name,
@@ -62,7 +64,8 @@ contract UnitType is PrivateCall {
       maxGuests,
       price,
       true,
-      empty
+      empty,
+      emptyImgs
     );
 		units[totalUnits].amenities.length ++;
 	}
@@ -105,6 +108,18 @@ contract UnitType is PrivateCall {
 		uint toDay = fromDay+daysAmount;
 		for (uint i = fromDay; i <= toDay; i++)
 			units[unitIndex].reservations[i].specialPrice = price;
+	}
+
+  function addImage(uint unitIndex, string url) onlyOwner() {
+    if ((unitIndex > totalUnits) || (unitIndex == 0))
+			throw;
+		units[unitIndex].images.push(url);
+	}
+
+  function removeImage(uint unitIndex, uint imageIndex) onlyOwner() {
+    if ((unitIndex > totalUnits) || (unitIndex == 0))
+			throw;
+		delete units[unitIndex].images[imageIndex];
 	}
 
 	function addAmenity(uint unitIndex, uint amenity) onlyOwner() {
@@ -184,6 +199,14 @@ contract UnitType is PrivateCall {
       units[unitIndex].reservations[day].specialPrice,
       units[unitIndex].reservations[day].bookedBy
     );
+	}
+
+  function getImage(uint unitIndex, uint i) constant returns (string) {
+		return units[unitIndex].images[i];
+	}
+
+  function getImagesLength(uint unitIndex) constant returns (uint) {
+		return units[unitIndex].images.length;
 	}
 
 }

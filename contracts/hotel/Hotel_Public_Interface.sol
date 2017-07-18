@@ -25,5 +25,7 @@ contract Hotel_Public_Interface {
   // Public constant methods
   function getUnitType(bytes32 unitType) constant returns (address);
   function getUnitTypeNames() constant returns (bytes32[]);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }

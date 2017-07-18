@@ -22,6 +22,8 @@ contract UnitType_Owner_Interface is Ownable {
   function setPrice(string price, uint unitIndex, uint fromDay, uint daysAmount) onlyOwner();
   function addAmenity(uint unitIndex, uint amenity) onlyOwner();
   function removeAmenity(uint unitIndex, uint amenity) onlyOwner();
+  function addImage(uint unitIndex, string url) onlyOwner();
+  function removeImage(uint unitIndex, uint imageIndex) onlyOwner();
   function removeUnit(uint unitIndex) onlyOwner();
 
   // Public methods
