@@ -15,20 +15,23 @@ contract UnitType_Owner_Interface is Ownable {
   event Book(address from, uint unitIndex, uint fromDay, uint daysAmount);
 
   // Owner methods
-  function addUnit(string name, string description, uint minGuests, uint maxGuests, string price) onlyOwner();
-  function editUnit(uint unitIndex, string name, string description, uint minGuests, uint maxGuests, string price) onlyOwner();
+  function addUnit() onlyOwner();
+  function edit(string description, uint minGuests, uint maxGuests, string price) onlyOwner();
   function active(bool _active) onlyOwner();
   function unitActive(uint unitIndex, bool _active) onlyOwner();
   function setPrice(string price, uint unitIndex, uint fromDay, uint daysAmount) onlyOwner();
-  function addAmenity(uint unitIndex, uint amenity) onlyOwner();
-  function removeAmenity(uint unitIndex, uint amenity) onlyOwner();
-  function addImage(uint unitIndex, string url) onlyOwner();
-  function removeImage(uint unitIndex, uint imageIndex) onlyOwner();
+  function addAmenity(uint amenity) onlyOwner();
+  function removeAmenity( uint amenity) onlyOwner();
+  function addImage(string url) onlyOwner();
+  function removeImage(uint imageIndex) onlyOwner();
   function removeUnit(uint unitIndex) onlyOwner();
 
   // Public methods
-  function getUnit(uint unitIndex) constant returns(string, string, uint, uint, string, bool);
-  function getAmenities(uint unitIndex) constant returns(uint[]);
-  function getReservation(uint unitIndex, uint day) constant returns(string, address);
+  function getInfo() constant returns(string, uint, uint, string, bool);
+  function getUnit(uint unitIndex) constant returns(bool);
+  function getAmenities() constant returns(uint[]);
+  function getReservation( uint unitIndex, uint day ) constant returns(string, address);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }
