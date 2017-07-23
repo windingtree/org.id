@@ -133,7 +133,7 @@ contract Hotel is Indexed, Father {
       throw;
   }
 
-	// Public constant methods
+	// Public methods
 
 	function getUnitType(bytes32 unitType) constant returns (address) {
 		return unitTypes[unitType];

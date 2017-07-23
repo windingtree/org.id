@@ -73,10 +73,20 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     assert.equal(wtAir.address, await wtRoute.owner());
 
     // Config WTAirRoute to wait for confirmation fo calls
-    let changeConfigData = wtRoute.contract.changeConfirmation.getData(true);
-    changeConfigData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), changeConfigData);
-    await wtIndex.callAirline(0, changeConfigData, {from: accounts[2]});
+    let callAirlineData = wtRoute.contract.changeConfirmation.getData(true);
+    callAirlineData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), callAirlineData);
+    await wtIndex.callAirline(0, callAirlineData, {from: accounts[2]});
     assert.equal(true, await wtRoute.waitConfirmation());
+
+    // Add classes on flight route
+    callAirlineData = wtRoute.contract.addClass.getData(20, '150 USD');
+    callAirlineData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), callAirlineData);
+    await wtIndex.callAirline(0, callAirlineData, {from: accounts[2]});
+    callAirlineData = wtRoute.contract.addClass.getData(100, '100 USD');
+    callAirlineData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), callAirlineData);
+    await wtIndex.callAirline(0, callAirlineData, {from: accounts[2]});
+    assert.equal(120, await wtRoute.totalSeats());
+    assert.equal(2, await wtRoute.totalClasses());
 
     // Add the flight on the route
     let departureTime = moment("2017-12-22 09:30").unix();
@@ -84,15 +94,21 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     let addFlightData = wtRoute.contract.addFlight.getData(web3.toHex('101'), departureTime, arrivalTime, 100);
     let callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), addFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    let flightIndex = await wtRoute.ids.call(web3.toHex('101'));
-    let flight = await wtRoute.flights.call(flightIndex);
+    let flight = await wtRoute.getFlight(web3.toHex('101'));
+    let firstClass = await wtRoute.getFlightClass(web3.toHex('101'), 1);
+    let secondClass = await wtRoute.getFlightClass(web3.toHex('101'), 2);
     if (DEBUG) console.log('Flight added', flight.address);
-    assert.equal(web3.toHex('101'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    if (DEBUG) console.log('First class', firstClass);
+    if (DEBUG) console.log('Second class', secondClass);
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(120, parseInt(flight[2]));
+    assert.equal(true, flight[3]);
+    assert.equal(1, flight[4]);
+    assert.equal(0, parseInt(firstClass[0]));
+    assert.equal('', firstClass[1]);
+    assert.equal('', parseInt(secondClass[0]));
+    assert.equal('', secondClass[1]);
 
     // Build the data to book a flight
     let dataToSend = {
@@ -102,9 +118,13 @@ contract('WTAirline & WTAirRoute', function(accounts) {
       passportId: 'ARG123456'
     };
 
+    // Build giveVote call data
+    let giveVoteData = wtIndex.contract.giveVote.getData( await wtAir.owner());
+    giveVoteData = wtAir.contract.callIndex.getData(giveVoteData);
+
     // Encode Augusto's private data and create the data to call the public function
     let privateData = web3.toHex(JSON.stringify(dataToSend));
-    let publicData = await wtRoute.contract.book.getData(web3.toHex('101'));
+    let publicData = await wtRoute.contract.book.getData(web3.toHex('101'), 1, privateData, giveVoteData);
     if (DEBUG) console.log('Private data:', privateData);
     if (DEBUG) console.log('Public data:', publicData, '\n');
 
@@ -136,16 +156,17 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     if (DEBUG) console.log('Continue Call tx:', continueCalltx, '\n');
 
     // Check booking was done
-    if (DEBUG) console.log('Flight booked: ', continueCalltx.receipt.logs[0].data.substring(0,4).toString('utf8'));
+    if (DEBUG) console.log('Flight booked: ', continueCalltx.receipt.logs[0]);
     assert.equal(web3.toHex('101'), continueCalltx.receipt.logs[0].data.substring(0,4));
-    let flightBooked = await wtRoute.flights.call(flightIndex);
+    let flightBooked = await wtRoute.getFlight(web3.toHex('101'));
+    let classBooked = await wtRoute.getFlightClass(web3.toHex('101'), 1);
     if (DEBUG) console.log('Flight booked', flightBooked, '\n');
-    assert.equal(web3.toHex('101'), flightBooked[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flightBooked[1]));
-    assert.equal(arrivalTime, parseInt(flightBooked[2]));
-    assert.equal(99, parseInt(flightBooked[3]));
-    assert.equal(100, parseInt(flightBooked[4]));
-    assert.equal(true, flightBooked[5]);
+    assert.equal(departureTime, parseInt(flightBooked[0]));
+    assert.equal(arrivalTime, parseInt(flightBooked[1]));
+    assert.equal(119, parseInt(flightBooked[2]));
+    assert.equal(true, flightBooked[3]);
+    assert.equal(1, parseInt(classBooked[0]));
+    assert.equal('', classBooked[1]);
 
     // Check pendingTx was confirmed
     let pendingTxConfirmed = await wtRoute.callsPending.call(beginCalltx.logs[0].args.dataHash);
@@ -246,15 +267,12 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     let addFlightData = wtRoute.contract.addFlight.getData(web3.toHex('101'), departureTime, arrivalTime, 100);
     let callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), addFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    let flightIndex = await wtRoute.ids.call(web3.toHex('101'));
-    let flight = await wtRoute.flights.call(flightIndex);
-    if (DEBUG) console.log('Flight added', flight[0].substring(0,4));
-    assert.equal(web3.toHex('101'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    let flight = await wtRoute.getFlight(web3.toHex('101'));
+    if (DEBUG) console.log('Flight added', web3.toHex('102'));
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(0, parseInt(flight[2]));
+    assert.equal(true, flight[3]);
 
     // Add the second flight on the route
     departureTime = moment("2017-12-22 12:00").unix();
@@ -262,15 +280,12 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     addFlightData = wtRoute.contract.addFlight.getData(web3.toHex('102'), departureTime, arrivalTime, 100);
     callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), addFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    flightIndex = await wtRoute.ids.call(web3.toHex('102'));
-    flight = await wtRoute.flights.call(flightIndex);
-    if (DEBUG) console.log('Flight added', flight[0].substring(0,4));
-    assert.equal(web3.toHex('102'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    flight = await wtRoute.getFlight(web3.toHex('102'));
+    if (DEBUG) console.log('Flight added', web3.toHex('102'));
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(0, parseInt(flight[2]));
+    assert.equal(true, flight[3]);
 
     // Add the third flight on the route
     departureTime = moment("2017-12-22 15:00").unix();
@@ -278,15 +293,12 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     addFlightData = wtRoute.contract.addFlight.getData(web3.toHex('103'), departureTime, arrivalTime, 100);
     callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), addFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    flightIndex = await wtRoute.ids.call(web3.toHex('103'));
-    flight = await wtRoute.flights.call(flightIndex);
-    if (DEBUG) console.log('Flight added', flight[0].substring(0,4));
-    assert.equal(web3.toHex('103'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    flight = await wtRoute.getFlight(web3.toHex('103'));
+    if (DEBUG) console.log('Flight added', web3.toHex('103'));
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(0, parseInt(flight[2]));
+    assert.equal(true, flight[3]);
 
     // Add the fourth flight on the route
     departureTime = moment("2017-12-22 18:00").unix();
@@ -294,45 +306,36 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     addFlightData = wtRoute.contract.addFlight.getData(web3.toHex('104'), departureTime, arrivalTime, 100);
     callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), addFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    flightIndex = await wtRoute.ids.call(web3.toHex('104'));
-    flight = await wtRoute.flights.call(flightIndex);
-    if (DEBUG) console.log('Flight added', flight[0].substring(0,4));
-    assert.equal(web3.toHex('104'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    flight = await wtRoute.getFlight(web3.toHex('104'));
+    if (DEBUG) console.log('Flight added', web3.toHex('104'));
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(0, parseInt(flight[2]));
+    assert.equal(true, flight[3]);
 
     // Delete a flight
     let removeFlightData = wtRoute.contract.removeFlight.getData(web3.toHex('103'));
     callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), removeFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
     if (DEBUG) console.log('Flight deleted');
-    assert.equal(0, parseInt(await wtRoute.ids.call(web3.toHex('103'))));
-    flight = await wtRoute.flights.call(3);
-    assert.equal('0x000000000000000000000000', flight[0]);
+    flight = await wtRoute.getFlight(web3.toHex('103'));
+    assert.equal(0, parseInt(flight[0]));
     assert.equal(0, parseInt(flight[1]));
     assert.equal(0, parseInt(flight[2]));
-    assert.equal(0, parseInt(flight[3]));
-    assert.equal(0, parseInt(flight[4]));
-    assert.equal(false, flight[5]);
+    assert.equal(false, flight[3]);
 
     // Edit a flight
     departureTime = moment("2017-12-22 12:30").unix();
     arrivalTime = moment("2017-12-22 14:00").unix();
-    let editFlightData = wtRoute.contract.editFlight.getData(web3.toHex('102'), departureTime, arrivalTime);
+    let editFlightData = wtRoute.contract.editFlight.getData(web3.toHex('102'), departureTime, arrivalTime, false);
     callRouteData = wtAir.contract.callRoute.getData(web3.toHex('MAD'), web3.toHex('BCN'), editFlightData);
     await wtIndex.callAirline(0, callRouteData, {from: accounts[2]});
-    flightIndex = await wtRoute.ids.call(web3.toHex('102'));
-    flight = await wtRoute.flights.call(flightIndex);
-    if (DEBUG) console.log('Flight edited', flight[0].substring(0,4));
-    assert.equal(web3.toHex('102'), flight[0].substring(0,4));
-    assert.equal(departureTime, parseInt(flight[1]));
-    assert.equal(arrivalTime, parseInt(flight[2]));
-    assert.equal(100, parseInt(flight[3]));
-    assert.equal(100, parseInt(flight[4]));
-    assert.equal(true, flight[5]);
+    flight = await wtRoute.getFlight(web3.toHex('102'));
+    if (DEBUG) console.log('Flight added', web3.toHex('102'));
+    assert.equal(departureTime, parseInt(flight[0]));
+    assert.equal(arrivalTime, parseInt(flight[1]));
+    assert.equal(0, parseInt(flight[2]));
+    assert.equal(false, flight[3]);
 
   });
 
