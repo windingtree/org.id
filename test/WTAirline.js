@@ -44,20 +44,19 @@ contract('WTAirline & WTAirRoute', function(accounts) {
 
     // Register airline on index
     let airlineRegisterTx = await wtIndex.registerAirline('WT Air', 'WT Test Airline', {from: accounts[2]});
-    let airlineAddress = await wtIndex.getAirlineByOwner(accounts[2]);
+    let airlineAddress = await wtIndex.getAirlinesByOwner(accounts[2]);
     if (DEBUG) console.log('New WT Airline addreess:', airlineAddress[0], '\n');
     let wtAir = WTAirline.at(airlineAddress[0]);
 
     // Check that wtAir is indexed
-    assert.equal(wtIndex.contract.address, await wtAir.index());
-    assert.equal(accounts[2], await wtAir.owner());
+    assert.equal(wtIndex.contract.address, await wtAir.getIndex());
+    assert.equal(accounts[2], await wtAir.getOwner());
 
     // Edit wtAir information and location
     let editWtAirInfoData = wtAir.contract.editInfo.getData('WT Airline', 'Winding Tree Test Airline', 'http://wtair.com');
     let editWtAirUnicationData = wtAir.contract.editLocation.getData('Madrid Street 123', 'Spain');
     await wtIndex.callAirline(0, editWtAirInfoData, {from: accounts[2]});
     await wtIndex.callAirline(0, editWtAirUnicationData, {from: accounts[2]});
-
     assert.equal('WT Airline', await wtAir.name());
     assert.equal('Winding Tree Test Airline', await wtAir.description());
     assert.equal('http://wtair.com', await wtAir.website());
@@ -119,7 +118,7 @@ contract('WTAirline & WTAirRoute', function(accounts) {
     };
 
     // Build giveVote call data
-    let giveVoteData = wtIndex.contract.giveVote.getData( await wtAir.owner());
+    let giveVoteData = wtIndex.contract.giveVote.getData( await wtAir.getOwner());
     giveVoteData = wtAir.contract.callIndex.getData(giveVoteData);
 
     // Encode Augusto's private data and create the data to call the public function
@@ -179,13 +178,13 @@ contract('WTAirline & WTAirRoute', function(accounts) {
 
     // Register airline on index
     let airlineRegisterTx = await wtIndex.registerAirline('WT Air', 'WT Test Airline', {from: accounts[2]});
-    let airlineAddress = await wtIndex.getAirlineByOwner(accounts[2]);
+    let airlineAddress = await wtIndex.getAirlinesByOwner(accounts[2]);
     if (DEBUG) console.log('New WT Airline addreess:', airlineAddress[0], '\n');
     let wtAir = WTAirline.at(airlineAddress[0]);
 
     // Check that wtAir is indexed
-    assert.equal(wtIndex.contract.address, await wtAir.index());
-    assert.equal(accounts[2], await wtAir.owner());
+    assert.equal(wtIndex.contract.address, await wtAir.getIndex());
+    assert.equal(accounts[2], await wtAir.getOwner());
 
     // Create a first route
     let wtRoute = await WTAirRoute.new(wtAir.address, web3.toHex('MAD'), web3.toHex('BCN'), {from: accounts[2]});
@@ -245,13 +244,13 @@ contract('WTAirline & WTAirRoute', function(accounts) {
 
     // Register airline on index
     let airlineRegisterTx = await wtIndex.registerAirline('WT Air', 'WT Test Airline', {from: accounts[2]});
-    let airlineAddress = await wtIndex.getAirlineByOwner(accounts[2]);
+    let airlineAddress = await wtIndex.getAirlinesByOwner(accounts[2]);
     if (DEBUG) console.log('New WT Airline addreess:', airlineAddress[0], '\n');
     let wtAir = WTAirline.at(airlineAddress[0]);
 
     // Check that wtAir is indexed
-    assert.equal(wtIndex.contract.address, await wtAir.index());
-    assert.equal(accounts[2], await wtAir.owner());
+    assert.equal(wtIndex.contract.address, await wtAir.getIndex());
+    assert.equal(accounts[2], await wtAir.getOwner());
 
     // Create the route
     let wtRoute = await WTAirRoute.new(wtAir.address, web3.toHex('MAD'), web3.toHex('BCN'), {from: accounts[2]});

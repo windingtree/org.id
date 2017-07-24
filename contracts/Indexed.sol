@@ -2,15 +2,15 @@ pragma solidity ^0.4.11;
 
 /*
  * Indexed
- * An extencion of a contract that allow teh execution of calls inspecting
+ * An extension of a contract that allow the execution of calls checking
  * the origin and sender of the method.
  */
 contract Indexed {
 
-	address public owner;
-	address public index;
+	address owner;
+	address index;
 
-	modifier troughIndex() {
+	modifier throughIndex() {
 		if (msg.sender != index) {
 			throw;
 		}
@@ -29,12 +29,14 @@ contract Indexed {
 		index = msg.sender;
 	}
 
-	function transferOwnership(address newOwner) troughIndex() onlyOwner() {
+	function transferOwnership(address newOwner) throughIndex() onlyOwner() {
 		if (newOwner != address(0)) {
 			owner = newOwner;
 		}
 	}
 
 	function getOwner() constant returns (address) { return owner; }
+
+  function getIndex() constant returns (address) { return index; }
 
 }

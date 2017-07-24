@@ -45,7 +45,7 @@ contract Hotel is Indexed, Father {
 	function editInfo(
     string _name,
     string _description
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		name = _name;
 		description = _description;
 	}
@@ -55,7 +55,7 @@ contract Hotel is Indexed, Father {
     string _lineTwo,
     string _zip,
     string _country
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		lineOne = _lineOne;
 		lineTwo = _lineTwo;
 		zip = _zip;
@@ -66,7 +66,7 @@ contract Hotel is Indexed, Father {
     uint _timezone,
     uint _longitude,
     uint _latitude
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		timezone = _timezone;
 		latitude = _latitude;
 		longitude = _longitude;
@@ -75,7 +75,7 @@ contract Hotel is Indexed, Father {
 	function addUnitType(
     address addr,
     bytes32 unitType
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (unitTypes[unitType] != address(0))
 			throw;
 		unitTypes[unitType] = addr;
@@ -83,18 +83,18 @@ contract Hotel is Indexed, Father {
     addChild(addr);
 	}
 
-  function addImage(string url) troughIndex() onlyOwner() {
+  function addImage(string url) throughIndex() onlyOwner() {
 		images.push(url);
 	}
 
-  function removeImage(uint index) troughIndex() onlyOwner() {
+  function removeImage(uint index) throughIndex() onlyOwner() {
 		delete images[index];
 	}
 
 	function removeUnitType(
     bytes32 unitType,
     uint index
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (
       (unitTypes[unitType] == address(0)) ||
       (unitTypeNames[index] != unitType)
@@ -108,7 +108,7 @@ contract Hotel is Indexed, Father {
 	function changeUnitType(
     bytes32 unitType,
     address newAddr
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (unitTypes[unitType] == address(0))
 			throw;
     removeChild(unitTypes[unitType]);
@@ -119,7 +119,7 @@ contract Hotel is Indexed, Father {
 	function callUnitType(
     bytes32 unitType,
     bytes data
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (unitTypes[unitType] == address(0))
 			throw;
 		if (!unitTypes[unitType].call(data))

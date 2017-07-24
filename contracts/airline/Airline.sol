@@ -5,7 +5,7 @@ import "../Father.sol";
 
 /*
  * Airline
- * An indexed contract on the WT Index taht contains the airline information
+ * An indexed contract on the WT Index that contains the airline information
  * and the addresses of his Flight Routes contracts.
  */
 contract Airline is Indexed, Father {
@@ -31,7 +31,7 @@ contract Airline is Indexed, Father {
 
 	function editInfo(
     string _name, string _description, string _website
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		name = _name;
 		description = _description;
 		website = _website;
@@ -39,14 +39,14 @@ contract Airline is Indexed, Father {
 
 	function editLocation(
     string _legalAddress, string _country
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		legalAddress = _legalAddress;
 		country = _country;
 	}
 
 	function addRoute(
     address addr, bytes12 from, bytes12 to
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] != address(0))
 			throw;
 		routes[from][to] = addr;
@@ -54,7 +54,7 @@ contract Airline is Indexed, Father {
 
 	function changeRoute(
     bytes12 from, bytes12 to, address newRoute
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] == address(0))
 			throw;
 		routes[from][to] = newRoute;
@@ -62,7 +62,7 @@ contract Airline is Indexed, Father {
 
 	function callRoute(
     bytes12 from, bytes12 to, bytes data
-  ) troughIndex() onlyOwner() {
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] == address(0))
 			throw;
 		if (!routes[from][to].call(data))

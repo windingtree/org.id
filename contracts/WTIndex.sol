@@ -89,7 +89,7 @@ contract WTIndex is Ownable, Father {
 		return hotelsByOwner[owner];
 	}
 
-	function getAirlineByOwner(address owner) constant returns(address[]){
+	function getAirlinesByOwner(address owner) constant returns(address[]){
 		return airlinesByOwner[owner];
 	}
 
