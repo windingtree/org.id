@@ -72,13 +72,15 @@ contract Hotel_Owner_Interface is Indexed {
   uint public longitude;
 
   // Owner methods
-  function editInfo( string _name, string _description ) troughIndex() onlyOwner();
-  function editAddress( string _lineOne, string _lineTwo, string _zip, string _country ) troughIndex() onlyOwner() ;
-  function editLocation( uint _timezone, uint _longitude, uint _latitude ) troughIndex() onlyOwner();
-  function addUnitType( address addr, bytes32 unitType ) troughIndex() onlyOwner();
-  function removeUnitType( bytes32 unitType, uint index ) troughIndex() onlyOwner();
-  function changeUnitType( bytes32 unitType, address newAddr ) troughIndex() onlyOwner();
-  function callUnitType( bytes32 unitType, bytes data ) troughIndex() onlyOwner();
+  function editInfo(string _name, string _description) troughIndex() onlyOwner();
+  function editAddress(string _lineOne, string _lineTwo, string _zip, string _country) troughIndex() onlyOwner() ;
+  function editLocation(uint _timezone, uint _longitude, uint _latitude) troughIndex() onlyOwner();
+  function addUnitType(address addr, bytes32 unitType) troughIndex() onlyOwner();
+  function removeUnitType(bytes32 unitType, uint index) troughIndex() onlyOwner();
+  function changeUnitType(bytes32 unitType, address newAddr) troughIndex() onlyOwner();
+  function addImage(string url) troughIndex() onlyOwner();
+  function removeImage(uint index) troughIndex() onlyOwner();
+  function callUnitType(bytes32 unitType, bytes data) troughIndex() onlyOwner();
 
   // Public constant methods
   function getUnitType(bytes32 unitType) constant returns (address);
@@ -109,6 +111,8 @@ contract Hotel_Public_Interface {
   // Public constant methods
   function getUnitType(bytes32 unitType) constant returns (address);
   function getUnitTypeNames() constant returns (bytes32[]);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }
 ```
@@ -129,19 +133,24 @@ contract UnitType_Owner_Interface is Ownable {
   event Book(address from, uint unitIndex, uint fromDay, uint daysAmount);
 
   // Owner methods
-  function addUnit(string name, string description, uint minGuests, uint maxGuests, string price) onlyOwner();
-  function editUnit(uint unitIndex, string name, string description, uint minGuests, uint maxGuests, string price) onlyOwner();
+  function addUnit() onlyOwner();
+  function edit(string description, uint minGuests, uint maxGuests, string price) onlyOwner();
   function active(bool _active) onlyOwner();
   function unitActive(uint unitIndex, bool _active) onlyOwner();
   function setPrice(string price, uint unitIndex, uint fromDay, uint daysAmount) onlyOwner();
-  function addAmenity(uint unitIndex, uint amenity) onlyOwner();
-  function removeAmenity(uint unitIndex, uint amenity) onlyOwner();
+  function addAmenity(uint amenity) onlyOwner();
+  function removeAmenity( uint amenity) onlyOwner();
+  function addImage(string url) onlyOwner();
+  function removeImage(uint imageIndex) onlyOwner();
   function removeUnit(uint unitIndex) onlyOwner();
 
   // Public methods
-  function getUnit(uint unitIndex) constant returns(string, string, uint, uint, string, bool);
-  function getAmenities(uint unitIndex) constant returns(uint[]);
-  function getReservation(uint unitIndex, uint day) constant returns(string, address);
+  function getInfo() constant returns(string, uint, uint, string, bool);
+  function getUnit(uint unitIndex) constant returns(bool);
+  function getAmenities() constant returns(uint[]);
+  function getReservation( uint unitIndex, uint day ) constant returns(string, address);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }
 ```
@@ -161,9 +170,12 @@ contract UnitType_Public_Interface is PrivateCall {
   function book( address from, uint unitIndex, uint fromDay, uint daysAmount ) fromSelf();
 
   // Public methods
-  function getUnit(uint unitIndex) constant returns(string, string, uint, uint, string, bool);
-  function getAmenities(uint unitIndex) constant returns(uint[]);
+  function getInfo() constant returns(string, uint, uint, string, bool);
+  function getUnit(uint unitIndex) constant returns(bool);
+  function getAmenities() constant returns(uint[]);
   function getReservation( uint unitIndex, uint day ) constant returns(string, address);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }
 ```

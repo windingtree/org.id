@@ -12,23 +12,21 @@ contract UnitType is PrivateCall {
 	bool public active;
 	bytes32 public unitType;
 	uint public totalUnits;
+  string description;
+  uint minGuests;
+  uint maxGuests;
+  string price;
+  uint[] amenities;
+  mapping(uint => uint) amenitiesIndex;
+  string[] images;
 
 	// The units that the hotels has of this type.
 	mapping(uint => Unit) public units;
 
 	struct Unit {
-		//Unit Information
-		string name;
-		string description;
-		uint minGuests;
-		uint maxGuests;
-		string price;
 		bool active;
-		uint[] amenities;
-    mapping(uint => uint) amenitiesIndex;
 		// An array of all days avaliability after 01-01-1970
 		mapping(uint => UnitDay) reservations;
-    string[] images;
   }
 
 	struct UnitDay {
@@ -43,48 +41,26 @@ contract UnitType is PrivateCall {
 	function UnitType(address _owner, bytes32 _unitType){
 		owner = _owner;
 		unitType = _unitType;
+    active = true;
 	}
 
 	// Owner methods
 
-	function addUnit(
-    string name,
-    string description,
-    uint minGuests,
-    uint maxGuests,
-    string price
-  ) onlyOwner() {
-		uint[] memory empty = new uint[](0);
-    string[] memory emptyImgs = new string[](0);
+	function addUnit() onlyOwner() {
     totalUnits ++;
-		units[totalUnits] = Unit(
-      name,
-      description,
-      minGuests,
-      maxGuests,
-      price,
-      true,
-      empty,
-      emptyImgs
-    );
-		units[totalUnits].amenities.length ++;
+		units[totalUnits] = Unit(true);
 	}
 
-	function editUnit(
-    uint unitIndex,
-    string name,
-    string description,
-    uint minGuests,
-    uint maxGuests,
-    string price
+	function edit(
+    string _description,
+    uint _minGuests,
+    uint _maxGuests,
+    string _price
   ) onlyOwner() {
-		if ((unitIndex > totalUnits) || (unitIndex == 0))
-			throw;
-		units[unitIndex].name = name;
-		units[unitIndex].description = description;
-		units[unitIndex].minGuests = minGuests;
-		units[unitIndex].maxGuests = maxGuests;
-    units[unitIndex].price = price;
+		description = _description;
+		minGuests = _minGuests;
+		maxGuests = _maxGuests;
+    price = _price;
 	}
 
 	function active(bool _active) onlyOwner() {
@@ -110,30 +86,22 @@ contract UnitType is PrivateCall {
 			units[unitIndex].reservations[i].specialPrice = price;
 	}
 
-  function addImage(uint unitIndex, string url) onlyOwner() {
-    if ((unitIndex > totalUnits) || (unitIndex == 0))
-			throw;
-		units[unitIndex].images.push(url);
+  function addImage(string url) onlyOwner() {
+		images.push(url);
 	}
 
-  function removeImage(uint unitIndex, uint imageIndex) onlyOwner() {
-    if ((unitIndex > totalUnits) || (unitIndex == 0))
-			throw;
-		delete units[unitIndex].images[imageIndex];
+  function removeImage(uint imageIndex) onlyOwner() {
+		delete images[imageIndex];
 	}
 
-	function addAmenity(uint unitIndex, uint amenity) onlyOwner() {
-		if ((unitIndex > totalUnits) || (unitIndex == 0))
-			throw;
-    units[unitIndex].amenitiesIndex[amenity] = units[unitIndex].amenities.length;
-		units[unitIndex].amenities.push(amenity);
+	function addAmenity(uint amenity) onlyOwner() {
+    amenitiesIndex[amenity] = amenities.length;
+		amenities.push(amenity);
 	}
 
-	function removeAmenity(uint unitIndex, uint amenity) onlyOwner() {
-		if ((unitIndex > totalUnits) || (unitIndex == 0))
-			throw;
-		delete units[unitIndex].amenities[ units[unitIndex].amenitiesIndex[amenity] ];
-    units[unitIndex].amenitiesIndex[amenity] = 0;
+	function removeAmenity(uint amenity) onlyOwner() {
+		delete amenities[ amenitiesIndex[amenity] ];
+    amenitiesIndex[amenity] = 0;
 	}
 
 	function removeUnit(uint unitIndex) onlyOwner() {
@@ -174,21 +142,16 @@ contract UnitType is PrivateCall {
 
 	// Public methods
 
-  function getUnit(uint unitIndex) constant returns(
-    string, string, uint, uint, string, bool
-  ) {
-		return (
-      units[unitIndex].name,
-  		units[unitIndex].description,
-  		units[unitIndex].minGuests,
-  		units[unitIndex].maxGuests,
-  		units[unitIndex].price,
-  		units[unitIndex].active
-    );
+  function getInfo() constant returns(string, uint, uint, string, bool) {
+		return (description, minGuests, maxGuests, price, active);
 	}
 
-  function getAmenities(uint unitIndex) constant returns(uint[]) {
-		return (units[unitIndex].amenities);
+  function getUnit(uint unitIndex) constant returns(bool) {
+		return (units[unitIndex].active);
+	}
+
+  function getAmenities() constant returns(uint[]) {
+		return (amenities);
 	}
 
 	function getReservation(
@@ -201,12 +164,12 @@ contract UnitType is PrivateCall {
     );
 	}
 
-  function getImage(uint unitIndex, uint i) constant returns (string) {
-		return units[unitIndex].images[i];
+  function getImage(uint i) constant returns (string) {
+		return images[i];
 	}
 
-  function getImagesLength(uint unitIndex) constant returns (uint) {
-		return units[unitIndex].images.length;
+  function getImagesLength() constant returns (uint) {
+		return images.length;
 	}
 
 }

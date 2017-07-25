@@ -18,10 +18,11 @@ contract UnitType_Public_Interface is PrivateCall {
   function book( address from, uint unitIndex, uint fromDay, uint daysAmount ) fromSelf();
 
   // Public methods
-  function getUnit(uint unitIndex) constant returns(string, string, uint, uint, string, bool);
-  function getAmenities(uint unitIndex) constant returns(uint[]);
+  function getInfo() constant returns(string, uint, uint, string, bool);
+  function getUnit(uint unitIndex) constant returns(bool);
+  function getAmenities() constant returns(uint[]);
   function getReservation( uint unitIndex, uint day ) constant returns(string, address);
-  function getImage(uint unitIndex, uint i) constant returns (string); 
-  function getImagesLength(uint unitIndex) constant returns (uint);
+  function getImage(uint i) constant returns (string);
+  function getImagesLength() constant returns (uint);
 
 }

@@ -1,13 +1,14 @@
 pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
+import "../Father.sol";
 
 /*
  * Airline
- * An indexed contract on the WT Index taht contains the airline information
+ * An indexed contract on the WT Index that contains the airline information
  * and the addresses of his Flight Routes contracts.
  */
-contract Airline is Indexed {
+contract Airline is Indexed, Father {
 
 	// Airline information
 	string public name;
@@ -29,55 +30,65 @@ contract Airline is Indexed {
   // Owner methods
 
 	function editInfo(
-    string _name,
-    string _description,
-    string _website
-  ) troughIndex() onlyOwner() {
+    string _name, string _description, string _website
+  ) throughIndex() onlyOwner() {
 		name = _name;
 		description = _description;
 		website = _website;
 	}
 
 	function editLocation(
-    string _legalAddress,
-    string _country
-  ) troughIndex() onlyOwner() {
+    string _legalAddress, string _country
+  ) throughIndex() onlyOwner() {
 		legalAddress = _legalAddress;
 		country = _country;
 	}
 
 	function addRoute(
-    address addr,
-    bytes12 from,
-    bytes12 to
-  ) troughIndex() onlyOwner() {
+    address addr, bytes12 from, bytes12 to
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] != address(0))
 			throw;
 		routes[from][to] = addr;
 	}
 
 	function changeRoute(
-    bytes12 from,
-    bytes12 to,
-    address newRoute
-  ) troughIndex() onlyOwner() {
+    bytes12 from, bytes12 to, address newRoute
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] == address(0))
 			throw;
 		routes[from][to] = newRoute;
 	}
 
 	function callRoute(
-    bytes12 from,
-    bytes12 to,
-    bytes data
-  ) troughIndex() onlyOwner() {
+    bytes12 from, bytes12 to, bytes data
+  ) throughIndex() onlyOwner() {
 		if (routes[from][to] == address(0))
 			throw;
 		if (!routes[from][to].call(data))
 			throw;
 	}
 
+  // Only child methods
+
+  function callIndex(bytes data) onlyChild() {
+    if (!index.call(data))
+      throw;
+  }
+
   // Public methods
+
+  function getInfo() constant returns (
+    string, string, string, string, string
+  ) {
+    return(
+      name,
+      description,
+      legalAddress,
+      country,
+      website
+    );
+	}
 
 	function getRoute(bytes12 from, bytes12 to) constant returns (address) {
 		return routes[from][to];
