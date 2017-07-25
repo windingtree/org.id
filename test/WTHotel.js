@@ -147,7 +147,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Encode Augusto's private data and create the data to call the public function
     let privateData = web3.toHex(JSON.stringify(dataToSend));
-    let publicData = await wtHotelUnitType.contract.book.getData(accounts[1], 1, 60, 5, giveVoteData);
+    let publicData = await wtHotelUnitType.contract.book.getData(1, accounts[1], 60, 5, giveVoteData);
     if (DEBUG) console.log('Private data:', privateData);
     if (DEBUG) console.log('Public data:', publicData, '\n');
 

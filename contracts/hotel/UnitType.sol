@@ -74,15 +74,15 @@ contract UnitType is PrivateCall {
 	}
 
 	function setPrice(
-    string price,
     uint unitIndex,
+    string price,
     uint fromDay,
     uint daysAmount
   ) onlyOwner() {
 		if ((unitIndex > totalUnits) || (unitIndex == 0))
 			throw;
 		uint toDay = fromDay+daysAmount;
-		for (uint i = fromDay; i <= toDay; i++)
+		for (uint i = fromDay; i < toDay; i++)
 			units[unitIndex].reservations[i].specialPrice = price;
 	}
 
@@ -114,8 +114,8 @@ contract UnitType is PrivateCall {
 	// Methods from private call
 
 	function book(
-    address from,
     uint unitIndex,
+    address from,
     uint fromDay,
     uint daysAmount,
     bytes finalDataCall
