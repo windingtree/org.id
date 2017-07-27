@@ -52,10 +52,8 @@ contract LifCrowdsale is Ownable, PullPayment {
 
     // Allow only certain status
     modifier onStatus(uint one, uint two) {
-      if (((one != 0) && (status == one)) || ((two != 0) && (status == two)))
-        _;
-      else
-        throw;
+      require(((one != 0) && (status == one)) || ((two != 0) && (status == two)));
+      _;
     }
 
     // Constructor
@@ -82,21 +80,18 @@ contract LifCrowdsale is Ownable, PullPayment {
     function edit(uint _startBlock, uint _endBlock, uint _startPrice, uint _changePerBlock, uint _changePrice, uint _minCap, uint _maxCap, uint _totalTokens, uint _ownerPercentage) external {
 
       // TODO: only edit in certain status
-      if ((msg.sender == owner) && ((status == 1) || (status == 2))) {
+      require((msg.sender == owner) && ((status == 1) || (status == 2)));
+      require(block.number < startBlock);
 
-        if (block.number >= startBlock)
-          throw;
-
-        startBlock = _startBlock;
-        endBlock = _endBlock;
-        startPrice = _startPrice;
-        changePerBlock = _changePerBlock;
-        changePrice = _changePrice;
-        minCap = _minCap;
-        maxCap = _maxCap;
-        ownerPercentage = _ownerPercentage;
-        totalTokens = _totalTokens;
-      } else throw;
+      startBlock = _startBlock;
+      endBlock = _endBlock;
+      startPrice = _startPrice;
+      changePerBlock = _changePerBlock;
+      changePrice = _changePrice;
+      minCap = _minCap;
+      maxCap = _maxCap;
+      ownerPercentage = _ownerPercentage;
+      totalTokens = _totalTokens;
     }
 
     // calculates absolute max tokens that can be distributed from the crowdsale, including bids,
@@ -112,8 +107,7 @@ contract LifCrowdsale is Ownable, PullPayment {
     // Add an address that would be able to spend certain amounts of ethers with a bonus rate
     function addPresalePayment(address target, uint amount) external onlyOwner() onStatus(1,2) {
 
-      if (presaleBonusRate == 0)
-        throw;
+      require(presaleBonusRate > 0);
 
       totalPresaleWei = totalPresaleWei.add(amount);
       presalePayments[target] = amount;
@@ -122,8 +116,7 @@ contract LifCrowdsale is Ownable, PullPayment {
       // founders tokens
       uint crowdsaleBalance = LifInterface(tokenAddress).balanceOf(address(this)).div(LONG_DECIMALS);
 
-      if (crowdsaleBalance < getMaxTokens())
-        throw;
+      assert(crowdsaleBalance >= getMaxTokens());
     }
 
     function getBuyerPresaleTokens(address buyer) public returns (uint) {
@@ -137,8 +130,7 @@ contract LifCrowdsale is Ownable, PullPayment {
 
       if (withBonus){
 
-        if (presalePayments[buyer] == 0)
-          throw;
+        require(presalePayments[buyer] > 0);
 
         uint tokensQty = getBuyerPresaleTokens(buyer);
 
@@ -151,8 +143,7 @@ contract LifCrowdsale is Ownable, PullPayment {
 
       } else {
 
-        if (tokens[buyer] == 0)
-          throw;
+        require(tokens[buyer] > 0);
 
         uint weiChange = weiPayed[buyer].sub(tokens[buyer].mul(lastPrice));
 
@@ -173,7 +164,7 @@ contract LifCrowdsale is Ownable, PullPayment {
 
       uint price = 0;
 
-      if ((startBlock < block.number) && (block.number < endBlock)) {
+      if ((block.number >= startBlock) && (block.number <= endBlock)) {
         price = startPrice.sub(
           block.number.sub(startBlock).div(changePerBlock).mul(changePrice)
         );
@@ -197,10 +188,11 @@ contract LifCrowdsale is Ownable, PullPayment {
     // Creates a bid spending the ethers send by msg.sender.
     function submitBid() external payable onStatus(2,0) {
 
+      require(msg.value > 0);
+
       uint tokenPrice = getPrice();
 
-      if (tokenPrice == 0)
-        throw;
+      assert(tokenPrice > 0);
 
       // Calculate the total cost in wei of buying the tokens.
       uint tokensQty = msg.value.div(tokenPrice);
@@ -210,31 +202,30 @@ contract LifCrowdsale is Ownable, PullPayment {
       uint presaleTokens = getPresaleTokens(tokenPrice);
 
       // previous bids tokens + presaleTokens + current bid tokens should not exceed totalTokens
-      if (tokensSold.add(presaleTokens).add(tokensQty) > totalTokens)
+      require(tokensSold.add(presaleTokens).add(tokensQty) <= totalTokens);
+
+      if (weiRaised.add(weiCost) > maxCap)
         throw;
 
-      if (weiRaised.add(weiCost) <= maxCap) {
+      //
+      // bid is accepted from here
+      //
 
-        if (weiChange > 0)
-          safeSend(msg.sender, weiChange);
+      // asynchronously send weiChange if any
+      if (weiChange > 0)
+        safeSend(msg.sender, weiChange);
 
-        lastPrice = tokenPrice;
-        weiPayed[msg.sender] = weiCost;
-        tokens[msg.sender] = tokensQty;
-        weiRaised = weiRaised.add(weiCost);
-        tokensSold = tokensSold.add(tokensQty);
-
-      } else {
-        safeSend(msg.sender, msg.value);
-      }
-
+      lastPrice = tokenPrice;
+      weiPayed[msg.sender] = weiCost;
+      tokens[msg.sender] = tokensQty;
+      weiRaised = weiRaised.add(weiCost);
+      tokensSold = tokensSold.add(tokensQty);
     }
 
     // See if the status of the crowdsale can be changed
     function checkCrowdsale() external onStatus(2,0) {
 
-      if (block.number <= endBlock)
-        throw;
+      require(block.number > endBlock);
 
       status = 3; // Finished
       if (weiRaised >= minCap) {
@@ -282,8 +273,9 @@ contract LifCrowdsale is Ownable, PullPayment {
     // Function that allows a buyer to claim the ether back of a failed crowdsale
     function claimEth(uint stage) external onStatus(3,0) {
 
-      if ((block.number < endBlock) || (weiRaised >= minCap) || (weiPayed[msg.sender] == 0))
-        throw;
+      require(block.number > endBlock);
+      require(weiRaised < minCap);
+      require(weiPayed[msg.sender] > 0);
 
       safeSend(msg.sender, weiPayed[msg.sender]);
     }
