@@ -12,6 +12,7 @@ npm install
 ## Test
 
 To run unit tests on the contracts:
+
 ```sh
 npm test
 ```
@@ -19,3 +20,4 @@ npm test
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
+
