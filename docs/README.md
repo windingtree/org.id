@@ -23,7 +23,7 @@ In short terms: This contract will allow the sending of encrypted data between u
 
 The Indexed smart contract is an extension of the Ownable contract from zeppelin-solidity that also sets a index address, a contract that is indexed can require calls to go through the index contract and that calls should be sent by the owner of the destination contract. This allow us to delegate the ownership of the hotels and airlines contracts and keep records of all changes on them outside the blockchain.
 
-### Father
+### Parent
 
 A contract that can childs contracts registered by address. The contract provides a childs private variable with add/remove child methods and a modifier to request only child contracts as msg.sender on functions.
 

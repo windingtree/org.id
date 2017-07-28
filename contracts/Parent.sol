@@ -1,13 +1,13 @@
 pragma solidity ^0.4.11;
 
 /*
- * Father
+ * Parent
  * A contract that can have child contracts,
  * and allow functions only to be called by them.
  */
-contract Father {
+contract Parent {
 
-	mapping(address => bool) private childs;
+	mapping(address => bool) childs;
 
 	modifier onlyChild() {
 		if (childs[msg.sender]) {

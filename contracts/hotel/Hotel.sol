@@ -1,14 +1,15 @@
 pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
-import "../Father.sol";
+import "../Parent.sol";
+import "./Unit_Public_Interface.sol";
 
 /*
  * Hotel
  * An indexed contract on the WT Index taht contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract Hotel is Indexed, Father {
+contract Hotel is Indexed, Parent {
 
 	// Main information
 	string public name;
@@ -83,6 +84,23 @@ contract Hotel is Indexed, Father {
     addChild(addr);
 	}
 
+	function addUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
+		if (unitTypes[unitType] == address(0))
+			throw;
+		bytes32 _unitType = Unit_Public_Interface(unit).unitType();
+		if (_unitType != unitType)
+			throw;
+		addChild(unit);
+	}
+
+  function removeUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
+  	if (unitTypes[unitType] == address(0))
+			throw;
+  	bytes32 _unitType = Unit_Public_Interface(unit).unitType();
+		if (_unitType != unitType)
+		removeChild(unit);
+	}
+
   function addImage(string url) throughIndex() onlyOwner() {
 		images.push(url);
 	}
@@ -124,6 +142,14 @@ contract Hotel is Indexed, Father {
 			throw;
 		if (!unitTypes[unitType].call(data))
 			throw;
+	}
+
+	function callUnit(
+    address unit,
+    bytes data
+  ) throughIndex() onlyOwner() {
+		if (childs[unit])
+			unit.call(data);
 	}
 
   // Only child methods

@@ -1,14 +1,14 @@
 pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
-import "../Father.sol";
+import "../Parent.sol";
 
 /*
  * Airline
  * An indexed contract on the WT Index that contains the airline information
  * and the addresses of his Flight Routes contracts.
  */
-contract Airline is Indexed, Father {
+contract Airline is Indexed, Parent {
 
 	// Airline information
 	string public name;
