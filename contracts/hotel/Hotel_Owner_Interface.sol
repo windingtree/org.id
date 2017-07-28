@@ -32,6 +32,7 @@ contract Hotel_Owner_Interface is Indexed {
   function addImage(string url) throughIndex() onlyOwner();
   function removeImage(uint index) throughIndex() onlyOwner();
   function callUnitType(bytes32 unitType, bytes data) throughIndex() onlyOwner();
+  function callUnit(address unitAddress, bytes data) throughIndex() onlyOwner();
 
   // Public constant methods
   function getUnitType(bytes32 unitType) constant returns (address);
