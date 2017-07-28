@@ -1,13 +1,13 @@
 pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
-import "../Father.sol";
+import "../Parent.sol";
 
 /*
  * Airline_Owner_Interface
  * Owner interface of Airline contract
  */
-contract Airline_Owner_Interface is Indexed, Father {
+contract Airline_Owner_Interface is Indexed, Parent {
 
   // Constructor
   function Airline_Owner_Interface(string _name, string _description);

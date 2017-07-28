@@ -1,12 +1,12 @@
 pragma solidity ^0.4.11;
 
-import "../Father.sol";
+import "../Parent.sol";
 
 /*
  * Airline_Public_Interface
  * Owner interface of Airline contract
  */
-contract Airline_Public_Interface is Father {
+contract Airline_Public_Interface is Parent {
 
   // Only child methods
   function callIndex(bytes data) onlyChild();

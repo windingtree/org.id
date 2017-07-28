@@ -3,7 +3,7 @@ pragma solidity ^0.4.11;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./hotel/Hotel.sol";
 import "./airline/Airline.sol";
-import "./Father.sol";
+import "./Parent.sol";
 
 /*
  * WTIndex
@@ -11,7 +11,7 @@ import "./Father.sol";
  * The hotels and airlines are saved in array and can be filtered by the owner
  * address.
  */
-contract WTIndex is Ownable, Father {
+contract WTIndex is Ownable, Parent {
 
 	Hotel[] public hotels;
 	mapping(address => address[]) public hotelsByOwner;
