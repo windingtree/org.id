@@ -14,6 +14,9 @@ var WTHotel = artifacts.require('../contracts/hotel/Hotel.sol');
 var UnitType = artifacts.require('../contracts/hotel/UnitType.sol');
 var UnitTypePublic = artifacts.require('../contracts/hotel/UnitType_Public_Interface.sol');
 var UnitTypeOwner = artifacts.require('../contracts/hotel/UnitType_Owner_Interface.sol');
+var Unit = artifacts.require('../contracts/hotel/Unit.sol');
+var UnitPublic = artifacts.require('../contracts/hotel/Unit_Public_Interface.sol');
+var UnitOwner = artifacts.require('../contracts/hotel/Unit_Owner_Interface.sol');
 var LifToken = artifacts.require('../contracts/lif/LifToken.sol');
 var PrivateCall = artifacts.require('../contracts/PrivateCall.sol');
 
@@ -44,6 +47,7 @@ contract('WTHotel & UnitType', function(accounts) {
     abiDecoder.addABI(WTHotel._json.abi);
     abiDecoder.addABI(WTIndex._json.abi);
     abiDecoder.addABI(UnitType._json.abi);
+    abiDecoder.addABI(Unit._json.abi);
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
@@ -97,16 +101,10 @@ contract('WTHotel & UnitType', function(accounts) {
     await wtIndex.callHotel(0, addUnitTypeData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
 
-    // Config UnitType to wait for confirmation fo calls
-    let callUnitData = wtHotelUnitType.contract.changeConfirmation.getData(true);
-    callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
-    await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    assert.equal(true, await wtHotelUnitType.waitConfirmation());
-
     if (DEBUG) console.log('WTHotel BASIC_ROOM unit contract address:', wtHotelUnitType.address, '\n');
 
     // Edit unit type
-    callUnitData = wtHotelUnitType.contract.edit.getData('Room with basic amenities', 1, 2, '20 USD');
+    let callUnitData = wtHotelUnitType.contract.edit.getData('Room with basic amenities', 1, 2, '20 USD');
     callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
     let unitInfo = await wtHotelUnitType.getInfo();
@@ -115,15 +113,18 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(1, parseInt(unitInfo[1]));
     assert.equal(2, parseInt(unitInfo[2]));
     assert.equal('20 USD', unitInfo[3]);
-    assert.equal(true, unitInfo[4]);
 
-    // Add a unit on the unit types
-    callUnitData = wtHotelUnitType.contract.addUnit.getData();
-    callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
+    // Create and add a unit
+    let wtHotelUnit = await Unit.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
+    let addUnitData = wtHotel.contract.addUnit.getData(web3.toHex('BASIC_ROOM'), wtHotelUnit.address);
+    await wtIndex.callHotel(0, addUnitData, {from: accounts[2]});
+    assert.equal(wtHotel.address, await wtHotelUnit.owner());
+
+    // Config added unit to wait for confirmation fo calls
+    callUnitData = wtHotelUnit.contract.changeConfirmation.getData(true);
+    callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    let hotelUnit = await wtHotelUnitType.getUnit(1);
-    if (DEBUG) console.log('Unit added:', hotelUnit, '\n');
-    assert.equal(true, hotelUnit);
+    assert.equal(true, await wtHotelUnit.waitConfirmation());
 
     // Build the data to book a room
     let dataToSend = {
@@ -147,20 +148,20 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Encode Augusto's private data and create the data to call the public function
     let privateData = web3.toHex(JSON.stringify(dataToSend));
-    let publicData = await wtHotelUnitType.contract.book.getData(1, accounts[1], 60, 5, giveVoteData);
+    let publicData = await wtHotelUnit.contract.book.getData(accounts[1], 60, 5, giveVoteData);
     if (DEBUG) console.log('Private data:', privateData);
     if (DEBUG) console.log('Public data:', publicData, '\n');
 
     // Augusto begin the call by sending the public bytes of the call to be executed after receivers review it
-    let beginCallData = await wtHotelUnitType.contract.beginCall.getData(publicData, privateData);
-    let beginCalltx = await lifToken.approveData(wtHotelUnitType.address, 100, beginCallData, true, {from: accounts[1]});
+    let beginCallData = await wtHotelUnit.contract.beginCall.getData(publicData, privateData);
+    let beginCalltx = await lifToken.approveData(wtHotelUnit.address, 100, beginCallData, true, {from: accounts[1]});
     let beginCalltxCode = web3.eth.getTransaction(beginCalltx.tx).input;
     if (DEBUG) console.log('Begin Call tx:', beginCalltx);
     let beginCallEvent = abiDecoder.decodeLogs(beginCalltx.receipt.logs)[0];
     if (DEBUG) console.log('Begin Call event:', beginCallEvent.events);
     assert.equal(accounts[1], beginCallEvent.events[0].value);
     let pendingCallHash = beginCallEvent.events[1].value;
-    let pendingCall = await wtHotelUnitType.callsPending.call(pendingCallHash);
+    let pendingCall = await wtHotelUnit.callsPending.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending:', pendingCall, '\n');
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
@@ -171,12 +172,12 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(JSON.stringify(dataToSend), decryptedDataOnReceiver);
     if (DEBUG) console.log('Decrypted data on receiver:', decryptedDataOnReceiver);
     assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "Lif");
-    assert.equal(JSON.parse(decryptedDataOnReceiver).amount, await lifToken.allowance(accounts[1], wtHotelUnitType.address));
+    assert.equal(JSON.parse(decryptedDataOnReceiver).amount, await lifToken.allowance(accounts[1], wtHotelUnit.address));
     if (DEBUG) console.log('Lifs approved from Augusto To WTHotel as payment:', parseInt(await lifToken.allowance(accounts[1], wtHotelUnitType.address)), '\n');
 
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
-    let continueCallData = await wtHotelUnitType.contract.continueCall.getData(pendingCallHash);
-    continueCallData = await wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), continueCallData);
+    let continueCallData = await wtHotelUnit.contract.continueCall.getData(pendingCallHash);
+    continueCallData = await wtHotel.contract.callUnit.getData(wtHotelUnit.address, continueCallData);
     let continueCalltx = await wtIndex.callHotel(0, continueCallData, {from: accounts[2]});
     if (DEBUG) console.log('Continue Call tx:', continueCalltx,'\n');
 
@@ -184,13 +185,10 @@ contract('WTHotel & UnitType', function(accounts) {
     let continueCallEvent = abiDecoder.decodeLogs(continueCalltx.receipt.logs)[0];
     if (DEBUG) console.log('Room booked event: ', continueCallEvent.events);
     assert.equal(accounts[1], continueCallEvent.events[0].value);
-    assert.equal(1, continueCallEvent.events[1].value);
-    assert.equal(60, continueCallEvent.events[2].value);
-    assert.equal(65, continueCallEvent.events[3].value);
-    let roomBooked = await wtHotelUnitType.getUnit(1);
-    if (DEBUG) console.log('Room booked:', roomBooked);
-    let firstDayBooked = await wtHotelUnitType.getReservation(1, 60);
-    let lastDayBooked = await wtHotelUnitType.getReservation(1, 65);
+    assert.equal(60, continueCallEvent.events[1].value);
+    assert.equal(65, continueCallEvent.events[2].value);
+    let firstDayBooked = await wtHotelUnit.getReservation(60);
+    let lastDayBooked = await wtHotelUnit.getReservation(65);
     if (DEBUG) console.log('First day booked:', firstDayBooked);
     if (DEBUG) console.log('Last day booked:', lastDayBooked, '\n');
     assert.equal(firstDayBooked[1], accounts[1]);
@@ -199,7 +197,7 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(lastDayBooked[0], '');
 
     // Check pendingCall was confirmed
-    let pendingCallTxConfirmed = await wtHotelUnitType.callsPending.call(pendingCallHash);
+    let pendingCallTxConfirmed = await wtHotelUnit.callsPending.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending confirmed:', pendingCallTxConfirmed);
     assert.equal(true, pendingCallTxConfirmed[2]);
   });
@@ -262,7 +260,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
   });
 
-  it('Should register a hotel, add a unit type, add, edit and remove units on new unit type inventory. Use interfaces', async function() {
+  it('Should register a hotel, add a unit type and edit it using interfaces', async function() {
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
@@ -280,31 +278,14 @@ contract('WTHotel & UnitType', function(accounts) {
     await wtIndex.callHotel(0, addUnitTypeData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
 
-    // Assing interfaces
+    // Assign interfaces
     let UnitTypeOwnerInterface = UnitTypeOwner.at(wtHotelUnitType.address);
-    let UnitTypePublicInterface = UnitTypeOwner.at(wtHotelUnitType.address);
+    let UnitTypePublicInterface = UnitTypePublic.at(wtHotelUnitType.address);
 
-    if (DEBUG) console.log('WTHotel BASIC_ROOM unit contract address:', wtHotelUnitType.address, '\n');
-
-    // Add a unit on the unit types
-    let callUnitData = UnitTypeOwnerInterface.contract.addUnit.getData();
-    callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
-    await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    assert.equal(1, parseInt(await UnitTypePublicInterface.totalUnits()));
-    let hotelUnit = await UnitTypePublicInterface.getUnit(1);
-    if (DEBUG) console.log('Unit added:', hotelUnit, '\n');
-    assert.equal(true, hotelUnit);
-
-    // Edit unit active
-    callUnitData = UnitTypeOwnerInterface.contract.unitActive.getData(1, false);
-    callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
-    await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    hotelUnit = await UnitTypePublicInterface.getUnit(1);
-    if (DEBUG) console.log('Unit edited:', hotelUnit, '\n');
-    assert.equal(false, hotelUnit);
+    if (DEBUG) console.log('WTHotel BASIC_ROOM unit type contract address:', wtHotelUnitType.address, '\n');
 
     // Add amenities
-    callUnitData = UnitTypeOwnerInterface.contract.addAmenity.getData(8);
+    let callUnitData = UnitTypeOwnerInterface.contract.addAmenity.getData(8);
     callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
     callUnitData = UnitTypeOwnerInterface.contract.addAmenity.getData(10);
@@ -353,11 +334,60 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal('', await UnitTypePublicInterface.getImage(1));
     assert.equal('http://wthotel.com/image3', await UnitTypePublicInterface.getImage(2));
 
-    // Remove unit
-    callUnitData = UnitTypeOwnerInterface.contract.removeUnit.getData(1);
-    callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
+  });
+
+it('Should register a hotel, add a unit type and edit it using interfaces', async function() {
+
+    // Register hotel on index
+    let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
+    let wtHotelAddress = await wtIndex.getHotelsByOwner(accounts[2]);
+    if (DEBUG) console.log('New WT Hotel addreess:', wtHotelAddress[0], '\n');
+    let wtHotel = WTHotel.at(wtHotelAddress[0]);
+
+    // Check that wtHotel is indexed
+    assert.equal(wtIndex.contract.address, await wtHotel.getIndex());
+    assert.equal(accounts[2], await wtHotel.getOwner());
+
+    // Create the unit type on the hotel
+    let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
+    let addUnitTypeData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address, web3.toHex('BASIC_ROOM'));
+    await wtIndex.callHotel(0, addUnitTypeData, {from: accounts[2]});
+    assert.equal(wtHotel.address, await wtHotelUnitType.owner());
+
+    // Add a hotel unit
+    let wtHotelUnit = await Unit.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
+    let addUnitData = wtHotel.contract.addUnit.getData(web3.toHex('BASIC_ROOM'), wtHotelUnit.address);
+    await wtIndex.callHotel(0, addUnitData, {from: accounts[2]});
+    assert.equal(wtHotel.address, await wtHotelUnit.owner());
+
+    // Assign interfaces
+    let UnitTypeOwnerInterface = UnitTypeOwner.at(wtHotelUnitType.address);
+    let UnitTypePublicInterface = UnitTypePublic.at(wtHotelUnitType.address);
+
+    let UnitOwnerInterface = UnitOwner.at(wtHotelUnit.address);
+    let UnitPublicInterface = UnitPublic.at(wtHotelUnit.address);
+
+    if (DEBUG) console.log('WTHotel BASIC_ROOM unit type contract address:', wtHotelUnitType.address, '\n');
+    if (DEBUG) console.log('WTHotel BASIC_ROOM unit contract address:', wtHotelUnit.address, '\n');
+
+    // Set active
+    let callUnitData = UnitOwnerInterface.contract.setActive.getData(false);
+    callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    assert.equal(0, parseInt(await UnitTypePublicInterface.totalUnits()));
+
+    // Set Price
+    callUnitData = UnitOwnerInterface.contract.setPrice.getData('100 USD', 10, 3);
+    callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
+    await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
+    console.log(UnitPublicInterface);
+    if (DEBUG) console.log('New Unit Type:', await UnitPublicInterface.unitType(), '\n');
+    assert.equal('100 USD', (await UnitPublicInterface.getReservation(10))[0] );
+    assert.equal('100 USD', (await UnitPublicInterface.getReservation(11))[0] );
+    assert.equal('100 USD', (await UnitPublicInterface.getReservation(12))[0] );
+    assert.equal('0x0000000000000000000000000000000000000000', (await UnitPublicInterface.getReservation(10))[1] );
+    assert.equal('0x0000000000000000000000000000000000000000', (await UnitPublicInterface.getReservation(11))[1] );
+    assert.equal('0x0000000000000000000000000000000000000000', (await UnitPublicInterface.getReservation(12))[1] );
+    assert.equal(false, await UnitPublicInterface.active());
 
   });
 

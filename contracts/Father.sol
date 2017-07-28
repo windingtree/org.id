@@ -7,7 +7,7 @@ pragma solidity ^0.4.11;
  */
 contract Father {
 
-	mapping(address => bool) private childs;
+	mapping(address => bool) childs;
 
 	modifier onlyChild() {
 		if (childs[msg.sender]) {
