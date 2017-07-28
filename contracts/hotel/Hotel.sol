@@ -1,7 +1,7 @@
 pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
-import "../Father.sol";
+import "../Parent.sol";
 import "./Unit_Public_Interface.sol";
 
 /*
@@ -9,7 +9,7 @@ import "./Unit_Public_Interface.sol";
  * An indexed contract on the WT Index taht contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract Hotel is Indexed, Father {
+contract Hotel is Indexed, Parent {
 
 	// Main information
 	string public name;
