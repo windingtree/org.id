@@ -145,11 +145,11 @@ contract Hotel is Indexed, Parent {
 	}
 
 	function callUnit(
-    address unit,
+    address unitAddress,
     bytes data
   ) throughIndex() onlyOwner() {
-		if (childs[unit])
-			unit.call(data);
+		if (childsIndex[unitAddress] > 0)
+			unitAddress.call(data);
 	}
 
   // Only child methods

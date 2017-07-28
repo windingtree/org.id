@@ -7,21 +7,32 @@ pragma solidity ^0.4.11;
  */
 contract Parent {
 
-	mapping(address => bool) childs;
+	mapping(address => uint) public childsIndex;
+	address[] public childs;
+
+	function Parent() {
+		childs.length ++;
+	}
 
 	modifier onlyChild() {
-		if (childs[msg.sender]) {
+		if (childsIndex[msg.sender] == 0) {
 			throw;
 		}
 		_;
 	}
 
 	function addChild(address _child) internal {
-		childs[_child] = true;
+		childsIndex[_child] = childs.length;
+		childs.push(_child);
 	}
 
   function removeChild(address _child) internal {
-		delete childs[_child];
+  	delete childs[ childsIndex[_child] ];
+		delete childsIndex[_child];
+	}
+
+	function getChildsLength() constant returns (uint) {
+		return childs.length;
 	}
 
 }
