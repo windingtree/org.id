@@ -81,7 +81,6 @@ contract Hotel is Indexed, Parent {
 			throw;
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
-    addChild(addr);
 	}
 
 	function addUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
@@ -118,7 +117,6 @@ contract Hotel is Indexed, Parent {
       (unitTypeNames[index] != unitType)
     )
 			throw;
-    removeChild(unitTypes[unitType]);
 		delete unitTypes[unitType];
 		delete unitTypeNames[index];
 	}
