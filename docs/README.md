@@ -1,8 +1,8 @@
 # WT Smart Contracts
 
-The core of the Winding Tree platform are this smart contracts written in solidity language and deployed on the Etherum public blockchain.
+The core of the Winding Tree platform are these smart contracts written in solidity language and deployed on the Ethereum public blockchain.
 
-This contracts are used to index only the necessary information so it is easily accessible by any member of the network, using blockchain as a database and record every change of all Winding Tree contracts in our DB.
+These contracts are used to index only the necessary information so it is easily accessible by any member of the network, using blockchain as a database and record every change of all Winding Tree contracts in our DB.
 
 ## The Contracts
 
@@ -31,7 +31,7 @@ A contract that can contain childs contracts registered by address. The contract
 
 The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the WT Key Registry. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the WTKey library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
-Steps when user Augusto wants to make a booking on a Flight published by WTAir:
+Steps when user Augusto wants to book a Flight published by WTAir:
 
 1. Augusto looks for the WTAir public key on WTKeysRegistry
 2. Augusto encrypts the data using multiple key encryption (adding WTAir as owner of the data too) and sign it
@@ -189,4 +189,4 @@ Every airline that is registered on WT will have an Airline smart contract where
 
 #### Air Route
 
-This smart contract will be owned by airlines, they would be able to upload all their flight plan for the route. The users will be making the bookings on this contracts using the PrivateCall strategy.
+This smart contract will be owned by airlines, they will be able to upload all their flight plan for the route. The users will be making the bookings on this contract using the PrivateCall strategy.
