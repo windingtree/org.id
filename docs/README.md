@@ -1,8 +1,8 @@
 # WT Smart Contracts
 
-The core of the Winding Tree platform are this smart contracts written in solidity language and deployed on the Etherum public blockchain.
+The core of the Winding Tree platform are these smart contracts written in solidity language and deployed on the Ethereum public blockchain.
 
-This conrracts are used to index only the necessary information in so its easily accessible by any member of the network, using blockchain as a database and record every change of all Winding Tree contracts in our DB.
+These contracts are used to index only the necessary information so it is easily accessible by any member of the network, using blockchain as a database and record every change of all Winding Tree contracts in our DB.
 
 ## The Contracts
 
@@ -16,29 +16,29 @@ This contract will index and list every hotel and airline of the platform, it wi
 
 ### WT Keys Registry
 
-On WT the users will eb available to send value and data using Líf tokens. The users can send data beetwen each otehr without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WT-Keys-Registry that will be used by another users to send encrypted data between them.
+On WT the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WT-Keys-Registry that will be used by another users to send encrypted data between them.
 In short terms: This contract will allow the sending of encrypted data between users.
 
 ### Indexed
 
-The Indexed smart contract is an extension of the Ownable contract from zeppelin-solidity that also sets a index address, a contract that is indexed can require calls to go through the index contract and that calls should be sent by the owner of the destination contract. This allow us to delegate the ownership of the hotels and airlines contracts and keep records of all changes on them outside the blockchain.
+The Indexed smart contract is an extension of the Ownable contract from zeppelin-solidity that also sets an index address. One contract that is indexed can require calls to go through the index contract and that calls should be sent by the owner of the destination contract. This allows us to delegate the ownership of the hotels and airlines contracts and keep records of all changes on them outside the blockchain.
 
 ### Parent
 
-A contract that can childs contracts registered by address. The contract provides a childs private variable with add/remove child methods and a modifier to request only child contracts as msg.sender on functions.
+A contract that can contain childs contracts registered by address. The contract provides a childs private variable with add/remove child methods and a modifier to request only child contracts as msg.sender on functions.
 
 ### PrivateCall
 
-The PrivateCall smart contract allows to have pendingTxs on smart contracts, with data stored that would be encrypted/decrypted using the WT Key Registry. To obtain the data encrypted the ureceiver will need to decode the tx data using the abi decoder, now using the WTKey library he easily decrypt teh data and verify that the information on his side. If the data is correct he continue the call and execute the publicCall the user sent at the beginning.
+The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the WT Key Registry. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the WTKey library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
-Steps Augusto wants to make a booking on a Flight published by WTAir:
+Steps when user Augusto wants to book a Flight published by WTAir:
 
-1. Augusto looks for the WTAir publick key on WTKeysRegistry.
-2. Augusto encrypts the data using multiple key encryption (adding WTAir as owner of the data too), and sign it.
-3. Augusto wants to call the method booking() on ones of the routes of WTAir, so he builds the data to execute that call.
-4. Augusto creates the pending tx on the WTAir route by sending his public data to execute the booking() and his personal data encrypted.
-5. WTAir receive the txs, looks for Augusto public key on WTKeysRegistry and decryps the data using his private key and Augusto's public key.
-6. All the data that Augusto sent is correct, WTAir allow the execution of the booking call sending a continueCall() tx.
+1. Augusto looks for the WTAir public key on WTKeysRegistry
+2. Augusto encrypts the data using multiple key encryption (adding WTAir as owner of the data too) and sign it
+3. Augusto wants to call the method booking() on one of the routes of WTAir, so he builds the data to execute that call
+4. Augusto creates the pending transaction on the WTAir route by sending his public data to execute the booking() and his personal data encrypted
+5. WTAir receive the transactions, looks for Augusto's public key on WTKeysRegistry and decrypts the data using WTAir's private key and verify with Augusto's public key
+6. All the data that Augusto sent is correct, WTAir allow the execution of the booking call sending a continueCall() transaction
 
 ## Platform
 
@@ -50,9 +50,9 @@ WT Index -> Hotel -> UnitType -> Units
 
 #### Hotel
 
-Every Hotel registered on Winding Tree will be on a Hotel contract, this contract has the hotel information, address, location, and a list of all the differnet types of accomodations the hotel provides, this are called Unit Types, for example a BASIC_ROOM, CABIN, PREMIUM_ROOM, etc. The hotel will provide a certain amount of this UnitTypes for rent.
+Every Hotel registered on Winding Tree will be on a Hotel contract, this contract has the hotel information, address, location, and a list of all the differnet types of accomodations the hotel provides, these are called Unit Types, for example a BASIC_ROOM, CABIN, PREMIUM_ROOM, etc. The hotel will provide a certain amount of its UnitTypes for rent.
 
-#### Hotel Contract Owner interface
+##### Hotel Contract Owner interface
 
 ```
 contract Hotel_Owner_Interface is Indexed {
@@ -89,7 +89,7 @@ contract Hotel_Owner_Interface is Indexed {
 }
 ```
 
-#### Hotel Contract Public Interface
+##### Hotel Contract Public Interface
 
 ```
 contract Hotel_Public_Interface {
@@ -119,9 +119,9 @@ contract Hotel_Public_Interface {
 
 #### Hotel Unit Type
 
-Each hotel unit type will have a quantity of their type, description, amenities, minnimun and maximun amount of guests, price, and the avaliability of each Unit for rent. The users will make the bookings and reservations directly to this contract, which also supports PrivateCalls.
+Each hotel unit type will have a quantity of their type, description, amenities, minimun and maximun amount of guests, price, and the avaliability of each Unit for rent. The users will make the bookings and reservations directly to this contract, which also supports PrivateCalls.
 
-#### UnitType Contract Owner interface
+##### UnitType Contract Owner interface
 
 ```
 contract UnitType_Owner_Interface is Ownable {
@@ -155,7 +155,7 @@ contract UnitType_Owner_Interface is Ownable {
 }
 ```
 
-#### UnitType Contract Public Interface
+##### UnitType Contract Public Interface
 
 ```
 contract UnitType_Public_Interface is PrivateCall {
@@ -189,4 +189,4 @@ Every airline that is registered on WT will have an Airline smart contract where
 
 #### Air Route
 
-This smart contract will be owned by airlines, they would be able to upload all their flight plan for the route. The users will be making the bookings on this contracts using the PrivateCall strategy.
+This smart contract will be owned by airlines, they will be able to upload all their flight plan for the route. The users will be making the bookings on this contract using the PrivateCall strategy.
