@@ -4,7 +4,7 @@ output=$(nc -z localhost 8545; echo $?)
 [ $output -eq "0" ] && trpc_running=true
 if [ ! $trpc_running ]; then
   echo "Starting our own testrpc node instance"
-  npm run testrpc \
+  testrpc \
     --account="0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000" \
     --account="0xed095a912033d26dc444d2675b33414f0561af170d58c33f394db8812c87a764,10000000000000000000000000000000000000000000000000000000000000000000000000" \
     --account="0xf5556ca108835f04cd7d29b4ac66f139dc12b61396b147674631ce25e6e80b9b,10000000000000000000000000000000000000000000000000000000000000000000000000" \
@@ -20,6 +20,10 @@ if [ ! $trpc_running ]; then
   trpc_pid=$!
 fi
 ./node_modules/truffle/cli.js test ./test/*.js
+test_status=$?
+
 if [ ! $trpc_running ]; then
   kill -9 $trpc_pid
 fi
+
+exit $test_status
