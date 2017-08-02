@@ -52,7 +52,7 @@ WT Index -> Hotel -> UnitType -> Units
 
 Every Hotel registered on Winding Tree will be on a Hotel contract, this contract has the hotel information, address, location, and a list of all the differnet types of accomodations the hotel provides, these are called Unit Types, for example a BASIC_ROOM, CABIN, PREMIUM_ROOM, etc. The hotel will provide a certain amount of its UnitTypes for rent.
 
-#### Hotel Contract Owner interface
+##### Hotel Contract Owner interface
 
 ```
 contract Hotel_Owner_Interface is Indexed {
@@ -89,7 +89,7 @@ contract Hotel_Owner_Interface is Indexed {
 }
 ```
 
-#### Hotel Contract Public Interface
+##### Hotel Contract Public Interface
 
 ```
 contract Hotel_Public_Interface {
@@ -121,7 +121,7 @@ contract Hotel_Public_Interface {
 
 Each hotel unit type will have a quantity of their type, description, amenities, minimun and maximun amount of guests, price, and the avaliability of each Unit for rent. The users will make the bookings and reservations directly to this contract, which also supports PrivateCalls.
 
-#### UnitType Contract Owner interface
+##### UnitType Contract Owner interface
 
 ```
 contract UnitType_Owner_Interface is Ownable {
@@ -155,7 +155,7 @@ contract UnitType_Owner_Interface is Ownable {
 }
 ```
 
-#### UnitType Contract Public Interface
+##### UnitType Contract Public Interface
 
 ```
 contract UnitType_Public_Interface is PrivateCall {
