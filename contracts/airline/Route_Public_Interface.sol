@@ -8,10 +8,10 @@ import "../PrivateCall.sol";
  */
 contract Route_Public_Interface is PrivateCall {
 
-	event Book(bytes12 flightId, uint class);
+  event Book(bytes12 flightId, uint class);
 
   // Methods from private call
-	function book(bytes12 id, uint class, bytes publicData, bytes finalDataCall) fromSelf();
+  function book(bytes12 id, uint class, bytes publicData, bytes finalDataCall) fromSelf();
 
   // Public methods
   function getInfo() constant returns(bytes12, bytes12, bool, uint, uint, uint);

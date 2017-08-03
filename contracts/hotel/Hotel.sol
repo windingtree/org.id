@@ -11,144 +11,144 @@ import "./Unit_Public_Interface.sol";
  */
 contract Hotel is Indexed, Parent {
 
-	// Main information
-	string public name;
-	string public description;
+  // Main information
+  string public name;
+  string public description;
   uint public created;
 
-	// Address and Location
-	string public lineOne;
-	string public lineTwo;
-	string public zip;
-	string public country;
-	uint public timezone;
-	uint public latitude;
-	uint public longitude;
+  // Address and Location
+  string public lineOne;
+  string public lineTwo;
+  string public zip;
+  string public country;
+  uint public timezone;
+  uint public latitude;
+  uint public longitude;
 
-	// The units that the hotel have for rent.
-	mapping(bytes32 => address) public unitTypes;
-	bytes32[] public unitTypeNames;
+  // The units that the hotel have for rent.
+  mapping(bytes32 => address) public unitTypes;
+  bytes32[] public unitTypeNames;
 
   // Hotel images
-	string[] public images;
+  string[] public images;
 
   // Constructor
 
-	function Hotel(string _name, string _description) {
-		name = _name;
-		description = _description;
-		created = block.number;
-		unitTypeNames.length ++;
-	}
+  function Hotel(string _name, string _description) {
+    name = _name;
+    description = _description;
+    created = block.number;
+    unitTypeNames.length ++;
+  }
 
   // Owner methods
 
-	function editInfo(
+  function editInfo(
     string _name,
     string _description
   ) throughIndex() onlyOwner() {
-		name = _name;
-		description = _description;
-	}
+    name = _name;
+    description = _description;
+  }
 
-	function editAddress(
+  function editAddress(
     string _lineOne,
     string _lineTwo,
     string _zip,
     string _country
   ) throughIndex() onlyOwner() {
-		lineOne = _lineOne;
-		lineTwo = _lineTwo;
-		zip = _zip;
-		country = _country;
-	}
+    lineOne = _lineOne;
+    lineTwo = _lineTwo;
+    zip = _zip;
+    country = _country;
+  }
 
-	function editLocation(
+  function editLocation(
     uint _timezone,
     uint _longitude,
     uint _latitude
   ) throughIndex() onlyOwner() {
-		timezone = _timezone;
-		latitude = _latitude;
-		longitude = _longitude;
-	}
+    timezone = _timezone;
+    latitude = _latitude;
+    longitude = _longitude;
+  }
 
-	function addUnitType(
+  function addUnitType(
     address addr,
     bytes32 unitType
   ) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] != address(0))
-			throw;
-		unitTypes[unitType] = addr;
-		unitTypeNames.push(unitType);
-	}
+    if (unitTypes[unitType] != address(0))
+      throw;
+    unitTypes[unitType] = addr;
+    unitTypeNames.push(unitType);
+  }
 
-	function addUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] == address(0))
-			throw;
-		bytes32 _unitType = Unit_Public_Interface(unit).unitType();
-		if (_unitType != unitType)
-			throw;
-		addChild(unit);
-	}
+  function addUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
+    if (unitTypes[unitType] == address(0))
+      throw;
+    bytes32 _unitType = Unit_Public_Interface(unit).unitType();
+    if (_unitType != unitType)
+      throw;
+    addChild(unit);
+  }
 
   function removeUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
-  	if (unitTypes[unitType] == address(0))
-			throw;
-  	bytes32 _unitType = Unit_Public_Interface(unit).unitType();
-		if (_unitType != unitType)
-		removeChild(unit);
-	}
+    if (unitTypes[unitType] == address(0))
+      throw;
+    bytes32 _unitType = Unit_Public_Interface(unit).unitType();
+    if (_unitType != unitType)
+    removeChild(unit);
+  }
 
   function addImage(string url) throughIndex() onlyOwner() {
-		images.push(url);
-	}
+    images.push(url);
+  }
 
   function removeImage(uint index) throughIndex() onlyOwner() {
-		delete images[index];
-	}
+    delete images[index];
+  }
 
-	function removeUnitType(
+  function removeUnitType(
     bytes32 unitType,
     uint index
   ) throughIndex() onlyOwner() {
-		if (
+    if (
       (unitTypes[unitType] == address(0)) ||
       (unitTypeNames[index] != unitType)
     )
-			throw;
-		delete unitTypes[unitType];
-		delete unitTypeNames[index];
-	}
+      throw;
+    delete unitTypes[unitType];
+    delete unitTypeNames[index];
+  }
 
-	function changeUnitType(
+  function changeUnitType(
     bytes32 unitType,
     address newAddr
   ) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] == address(0))
-			throw;
+    if (unitTypes[unitType] == address(0))
+      throw;
     removeChild(unitTypes[unitType]);
-		unitTypes[unitType] = newAddr;
+    unitTypes[unitType] = newAddr;
     addChild(newAddr);
-	}
+  }
 
-	function callUnitType(
+  function callUnitType(
     bytes32 unitType,
     bytes data
   ) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] == address(0))
-			throw;
-		if (!unitTypes[unitType].call(data))
-			throw;
-	}
+    if (unitTypes[unitType] == address(0))
+      throw;
+    if (!unitTypes[unitType].call(data))
+      throw;
+  }
 
-	function callUnit(
+  function callUnit(
     address unitAddress,
     bytes data
   ) throughIndex() onlyOwner() {
-		if (childsIndex[unitAddress] > 0)
-			unitAddress.call(data);
-	}
+    if (childsIndex[unitAddress] > 0)
+      unitAddress.call(data);
+  }
 
   // Only child methods
 
@@ -157,22 +157,22 @@ contract Hotel is Indexed, Parent {
       throw;
   }
 
-	// Public methods
+  // Public methods
 
-	function getUnitType(bytes32 unitType) constant returns (address) {
-		return unitTypes[unitType];
-	}
+  function getUnitType(bytes32 unitType) constant returns (address) {
+    return unitTypes[unitType];
+  }
 
   function getUnitTypeNames() constant returns (bytes32[]) {
-		return unitTypeNames;
-	}
+    return unitTypeNames;
+  }
 
   function getImage(uint i) constant returns (string) {
-		return images[i];
-	}
+    return images[i];
+  }
 
   function getImagesLength() constant returns (uint) {
-		return images.length;
-	}
+    return images.length;
+  }
 
 }

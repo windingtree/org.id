@@ -10,64 +10,64 @@ import "../Parent.sol";
  */
 contract Airline is Indexed, Parent {
 
-	// Airline information
-	string public name;
-	string public description;
-	string public legalAddress;
-	string public country;
-	string public website;
+  // Airline information
+  string public name;
+  string public description;
+  string public legalAddress;
+  string public country;
+  string public website;
 
-	// The flight routes that the airline has.
-	mapping(bytes12 => mapping(bytes12 => address)) routes;
+  // The flight routes that the airline has.
+  mapping(bytes12 => mapping(bytes12 => address)) routes;
 
   // Constructor
 
-	function Airline(string _name, string _description) {
-		name = _name;
-		description = _description;
-	}
+  function Airline(string _name, string _description) {
+    name = _name;
+    description = _description;
+  }
 
   // Owner methods
 
-	function editInfo(
+  function editInfo(
     string _name, string _description, string _website
   ) throughIndex() onlyOwner() {
-		name = _name;
-		description = _description;
-		website = _website;
-	}
+    name = _name;
+    description = _description;
+    website = _website;
+  }
 
-	function editLocation(
+  function editLocation(
     string _legalAddress, string _country
   ) throughIndex() onlyOwner() {
-		legalAddress = _legalAddress;
-		country = _country;
-	}
+    legalAddress = _legalAddress;
+    country = _country;
+  }
 
-	function addRoute(
+  function addRoute(
     address addr, bytes12 from, bytes12 to
   ) throughIndex() onlyOwner() {
-		if (routes[from][to] != address(0))
-			throw;
-		routes[from][to] = addr;
-	}
+    if (routes[from][to] != address(0))
+      throw;
+    routes[from][to] = addr;
+  }
 
-	function changeRoute(
+  function changeRoute(
     bytes12 from, bytes12 to, address newRoute
   ) throughIndex() onlyOwner() {
-		if (routes[from][to] == address(0))
-			throw;
-		routes[from][to] = newRoute;
-	}
+    if (routes[from][to] == address(0))
+      throw;
+    routes[from][to] = newRoute;
+  }
 
-	function callRoute(
+  function callRoute(
     bytes12 from, bytes12 to, bytes data
   ) throughIndex() onlyOwner() {
-		if (routes[from][to] == address(0))
-			throw;
-		if (!routes[from][to].call(data))
-			throw;
-	}
+    if (routes[from][to] == address(0))
+      throw;
+    if (!routes[from][to].call(data))
+      throw;
+  }
 
   // Only child methods
 
@@ -88,10 +88,10 @@ contract Airline is Indexed, Parent {
       country,
       website
     );
-	}
+  }
 
-	function getRoute(bytes12 from, bytes12 to) constant returns (address) {
-		return routes[from][to];
-	}
+  function getRoute(bytes12 from, bytes12 to) constant returns (address) {
+    return routes[from][to];
+  }
 
 }

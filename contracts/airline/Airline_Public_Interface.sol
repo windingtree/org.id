@@ -13,6 +13,6 @@ contract Airline_Public_Interface is Parent {
 
   // Public methods
   function getInfo() constant returns (string, string, string, string, string);
-	function getRoute(bytes12 from, bytes12 to) constant returns (address);
+  function getRoute(bytes12 from, bytes12 to) constant returns (address);
 
 }

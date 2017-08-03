@@ -17,13 +17,13 @@ contract Airline_Owner_Interface is Indexed, Parent {
   function editLocation(string _legalAddress, string _country) throughIndex() onlyOwner();
   function addRoute(address addr, bytes12 from, bytes12 to) throughIndex() onlyOwner();
   function changeRoute(bytes12 from, bytes12 to, address newRoute) throughIndex() onlyOwner();
-	function callRoute(bytes12 from, bytes12 to, bytes data) throughIndex() onlyOwner();
+  function callRoute(bytes12 from, bytes12 to, bytes data) throughIndex() onlyOwner();
 
   // Only child methods
   function callIndex(bytes data) onlyChild();
 
   // Public methods
   function getInfo() constant returns (string, string, string, string, string);
-	function getRoute(bytes12 from, bytes12 to) constant returns (address);
+  function getRoute(bytes12 from, bytes12 to) constant returns (address);
 
 }
