@@ -9,30 +9,30 @@ import "../PrivateCall.sol";
  */
 contract Route is PrivateCall {
 
-	// Route information
-	bytes12 public from;
-	bytes12 public to;
-	bool public active;
-	uint public totalFlights;
+  // Route information
+  bytes12 public from;
+  bytes12 public to;
+  bool public active;
+  uint public totalFlights;
   uint public totalSeats;
   mapping(uint => Class) public classes;
   uint public totalClasses;
 
-	// The flight routes that the airline has.
-	mapping(uint => Flight) public flights;
+  // The flight routes that the airline has.
+  mapping(uint => Flight) public flights;
 
-	// The flights id refering their position on flights mapping
-	mapping(bytes12 => uint) public ids;
+  // The flights id refering their position on flights mapping
+  mapping(bytes12 => uint) public ids;
 
-	event Book(bytes12 flightId, uint class);
+  event Book(bytes12 flightId, uint class);
 
   struct Class {
-		uint seats;
+    uint seats;
     string price;
   }
 
-	struct Flight {
-		bytes12 id;
+  struct Flight {
+    bytes12 id;
     uint totalSeatsFree;
     uint start;
     uint end;
@@ -48,76 +48,76 @@ contract Route is PrivateCall {
 
   // Constructor
 
-	function Route(address _owner, bytes12 _from, bytes12 _to) {
-		owner = _owner;
-		from = _from;
-		to = _to;
-		totalFlights ++;
-	}
+  function Route(address _owner, bytes12 _from, bytes12 _to) {
+    owner = _owner;
+    from = _from;
+    to = _to;
+    totalFlights ++;
+  }
 
   // Owner methods
 
-	function active(bool _active) onlyOwner() {
-		active = _active;
-	}
+  function active(bool _active) onlyOwner() {
+    active = _active;
+  }
 
-	function addFlight(
+  function addFlight(
     bytes12 id, uint start, uint end
   ) onlyOwner() {
-		if (ids[id] > 0)
-			throw;
-		flights[totalFlights] = Flight(id, totalSeats, start, end, true);
-		ids[id] = totalFlights;
-		totalFlights ++;
-	}
+    if (ids[id] > 0)
+      throw;
+    flights[totalFlights] = Flight(id, totalSeats, start, end, true);
+    ids[id] = totalFlights;
+    totalFlights ++;
+  }
 
-	function editFlight(bytes12 id, uint _start, uint _end, bool _active) onlyOwner() {
-		if (ids[id] == 0)
-			throw;
-		flights[ ids[id] ].start = _start;
-		flights[ ids[id] ].end = _end;
+  function editFlight(bytes12 id, uint _start, uint _end, bool _active) onlyOwner() {
+    if (ids[id] == 0)
+      throw;
+    flights[ ids[id] ].start = _start;
+    flights[ ids[id] ].end = _end;
     flights[ ids[id] ].active = _active;
-	}
+  }
 
-	function removeFlight(bytes12 id) onlyOwner() {
-		if (ids[id] == 0)
-			throw;
-		delete flights[ ids[id] ];
-		ids[id] = 0;
-	}
+  function removeFlight(bytes12 id) onlyOwner() {
+    if (ids[id] == 0)
+      throw;
+    delete flights[ ids[id] ];
+    ids[id] = 0;
+  }
 
   function addClass(
     uint seats, string price
   ) onlyOwner() {
     totalSeats += seats;
-		classes[totalClasses] = Class(seats, price);
-		totalClasses ++;
-	}
+    classes[totalClasses] = Class(seats, price);
+    totalClasses ++;
+  }
 
-	function editClass(
+  function editClass(
     uint index, uint seats, string price
   ) onlyOwner() {
     totalSeats -= classes[index].seats;
     totalSeats += seats;
     classes[index].seats = seats;
     classes[index].price = price;
-	}
+  }
 
-	function removeClass(uint index) onlyOwner() {
+  function removeClass(uint index) onlyOwner() {
     totalSeats -= classes[index].seats;
     delete classes[index];
-	}
+  }
 
   // Methods from private call
 
-	function book(bytes12 id, uint class, bytes publicData, bytes finalDataCall) fromSelf() {
-		if (ids[id] == 0)
-			throw;
-		flights[ ids[id] ].totalSeatsFree --;
+  function book(bytes12 id, uint class, bytes publicData, bytes finalDataCall) fromSelf() {
+    if (ids[id] == 0)
+      throw;
+    flights[ ids[id] ].totalSeatsFree --;
     flights[ ids[id] ].classes[class].seatsBooked --;
-		Book(id, class);
+    Book(id, class);
     owner.call(finalDataCall);
-	}
+  }
 
   // Public methods
 
