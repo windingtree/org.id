@@ -2,11 +2,10 @@ pragma solidity ^0.4.11;
 
 import "../Indexed.sol";
 import "../Parent.sol";
-import "./Unit_Public_Interface.sol";
 
 /*
  * Hotel
- * An indexed contract on the WT Index taht contains the hotel information and
+ * An indexed contract on the WT Index that contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
 contract Hotel is Indexed, Parent {
@@ -77,29 +76,25 @@ contract Hotel is Indexed, Parent {
     address addr,
     bytes32 unitType
   ) throughIndex() onlyOwner() {
-    if (unitTypes[unitType] != address(0))
-      throw;
-    unitTypes[unitType] = addr;
-    unitTypeNames.push(unitType);
-  }
+		if (unitTypes[unitType] != address(0))
+			throw;
+		unitTypes[unitType] = addr;
+		unitTypeNames.push(unitType);
+	}
 
-  function addUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
-    if (unitTypes[unitType] == address(0))
-      throw;
-    bytes32 _unitType = Unit_Public_Interface(unit).unitType();
-    if (_unitType != unitType)
-      throw;
-    addChild(unit);
-  }
+	function addUnit(
+    bytes32 unitType, 
+    address unit
+  ) throughIndex() onlyOwner() {
+		if (unitTypes[unitType] == address(0))
+			throw;
+		addChild(unit);
+	}
 
-  function removeUnit(bytes32 unitType, address unit) throughIndex() onlyOwner() {
-    if (unitTypes[unitType] == address(0))
-      throw;
-    bytes32 _unitType = Unit_Public_Interface(unit).unitType();
-    if (_unitType != unitType)
-    removeChild(unit);
-  }
-
+  function removeUnit(address unit) throughIndex() onlyOwner() {
+		removeChild(unit);
+	}
+  
   function addImage(string url) throughIndex() onlyOwner() {
     images.push(url);
   }
