@@ -9,7 +9,7 @@ var assert = chai.assert;
 var help = require('../LifToken/test/helpers.js');
 
 var WTKeyIndex = artifacts.require('../contracts/WTKeyIndex.sol');
-var WTIndex = artifacts.require('../contracts/hotel/WTIndex.sol');
+var WTIndex = artifacts.require('../contracts/WTIndex.sol');
 var WTHotel = artifacts.require('../contracts/hotel/Hotel.sol');
 var UnitType = artifacts.require('../contracts/hotel/UnitType.sol');
 var UnitTypePublic = artifacts.require('../contracts/hotel/UnitType_Public_Interface.sol');
@@ -174,10 +174,12 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "Lif");
     assert.equal(JSON.parse(decryptedDataOnReceiver).amount, await lifToken.allowance(accounts[1], wtHotelUnit.address));
     if (DEBUG) console.log('Lifs approved from Augusto To WTHotel as payment:', parseInt(await lifToken.allowance(accounts[1], wtHotelUnitType.address)), '\n');
-
+    console.log(wtHotelUnit.contract.continueCall);
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
     let continueCallData = await wtHotelUnit.contract.continueCall.getData(pendingCallHash);
+    console.log(continueCallData);
     continueCallData = await wtHotel.contract.callUnit.getData(wtHotelUnit.address, continueCallData);
+    console.log(continueCallData);
     let continueCalltx = await wtIndex.callHotel(0, continueCallData, {from: accounts[2]});
     if (DEBUG) console.log('Continue Call tx:', continueCalltx,'\n');
 

@@ -97,6 +97,9 @@ contract LifToken is LifInterface, LifDAOInterface, Ownable, PullPayment {
       mapping (address => uint) votes; // 0 = Vote not done, 1 = Positive, 2 = Negative.
     }
 
+    // Issue tokens event
+    event TokensIssued(uint tokens);
+
     // ERC20 Events
     event Transfer(address indexed from, address indexed to, uint value);
     event Approval(address indexed owner, address indexed spender, uint value);
@@ -152,12 +155,23 @@ contract LifToken is LifInterface, LifDAOInterface, Ownable, PullPayment {
       require(((msg.sender == address(this)) && (status == 4)) ||
               ((msg.sender == owner) && ((status == 2) || (status == 4))
                && (OWNER_SUPPLY >= maxSupply.add(amount))));
+<<<<<<< 8d8636172ac86675d59d1eabb13dd897bc6ea1a0
 
       uint formatedBalance = amount.mul(LONG_DECIMALS);
       balances[address(this)] = balances[address(this)].add(formatedBalance);
       allowed[address(this)][owner] = allowed[address(this)][owner].add(formatedBalance);
       totalSupply = totalSupply.add(amount);
       maxSupply = maxSupply.add(amount);
+=======
+
+      uint formatedBalance = amount.mul(LONG_DECIMALS);
+      balances[address(this)] = balances[address(this)].add(formatedBalance);
+      allowed[address(this)][owner] = allowed[address(this)][owner].add(formatedBalance);
+      totalSupply = totalSupply.add(amount);
+      maxSupply = maxSupply.add(amount);
+
+      TokensIssued(amount);
+>>>>>>> Removed contracst and tests for airlines
     }
 
     // Change contract variable functions
