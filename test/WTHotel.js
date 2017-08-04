@@ -6,8 +6,6 @@ var Web3 = require('web3');
 var abiDecoder = require('abi-decoder');
 var assert = chai.assert;
 
-var help = require('../LifToken/test/helpers.js');
-
 var WTKeyIndex = artifacts.require('../contracts/WTKeyIndex.sol');
 var WTIndex = artifacts.require('../contracts/WTIndex.sol');
 var WTHotel = artifacts.require('../contracts/hotel/Hotel.sol');
@@ -17,7 +15,6 @@ var UnitTypeOwner = artifacts.require('../contracts/hotel/UnitType_Owner_Interfa
 var Unit = artifacts.require('../contracts/hotel/Unit.sol');
 var UnitPublic = artifacts.require('../contracts/hotel/Unit_Public_Interface.sol');
 var UnitOwner = artifacts.require('../contracts/hotel/Unit_Owner_Interface.sol');
-var LifToken = artifacts.require('../contracts/lif/LifToken.sol');
 var PrivateCall = artifacts.require('../contracts/PrivateCall.sol');
 
 var augustoKey, hotelKey;
@@ -37,13 +34,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
   it('Should register a hotel, add a unit type, add a inventory unit and make a booking with private data encrypted.', async function() {
 
-    let lifToken = await LifToken.new();
-
-    // Simulate a crowdsale
-    await help.simulateCrowdsale(lifToken, 10000, web3.toWei(0.001, 'ether'), [4000,3000,2000,1000,0], accounts);
-
     abiDecoder.addABI(PrivateCall._json.abi);
-    abiDecoder.addABI(LifToken._json.abi);
     abiDecoder.addABI(WTHotel._json.abi);
     abiDecoder.addABI(WTIndex._json.abi);
     abiDecoder.addABI(UnitType._json.abi);
@@ -137,8 +128,8 @@ contract('WTHotel & UnitType', function(accounts) {
           "note": "I want to stay in this hotel"
         }
       ],
-      "payment": "Lif",
-      "amount": "100"
+      "payment": "ETH",
+      "amount": "0.5"
     };
     let originalHash = web3.sha3();
 
@@ -153,12 +144,11 @@ contract('WTHotel & UnitType', function(accounts) {
     if (DEBUG) console.log('Public data:', publicData, '\n');
 
     // Augusto begin the call by sending the public bytes of the call to be executed after receivers review it
-    let beginCallData = await wtHotelUnit.contract.beginCall.getData(publicData, privateData);
-    let beginCalltx = await lifToken.approveData(wtHotelUnit.address, 100, beginCallData, true, {from: accounts[1]});
+    let beginCalltx = await wtHotelUnit.beginCall(publicData, privateData, {from: accounts[1]});
     let beginCalltxCode = web3.eth.getTransaction(beginCalltx.tx).input;
     if (DEBUG) console.log('Begin Call tx:', beginCalltx);
     let beginCallEvent = abiDecoder.decodeLogs(beginCalltx.receipt.logs)[0];
-    if (DEBUG) console.log('Begin Call event:', beginCallEvent.events);
+    if (DEBUG) console.log('Begin Call events:', beginCallEvent.events);
     assert.equal(accounts[1], beginCallEvent.events[0].value);
     let pendingCallHash = beginCallEvent.events[1].value;
     let pendingCall = await wtHotelUnit.callsPending.call(pendingCallHash);
@@ -166,14 +156,13 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
     let transferDecoded = abiDecoder.decodeMethod(beginCalltxCode);
-    let beginCallDecoded = abiDecoder.decodeMethod(transferDecoded.params[2].value);
+    console.log(transferDecoded);
+    let beginCallDecoded = abiDecoder.decodeMethod(transferDecoded.params[0].value);
     if (DEBUG) console.log('beginCall decoded:',beginCallDecoded);
-    let decryptedDataOnReceiver = web3.toAscii( beginCallDecoded.params[1].value );
+    let decryptedDataOnReceiver = web3.toAscii( transferDecoded.params[1].value );
     assert.equal(JSON.stringify(dataToSend), decryptedDataOnReceiver);
     if (DEBUG) console.log('Decrypted data on receiver:', decryptedDataOnReceiver);
-    assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "Lif");
-    assert.equal(JSON.parse(decryptedDataOnReceiver).amount, await lifToken.allowance(accounts[1], wtHotelUnit.address));
-    if (DEBUG) console.log('Lifs approved from Augusto To WTHotel as payment:', parseInt(await lifToken.allowance(accounts[1], wtHotelUnitType.address)), '\n');
+    assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "ETH");
     console.log(wtHotelUnit.contract.continueCall);
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
     let continueCallData = await wtHotelUnit.contract.continueCall.getData(pendingCallHash);
