@@ -30,6 +30,6 @@
   },
   "devDependencies": {
     "ethereumjs-testrpc": "3.0.3",
-    "truffle": "3.4.4"
+    "truffle": "3.4.7"
   }
 }
