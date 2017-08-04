@@ -19,7 +19,7 @@ contract WTIndex is Ownable, Parent {
 
   event log();
 
-  event voteGiven(address);
+  event voteGiven(address receiver);
 
 	function WTIndex() {
 		hotels.length ++;
