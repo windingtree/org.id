@@ -6,18 +6,17 @@ These contracts are used to index only the necessary information so it is easily
 
 ## The Contracts
 
-### Contract Registry
+### WTContracts
 
-This contract will list and provide each important contract of the platform, saving his name, address and version and it will be only accessible by the WT founding team.
+This contract will list and provide each important contract of the platform, saving its name, address and version and it will be owned by the DAO.
 
-### WT Index
+### WTIndex
 
-This contract will index and list every hotel and airline of the platform, it will index hotels by geological location, country, city and name. And it will index all airlines by their name and flight routes.
+This contract will index and list every hotel and airline of the platform, it will index hotels by geolocation, country, city and name. And it will index all airlines by their name and flight routes.
 
-### WT Keys Registry
+### WTKeysRegistry
 
-On WT the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WT-Keys-Registry that will be used by another users to send encrypted data between them.
-In short terms: This contract will allow the sending of encrypted data between users.
+On WT the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
 
 ### Indexed
 
@@ -29,16 +28,16 @@ A contract that can contain childs contracts registered by address. The contract
 
 ### PrivateCall
 
-The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the WT Key Registry. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the WTKey library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
+The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the WTKeysRegistry. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the WTKey library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
-Steps when user Augusto wants to book a Flight published by WTAir:
+Steps when user Augusto wants to book a Room published by WTHotel:
 
-1. Augusto looks for the WTAir public key on WTKeysRegistry
-2. Augusto encrypts the data using multiple key encryption (adding WTAir as owner of the data too) and sign it
-3. Augusto wants to call the method booking() on one of the routes of WTAir, so he builds the data to execute that call
-4. Augusto creates the pending transaction on the WTAir route by sending his public data to execute the booking() and his personal data encrypted
-5. WTAir receive the transactions, looks for Augusto's public key on WTKeysRegistry and decrypts the data using WTAir's private key and verify with Augusto's public key
-6. All the data that Augusto sent is correct, WTAir allow the execution of the booking call sending a continueCall() transaction
+1. Augusto looks for the WTHotel public key on WTKeysRegistry
+2. Augusto encrypts the data using multiple key encryption (adding WTHotel as owner of the data too) and sign it
+3. Augusto wants to call the method booking() on one of the rooms of WTHotel, so he builds the data to execute that call
+4. Augusto creates the pending transaction on the WTHotel room by sending his public data to execute the booking() and his personal data encrypted
+5. WTHotel receives the transactions, looks for Augusto's public key on WTKeysRegistry and decrypts the data using WTHotel's private key and verify with Augusto's public key
+6. If all the data that Augusto sent is correct, WTHotel allow the execution of the booking call sending a continueCall() transaction
 
 ## Platform
 
@@ -46,7 +45,7 @@ Steps when user Augusto wants to book a Flight published by WTAir:
 
 ### Hotels
 
-WT Index -> Hotel -> UnitType -> Units
+WTIndex -> Hotel -> UnitType -> Units
 
 #### Hotel
 
@@ -179,14 +178,3 @@ contract UnitType_Public_Interface is PrivateCall {
 
 }
 ```
-### Airlines
-
-WT Platform -> Airline -> Route -> Flights
-
-#### Airline
-
-Every airline that is registered on WT will have an Airline smart contract where they will save their name, legal address, country, and website. From here they can create new routes, if they have a flight plan from Madrid to Barcelona they can create a route between MAD->BCN and BCN->MAD.
-
-#### Air Route
-
-This smart contract will be owned by airlines, they will be able to upload all their flight plan for the route. The users will be making the bookings on this contract using the PrivateCall strategy.
