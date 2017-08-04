@@ -2,7 +2,6 @@ pragma solidity ^0.4.11;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./hotel/Hotel.sol";
-import "./airline/Airline.sol";
 import "./Parent.sol";
 
 /*
@@ -16,19 +15,15 @@ contract WTIndex is Ownable, Parent {
   Hotel[] public hotels;
   mapping(address => address[]) public hotelsByOwner;
 
-  Airline[] public airlines;
-  mapping(address => address[]) public airlinesByOwner;
-
   address DAO;
 
   event log();
 
   event voteGiven(address);
 
-  function WTIndex() {
-    hotels.length ++;
-    airlines.length ++;
-  }
+	function WTIndex() {
+		hotels.length ++;
+	}
 
   // Only owner methods
 
@@ -43,30 +38,15 @@ contract WTIndex is Ownable, Parent {
     hotels.push(newHotel);
     hotelsByOwner[msg.sender].push(newHotel);
     addChild(newHotel);
-    log();
-  }
+		log();
+	}
 
-  function callHotel(uint index, bytes data) external {
-    if (!hotelsByOwner[msg.sender][index].call(data))
-      throw;
-    else
-      log();
-  }
-
-  function registerAirline(string name, string description) external {
-    Airline newAirline = new Airline(name, description);
-    airlines.push(newAirline);
-    airlinesByOwner[msg.sender].push(newAirline);
-    addChild(newAirline);
-    log();
-  }
-
-  function callAirline(uint index, bytes data) external {
-    if (!airlinesByOwner[msg.sender][index].call(data))
-      throw;
-    else
-      log();
-  }
+	function callHotel(uint index, bytes data) external {
+		if (!hotelsByOwner[msg.sender][index].call(data))
+			throw;
+		else
+			log();
+	}
 
   // Only childs methods
 
@@ -81,16 +61,8 @@ contract WTIndex is Ownable, Parent {
     return hotels;
   }
 
-  function getAirlines() constant returns(Airline[]){
-    return airlines;
-  }
-
-  function getHotelsByOwner(address owner) constant returns(address[]){
-    return hotelsByOwner[owner];
-  }
-
-  function getAirlinesByOwner(address owner) constant returns(address[]){
-    return airlinesByOwner[owner];
-  }
+	function getHotelsByOwner(address owner) constant returns(address[]){
+		return hotelsByOwner[owner];
+	}
 
 }

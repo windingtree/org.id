@@ -108,6 +108,10 @@ contract LifCrowdsale is Ownable, PullPayment {
     function addPresalePayment(address target, uint amount) external onlyOwner() onStatus(1,2) {
 
       require(presaleBonusRate > 0);
+<<<<<<< 8d8636172ac86675d59d1eabb13dd897bc6ea1a0
+=======
+      require(block.number < startBlock);
+>>>>>>> Removed contracst and tests for airlines
 
       totalPresaleWei = totalPresaleWei.add(amount);
       presalePayments[target] = amount;
@@ -282,8 +286,8 @@ contract LifCrowdsale is Ownable, PullPayment {
 
     // Set new status on the Crowdsale
     function setStatus(uint newStatus) {
-      if ((msg.sender == address(this)) || (msg.sender == owner))
-        status = newStatus;
+      require((msg.sender == address(this)) || (msg.sender == owner));
+      status = newStatus;
     }
 
     // Safe send of ethers to an address, try to use default send function and if dosent succeed it creates an asyncPayment
