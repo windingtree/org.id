@@ -1,4 +1,4 @@
-# WT Smart Contracts
+# Winding Tree Smart Contracts
 
 The core of the Winding Tree platform are these smart contracts written in solidity language and deployed on the Ethereum public blockchain.
 
@@ -16,7 +16,7 @@ This contract will index and list every hotel and airline of the platform, it wi
 
 ### WTKeysRegistry
 
-On WT the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
+On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
 
 ### Indexed
 
