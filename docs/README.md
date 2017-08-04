@@ -16,7 +16,7 @@ This contract will index and list every hotel and airline of the platform, it wi
 
 ### WTKeysRegistry
 
-On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data beetwen each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
+On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data between each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
 
 ### Indexed
 
