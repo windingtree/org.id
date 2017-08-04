@@ -156,19 +156,15 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
     let transferDecoded = abiDecoder.decodeMethod(beginCalltxCode);
-    console.log(transferDecoded);
     let beginCallDecoded = abiDecoder.decodeMethod(transferDecoded.params[0].value);
     if (DEBUG) console.log('beginCall decoded:',beginCallDecoded);
     let decryptedDataOnReceiver = web3.toAscii( transferDecoded.params[1].value );
     assert.equal(JSON.stringify(dataToSend), decryptedDataOnReceiver);
     if (DEBUG) console.log('Decrypted data on receiver:', decryptedDataOnReceiver);
     assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "ETH");
-    console.log(wtHotelUnit.contract.continueCall);
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
     let continueCallData = await wtHotelUnit.contract.continueCall.getData(pendingCallHash);
-    console.log(continueCallData);
     continueCallData = await wtHotel.contract.callUnit.getData(wtHotelUnit.address, continueCallData);
-    console.log(continueCallData);
     let continueCalltx = await wtIndex.callHotel(0, continueCallData, {from: accounts[2]});
     if (DEBUG) console.log('Continue Call tx:', continueCalltx,'\n');
 
@@ -370,7 +366,6 @@ it('Should register a hotel, add a unit type and edit it using interfaces', asyn
     callUnitData = UnitOwnerInterface.contract.setPrice.getData('100 USD', 10, 3);
     callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    console.log(UnitPublicInterface);
     if (DEBUG) console.log('New Unit Type:', await UnitPublicInterface.unitType(), '\n');
     assert.equal('100 USD', (await UnitPublicInterface.getReservation(10))[0] );
     assert.equal('100 USD', (await UnitPublicInterface.getReservation(11))[0] );
