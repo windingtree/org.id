@@ -19,7 +19,7 @@ if [ ! $trpc_running ]; then
     > /dev/null &
   trpc_pid=$!
 fi
-./node_modules/truffle/cli.js test ./test/*.js
+node_modules/.bin/truffle test "$@"
 test_status=$?
 
 if [ ! $trpc_running ]; then

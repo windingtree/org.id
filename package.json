@@ -8,7 +8,7 @@
   "scripts": {
     "test": "scripts/test.sh",
     "postinstall": "scripts/install.sh",
-    "testrpc": "./node_modules/ethereumjs-testrpc/bin/testrpc",
+    "testrpc": "./node_modules/.bin/testrpc",
     "update-submodules": "git submodule update --recursive && npm run postinstall",
     "pull-submodules": "git submodule foreach git pull && npm run postinstall"
   },
@@ -22,12 +22,14 @@
   "license": "MIT",
   "dependencies": {
     "abi-decoder": "^1.0.8",
+    "babel-polyfill": "^6.23.0",
     "chai": "^3.5.0",
+    "moment": "^2.18.1",
     "truffle-hdwallet-provider": "0.0.3",
-    "zeppelin-solidity": "1.1.0"
+    "zeppelin-solidity": "1.2.0"
   },
   "devDependencies": {
     "ethereumjs-testrpc": "3.0.3",
-    "truffle": "3.2.2"
+    "truffle": "3.4.7"
   }
 }
