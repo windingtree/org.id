@@ -28,7 +28,7 @@ A contract that can contain childs contracts registered by address. The contract
 
 ### PrivateCall
 
-The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the `WTKeysRegistry`. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the `WTKey` library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
+The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the `WTKeysRegistry`. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the `WTKey.js` (from our [example javascript library](https://github.com/windingtree/wt-js-libs/blob/master/libs/WTKey.js)) it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
 Steps when user Augusto wants to book a Room published by `WTHotel`:
 
