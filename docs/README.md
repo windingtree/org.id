@@ -41,7 +41,7 @@ Steps when user Augusto wants to book a Room published by WTHotel:
 
 ## Platform
 
-![WT Platform](img/WT Platform.html.webp)
+![WT Platform](img/WT Platform.html.png)
 
 ### Hotels
 
