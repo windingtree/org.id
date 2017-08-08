@@ -16,7 +16,7 @@ This contract will index and list every hotel and airline of the platform, it wi
 
 ### WTKeysRegistry
 
-On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data between each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the WTKeysRegistry that will be used by other users to send encrypted data between them.
+On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data between each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the `WTKeysRegistry` that will be used by other users to send encrypted data between them.
 
 ### Indexed
 
@@ -28,16 +28,16 @@ A contract that can contain childs contracts registered by address. The contract
 
 ### PrivateCall
 
-The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the WTKeysRegistry. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the WTKey library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
+The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the `WTKeysRegistry`. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the `WTKey` library it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
-Steps when user Augusto wants to book a Room published by WTHotel:
+Steps when user Augusto wants to book a Room published by `WTHotel`:
 
-1. Augusto looks for the WTHotel public key on WTKeysRegistry
-2. Augusto encrypts the data using multiple key encryption (adding WTHotel as owner of the data too) and sign it
-3. Augusto wants to call the method booking() on one of the rooms of WTHotel, so he builds the data to execute that call
-4. Augusto creates the pending transaction on the WTHotel room by sending his public data to execute the booking() and his personal data encrypted
-5. WTHotel receives the transactions, looks for Augusto's public key on WTKeysRegistry and decrypts the data using WTHotel's private key and verify with Augusto's public key
-6. If all the data that Augusto sent is correct, WTHotel allow the execution of the booking call sending a continueCall() transaction
+1. Augusto looks for the `WTHotel` public key on `WTKeysRegistry`
+2. Augusto encrypts the data using multiple key encryption (adding `WTHotel` as owner of the data too) and sign it
+3. Augusto wants to call the method booking() on one of the rooms of `WTHotel`, so he builds the data to execute that call
+4. Augusto creates the pending transaction on the `WTHotel` room by sending his public data to execute the booking() and his personal data encrypted
+5. `WTHotel` receives the transactions, looks for Augusto's public key on `WTKeysRegistry` and decrypts the data using `WTHotel`'s private key and verify with Augusto's public key
+6. If all the data that Augusto sent is correct, `WTHotel` allow the execution of the booking call sending a continueCall() transaction
 
 ## Platform
 
@@ -45,11 +45,13 @@ Steps when user Augusto wants to book a Room published by WTHotel:
 
 ### Hotels
 
+```
 WTIndex -> Hotel -> UnitType -> Units
+```
 
 #### Hotel
 
-Every Hotel registered on Winding Tree will be on a Hotel contract, this contract has the hotel information, address, location, and a list of all the differnet types of accomodations the hotel provides, these are called Unit Types, for example a BASIC_ROOM, CABIN, PREMIUM_ROOM, etc. The hotel will provide a certain amount of its UnitTypes for rent.
+Every Hotel registered on Winding Tree will be on a Hotel contract, this contract has the hotel information, address, location, and a list of all the differnet types of accomodations the hotel provides, these are called Unit Types, for example a `BASIC_ROOM`, `CABIN`, `PREMIUM_ROOM`, etc. The hotel will provide a certain amount of its UnitTypes for rent.
 
 ##### Hotel Contract Owner interface
 
