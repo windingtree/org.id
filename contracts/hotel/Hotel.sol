@@ -76,8 +76,7 @@ contract Hotel is Indexed, Parent {
     address addr,
     bytes32 unitType
   ) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] != address(0))
-			throw;
+		require(unitTypes[unitType] == address(0));
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
 	}
@@ -86,8 +85,7 @@ contract Hotel is Indexed, Parent {
     bytes32 unitType, 
     address unit
   ) throughIndex() onlyOwner() {
-		if (unitTypes[unitType] == address(0))
-			throw;
+		require(unitTypes[unitType] != address(0));
 		addChild(unit);
 	}
 
@@ -107,11 +105,10 @@ contract Hotel is Indexed, Parent {
     bytes32 unitType,
     uint index
   ) throughIndex() onlyOwner() {
-    if (
-      (unitTypes[unitType] == address(0)) ||
-      (unitTypeNames[index] != unitType)
-    )
-      throw;
+    require(
+      (unitTypes[unitType] != address(0)) &&
+      (unitTypeNames[index] == unitType)
+    );
     delete unitTypes[unitType];
     delete unitTypeNames[index];
   }
@@ -120,8 +117,7 @@ contract Hotel is Indexed, Parent {
     bytes32 unitType,
     address newAddr
   ) throughIndex() onlyOwner() {
-    if (unitTypes[unitType] == address(0))
-      throw;
+    require(unitTypes[unitType] != address(0));
     removeChild(unitTypes[unitType]);
     unitTypes[unitType] = newAddr;
     addChild(newAddr);
@@ -131,10 +127,8 @@ contract Hotel is Indexed, Parent {
     bytes32 unitType,
     bytes data
   ) throughIndex() onlyOwner() {
-    if (unitTypes[unitType] == address(0))
-      throw;
-    if (!unitTypes[unitType].call(data))
-      throw;
+    require(unitTypes[unitType] != address(0));
+    require(unitTypes[unitType].call(data));
   }
 
   function callUnit(
@@ -148,8 +142,7 @@ contract Hotel is Indexed, Parent {
   // Only child methods
 
   function callIndex(bytes data) onlyChild() {
-    if (!index.call(data))
-      throw;
+    require(index.call(data));
   }
 
   // Public methods
