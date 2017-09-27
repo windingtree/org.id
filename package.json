@@ -33,6 +33,6 @@
     "coveralls": "^2.13.1",
     "ethereumjs-testrpc": "3.0.3",
     "solidity-coverage": "^0.2.4",
-    "truffle": "3.4.7"
+    "truffle": "3.4.11"
   }
 }
