@@ -17,6 +17,11 @@ To run unit tests on the contracts:
 npm test
 ```
 
+To generate a coverage report:
+```
+npm run coverage
+```
+
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)

@@ -10,7 +10,8 @@
     "postinstall": "scripts/install.sh",
     "testrpc": "./node_modules/.bin/testrpc",
     "update-submodules": "git submodule update --recursive && npm run postinstall",
-    "pull-submodules": "git submodule foreach git pull && npm run postinstall"
+    "pull-submodules": "git submodule foreach git pull && npm run postinstall",
+    "coverage": "scripts/coverage.sh"
   },
   "keywords": [
     "winding-tree",
@@ -29,7 +30,9 @@
     "zeppelin-solidity": "1.2.0"
   },
   "devDependencies": {
+    "coveralls": "^2.13.1",
     "ethereumjs-testrpc": "3.0.3",
+    "solidity-coverage": "^0.2.4",
     "truffle": "3.4.7"
   }
 }
