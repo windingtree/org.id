@@ -1,296 +1,418 @@
-pragma solidity ^0.4.11;
+pragma solidity ^0.4.13;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "zeppelin-solidity/contracts/payment/PullPayment.sol";
+import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "./LifInterface.sol";
-import "./FuturePayment.sol";
-import "./LifDAOInterface.sol";
+import "./LifToken.sol";
+import "./VestedPayment.sol";
+import "./LifMarketValidationMechanism.sol";
 
-/*
- * Líf Crowdsale
- *
- *
- *
- *
+/**
+   @title Crowdsale for the Lif Token Generation Event
+
+   Implementation of the Lif Token Generation Event (TGE) Crowdsale: A 2 week
+   fixed price, uncapped token sale, with a discounted ratefor contributions
+   ìn the private presale and a Market Validation Mechanism that will receive
+   the funds over the USD 10M soft cap.
+   The crowdsale has a minimum cap of USD 5M which in case of not being reached
+   by purchases made during the 2 week period the token will not start operating
+   and all funds sent during that period will be made available to be claimed by
+   the originating addresses.
+   Funds up to the USD 10M soft cap will be sent to the Winding Tree Foundation
+   wallet at the end of the crowdsale.
+   Funds over that amount will be put in a MarketValidationMechanism (MVM) smart
+   contract that guarantees a price floor for a period of 2 or 4 years, allowing
+   any token holder to burn their tokens in exchange of part of the eth amount
+   sent during the TGE in exchange of those tokens.
  */
+contract LifCrowdsale is Ownable, Pausable {
+  using SafeMath for uint256;
 
+  // The token being sold.
+  LifToken public token;
 
-contract LifCrowdsale is Ownable, PullPayment {
-    using SafeMath for uint;
+  // Beginning of the period where tokens can be purchased at rate `rate1`.
+  uint256 public startTimestamp;
+  // Moment after which the rate to buy tokens goes from `rate1` to `rate2`.
+  uint256 public end1Timestamp;
+  // Marks the end of the Token Generation Event.
+  uint256 public end2Timestamp;
 
-    // Crowdsale status
-    // 1 = Stopped
-    // 2 = Created
-    // 3 = Finished
-    uint public status;
+  // Address of the Winding Tree Foundation wallet. Funds up to the soft cap are
+  // sent to this address. It's also the address to which the MVM distributes
+  // the funds that are made available month after month. An extra 5% of tokens
+  // are put in a Vested Payment with this address as beneficiary, acting as a
+  // long-term reserve for the foundation.
+  address public foundationWallet;
 
-    // TODO: can we just read the constant from the token?
-    uint constant DECIMALS = 8;
-    uint constant LONG_DECIMALS = 10**DECIMALS;
+  // Address of the Winding Tree Founders wallet. An extra 12.8% of tokens
+  // are put in a Vested Payment with this address as beneficiary, with 1 year
+  // cliff and 4 years duration.
+  address public foundersWallet;
 
-    address tokenAddress;
-    uint startBlock;
-    uint endBlock;
-    uint public startPrice;
-    uint public changePerBlock;
-    uint public changePrice;
-    uint public minCap;
-    uint public maxCap;
-    uint public totalTokens;
-    uint public presaleBonusRate;
-    uint public ownerPercentage;
-    uint public totalPresaleWei;
-    uint public weiRaised;
-    uint public tokensSold;
-    uint public lastPrice;
-    mapping (address => uint) weiPayed;
-    mapping (address => uint) tokens;
-    mapping (address => uint) presalePayments;
+  // TGE min cap, in USD. Converted to wei using `weiPerUSDinTGE`.
+  uint256 public minCapUSD = 5000000;
 
-    address[] public foundersFuturePayments;
+  // Maximun amount from the TGE that the foundation receives, in USD. Converted
+  // to wei using `weiPerUSDinTGE`. Funds over this cap go to the MVM.
+  uint256 public maxFoundationCapUSD = 10000000;
 
-    // Allow only certain status
-    modifier onStatus(uint one, uint two) {
-      require(((one != 0) && (status == one)) || ((two != 0) && (status == two)));
-      _;
+  // Maximum amount from the TGE that makes the MVM to last for 24 months. If
+  // funds from the TGE exceed this amount, the MVM will last for 24 months.
+  uint256 public MVM24PeriodsCapUSD = 40000000;
+
+  // Conversion rate from USD to wei to use during the TGE.
+  uint256 public weiPerUSDinTGE = 0;
+
+  // Seconds before the TGE since when the corresponding USD to
+  // wei rate cannot be set by the owner anymore.
+  uint256 public setWeiLockSeconds = 0;
+
+  // Quantity of Lif that is received in exchage of 1 Ether during the first
+  // week of the 2 weeks TGE
+  uint256 public rate1;
+
+  // Quantity of Lif that is received in exchage of 1 Ether during the second
+  // week of the 2 weeks TGE
+  uint256 public rate2;
+
+  // Amount of wei received in exchange of tokens during the 2 weeks TGE
+  uint256 public weiRaised;
+
+  // Amount of lif minted and transferred during the TGE
+  uint256 public tokensSold;
+
+  // Amount of wei received as private presale payments
+  uint256 public totalPresaleWei;
+
+  // Address of the vesting schedule for the foundation created at the
+  // end of the crowdsale
+  VestedPayment public foundationVestedPayment;
+
+  // Address of the vesting schedule for founders created at the
+  // end of the crowdsale
+  VestedPayment public foundersVestedPayment;
+
+  // Address of the MVM created at the end of the crowdsale
+  LifMarketValidationMechanism public MVM;
+
+  // Tracks the wei sent per address during the 2 week TGE. This is the amount
+  // that can be claimed by each address in case the minimum cap is not reached
+  mapping(address => uint256) public purchases;
+
+  // Has the Crowdsale been finalized by a successful call to `finalize`?
+  bool public isFinalized = false;
+
+  /**
+     @dev Event triggered (at most once) on a successful call to `finalize`
+  **/
+  event Finalized();
+
+  /**
+     @dev Event triggered every time a presale purchase is done
+  **/
+  event TokenPresalePurchase(address beneficiary, uint256 weiAmount, uint256 rate);
+
+  /**
+     @dev Event triggered on every purchase during the TGE
+
+     @param purchaser who paid for the tokens
+     @param beneficiary who got the tokens
+     @param value amount of wei paid
+     @param amount amount of tokens purchased
+   */
+  event TokenPurchase(
+    address indexed purchaser,
+    address indexed beneficiary,
+    uint256 value,
+    uint256 amount
+  );
+
+  /**
+     @dev Constructor. Creates the token in a paused state
+
+     @param _startTimestamp see `startTimestamp`
+     @param _end1Timestamp see `end1Timestamp`
+     @param _end2Timestamp see `end2Timestamp
+     @param _rate1 see `rate1`
+     @param _rate2 see `rate2`
+     @param _foundationWallet see `foundationWallet`
+   */
+  function LifCrowdsale(
+    uint256 _startTimestamp,
+    uint256 _end1Timestamp,
+    uint256 _end2Timestamp,
+    uint256 _rate1,
+    uint256 _rate2,
+    uint256 _setWeiLockSeconds,
+    address _foundationWallet,
+    address _foundersWallet
+  ) {
+
+    require(_startTimestamp > block.timestamp);
+    require(_end1Timestamp > _startTimestamp);
+    require(_end2Timestamp > _end1Timestamp);
+    require(_rate1 > 0);
+    require(_rate2 > 0);
+    require(_setWeiLockSeconds > 0);
+    require(_foundationWallet != address(0));
+    require(_foundersWallet != address(0));
+
+    token = new LifToken();
+    token.pause();
+
+    startTimestamp = _startTimestamp;
+    end1Timestamp = _end1Timestamp;
+    end2Timestamp = _end2Timestamp;
+    rate1 = _rate1;
+    rate2 = _rate2;
+    setWeiLockSeconds = _setWeiLockSeconds;
+    foundationWallet = _foundationWallet;
+    foundersWallet = _foundersWallet;
+  }
+
+  /**
+     @dev Set the wei per USD rate for the TGE. Has to be called by
+     the owner up to `setWeiLockSeconds` before `startTimestamp`
+
+     @param _weiPerUSD wei per USD rate valid during the TGE
+   */
+  function setWeiPerUSDinTGE(uint256 _weiPerUSD) onlyOwner {
+    require(_weiPerUSD > 0);
+    assert(block.timestamp < startTimestamp.sub(setWeiLockSeconds));
+
+    weiPerUSDinTGE = _weiPerUSD;
+  }
+
+  /**
+     @dev Returns the current Lif per Eth rate during the TGE
+
+     @return the current Lif per Eth rate or 0 when not in TGE
+   */
+  function getRate() public constant returns (uint256) {
+    if (block.timestamp < startTimestamp)
+      return 0;
+    else if (block.timestamp <= end1Timestamp)
+      return rate1;
+    else if (block.timestamp <= end2Timestamp)
+      return rate2;
+    else
+      return 0;
+  }
+
+  /**
+     @dev Fallback function, payable. Calls `buyTokens`
+   */
+  function () payable {
+    buyTokens(msg.sender);
+  }
+
+  /**
+     @dev Allows to get tokens during the TGE. Payable. The value is converted to
+     Lif using the current rate obtained by calling `getRate()`.
+
+     @param beneficiary Address to which Lif should be sent
+   */
+  function buyTokens(address beneficiary) payable {
+    require(beneficiary != address(0));
+    require(validPurchase());
+    assert(weiPerUSDinTGE > 0);
+
+    uint256 weiAmount = msg.value;
+
+    // get current price (it depends on current block number)
+    uint256 rate = getRate();
+
+    assert(rate > 0);
+
+    // calculate token amount to be created
+    uint256 tokens = weiAmount.mul(rate);
+
+    // store wei amount in case of TGE min cap not reached
+    weiRaised = weiRaised.add(weiAmount);
+    purchases[beneficiary] = weiAmount;
+    tokensSold = tokensSold.add(tokens);
+
+    token.mint(beneficiary, tokens);
+    TokenPurchase(msg.sender, beneficiary, weiAmount, tokens);
+  }
+
+  /**
+     @dev Allows to add the address and the amount of wei sent by a contributor
+     in the private presale. Can only be called by the owner before the beginning
+     of TGE
+
+     @param beneficiary Address to which Lif will be sent
+     @param weiSent Amount of wei contributed
+     @param rate Lif per ether rate at the moment of the contribution
+   */
+  function addPrivatePresaleTokens(
+    address beneficiary, uint256 weiSent, uint256 rate
+  ) onlyOwner {
+    require(block.timestamp < startTimestamp);
+    require(beneficiary != address(0));
+    require(weiSent > 0);
+
+    // validate that rate is higher than TGE rate
+    require(rate > rate1);
+
+    uint256 tokens = weiSent.mul(rate);
+
+    totalPresaleWei = totalPresaleWei.add(weiSent);
+
+    token.mint(beneficiary, tokens);
+
+    TokenPresalePurchase(beneficiary, weiSent, rate);
+  }
+
+  /**
+     @dev Internal. Forwards funds to the foundation wallet and in case the soft
+     cap was exceeded it also creates and funds the Market Validation Mechanism.
+   */
+  function forwardFunds() internal {
+
+    // calculate the max amount of wei for the foundation
+    uint256 foundationBalanceCapWei = maxFoundationCapUSD.mul(weiPerUSDinTGE);
+
+    // if the minimiun cap for the MVM is not reached transfer all funds to foundation
+    // else if the min cap for the MVM is reached, create it and send the remaining funds
+    if (this.balance <= foundationBalanceCapWei) {
+
+      foundationWallet.transfer(this.balance);
+
+      mintExtraTokens(uint256(24));
+
+    } else {
+
+      uint256 mmFundBalance = this.balance.sub(foundationBalanceCapWei);
+
+      // check how much preiods we have to use on the MVM
+      uint8 MVMPeriods = 24;
+      if (mmFundBalance > MVM24PeriodsCapUSD.mul(weiPerUSDinTGE))
+        MVMPeriods = 48;
+
+      foundationWallet.transfer(foundationBalanceCapWei);
+
+      MVM = new LifMarketValidationMechanism(
+        address(token), block.timestamp.add(30 days), 30 days, MVMPeriods, foundationWallet
+      );
+      MVM.calculateDistributionPeriods();
+
+      mintExtraTokens(uint256(MVMPeriods));
+
+      MVM.fund.value(mmFundBalance)();
+      MVM.transferOwnership(foundationWallet);
+
+    }
+  }
+
+  /**
+     @dev Internal. Distribute extra tokens among founders,
+     team and the foundation long-term reserve. Founders receive
+     12.8% of tokens in a 4y (1y cliff) vesting schedule.
+     Foundation long-term reserve receives 5% of tokens in a
+     vesting schedule with the same duration as the MVM that
+     starts when the MVM ends. An extra 7.2% is transferred to
+     the foundation to be distributed among advisors and future hires
+   */
+  function mintExtraTokens(uint256 foundationMonthsStart) internal {
+    // calculate how much tokens will the founders,
+    // foundation and advisors will receive
+    uint256 foundersTokens = token.totalSupply().mul(128).div(1000);
+    uint256 foundationTokens = token.totalSupply().mul(50).div(1000);
+    uint256 teamTokens = token.totalSupply().mul(72).div(1000);
+
+    // create the vested payment schedule for the founders
+    foundersVestedPayment = new VestedPayment(
+      block.timestamp, 30 days, 48, 12, foundersTokens, token
+    );
+    token.mint(foundersVestedPayment, foundersTokens);
+    foundersVestedPayment.transferOwnership(foundersWallet);
+
+    // create the vested payment schedule for the foundation
+    uint256 foundationPaymentStart = foundationMonthsStart.mul(30 days);
+    foundationVestedPayment = new VestedPayment(
+      block.timestamp.add(foundationPaymentStart), 30 days,
+      foundationMonthsStart, 0, foundationTokens, token
+    );
+    token.mint(foundationVestedPayment, foundationTokens);
+    foundationVestedPayment.transferOwnership(foundationWallet);
+
+    // transfer the token for advisors and future employees to the foundation
+    token.mint(foundationWallet, teamTokens);
+
+  }
+
+  /**
+     @dev Modifier
+     @return true if the transaction can buy tokens on TGE
+   */
+  function validPurchase() internal constant returns (bool) {
+    bool withinPeriod = now >= startTimestamp && now <= end2Timestamp;
+    bool nonZeroPurchase = msg.value != 0;
+    return (withinPeriod && nonZeroPurchase);
+  }
+
+  /**
+     @dev Modifier
+     @return true if crowdsale event has ended
+  */
+  function hasEnded() public constant returns (bool) {
+    return block.timestamp > end2Timestamp;
+  }
+
+  /**
+     @dev Modifier
+     @return true if minCapUSD has been reached by contributions during the TGE
+  */
+  function funded() public constant returns (bool) {
+    assert(weiPerUSDinTGE > 0);
+    return weiRaised >= minCapUSD.mul(weiPerUSDinTGE);
+  }
+
+  /**
+     @dev Allows a TGE contributor to claim their contributed eth in case the
+     TGE has finished without reaching the minCapUSD
+   */
+  function claimEth() public {
+    require(isFinalized);
+    require(hasEnded());
+    require(!funded());
+
+    uint256 toReturn = purchases[msg.sender];
+    assert(toReturn > 0);
+
+    purchases[msg.sender] = 0;
+
+    msg.sender.transfer(toReturn);
+  }
+
+  /**
+     @dev Finalizes the crowdsale, taking care of transfer of funds to the
+     Winding Tree Foundation and creation and funding of the Market Validation
+     Mechanism in case the soft cap was exceeded. It also unpauses the token to
+     enable transfers. It can be called only once, after `end2Timestamp`
+   */
+  function finalize() public {
+    require(!isFinalized);
+    require(hasEnded());
+
+    // foward founds and unpause token only if minCap is reached
+    if (funded()) {
+
+      forwardFunds();
+
+      // finish the minting of the token and unpause it
+      token.finishMinting();
+      token.unpause();
+
+      // transfer the ownership of the token to the foundation
+      token.transferOwnership(owner);
+
     }
 
-    // Constructor
-    function LifCrowdsale(address _tokenAddress, uint _startBlock, uint _endBlock,
-                          uint _startPrice, uint _changePerBlock, uint _changePrice,
-                          uint _minCap, uint _maxCap, uint _totalTokens,
-                          uint _presaleBonusRate, uint _ownerPercentage) {
-      tokenAddress = _tokenAddress;
-      startBlock = _startBlock;
-      endBlock = _endBlock;
-      startPrice = _startPrice;
-      changePerBlock = _changePerBlock;
-      changePrice = _changePrice;
-      minCap = _minCap;
-      maxCap = _maxCap;
-      totalTokens = _totalTokens;
-      presaleBonusRate = _presaleBonusRate;
-      ownerPercentage = _ownerPercentage;
-      status = 1;
-    }
-
-    // Change a crowdsale before it begins
-    // Can be called by Owner on created, stopped or finished status
-    function edit(uint _startBlock, uint _endBlock, uint _startPrice, uint _changePerBlock, uint _changePrice, uint _minCap, uint _maxCap, uint _totalTokens, uint _ownerPercentage) external {
-
-      // TODO: only edit in certain status
-      require((msg.sender == owner) && ((status == 1) || (status == 2)));
-      require(block.number < startBlock);
-
-      startBlock = _startBlock;
-      endBlock = _endBlock;
-      startPrice = _startPrice;
-      changePerBlock = _changePerBlock;
-      changePrice = _changePrice;
-      minCap = _minCap;
-      maxCap = _maxCap;
-      ownerPercentage = _ownerPercentage;
-      totalTokens = _totalTokens;
-    }
-
-    // calculates absolute max tokens that can be distributed from the crowdsale, including bids,
-    // founders vesting compensation and presale payments
-    function getMaxTokens() public returns (uint) {
-      uint minTokenPrice = minCap.div(totalTokens);
-      uint maxWithBonusTokens = totalPresaleWei.div(minTokenPrice).mul(presaleBonusRate.add(100).div(100));
-      uint maxFoundersTokens = maxWithBonusTokens.mul(ownerPercentage).div(1000);
-
-      return totalTokens + maxWithBonusTokens + maxFoundersTokens;
-    }
-
-    // Add an address that would be able to spend certain amounts of ethers with a bonus rate
-    function addPresalePayment(address target, uint amount) external onlyOwner() onStatus(1,2) {
-
-      require(presaleBonusRate > 0);
-      require(block.number < startBlock);
-
-      totalPresaleWei = totalPresaleWei.add(amount);
-      presalePayments[target] = amount;
-
-      // check that crowdsale balance is AT LEAST max(with bonus)tokens at lowest possible valuation +
-      // founders tokens
-      uint crowdsaleBalance = LifInterface(tokenAddress).balanceOf(address(this)).div(LONG_DECIMALS);
-
-      assert(crowdsaleBalance >= getMaxTokens());
-    }
-
-    function getBuyerPresaleTokens(address buyer) public returns (uint) {
-        return presalePayments[buyer].
-            mul(uint(100).add(presaleBonusRate)).
-            div(lastPrice).
-            div(uint(100));
-    }
-
-    function distributeTokens(address buyer, bool withBonus) external onStatus(3, 0) {
-
-      if (withBonus){
-
-        require(presalePayments[buyer] > 0);
-
-        uint tokensQty = getBuyerPresaleTokens(buyer);
-
-        tokensSold = tokensSold.add(tokensQty);
-
-        LifInterface(tokenAddress).transfer(buyer, tokensQty.mul(LONG_DECIMALS));
-
-        totalPresaleWei = totalPresaleWei.sub(presalePayments[buyer]);
-        presalePayments[buyer] = 0;
-
-      } else {
-
-        require(tokens[buyer] > 0);
-
-        uint weiChange = weiPayed[buyer].sub(tokens[buyer].mul(lastPrice));
-
-        if (weiChange > 0){
-          safeSend(buyer, weiChange);
-        }
-
-        LifInterface(tokenAddress).transfer(buyer, tokens[buyer].mul(LONG_DECIMALS));
-
-        weiPayed[buyer] = 0;
-        tokens[buyer] = 0;
-      }
-
-    }
-
-    // Get the token price at the current block
-    function getPrice() public constant returns (uint) {
-
-      uint price = 0;
-
-      if ((block.number >= startBlock) && (block.number <= endBlock)) {
-        price = startPrice.sub(
-          block.number.sub(startBlock).div(changePerBlock).mul(changePrice)
-        );
-      }
-
-      return price;
-    }
-
-    function getPresaleTokens(uint tokenPrice) public returns(uint) {
-      if (presaleBonusRate > 0){
-        // Calculate how much presale tokens would be distributed at this price
-        return totalPresaleWei.
-            mul(uint(100).add(presaleBonusRate)).
-            div(tokenPrice).
-            div(uint(100));
-      } else {
-        return 0;
-      }
-    }
-
-    // Creates a bid spending the ethers send by msg.sender.
-    function submitBid() external payable onStatus(2,0) {
-
-      require(msg.value > 0);
-
-      uint tokenPrice = getPrice();
-
-      assert(tokenPrice > 0);
-
-      // Calculate the total cost in wei of buying the tokens.
-      uint tokensQty = msg.value.div(tokenPrice);
-      uint weiCost = tokensQty.mul(tokenPrice);
-      uint weiChange = msg.value.sub(weiCost);
-
-      uint presaleTokens = getPresaleTokens(tokenPrice);
-
-      // previous bids tokens + presaleTokens + current bid tokens should not exceed totalTokens
-      require(tokensSold.add(presaleTokens).add(tokensQty) <= totalTokens);
-
-      if (weiRaised.add(weiCost) > maxCap)
-        throw;
-
-      //
-      // bid is accepted from here
-      //
-
-      // asynchronously send weiChange if any
-      if (weiChange > 0)
-        safeSend(msg.sender, weiChange);
-
-      lastPrice = tokenPrice;
-      weiPayed[msg.sender] = weiCost;
-      tokens[msg.sender] = tokensQty;
-      weiRaised = weiRaised.add(weiCost);
-      tokensSold = tokensSold.add(tokensQty);
-    }
-
-    // See if the status of the crowdsale can be changed
-    function checkCrowdsale() external onStatus(2,0) {
-
-      require(block.number > endBlock);
-
-      status = 3; // Finished
-      if (weiRaised >= minCap) {
-        uint presaleTokens = getPresaleTokens(lastPrice);
-        uint foundingTeamTokens = 0;
-
-        if (ownerPercentage > 0) {
-          foundingTeamTokens = presaleTokens.add(tokensSold).
-                                             mul(ownerPercentage).
-                                             mul(LONG_DECIMALS).
-                                             div(1000);
-
-          for (uint i = block.number.add(5); i <= block.number.add(40); i = i.add(5)) {
-            address futurePayment = new FuturePayment(owner, i, tokenAddress);
-
-            LifInterface(tokenAddress).transfer(futurePayment, foundingTeamTokens.div(8));
-
-            foundersFuturePayments[foundersFuturePayments.length ++] = address(futurePayment);
-          }
-          /*
-          this values would be use on the final version, making payments every 6 months for 4 years, starting 1 year after token deployment.
-          for (uint i = block.add(umber, 2102400); i <= block.add(umber, 6307200); i = i,.add(25600))
-            futurePayments[futurePayments.length ++] = FuturePayment(owner, i, foundingTeamTokens.div(8));
-          */
-
-          ownerPercentage = 0;
-        }
-        // Return not used tokens to LifToken
-        uint toReturnTokens = LifInterface(tokenAddress).balanceOf(address(this)).
-            sub(presaleTokens.mul(LONG_DECIMALS)).sub(tokensSold.mul(LONG_DECIMALS));
-
-        LifInterface(tokenAddress).transfer(tokenAddress, toReturnTokens);
-
-      } else if (weiRaised < minCap) {
-        // return all tokens
-        LifInterface(tokenAddress).transfer(tokenAddress, totalTokens);
-      }
-
-    }
-
-    function transferVotes() external onlyOwner() {
-      LifDAOInterface(tokenAddress).giveVotes(owner, 0);
-    }
-
-    // Function that allows a buyer to claim the ether back of a failed crowdsale
-    function claimEth(uint stage) external onStatus(3,0) {
-
-      require(block.number > endBlock);
-      require(weiRaised < minCap);
-      require(weiPayed[msg.sender] > 0);
-
-      safeSend(msg.sender, weiPayed[msg.sender]);
-    }
-
-    // Set new status on the Crowdsale
-    function setStatus(uint newStatus) {
-      require((msg.sender == address(this)) || (msg.sender == owner));
-      status = newStatus;
-    }
-
-    // Safe send of ethers to an address, try to use default send function and if dosent succeed it creates an asyncPayment
-    function safeSend(address addr, uint amount) internal {
-      if (!addr.send(amount))
-        asyncSend(addr, amount);
-    }
+    Finalized();
+    isFinalized = true;
+  }
 
 }

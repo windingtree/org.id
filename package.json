@@ -10,7 +10,7 @@
     "postinstall": "scripts/install.sh",
     "testrpc": "./node_modules/.bin/testrpc",
     "update-submodules": "git submodule update --recursive && npm run postinstall",
-    "pull-submodules": "git submodule foreach git pull && npm run postinstall",
+    "pull-submodules": "git submodule foreach git pull origin master && npm run postinstall",
     "coverage": "scripts/coverage.sh"
   },
   "keywords": [
