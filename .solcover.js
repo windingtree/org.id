@@ -7,6 +7,8 @@ module.exports = {
     'lif/LifDAOInterface.sol',
     'lif/LifInterface.sol',
     'lif/LifToken.sol',
-    'lif/Migrations.sol'
+    'lif/Migrations.sol',
+    'lif/LifMarketValidationMechanism.sol',
+    'lif/VestedPayment.sol'
   ]
 }
