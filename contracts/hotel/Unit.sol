@@ -54,8 +54,7 @@ contract Unit is PrivateCall {
     uint daysAmount,
     bytes finalDataCall
   ) fromSelf() {
-    if (!active)
-      throw;
+    require(active);
     bool canBook = true;
     uint toDay = fromDay+daysAmount;
 

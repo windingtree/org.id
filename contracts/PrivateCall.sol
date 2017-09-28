@@ -15,8 +15,7 @@ contract PrivateCall is Ownable {
   bool public waitConfirmation;
 
   modifier fromSelf(){
-    if (msg.sender != address(this))
-      throw;
+    require(msg.sender == address(this));
     _;
   }
 
@@ -66,8 +65,7 @@ contract PrivateCall is Ownable {
 
   function continueCall(bytes32 msgDataHash) onlyOwner() {
 
-    if (callsPending[msgDataHash].sender == address(0))
-      throw;
+    require(callsPending[msgDataHash].sender != address(0));
 
     callsPending[msgDataHash].approved = true;
 

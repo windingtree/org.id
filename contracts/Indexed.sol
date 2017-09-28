@@ -11,16 +11,12 @@ contract Indexed {
   address index;
 
   modifier throughIndex() {
-    if (msg.sender != index) {
-      throw;
-    }
+    require(msg.sender == index);
     _;
   }
 
   modifier onlyOwner() {
-    if (tx.origin != owner) {
-      throw;
-    }
+    require(tx.origin == owner);
     _;
   }
 

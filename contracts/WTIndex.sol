@@ -42,10 +42,8 @@ contract WTIndex is Ownable, Parent {
 	}
 
 	function callHotel(uint index, bytes data) external {
-		if (!hotelsByOwner[msg.sender][index].call(data))
-			throw;
-		else
-			log();
+		require(hotelsByOwner[msg.sender][index].call(data));
+		log();
 	}
 
   // Only childs methods

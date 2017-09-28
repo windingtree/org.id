@@ -15,9 +15,7 @@ contract Parent {
   }
 
   modifier onlyChild() {
-    if (childsIndex[msg.sender] == 0) {
-      throw;
-    }
+    require(childsIndex[msg.sender] != 0);
     _;
   }
 
