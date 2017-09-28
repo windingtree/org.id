@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "../Indexed.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "../Parent.sol";
 
 /*
@@ -8,11 +8,12 @@ import "../Parent.sol";
  * An indexed contract on the WT Index that contains the hotel information and
  * the addresses of his Unit Types contracts.
  */
-contract Hotel is Indexed, Parent {
+contract Hotel is Ownable, Parent {
 
   // Main information
   string public name;
   string public description;
+  address public manager;
   uint public created;
 
   // Address and Location
@@ -33,9 +34,10 @@ contract Hotel is Indexed, Parent {
 
   // Constructor
 
-  function Hotel(string _name, string _description) {
+  function Hotel(string _name, string _description, address _manager) {
     name = _name;
     description = _description;
+    manager = _manager;
     created = block.number;
     unitTypeNames.length ++;
   }
@@ -45,7 +47,7 @@ contract Hotel is Indexed, Parent {
   function editInfo(
     string _name,
     string _description
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     name = _name;
     description = _description;
   }
@@ -55,7 +57,7 @@ contract Hotel is Indexed, Parent {
     string _lineTwo,
     string _zip,
     string _country
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     lineOne = _lineOne;
     lineTwo = _lineTwo;
     zip = _zip;
@@ -66,7 +68,7 @@ contract Hotel is Indexed, Parent {
     uint _timezone,
     uint _longitude,
     uint _latitude
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     timezone = _timezone;
     latitude = _latitude;
     longitude = _longitude;
@@ -75,36 +77,36 @@ contract Hotel is Indexed, Parent {
   function addUnitType(
     address addr,
     bytes32 unitType
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
 		require(unitTypes[unitType] == address(0));
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
 	}
 
 	function addUnit(
-    bytes32 unitType, 
+    bytes32 unitType,
     address unit
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
 		require(unitTypes[unitType] != address(0));
 		addChild(unit);
 	}
 
-  function removeUnit(address unit) throughIndex() onlyOwner() {
+  function removeUnit(address unit) onlyOwner() {
 		removeChild(unit);
 	}
-  
-  function addImage(string url) throughIndex() onlyOwner() {
+
+  function addImage(string url) onlyOwner() {
     images.push(url);
   }
 
-  function removeImage(uint index) throughIndex() onlyOwner() {
+  function removeImage(uint index) onlyOwner() {
     delete images[index];
   }
 
   function removeUnitType(
     bytes32 unitType,
     uint index
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     require(
       (unitTypes[unitType] != address(0)) &&
       (unitTypeNames[index] == unitType)
@@ -116,7 +118,7 @@ contract Hotel is Indexed, Parent {
   function changeUnitType(
     bytes32 unitType,
     address newAddr
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
     removeChild(unitTypes[unitType]);
     unitTypes[unitType] = newAddr;
@@ -126,7 +128,7 @@ contract Hotel is Indexed, Parent {
   function callUnitType(
     bytes32 unitType,
     bytes data
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
     require(unitTypes[unitType].call(data));
   }
@@ -134,7 +136,7 @@ contract Hotel is Indexed, Parent {
   function callUnit(
     address unitAddress,
     bytes data
-  ) throughIndex() onlyOwner() {
+  ) onlyOwner() {
     if (childsIndex[unitAddress] > 0)
       unitAddress.call(data);
   }
@@ -142,7 +144,7 @@ contract Hotel is Indexed, Parent {
   // Only child methods
 
   function callIndex(bytes data) onlyChild() {
-    require(index.call(data));
+    require(owner.call(data));
   }
 
   // Public methods

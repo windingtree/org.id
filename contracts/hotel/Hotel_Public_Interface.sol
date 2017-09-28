@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "../Indexed.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
  * Hotel_Public_Interface
@@ -11,6 +11,7 @@ contract Hotel_Public_Interface {
   // Main information
   string public name;
   string public description;
+  address public manager;
   uint public created;
 
   // Address and Location
