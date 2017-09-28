@@ -13,7 +13,7 @@ import "./Parent.sol";
 contract WTIndex is Ownable, Parent {
 
   Hotel[] public hotels;
-  mapping(address => address[]) public hotelsByOwner;
+  mapping(address => address[]) public hotelsByManager;
 
   address DAO;
 
@@ -34,15 +34,15 @@ contract WTIndex is Ownable, Parent {
   // Public external methods
 
   function registerHotel(string name, string description) external {
-    Hotel newHotel = new Hotel(name, description);
+    Hotel newHotel = new Hotel(name, description, msg.sender);
     hotels.push(newHotel);
-    hotelsByOwner[msg.sender].push(newHotel);
+    hotelsByManager[msg.sender].push(newHotel);
     addChild(newHotel);
 		log();
 	}
 
 	function callHotel(uint index, bytes data) external {
-		require(hotelsByOwner[msg.sender][index].call(data));
+		require(hotelsByManager[msg.sender][index].call(data));
 		log();
 	}
 
@@ -59,8 +59,8 @@ contract WTIndex is Ownable, Parent {
     return hotels;
   }
 
-	function getHotelsByOwner(address owner) constant returns(address[]){
-		return hotelsByOwner[owner];
+	function getHotelsByManager(address owner) constant returns(address[]){
+		return hotelsByManager[owner];
 	}
 
 }

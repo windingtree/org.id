@@ -42,13 +42,13 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
-    let wtHotelAddress = await wtIndex.getHotelsByOwner(accounts[2]);
+    let wtHotelAddress = await wtIndex.getHotelsByManager(accounts[2]);
     if (DEBUG) console.log('New WT Hotel addreess:', wtHotelAddress[0], '\n');
     let wtHotel = WTHotel.at(wtHotelAddress[0]);
 
     // Check that wtHotel is indexed
-    assert.equal(wtIndex.contract.address, await wtHotel.getIndex());
-    assert.equal(accounts[2], await wtHotel.getOwner());
+    assert.equal(wtIndex.contract.address, await wtHotel.owner());
+    assert.equal(accounts[2], await wtHotel.manager());
 
     // Edit wtHotel address
     let editAddressData = wtHotel.contract.editAddress.getData('Common street 123', '', '6655', 'Spain');
@@ -134,7 +134,7 @@ contract('WTHotel & UnitType', function(accounts) {
     let originalHash = web3.sha3();
 
     // Build giveVote call data
-    let giveVoteData = wtIndex.contract.giveVote.getData( await wtHotel.getOwner());
+    let giveVoteData = wtIndex.contract.giveVote.getData( await wtHotel.manager());
     giveVoteData = wtHotel.contract.callIndex.getData(giveVoteData);
 
     // Encode Augusto's private data and create the data to call the public function
@@ -193,13 +193,13 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
-    let wtHotelAddress = await wtIndex.getHotelsByOwner(accounts[2]);
+    let wtHotelAddress = await wtIndex.getHotelsByManager(accounts[2]);
     if (DEBUG) console.log('New WT Hotel addreess:', wtHotelAddress[0], '\n');
     let wtHotel = WTHotel.at(wtHotelAddress[0]);
 
     // Check that wtHotel is indexed
-    assert.equal(wtIndex.contract.address, await wtHotel.getIndex());
-    assert.equal(accounts[2], await wtHotel.getOwner());
+    assert.equal(wtIndex.contract.address, await wtHotel.owner());
+    assert.equal(accounts[2], await wtHotel.manager());
 
     // Create three unit types on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
@@ -251,13 +251,13 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
-    let wtHotelAddress = await wtIndex.getHotelsByOwner(accounts[2]);
+    let wtHotelAddress = await wtIndex.getHotelsByManager(accounts[2]);
     if (DEBUG) console.log('New WT Hotel addreess:', wtHotelAddress[0], '\n');
     let wtHotel = WTHotel.at(wtHotelAddress[0]);
 
     // Check that wtHotel is indexed
-    assert.equal(wtIndex.contract.address, await wtHotel.getIndex());
-    assert.equal(accounts[2], await wtHotel.getOwner());
+    assert.equal(wtIndex.contract.address, await wtHotel.owner());
+    assert.equal(accounts[2], await wtHotel.manager());
 
     // Create the unit type on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
@@ -327,13 +327,13 @@ it('Should register a hotel, add a unit type and edit it using interfaces', asyn
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
-    let wtHotelAddress = await wtIndex.getHotelsByOwner(accounts[2]);
+    let wtHotelAddress = await wtIndex.getHotelsByManager(accounts[2]);
     if (DEBUG) console.log('New WT Hotel addreess:', wtHotelAddress[0], '\n');
     let wtHotel = WTHotel.at(wtHotelAddress[0]);
 
     // Check that wtHotel is indexed
-    assert.equal(wtIndex.contract.address, await wtHotel.getIndex());
-    assert.equal(accounts[2], await wtHotel.getOwner());
+    assert.equal(wtIndex.contract.address, await wtHotel.owner());
+    assert.equal(accounts[2], await wtHotel.manager());
 
     // Create the unit type on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
