@@ -6,7 +6,7 @@ var Web3 = require('web3');
 var abiDecoder = require('abi-decoder');
 var assert = chai.assert;
 
-var WTKeyIndex = artifacts.require('../contracts/WTKeyIndex.sol');
+var WTKeysRegistry = artifacts.require('../contracts/WTKeysRegistry.sol');
 var WTIndex = artifacts.require('../contracts/WTIndex.sol');
 var WTHotel = artifacts.require('../contracts/hotel/Hotel.sol');
 var UnitType = artifacts.require('../contracts/hotel/UnitType.sol');
@@ -23,7 +23,7 @@ const DEBUG = true;
 
 contract('WTHotel & UnitType', function(accounts) {
 
-  var keyIndex, wtIndex;
+  var keysRegistry, wtIndex;
 
   beforeEach( async function() {
 
