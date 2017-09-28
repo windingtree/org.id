@@ -3,12 +3,12 @@ pragma solidity ^0.4.15;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
- * WTKeyIndex
- * Public resgitry of user public keys.
+ * WTKeysRegistry
+ * Public registry of user public keys.
  * The public keys are indexed by address and id.
  */
 
-contract WTKeyIndex is Ownable {
+contract WTKeysRegistry is Ownable {
 
   // User ID => Public Key
   mapping (string => string) keys;
