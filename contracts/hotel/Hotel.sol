@@ -6,12 +6,16 @@ import "../Parent.sol";
 /**
    @title Hotel, contract for a Hotel registered in the WT network
 
-   A contract that represents a hotels in the WT network, it stores the
-   hotel main information and, location, address, country, timezone, zip,
-   images and the addresses of the hotel unit types and units.
-   Every hotel have different types for units in his inventory and every
-   unit contract save on childs variable reference an unit type.
-   Uses OpenZeppelin Ownable and Parent contract developed by WT.
+   A contract that represents a hotel in the WT network. It stores the
+   hotel's main information as well as its geographic coordinates, address,
+   country, timezone, zip code, images and the contract addresses of the hotel's
+   unit types and individual units.
+   Every hotel offers different types of units, each type represented
+   by a `UnitType` contract whose address is stored in the mapping `unitTypes`.
+   Each individual unit is represented by its own `Unit` contract, whose address
+   is stored in the `childs` array (inherited from `Parent`).
+
+   Inherits from OpenZeppelin's `Ownable` and WT's `Parent`.
  */
 contract Hotel is Ownable, Parent {
 
@@ -30,7 +34,7 @@ contract Hotel is Ownable, Parent {
   uint public latitude;
   uint public longitude;
 
-  // The unit types contracts indexed by type and index.
+  // The `UnitType` contracts indexed by type and index
   mapping(bytes32 => address) public unitTypes;
   bytes32[] public unitTypeNames;
 
@@ -53,10 +57,10 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `editInfo` allows the owner of the contract to change the hotel
-     main information.
+     @dev `editInfo` allows the owner of the contract to change the hotel's
+     main information
 
-     @param _name The new name of the hotel.
+     @param _name The new name of the hotel
      @param _description The new description of the hotel
    */
   function editInfo(
@@ -68,12 +72,12 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `editAddress` allows the owner of the contract to change the hotel
-     phisical address.
+     @dev `editAddress` allows the owner of the contract to change the hotel's
+     physical address
 
-     @param _lineOne The new main address of the hotel.
+     @param _lineOne The new main address of the hotel
      @param _lineTwo The new second address of the hotel
-     @param _zip The new zip code of the hotel.
+     @param _zip The new zip code of the hotel
      @param _country The new country of the hotel
    */
   function editAddress(
@@ -89,8 +93,8 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `editLocation` allows the owner of the contract to change the hotel
-     location.
+     @dev `editLocation` allows the owner of the contract to change the hotel's
+     location
 
      @param _timezone The new timezone of the hotel
      @param _longitude The new longitude value of the location of the hotel
@@ -107,9 +111,9 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `addUnitType` allows the owner to add a new unit type.
+     @dev `addUnitType` allows the owner to add a new unit type
 
-     @param addr The address of the UnitType contract
+     @param addr The address of the `UnitType` contract
      @param unitType The type of the unit
    */
   function addUnitType(
@@ -122,10 +126,10 @@ contract Hotel is Ownable, Parent {
 	}
 
   /**
-     @dev `addUnit` allows the owner to add a new unit in the inventory.
+     @dev `addUnit` allows the owner to add a new unit to the inventory
 
      @param unitType The type of the unit
-     @param unit The address of the Unit contract
+     @param unit The address of the `Unit` contract
    */
 	function addUnit(
     bytes32 unitType,
@@ -136,16 +140,16 @@ contract Hotel is Ownable, Parent {
 	}
 
   /**
-     @dev `removeUnit` allows the owner to remove a unit in the inventory.
+     @dev `removeUnit` allows the owner to remove a unit from the inventory
 
-     @param unit The address of the Unit contract
+     @param unit The address of the `Unit` contract
    */
   function removeUnit(address unit) onlyOwner() {
 		removeChild(unit);
 	}
 
   /**
-     @dev `addImage` allows the owner to add an image of the hotel.
+     @dev `addImage` allows the owner to add an image of the hotel
 
      @param url The url of the image
    */
@@ -154,19 +158,19 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `removeImage` allows the owner to remove an image of the hotel.
+     @dev `removeImage` allows the owner to remove an image of the hotel
 
-     @param index The index of the image in the images array
+     @param index The image's index in the `images` array
    */
   function removeImage(uint index) onlyOwner() {
     delete images[index];
   }
 
   /**
-     @dev `removeUnitType` allows the owner to remove a unit type.
+     @dev `removeUnitType` allows the owner to remove a unit type
 
-     @param unitType The type on the unit
-     @param index The index in the unitTypeNames array
+     @param unitType The type of unit
+     @param index The unit's index in the `unitTypeNames` array
    */
   function removeUnitType(
     bytes32 unitType,
@@ -181,10 +185,10 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `changeUnitType` allows the owner to change a unit type.
+     @dev `changeUnitType` allows the owner to change a unit type
 
-     @param unitType The type on the unit
-     @param newAddr The new address of the unit type
+     @param unitType The type of unit
+     @param newAddr The new address of the `UnitType` contract
    */
   function changeUnitType(
     bytes32 unitType,
@@ -197,10 +201,10 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `callUnitType` allows the owner to call a unit type.
+     @dev `callUnitType` allows the owner to call a unit type
 
-     @param unitType The type on the unit
-     @param data The data of the call to execute on the unit type contract
+     @param unitType The type of unit
+     @param data The data of the call to execute on the `UnitType` contract
    */
   function callUnitType(
     bytes32 unitType,
@@ -211,10 +215,10 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `callUnit` allows the owner to call a unit.
+     @dev `callUnit` allows the owner to call a unit
 
-     @param unitAddress The address of the unit contract
-     @param data The data of the call to execute on the unit contract
+     @param unitAddress The address of the `Unit` contract
+     @param data The data of the call to execute on the `Unit` contract
    */
   function callUnit(
     address unitAddress,
@@ -225,7 +229,7 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `callIndex` allows a child contract to call the index.
+     @dev `callIndex` allows a child contract to call the index
 
      @param data The data of the call to execute on the index contract
    */
@@ -234,18 +238,18 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `getUnitType` get the address of a unit type.
+     @dev `getUnitType` get the address of a unit type
 
      @param unitType The type of the unit
 
-     @return address Address of the unit type contract
+     @return address Address of the `UnitType` contract
    */
   function getUnitType(bytes32 unitType) constant returns (address) {
     return unitTypes[unitType];
   }
 
   /**
-     @dev `getUnitTypeNames` get the names of all the unitTypes.
+     @dev `getUnitTypeNames` get the names of all the unitTypes
 
      @return bytes32[] Names of all the unit types
    */
@@ -254,9 +258,9 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `getImage` get the url of an image.
+     @dev `getImage` get the url of an image
 
-     @param i The index of the image in the images array
+     @param i The index of the image in the `images` array
 
      @return string Url of the image
    */
@@ -265,9 +269,9 @@ contract Hotel is Ownable, Parent {
   }
 
   /**
-     @dev `getImagesLength` get the length of the images array.
+     @dev `getImagesLength` get the length of the `images` array
 
-     @return uint Length of the images array
+     @return uint Length of the `images` array
    */
   function getImagesLength() constant returns (uint) {
     return images.length;

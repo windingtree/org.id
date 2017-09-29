@@ -3,11 +3,12 @@ pragma solidity ^0.4.15;
 import "../PrivateCall.sol";
 
  /**
-   @title Unit, contract for a unit in the inventory of a hotel contract
+   @title Unit, contract for an individual unit in a Hotel
 
-   A contract that represents a hotel unit in the WT network, it stores the
-   unit avaliability and special prices.
-   Uses PrivateCall contract developed by WT.
+   A contract that represents an individual unit of a hotel registered in the
+   WT network. Tracks the price and availability of this unit.
+
+   Inherits from WT's `PrivateCall`
  */
 contract Unit is PrivateCall {
 
@@ -17,7 +18,10 @@ contract Unit is PrivateCall {
   // The status of the unit
   bool public active;
 
-  // An array of all days avaliability after 01-01-1970
+  /*
+     Mapping of reservations, indexed by date represented by number of days
+     after 01-01-1970
+  */
   mapping(uint => UnitDay) reservations;
   struct UnitDay {
     string specialPrice;
@@ -25,24 +29,24 @@ contract Unit is PrivateCall {
   }
 
   /**
-     @dev Event triggered on every booking done
+     @dev Event triggered on every booking
   **/
   event Book(address from, uint fromDay, uint daysAmount);
 
   /**
-     @dev Constructor. Creates the unit contract in active status
+     @dev Constructor. Creates the `Unit` contract with an active status
 
      @param _owner see `owner`
      @param _unitType see `unitType`
    */
-  function Unit(address _owner, bytes32 _unitType){
+  function Unit(address _owner, bytes32 _unitType) {
     owner = _owner;
     unitType = _unitType;
     active = true;
   }
 
   /**
-     @dev `setActive` allows the owner of the contract to change the status
+     @dev `setActive` allows the owner of the contract to switch the status
 
      @param _active The new status of the unit
    */
@@ -52,10 +56,10 @@ contract Unit is PrivateCall {
 
   /**
      @dev `setPrice` allows the owner of the contract to set a price for
-     a period of time.
+     a range of dates
 
      @param price The price of the unit
-     @param fromDay The starting day of the period of days to change
+     @param fromDay The starting date of the period of days to change
      @param daysAmount The amount of days in the period
    */
   function setPrice(
@@ -69,13 +73,13 @@ contract Unit is PrivateCall {
   }
 
   /**
-     @dev `setPrice` allows the contract to execute a book function itself.
+     @dev `book` allows the contract to execute a book function itself
 
-     @param from The address of the oener of the reservation
+     @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
-     @param finalDataCall A data to execute a call on the hotel contract
-     taht owns this unit
+     @param finalDataCall The data to execute a call on the `Hotel` contract
+     that owns this unit
    */
   function book(
     address from,
@@ -103,7 +107,7 @@ contract Unit is PrivateCall {
   }
 
   /**
-     @dev `getReservation` get the avalibility and price of a day.
+     @dev `getReservation` get the avalibility and price of a day
 
      @param day The number of days after 01-01-1970
 

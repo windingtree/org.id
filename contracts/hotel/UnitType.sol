@@ -5,18 +5,18 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  /**
    @title UnitType, contract for a unit type in a hotel
 
-   A type of unit that a Hotel has in their inventory, it stores the
-   total of units, description, min/max guests, price, amenities and
+   A type of unit that a Hotel has in their inventory. Stores the
+   total number of units, description, min/max guests, price, amenities and
    images.
 
-   Uses Ownable contract developed by open-zeppelin.
+   Inherits from OpenZeppelin's `Ownable`.
  */
 contract UnitType is Ownable {
 
-  // The name on the unit type
+  // The name of the unit type
   bytes32 public unitType;
 
-  // The total amount of units
+  // The total amount of units of this type
   uint public totalUnits;
 
   // The description of the unit type
@@ -49,9 +49,9 @@ contract UnitType is Ownable {
 
   /**
      @dev `edit` allows the owner of the contract to change the description,
-     min/max guests and base price.
+     min/max guests and base price
 
-     @param _price The base price of the unit.
+     @param _price The base price of the unit
      @param _minGuests The minimun amount of guests allowed
      @param _maxGuests The maximun amount of guests allowed
      @param _description The new description
@@ -69,21 +69,21 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `increaseUnits` allows the owner to increase the totalUnits
+     @dev `increaseUnits` allows the owner to increase the `totalUnits`
    */
   function increaseUnits() onlyOwner() {
     totalUnits ++;
   }
 
   /**
-     @dev `decreaseUnits` allows the owner to decrease the totalUnits
+     @dev `decreaseUnits` allows the owner to decrease the `totalUnits`
    */
   function decreaseUnits() onlyOwner() {
     totalUnits --;
   }
 
   /**
-     @dev `addImage` allows the owner to add an image.
+     @dev `addImage` allows the owner to add an image
 
      @param url The url of the image
    */
@@ -92,9 +92,9 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `removeImage` allows the owner to remove an image.
+     @dev `removeImage` allows the owner to remove an image
 
-     @param index The index of the image in the images array
+     @param index The index of the image in the `images` array
    */
   function removeImage(uint imageIndex) onlyOwner() {
     delete images[imageIndex];
@@ -111,7 +111,7 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `removeAmenity` allows the owner to remove an amenity.
+     @dev `removeAmenity` allows the owner to remove an amenity
 
      @param index The index of the amenity in the amenitiesIndex array
    */
@@ -121,7 +121,7 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `GetInfo` get the information of the unit.
+     @dev `GetInfo` get the information of the unit
 
      @return string The description of the unit type
      @return uint The minimun amount guests
@@ -133,7 +133,7 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `getAmenities` get the amenities ids.
+     @dev `getAmenities` get the amenities ids
 
      @return uint[] Array of all the amenities ids in the unit type
    */
@@ -142,9 +142,9 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `getImage` get the url of an image.
+     @dev `getImage` get the url of an image
 
-     @param i The index of the image in the images array
+     @param i The index of the image in the `images` array
 
      @return string Url of the image
    */
@@ -153,9 +153,9 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `getImagesLength` get the length of the images array.
+     @dev `getImagesLength` get the length of the `images` array
 
-     @return uint Length of the images array
+     @return uint Length of the `images` array
    */
   function getImagesLength() constant returns (uint) {
     return images.length;
