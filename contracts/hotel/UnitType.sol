@@ -96,28 +96,28 @@ contract UnitType is Ownable {
 
      @param index The index of the image in the `images` array
    */
-  function removeImage(uint imageIndex) onlyOwner() {
-    delete images[imageIndex];
+  function removeImage(uint index) onlyOwner() {
+    delete images[index];
   }
 
   /**
      @dev `addAmenity` allows the owner to add an amenity.
 
-     @param index The uint of the amenity to add
+     @param amenityId The id of the amenity to add
    */
-  function addAmenity(uint amenity) onlyOwner() {
-    amenitiesIndex[amenity] = amenities.length;
-    amenities.push(amenity);
+  function addAmenity(uint amenityId) onlyOwner() {
+    amenitiesIndex[amenityId] = amenities.length;
+    amenities.push(amenityId);
   }
 
   /**
      @dev `removeAmenity` allows the owner to remove an amenity
 
-     @param index The index of the amenity in the amenitiesIndex array
+     @param amenityId The id of the amenity in the amenitiesIndex array
    */
-  function removeAmenity(uint amenity) onlyOwner() {
-    delete amenities[ amenitiesIndex[amenity] ];
-    amenitiesIndex[amenity] = 0;
+  function removeAmenity(uint amenityId) onlyOwner() {
+    delete amenities[ amenitiesIndex[amenityId] ];
+    amenitiesIndex[amenityId] = 0;
   }
 
   /**
