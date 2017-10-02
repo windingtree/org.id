@@ -102,7 +102,7 @@ contract Unit is PrivateCall {
       for (i = fromDay; i <= toDay ; i++)
         reservations[i].bookedBy = from;
       Book(from, fromDay, toDay);
-      owner.call(finalDataCall);
+      require(owner.call(finalDataCall));
     }
   }
 
