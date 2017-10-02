@@ -1,7 +1,6 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../Parent.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network
@@ -13,11 +12,11 @@ import "../Parent.sol";
    Every hotel offers different types of units, each type represented
    by a `UnitType` contract whose address is stored in the mapping `unitTypes`.
    Each individual unit is represented by its own `Unit` contract, whose address
-   is stored in the `childs` array (inherited from `Parent`).
+   is stored in the `units` array.
 
-   Inherits from OpenZeppelin's `Ownable` and WT's `Parent`.
+   Inherits from OpenZeppelin's `Ownable`
  */
-contract Hotel is Ownable, Parent {
+contract Hotel is Ownable {
 
   // Main information
   string public name;
@@ -38,6 +37,10 @@ contract Hotel is Ownable, Parent {
   mapping(bytes32 => address) public unitTypes;
   bytes32[] public unitTypeNames;
 
+  //Unit addresses
+  mapping(address => uint) public unitsIndex;
+  address[] public units;
+
   // Hotel images
   string[] public images;
 
@@ -54,6 +57,7 @@ contract Hotel is Ownable, Parent {
     manager = _manager;
     created = block.number;
     unitTypeNames.length ++;
+    units.length ++;
   }
 
   /**
@@ -136,7 +140,8 @@ contract Hotel is Ownable, Parent {
     address unit
   ) onlyOwner() {
 		require(unitTypes[unitType] != address(0));
-		addChild(unit);
+    unitsIndex[unit] = units.length;
+    units.push(unit);
 	}
 
   /**
@@ -145,7 +150,8 @@ contract Hotel is Ownable, Parent {
      @param unit The address of the `Unit` contract
    */
   function removeUnit(address unit) onlyOwner() {
-		removeChild(unit);
+    delete units[ unitsIndex[unit] ];
+    delete unitsIndex[unit];
 	}
 
   /**
@@ -195,9 +201,7 @@ contract Hotel is Ownable, Parent {
     address newAddr
   ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
-    removeChild(unitTypes[unitType]);
     unitTypes[unitType] = newAddr;
-    addChild(newAddr);
   }
 
   /**
@@ -224,16 +228,16 @@ contract Hotel is Ownable, Parent {
     address unitAddress,
     bytes data
   ) onlyOwner() {
-    if (childsIndex[unitAddress] > 0)
+    if (unitsIndex[unitAddress] > 0)
       unitAddress.call(data);
   }
 
   /**
-     @dev `callIndex` allows a child contract to call the index
+     @dev `callIndex` allows a `Unit` contract to call `WTIndex`
 
-     @param data The data of the call to execute on the index contract
+     @param data The data of the call to execute on the `WTIndex` contract
    */
-  function callIndex(bytes data) onlyChild() {
+  function callIndex(bytes data) onlyUnit() {
     require(owner.call(data));
   }
 
@@ -275,6 +279,11 @@ contract Hotel is Ownable, Parent {
    */
   function getImagesLength() constant returns (uint) {
     return images.length;
+  }
+
+  modifier onlyUnit() {
+    require(units[unitsIndex[msg.sender]] != 0);
+    _;
   }
 
 }

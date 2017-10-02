@@ -2,7 +2,6 @@ pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./hotel/Hotel.sol";
-import "./Parent.sol";
 
 /*
  * WTIndex
@@ -10,9 +9,10 @@ import "./Parent.sol";
  * The hotels and airlines are saved in array and can be filtered by the owner
  * address.
  */
-contract WTIndex is Ownable, Parent {
+contract WTIndex is Ownable {
 
-  Hotel[] public hotels;
+  address[] public hotels;
+  mapping(address => uint) public hotelsIndex;
   mapping(address => address[]) public hotelsByManager;
 
   address DAO;
@@ -35,9 +35,9 @@ contract WTIndex is Ownable, Parent {
 
   function registerHotel(string name, string description) external {
     Hotel newHotel = new Hotel(name, description, msg.sender);
+    hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
     hotelsByManager[msg.sender].push(newHotel);
-    addChild(newHotel);
 		log();
 	}
 
@@ -46,21 +46,26 @@ contract WTIndex is Ownable, Parent {
 		log();
 	}
 
-  // Only childs methods
+  // Only hotel methods
 
-  function giveVote(address userAddress) onlyChild() {
+  function giveVote(address userAddress) onlyHotel() {
       // TO DO
       voteGiven(msg.sender);
   }
 
   // Public constant methods
 
-  function getHotels() constant returns(Hotel[]){
+  function getHotels() constant returns(address[]){
     return hotels;
   }
 
 	function getHotelsByManager(address owner) constant returns(address[]){
 		return hotelsByManager[owner];
 	}
+
+  modifier onlyHotel() {
+    require(hotels[hotelsIndex[msg.sender]] != 0);
+    _;
+  }
 
 }
