@@ -11,8 +11,10 @@ import "./hotel/Hotel.sol";
  */
 contract WTIndex is Ownable {
 
+  // Array of addresses of `Hotel` contracts and mapping of their index position
   address[] public hotels;
   mapping(address => uint) public hotelsIndex;
+
   mapping(address => address[]) public hotelsByManager;
 
   address DAO;
@@ -20,6 +22,11 @@ contract WTIndex is Ownable {
   event log();
 
   event voteGiven(address receiver);
+
+  modifier onlyHotel() {
+    require(hotels[hotelsIndex[msg.sender]] != 0);
+    _;
+  }
 
 	function WTIndex() {
 		hotels.length ++;
@@ -62,10 +69,5 @@ contract WTIndex is Ownable {
 	function getHotelsByManager(address owner) constant returns(address[]){
 		return hotelsByManager[owner];
 	}
-
-  modifier onlyHotel() {
-    require(hotels[hotelsIndex[msg.sender]] != 0);
-    _;
-  }
 
 }

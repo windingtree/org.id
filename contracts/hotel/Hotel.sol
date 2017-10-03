@@ -37,7 +37,7 @@ contract Hotel is Ownable {
   mapping(bytes32 => address) public unitTypes;
   bytes32[] public unitTypeNames;
 
-  //Unit addresses
+  // Array of addresses of `Unit` contracts and mapping of their index position
   mapping(address => uint) public unitsIndex;
   address[] public units;
 
