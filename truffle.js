@@ -6,7 +6,9 @@ module.exports = {
     development: {
       host: 'localhost',
       port: 8545,
-      network_id: '*'
+      network_id: '*',
+      gas: 0x5B8D80, // 6000000 gas
+      gasPrice: 21000000000 // 21 Gwei
     },
     coverage: {
       host: "localhost",
