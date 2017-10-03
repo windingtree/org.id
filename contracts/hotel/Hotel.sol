@@ -262,6 +262,15 @@ contract Hotel is Ownable {
   }
 
   /**
+     @dev `getUnitsLength` get the length of the `units` array
+
+     @return uint Length of the `units` array
+   */
+  function getUnitsLength() constant returns (uint) {
+    return units.length;
+  }
+
+  /**
      @dev `getImage` get the url of an image
 
      @param i The index of the image in the `images` array
