@@ -4,7 +4,7 @@ var chai = require('chai');
 var moment = require('moment');
 var Web3 = require('web3');
 var abiDecoder = require('abi-decoder');
-var help = require('./helpers.js');
+var help = require('./helpers/index.js');
 var assert = chai.assert;
 
 var WTKeysRegistry = artifacts.require('../contracts/WTKeysRegistry.sol');
@@ -17,6 +17,7 @@ var Unit = artifacts.require('../contracts/hotel/Unit.sol');
 var UnitPublic = artifacts.require('../contracts/hotel/Unit_Public_Interface.sol');
 var UnitOwner = artifacts.require('../contracts/hotel/Unit_Owner_Interface.sol');
 var PrivateCall = artifacts.require('../contracts/PrivateCall.sol');
+var LifToken = artifacts.require('../contracts/lif/LifToken.sol');
 
 var augustoKey, hotelKey;
 
@@ -243,7 +244,8 @@ contract('WTHotel & UnitType', function(accounts) {
   it('Should edit unit type amenities and images using interfaces', async function() {
 
     const wtHotel = await help.createHotel(wtIndex, accounts[2]);
-    const {wtHotelUnit, wtHotelUnitType} = await help.addUnitToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
+    const wtHotelUnitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
+    const wtHotelUnit = await help.addUnitToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
 
     // Assign interfaces
     let UnitTypeOwnerInterface = UnitTypeOwner.at(wtHotelUnitType.address);
@@ -298,13 +300,13 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal('http://wthotel.com/image1', await UnitTypePublicInterface.getImage(0));
     assert.equal('', await UnitTypePublicInterface.getImage(1));
     assert.equal('http://wthotel.com/image3', await UnitTypePublicInterface.getImage(2));
-
   });
 
-it('Should edit unit types "active" status and price using interfaces', async function() {
+  it('Should edit unit types "active" status and price using interfaces', async function() {
 
     const wtHotel = await help.createHotel(wtIndex, accounts[2]);
-    const {wtHotelUnit, wtHotelUnitType} = await help.addUnitToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
+    const wtHotelUnitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
+    const wtHotelUnit = await help.addUnitToHotel(wtIndex, wtHotel, 'BASIC_ROOM', accounts[2]);
 
     // Assign interfaces
     let UnitTypeOwnerInterface = UnitTypeOwner.at(wtHotelUnitType.address);
