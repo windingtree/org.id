@@ -18,10 +18,6 @@ This contract will index and list every hotel and airline of the platform, it wi
 
 On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data between each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the `WTKeysRegistry` that will be used by other users to send encrypted data between them.
 
-### Indexed
-
-The Indexed smart contract is an extension of the Ownable contract from zeppelin-solidity that also sets an index address. One contract that is indexed can require calls to go through the index contract and that calls should be sent by the owner of the destination contract. This allows us to delegate the ownership of the hotels and airlines contracts and keep records of all changes on them outside the blockchain.
-
 ### Parent
 
 A contract that can contain childs contracts registered by address. The contract provides a childs private variable with add/remove child methods and a modifier to request only child contracts as msg.sender on functions.
@@ -56,7 +52,7 @@ Every Hotel registered on Winding Tree will be on a Hotel contract, this contrac
 ##### Hotel Contract Owner interface
 
 ```
-contract Hotel_Owner_Interface is Indexed {
+contract Hotel_Owner_Interface is Ownable {
 
   // Main information
   string public name;
