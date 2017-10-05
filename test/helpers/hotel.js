@@ -130,7 +130,6 @@ async function getHotelInfo(wtHotel){
   const imagesLength = await wtHotel.getImagesLength();
   const images = await jsArrayFromSolidityArray(wtHotel.getImage, parseInt(imagesLength), isZeroString);
 
-
   // Hotel Units
   const units = {};
   const unitsLength = await wtHotel.getUnitsLength();
