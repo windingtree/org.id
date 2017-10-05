@@ -58,9 +58,9 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Edit hotel location
     // To represent 40.426371, -3.703578 GPS position
-    // (90 + 40.426371)*10^5, (180 + (-3.703578))*10^5 = 13042637, 17629642
+    // (90 + 40.426371)*10^5, (180 + (-3.703578))*10^5 = 130426371, 176296422
     // Timezone is represented from 0 to 23, being 0 = UTC and 23 = +22UTC
-    let editLocation = wtHotel.contract.editLocation.getData(2, 13042637, 17629642);
+    let editLocation = wtHotel.contract.editLocation.getData(2, 130426371, 176296422);
     await wtIndex.callHotel(0, editLocation, {from: accounts[2]});
 
     // Add images
@@ -81,8 +81,8 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal('6655', await wtHotel.zip());
     assert.equal('Spain', await wtHotel.country());
     assert.equal(2 , await wtHotel.timezone());
-    assert.equal(17629642, await wtHotel.latitude());
-    assert.equal(13042637, await wtHotel.longitude());
+    assert.equal(176296422, await wtHotel.latitude());
+    assert.equal(130426371, await wtHotel.longitude());
     assert.equal(3 , await wtHotel.getImagesLength());
     assert.equal('http://wthotel.com/image1', await wtHotel.getImage(0));
     assert.equal('', await wtHotel.getImage(1));
@@ -90,7 +90,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Create the unit type on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
-    let addUnitTypeData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address, web3.toHex('BASIC_ROOM'));
+    let addUnitTypeData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address);
     await wtIndex.callHotel(0, addUnitTypeData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
 
@@ -109,7 +109,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Create and add a unit
     let wtHotelUnit = await Unit.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
-    let addUnitData = wtHotel.contract.addUnit.getData(web3.toHex('BASIC_ROOM'), wtHotelUnit.address);
+    let addUnitData = wtHotel.contract.addUnit.getData(wtHotelUnit.address);
     await wtIndex.callHotel(0, addUnitData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnit.owner());
 
@@ -194,24 +194,24 @@ contract('WTHotel & UnitType', function(accounts) {
   it('Should add, edit unit type addresses and remove unit types.', async function() {
 
     let wtHotel = await help.createHotel(wtIndex, accounts[2]);
-    
+
     // Create three unit types on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
-    let callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address, web3.toHex('BASIC_ROOM'));
+    let callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address);
     await wtIndex.callHotel(0, callData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
     assert.equal(wtHotelUnitType.address, await wtHotel.getUnitType(web3.toHex('BASIC_ROOM')));
     if (DEBUG) console.log('WTHotel BASIC_ROOM unit contract address:', wtHotelUnitType.address, '\n');
 
     wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('PREMIUM_ROOM'), {from: accounts[2]});
-    callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address, web3.toHex('PREMIUM_ROOM'));
+    callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address);
     await wtIndex.callHotel(0, callData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
     assert.equal(wtHotelUnitType.address, await wtHotel.getUnitType(web3.toHex('PREMIUM_ROOM')));
     if (DEBUG) console.log('WTHotel PREMIUM_ROOM unit contract address:', wtHotelUnitType.address, '\n');
 
     wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('GOLD_ROOM'), {from: accounts[2]});
-    callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address, web3.toHex('GOLD_ROOM'));
+    callData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address);
     await wtIndex.callHotel(0, callData, {from: accounts[2]});
     assert.equal(wtHotel.address, await wtHotelUnitType.owner());
     assert.equal(wtHotelUnitType.address, await wtHotel.getUnitType(web3.toHex('GOLD_ROOM')));

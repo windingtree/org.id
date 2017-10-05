@@ -1,6 +1,8 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./UnitType_Public_Interface.sol";
+import "./Unit_Public_Interface.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network
@@ -118,12 +120,11 @@ contract Hotel is Ownable {
      @dev `addUnitType` allows the owner to add a new unit type
 
      @param addr The address of the `UnitType` contract
-     @param unitType The type of the unit
    */
   function addUnitType(
-    address addr,
-    bytes32 unitType
+    address addr
   ) onlyOwner() {
+    bytes32 unitType = UnitType_Public_Interface(addr).unitType();
 		require(unitTypes[unitType] == address(0));
 		unitTypes[unitType] = addr;
 		unitTypeNames.push(unitType);
@@ -132,17 +133,15 @@ contract Hotel is Ownable {
   /**
      @dev `addUnit` allows the owner to add a new unit to the inventory
 
-     @param unitType The type of the unit
      @param unit The address of the `Unit` contract
    */
 	function addUnit(
-    bytes32 unitType,
     address unit
   ) onlyOwner() {
-		require(unitTypes[unitType] != address(0));
+		require(unitTypes[Unit_Public_Interface(unit).unitType()] != address(0));
     unitsIndex[unit] = units.length;
     units.push(unit);
-	}
+  }
 
   /**
      @dev `removeUnit` allows the owner to remove a unit from the inventory
@@ -152,7 +151,7 @@ contract Hotel is Ownable {
   function removeUnit(address unit) onlyOwner() {
     delete units[ unitsIndex[unit] ];
     delete unitsIndex[unit];
-	}
+  }
 
   /**
      @dev `addImage` allows the owner to add an image of the hotel

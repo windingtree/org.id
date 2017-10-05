@@ -1,9 +1,9 @@
 const simulateCrowdsale = require('./simulateCrowdsale');
 const hotel = require('./hotel');
-const misc = require('./misc'); 
+const misc = require('./misc');
 
 module.exports = {
-  
+
   // Crowdsale
   simulateCrowdsale: simulateCrowdsale,
 
@@ -20,5 +20,7 @@ module.exports = {
   lifWei2Lif: misc.lifWei2Lif,
   lif2LifWei: misc.lif2LifWei,
   bytes32ToString: misc.bytes32ToString,
-  jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,    
+  locationToUint: misc.locationToUint,
+  locationFromUint: misc.locationToUint,
+  jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,
 }

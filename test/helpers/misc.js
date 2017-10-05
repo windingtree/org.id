@@ -1,17 +1,17 @@
 var utf8 = require('utf8');
 
 module.exports = {
-  
+
   isZeroBytes32: function(val){
     return val === '0x0000000000000000000000000000000000000000000000000000000000000000';
   },
-  
+
   isZeroAddress: function(val){
     return val === '0x0000000000000000000000000000000000000000';
   },
 
   isZeroString: function(val){
-    return !val.length
+    return (val.length) ? false : true;
   },
 
   isZeroUint: function(val){
@@ -28,6 +28,23 @@ module.exports = {
 
   lif2LifWei: function(value){
     return web3.toWei(value, 'ether');
+  },
+
+  locationToUint : function(longitude, latitude){
+    return {
+      long : Math.round((90 + longitude) * 10e5),
+      lat: Math.round((180 + latitude) * 10e5),
+    }
+  },
+
+  locationFromUint : function(longitude, latitude){
+    latitude = parseInt(latitude);
+    longitude = parseInt(longitude);
+
+    return {
+      lat: parseFloat((latitude - (180 * 10e5)) / 10e5).toFixed(6),
+      long: parseFloat((longitude - (90 * 10e5)) / 10e5).toFixed(6)
+    }
   },
 
   // Stolen from the web3 1.0 lib (method is called toUtf8)
@@ -48,11 +65,11 @@ module.exports = {
   },
 
   /**
-   * Traverses a solidity array and returns an array of all its non-zero elements 
+   * Traverses a solidity array and returns an array of all its non-zero elements
    * @param {Function} getAtIndex reference to a getter method (e.g. getImage)
    * @param {Number}   length solidity array's length
    * @param {Function} zeroComparator e.g isZeroAddress
-   * @return {Promise} Array 
+   * @return {Promise} Array
    */
   jsArrayFromSolidityArray: async function(getAtIndex, length, zeroComparator){
     const arr = [];
@@ -63,7 +80,7 @@ module.exports = {
     };
 
     return (zeroComparator !== undefined)
-      ? arr.filter(item => zeroComparator(item))
+      ? arr.filter(item => !zeroComparator(item))
       : arr;
   }
 }
