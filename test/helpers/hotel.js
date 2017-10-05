@@ -8,6 +8,7 @@ const {
   isZeroUint,
   isZeroString,
   bytes32ToString,
+  locationFromUint,
   jsArrayFromSolidityArray
 } = require('./misc')
 
@@ -104,7 +105,7 @@ async function getHotelInfo(wtHotel){
                                            .map(item => parseInt(item));
       // UnitType Info
       const info = {
-        description,
+        typeDescription,
         minGuests,
         maxGuests,
         price
@@ -119,21 +120,20 @@ async function getHotelInfo(wtHotel){
       unitTypes[name].info.maxGuests = parseInt(unitTypes[name].info.maxGuests)
 
       // UnitType Images
-      const method = instance.getImage;
       const length = await instance.getImagesLength();
-      const images = await jsArrayFromSolidityArray(method, length);
+      const images = await jsArrayFromSolidityArray(instance.getImage, parseInt(length), isZeroString);
       unitTypes[name].images = images.filter(item => !isZeroString(item));
     };
   }
 
   // Hotel Images
   const imagesLength = await wtHotel.getImagesLength();
-  const images = await jsArrayFromSolidityArray(wtHotel.getImage, imagesLength);
+  const images = await jsArrayFromSolidityArray(wtHotel.getImage, parseInt(imagesLength), isZeroString);
 
   // Hotel Units
   const units = {};
   const unitsLength = await wtHotel.getUnitsLength();
-  let unitAddresses = await jsArrayFromSolidityArray(wtHotel.units.call, unitsLength.toNumber(), isZeroAddress);
+  const unitAddresses = await jsArrayFromSolidityArray(wtHotel.units.call, parseInt(unitsLength), isZeroAddress);
 
   if(unitAddresses.length){
     for (let address of unitAddresses){
@@ -145,11 +145,36 @@ async function getHotelInfo(wtHotel){
     }
   }
 
+  // Hotel Info
+  const name = await wtHotel.name();
+  const description = await wtHotel.description();
+  const manager = await wtHotel.manager();
+  const lineOne = await wtHotel.lineOne();
+  const lineTwo = await wtHotel.lineTwo();
+  const zip = await wtHotel.zip();
+  const country = await wtHotel.country();
+  const created = await wtHotel.created();
+  const timezone = await wtHotel.timezone();
+  const latitude = await wtHotel.latitude();
+  const longitude = await wtHotel.longitude();
+
   return {
+    name: isZeroString(name) ? null : name,
+    description: isZeroString(description) ? null : description,
+    manager: isZeroAddress(manager) ? null : manager,
+    lineOne : isZeroString(lineOne) ? null : lineOne,
+    lineTwo : isZeroString(lineTwo) ? null : lineTwo,
+    zip : isZeroString(zip) ? null : zip,
+    country : isZeroString(country) ? null : country,
+    created: isZeroUint(created) ? null : parseInt(created),
+    timezone : isZeroUint(timezone) ? null : parseInt(timezone),
+    latitude : isZeroUint(latitude) ? null : locationFromUint(longitude, latitude).lat,
+    longitude : isZeroUint(longitude) ? null : locationFromUint(longitude, latitude).long,
     images: images,
     unitTypeNames: unitTypeNames.map(name => bytes32ToString(name)),
     unitTypes: unitTypes,
-    units: units
+    units: units,
+    unitAddresses: unitAddresses
   }
 }
 

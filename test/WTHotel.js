@@ -58,9 +58,9 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Edit hotel location
     // To represent 40.426371, -3.703578 GPS position
-    // (90 + 40.426371)*10^5, (180 + (-3.703578))*10^5 = 13042637, 17629642
+    // (90 + 40.426371)*10^5, (180 + (-3.703578))*10^5 = 130426371, 176296422
     // Timezone is represented from 0 to 23, being 0 = UTC and 23 = +22UTC
-    let editLocation = wtHotel.contract.editLocation.getData(2, 13042637, 17629642);
+    let editLocation = wtHotel.contract.editLocation.getData(2, 130426371, 176296422);
     await wtIndex.callHotel(0, editLocation, {from: accounts[2]});
 
     // Add images
@@ -81,8 +81,8 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal('6655', await wtHotel.zip());
     assert.equal('Spain', await wtHotel.country());
     assert.equal(2 , await wtHotel.timezone());
-    assert.equal(17629642, await wtHotel.latitude());
-    assert.equal(13042637, await wtHotel.longitude());
+    assert.equal(176296422, await wtHotel.latitude());
+    assert.equal(130426371, await wtHotel.longitude());
     assert.equal(3 , await wtHotel.getImagesLength());
     assert.equal('http://wthotel.com/image1', await wtHotel.getImage(0));
     assert.equal('', await wtHotel.getImage(1));

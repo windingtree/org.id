@@ -141,7 +141,7 @@ contract Hotel is Ownable {
 		require(unitTypes[Unit_Public_Interface(unit).unitType()] != address(0));
     unitsIndex[unit] = units.length;
     units.push(unit);
-	}
+  }
 
   /**
      @dev `removeUnit` allows the owner to remove a unit from the inventory
@@ -151,7 +151,7 @@ contract Hotel is Ownable {
   function removeUnit(address unit) onlyOwner() {
     delete units[ unitsIndex[unit] ];
     delete unitsIndex[unit];
-	}
+  }
 
   /**
      @dev `addImage` allows the owner to add an image of the hotel
