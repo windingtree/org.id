@@ -14,10 +14,6 @@ This contract will list and provide each important contract of the platform, sav
 
 This contract will index and list every hotel and airline of the platform, it will index hotels by geolocation, country, city and name. And it will index all airlines by their name and flight routes.
 
-### WTKeysRegistry
-
-On Winding Tree the users will be available to send value and data using Líf tokens. The users can send data between each other without spending Líf and only paying the mining fee of the Etehreum network. They can register a public key on the `WTKeysRegistry` that will be used by other users to send encrypted data between them.
-
 ### PrivateCall
 
 The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using the `WTKeysRegistry`. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder. By using the `WTKey.js` (from our [example javascript library](https://github.com/windingtree/wt-js-libs/blob/master/libs/WTKey.js)) it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
