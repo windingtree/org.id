@@ -1,6 +1,7 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../Images.sol";
 import "./UnitType_Public_Interface.sol";
 import "./Unit_Public_Interface.sol";
 
@@ -16,9 +17,9 @@ import "./Unit_Public_Interface.sol";
    Each individual unit is represented by its own `Unit` contract, whose address
    is stored in the `units` array.
 
-   Inherits from OpenZeppelin's `Ownable`
+   Inherits from OpenZeppelin's `Ownable` and WT's 'Images'
  */
-contract Hotel is Ownable {
+contract Hotel is Ownable, Images {
 
   // Main information
   string public name;
@@ -43,8 +44,11 @@ contract Hotel is Ownable {
   mapping(address => uint) public unitsIndex;
   address[] public units;
 
-  // Hotel images
-  string[] public images;
+  // Restricts calling a function only to `Unit` contracts of this `Hotel`
+  modifier onlyUnit() {
+    require(units[unitsIndex[msg.sender]] != 0);
+    _;
+  }
 
   /**
      @dev Constructor.
@@ -154,24 +158,6 @@ contract Hotel is Ownable {
   }
 
   /**
-     @dev `addImage` allows the owner to add an image of the hotel
-
-     @param url The url of the image
-   */
-  function addImage(string url) onlyOwner() {
-    images.push(url);
-  }
-
-  /**
-     @dev `removeImage` allows the owner to remove an image of the hotel
-
-     @param index The image's index in the `images` array
-   */
-  function removeImage(uint index) onlyOwner() {
-    delete images[index];
-  }
-
-  /**
      @dev `removeUnitType` allows the owner to remove a unit type
 
      @param unitType The type of unit
@@ -267,31 +253,6 @@ contract Hotel is Ownable {
    */
   function getUnitsLength() constant returns (uint) {
     return units.length;
-  }
-
-  /**
-     @dev `getImage` get the url of an image
-
-     @param i The index of the image in the `images` array
-
-     @return string Url of the image
-   */
-  function getImage(uint i) constant returns (string) {
-    return images[i];
-  }
-
-  /**
-     @dev `getImagesLength` get the length of the `images` array
-
-     @return uint Length of the `images` array
-   */
-  function getImagesLength() constant returns (uint) {
-    return images.length;
-  }
-
-  modifier onlyUnit() {
-    require(units[unitsIndex[msg.sender]] != 0);
-    _;
   }
 
 }

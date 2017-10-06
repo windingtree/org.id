@@ -1,6 +1,7 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../Images.sol";
 
  /**
    @title UnitType, contract for a unit type in a hotel
@@ -9,9 +10,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
    total number of units, description, min/max guests, price, amenities and
    images.
 
-   Inherits from OpenZeppelin's `Ownable`.
+   Inherits from OpenZeppelin's `Ownable` and WT's 'Images'.
  */
-contract UnitType is Ownable {
+contract UnitType is Ownable, Images {
 
   // The name of the unit type
   bytes32 public unitType;
@@ -32,9 +33,6 @@ contract UnitType is Ownable {
   // The amenities in the unit type, represented by uints
   uint[] amenities;
   mapping(uint => uint) amenitiesIndex;
-
-  // The urls of the images of the unit type
-  string[] images;
 
   /**
      @dev Constructor.
@@ -83,24 +81,6 @@ contract UnitType is Ownable {
   }
 
   /**
-     @dev `addImage` allows the owner to add an image
-
-     @param url The url of the image
-   */
-  function addImage(string url) onlyOwner() {
-    images.push(url);
-  }
-
-  /**
-     @dev `removeImage` allows the owner to remove an image
-
-     @param index The index of the image in the `images` array
-   */
-  function removeImage(uint index) onlyOwner() {
-    delete images[index];
-  }
-
-  /**
      @dev `addAmenity` allows the owner to add an amenity.
 
      @param amenityId The id of the amenity to add
@@ -139,26 +119,6 @@ contract UnitType is Ownable {
    */
   function getAmenities() constant returns(uint[]) {
     return (amenities);
-  }
-
-  /**
-     @dev `getImage` get the url of an image
-
-     @param i The index of the image in the `images` array
-
-     @return string Url of the image
-   */
-  function getImage(uint i) constant returns (string) {
-    return images[i];
-  }
-
-  /**
-     @dev `getImagesLength` get the length of the `images` array
-
-     @return uint Length of the `images` array
-   */
-  function getImagesLength() constant returns (uint) {
-    return images.length;
   }
 
 }
