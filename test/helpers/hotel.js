@@ -98,6 +98,7 @@ async function getHotelInfo(wtHotel){
 
       const name = bytes32ToString(typeName);
       unitTypes[name] = {};
+      unitTypes[name].address = instance.address;
 
       // UnitType Amenities
       const amenities = await instance.getAmenities();
