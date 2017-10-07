@@ -186,6 +186,7 @@ contract Hotel is Ownable, Images {
     address newAddr
   ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
+    require(Unit_Public_Interface(newAddr).unitType() == unitType);
     unitTypes[unitType] = newAddr;
   }
 

@@ -377,7 +377,7 @@ contract('Hotel', function(accounts) {
       assert.equal(info.unitTypes[typeNameBasic].address, unitTypeReplacement.address);
     });
 
-    it.skip('should should throw if the replacement typeName is mismatched', async function(){
+    it('should should throw if the replacement typeName is mismatched', async function(){
       const typeNameMismatch = 'MISMATCH';
       const hexMismatch = web3.toHex(typeNameMismatch);
       unitTypeMismatch = await UnitType.new(wtHotel.address, hexMismatch, {from: hotelAccount});
