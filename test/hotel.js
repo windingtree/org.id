@@ -5,9 +5,9 @@ const abiDecoder = require('abi-decoder');
 const WTIndex = artifacts.require('WTIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 const UnitType = artifacts.require('UnitType.sol');
-const UnitTypeOwner = artifacts.require('UnitType_Owner_Interface.sol');
+const UnitTypeInterface = artifacts.require('UnitType_Interface.sol');
 const Unit = artifacts.require('Unit.sol');
-const UnitOwner = artifacts.require('Unit_Owner_Interface.sol');
+const UnitInterface = artifacts.require('Unit_Interface.sol');
 
 contract('Hotel', function(accounts) {
   const hotelName = 'WTHotel';
@@ -425,7 +425,7 @@ contract('Hotel', function(accounts) {
 
     beforeEach(async function() {
       unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
-      typeInterface = await UnitTypeOwner.at(unitType.address);
+      typeInterface = await UnitTypeInterface.at(unitType.address);
     });
 
     it('should execute a call on a UnitType', async function(){
@@ -453,7 +453,7 @@ contract('Hotel', function(accounts) {
     it('should throw if the hotel does not have the UnitType being called', async function(){
       const hexUnknown = web3.toHex('UNKNOWN_ROOM');
       const unknownUnitType = await UnitType.new(wtHotel.address, hexUnknown, {from: hotelAccount});
-      typeInterface = await UnitTypeOwner.at(unknownUnitType.address);
+      typeInterface = await UnitTypeInterface.at(unknownUnitType.address);
 
       const addAmenityData = typeInterface.contract.addAmenity.getData(amenityNumber);
       const callUnitTypeData = wtHotel.contract.callUnitType.getData(hexUnknown, addAmenityData);
@@ -485,8 +485,8 @@ contract('Hotel', function(accounts) {
     beforeEach(async function() {
       unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
-      unitTypeInterface = await UnitTypeOwner.at(unitType.address);
-      unitInterface = await UnitOwner.at(unit.address);
+      unitTypeInterface = await UnitTypeInterface.at(unitType.address);
+      unitInterface = await UnitInterface.at(unit.address);
     });
 
     it('should execute a call on a Unit', async function(){
@@ -556,7 +556,7 @@ contract('Hotel', function(accounts) {
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
       const finishTx = await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
       const voteGivenEvent = abiDecoder.decodeLogs(finishTx.receipt.logs)[1].events[0];
-      assert.equal(voteGivenEvent.value, wtHotel.address);
+      assert.equal(voteGivenEvent.value, hotelAccount);
     });
 
     it('should throw if the calling Unit does not belong to the hotel', async function(){

@@ -3,10 +3,10 @@ pragma solidity ^0.4.15;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
- * Hotel_Owner_Interface
- * Owner interface of Hotel contract
+ * Hotel_Interface
+ * Interface of Hotel contract
  */
-contract Hotel_Owner_Interface is Ownable {
+contract Hotel_Interface is Ownable {
 
   // Main information
   string public name;
