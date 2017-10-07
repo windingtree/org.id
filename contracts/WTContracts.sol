@@ -26,7 +26,6 @@ contract WTContracts is Ownable {
   struct Contract {
     string name;
     address addr;
-    string url;
     string version;
   }
 
@@ -35,18 +34,16 @@ contract WTContracts is Ownable {
 
      @param _name The name of the contract to be registered
      @param _addr The contract's address
-     @param _url The contract's url
      @param _version The contract's version
    */
   function register(
     string _name,
     address _addr,
-    string _url,
     string _version
   ) onlyOwner() external {
     if ((names[_name] == 0) && (addrs[_addr] == 0)){
       total ++;
-      contracts[total] = Contract(_name, _addr, _url, _version);
+      contracts[total] = Contract(_name, _addr, _version);
       names[_name] = total;
       addrs[_addr] = total;
     }
@@ -57,18 +54,15 @@ contract WTContracts is Ownable {
 
      @param _name The name of the contract to edit
      @param _addr The contract's new address
-     @param _url The contract's new url
      @param _version The contract's new version
    */
   function edit(
     string _name,
     address _addr,
-    string _url,
     string _version
   ) onlyOwner() external {
     if (names[_name] > 0){
       contracts[names[_name]].addr = _addr;
-      contracts[names[_name]].url = _url;
       contracts[names[_name]].version = _version;
     }
   }
@@ -81,16 +75,15 @@ contract WTContracts is Ownable {
    */
   function getContract(
     uint _pos
-  ) constant returns(string, address, string, string){
+  ) constant returns(string, address, string){
     if (_pos < total)
       return (
         contracts[_pos].name,
         contracts[_pos].addr,
-        contracts[_pos].url,
         contracts[_pos].version
       );
     else
-      return ("", address(0), "", "");
+      return ("", address(0), "");
   }
 
   /**
@@ -101,16 +94,15 @@ contract WTContracts is Ownable {
    */
   function getByAddr(
     address _addr
-  ) constant returns(string, address, string, string){
+  ) constant returns(string, address, string){
     if (addrs[_addr] > 0)
       return (
         contracts[ addrs[_addr] ].name,
         contracts[ addrs[_addr] ].addr,
-        contracts[ addrs[_addr] ].url,
         contracts[ addrs[_addr] ].version
       );
     else
-      return ("", address(0), "", "");
+      return ("", address(0), "");
   }
 
   /**
@@ -121,16 +113,15 @@ contract WTContracts is Ownable {
    */
   function getByName(
     string _name
-  ) constant returns(string, address, string, string){
+  ) constant returns(string, address, string){
     if (names[_name] > 0)
       return (
         contracts[ names[_name] ].name,
         contracts[ names[_name] ].addr,
-        contracts[ names[_name] ].url,
         contracts[ names[_name] ].version
       );
     else
-      return ("", address(0), "", "");
+      return ("", address(0), "");
   }
 
 }
