@@ -556,7 +556,7 @@ contract('Hotel', function(accounts) {
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
       const finishTx = await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
       const voteGivenEvent = abiDecoder.decodeLogs(finishTx.receipt.logs)[1].events[0];
-      assert.equal(voteGivenEvent.value, wtHotel.address);
+      assert.equal(voteGivenEvent.value, hotelAccount);
     });
 
     it('should throw if the calling Unit does not belong to the hotel', async function(){
