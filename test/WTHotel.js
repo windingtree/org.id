@@ -152,7 +152,7 @@ contract('WTHotel & UnitType', function(accounts) {
     if (DEBUG) console.log('Begin Call events:', beginCallEvent.events);
     assert.equal(accounts[1], beginCallEvent.events[0].value);
     let pendingCallHash = beginCallEvent.events[1].value;
-    let pendingCall = await wtHotelUnit.callsPending.call(pendingCallHash);
+    let pendingCall = await wtHotelUnit.pendingCalls.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending:', pendingCall, '\n');
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
@@ -185,7 +185,7 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(lastDayBooked[0], '');
 
     // Check pendingCall was confirmed
-    let pendingCallTxConfirmed = await wtHotelUnit.callsPending.call(pendingCallHash);
+    let pendingCallTxConfirmed = await wtHotelUnit.pendingCalls.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending confirmed:', pendingCallTxConfirmed);
     assert.equal(true, pendingCallTxConfirmed[2]);
   });

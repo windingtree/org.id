@@ -15,7 +15,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 contract PrivateCall is Ownable {
 
   // The calls requested to be executed indexed by `sha3(data)`
-  mapping(bytes32 => CallPending) public callsPending;
+  mapping(bytes32 => PendingCall) public pendingCalls;
 
   // If the contract will require the owner's confirmation to execute the call
   bool public waitConfirmation;
@@ -25,7 +25,7 @@ contract PrivateCall is Ownable {
     _;
   }
 
-  struct CallPending {
+  struct PendingCall {
     bytes callData;
     address sender;
     bool approved;
@@ -41,14 +41,6 @@ contract PrivateCall is Ownable {
      @dev Event triggered when a call is finished
   **/
   event CallFinish(address from, bytes32 dataHash);
-
-  /**
-     @dev Constructor. Creates the `PrivateCall` contract with
-     `waitConfirmation` set to false
-   */
-  function PrivateCall(){
-    waitConfirmation = false;
-  }
 
   /**
      @dev `changeConfirmation` allows the owner of the contract to switch the
@@ -71,8 +63,8 @@ contract PrivateCall is Ownable {
 
     bytes32 msgDataHash = sha3(msg.data);
 
-    if (callsPending[msgDataHash].sender == address(0)) {
-      callsPending[msgDataHash] = CallPending(
+    if (pendingCalls[msgDataHash].sender == address(0)) {
+      pendingCalls[msgDataHash] = PendingCall(
         publicCallData,
         tx.origin,
         !waitConfirmation,
@@ -80,9 +72,9 @@ contract PrivateCall is Ownable {
       );
       CallStarted( tx.origin, msgDataHash);
       if (!waitConfirmation){
-        if (this.call(callsPending[msgDataHash].callData))
-          callsPending[msgDataHash].success = true;
-        CallFinish(callsPending[msgDataHash].sender, msgDataHash);
+        if (this.call(pendingCalls[msgDataHash].callData))
+          pendingCalls[msgDataHash].success = true;
+        CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
         return true;
       } else {
         return true;
@@ -100,14 +92,14 @@ contract PrivateCall is Ownable {
    */
   function continueCall(bytes32 msgDataHash) onlyOwner() {
 
-    require(callsPending[msgDataHash].sender != address(0));
+    require(pendingCalls[msgDataHash].sender != address(0));
 
-    callsPending[msgDataHash].approved = true;
+    pendingCalls[msgDataHash].approved = true;
 
-    if (this.call(callsPending[msgDataHash].callData))
-      callsPending[msgDataHash].success = true;
+    if (this.call(pendingCalls[msgDataHash].callData))
+      pendingCalls[msgDataHash].success = true;
 
-    CallFinish(callsPending[msgDataHash].sender, msgDataHash);
+    CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
 
   }
 
