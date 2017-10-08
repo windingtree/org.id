@@ -70,6 +70,18 @@ contract WTIndex is Ownable {
 	}
 
   /**
+     @dev `removeHotel` Allows a manager to remove a hotel
+
+     @param index The hotel's index
+   */
+  function removeHotel(uint index) external {
+    require(hotelsByManager[msg.sender][index] != address(0));
+    delete hotels[hotelsIndex[hotelsByManager[msg.sender][index]]];
+    delete hotelsIndex[hotelsByManager[msg.sender][index]];
+    delete hotelsByManager[msg.sender][index];
+	}
+
+  /**
      @dev `callHotel` Call hotel in the index, the hotel can only
      be called by its manager
 

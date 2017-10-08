@@ -337,4 +337,17 @@ contract('WTHotel & UnitType', function(accounts) {
 
   });
 
+  it('Should register a hotel and allow the manager to remove it', async function() {
+
+    // Register two hotels on index
+    await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
+    await wtIndex.registerHotel('WT Hotel2', 'WT Test Hotel2', {from: accounts[2]});
+    let wtHotelAddress = (await wtIndex.getHotelsByManager(accounts[2]))[1];
+
+    // Remove the first hotel
+    await wtIndex.removeHotel(0, {from: accounts[2]});
+    assert.equal('0x0000000000000000000000000000000000000000', (await wtIndex.getHotelsByManager(accounts[2]))[0] );
+    assert.equal(wtHotelAddress, (await wtIndex.getHotelsByManager(accounts[2]))[1] );
+  })
+
 });
