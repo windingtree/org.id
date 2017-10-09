@@ -9,6 +9,11 @@ const UnitTypeOwner = artifacts.require('UnitType_Owner_Interface.sol');
 const Unit = artifacts.require('Unit.sol');
 const UnitOwner = artifacts.require('Unit_Owner_Interface.sol');
 
+abiDecoder.addABI(WTHotel._json.abi);
+abiDecoder.addABI(WTIndex._json.abi);
+abiDecoder.addABI(UnitType._json.abi);
+abiDecoder.addABI(Unit._json.abi);
+
 contract('Hotel', function(accounts) {
   const hotelName = 'WTHotel';
   const hotelDescription = 'WT Test Hotel';
@@ -259,8 +264,7 @@ contract('Hotel', function(accounts) {
     });
 
     it('should throw if the UnitType of the Unit does not exist', async function(){
-      const unknownTypeName = 'OCEAN_ROOM';
-      const unknownTypeNameHex = web3.toHex(unknownTypeName);
+      const unknownTypeNameHex = web3.toHex('UNKNOWN');
       const unit = await Unit.new(wtHotel.address, unknownTypeNameHex, {from: hotelAccount});
       const data = wtHotel.contract.addUnit.getData(unit.address);
 
@@ -303,8 +307,7 @@ contract('Hotel', function(accounts) {
     });
 
     it('should throw if the unit type to be removed does not exist', async function(){
-      const unknownTypeName = 'OCEAN_ROOM';
-      const unknownTypeNameHex = web3.toHex(unknownTypeName);
+      const unknownTypeNameHex = web3.toHex('UNKNOWN');
       const data = wtHotel.contract.removeUnitType.getData(unknownTypeNameHex, validIndex);
 
       try {
@@ -378,8 +381,7 @@ contract('Hotel', function(accounts) {
     });
 
     it('should should throw if the replacement typeName is mismatched', async function(){
-      const typeNameMismatch = 'MISMATCH';
-      const hexMismatch = web3.toHex(typeNameMismatch);
+      const hexMismatch = web3.toHex('MISMATCH');
       unitTypeMismatch = await UnitType.new(wtHotel.address, hexMismatch, {from: hotelAccount});
       const data = wtHotel.contract.changeUnitType.getData(hexBasic, unitTypeMismatch.address);
 
@@ -403,8 +405,7 @@ contract('Hotel', function(accounts) {
     });
 
     it('should throw if the UnitType does not exist', async function(){
-      const typeNameUnknown = 'OCEAN_ROOM';
-      const hexUnknown = web3.toHex(typeNameUnknown);
+      const hexUnknown = web3.toHex('UNKNOWN');
       const data = wtHotel.contract.changeUnitType.getData(hexUnknown, unitTypeReplacement.address);
 
       try {
@@ -531,6 +532,7 @@ contract('Hotel', function(accounts) {
     const augusto = accounts[1];
     const typeName = 'BASIC_ROOM';
     const typeNameHex = web3.toHex(typeName);
+    const userInfo = web3.toHex('user info');
     let unit;
     let bookData;
 
@@ -543,14 +545,8 @@ contract('Hotel', function(accounts) {
     });
 
     it('should transfer a call from a Unit to the Index contract', async function(){
-
-      abiDecoder.addABI(WTHotel._json.abi);
-      abiDecoder.addABI(WTIndex._json.abi);
-      abiDecoder.addABI(UnitType._json.abi);
-      abiDecoder.addABI(Unit._json.abi);
-
       // We expect a giveVote event to have been logged
-      const startTx = await unit.beginCall(bookData, '0x01', {from: augusto});
+      const startTx = await unit.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
       const continueCallData = await unit.contract.continueCall.getData(hash);
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
@@ -561,10 +557,11 @@ contract('Hotel', function(accounts) {
 
     it('should throw if the calling Unit does not belong to the hotel', async function(){
       const unknownUnit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
-      const startTx = await unknownUnit.beginCall('0x01', bookData, {from: augusto});
+      const startTx = await unknownUnit.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
       const continueCallData = await unit.contract.continueCall.getData(hash);
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
+
       try {
         await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
         assert(false);
@@ -578,7 +575,7 @@ contract('Hotel', function(accounts) {
       const setDaoData = wtIndex.contract.setDAO.getData(augusto);
       const callIndexData = wtHotel.contract.callIndex.getData(setDaoData);
       bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
-      const startTx = await unit.beginCall(bookData, '0x01', {from: augusto});
+      const startTx = await unit.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
       const continueCallData = await unit.contract.continueCall.getData(hash);
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
