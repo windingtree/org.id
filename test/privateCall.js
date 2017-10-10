@@ -74,7 +74,9 @@ contract('PrivateCall.sol', function(accounts) {
     const userInfo = web3.toHex('user info');
     let approve;
     let hash;
-    let bookData;
+    let bookData
+    let token;
+    let events;
 
     // Add a unit that accepts instant booking, execute a token.transferData booking
     // Unit is the recipient of tokens
@@ -85,14 +87,14 @@ contract('PrivateCall.sol', function(accounts) {
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
 
       const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
-      const token = LifToken.at(await crowdsale.token.call());
+      token = LifToken.at(await crowdsale.token.call());
 
       const stubData = wtHotel.contract.getUnitsLength.getData();
       bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
       const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
       approve = await token.approveData(unit.address, value, beginCallData, {from: augusto});
 
-      const events = abiDecoder.decodeLogs(approve.receipt.logs);
+      events = abiDecoder.decodeLogs(approve.receipt.logs);
       const approveEvent = events.filter(item => item && item.name === 'CallStarted')[0];
       const dataHashTopic = approveEvent.events.filter(item => item.name === 'dataHash')[0];
       hash = dataHashTopic.value;
@@ -113,7 +115,6 @@ contract('PrivateCall.sol', function(accounts) {
     });
 
     it('should fire a CallStarted event', async function(){
-      const events = abiDecoder.decodeLogs(approve.receipt.logs);
       const callStarted = events.filter(item => item.name === 'CallStarted')[0];
       const fromTopic = callStarted.events.filter(item => item.name === 'from')[0];
       const dataHashTopic = callStarted.events.filter(item => item.name === 'dataHash')[0];
@@ -123,23 +124,38 @@ contract('PrivateCall.sol', function(accounts) {
     });
 
     it('should not fire a CallFinish event', async function(){
-      const events = abiDecoder.decodeLogs(approve.receipt.logs);
       const callFinishedEvents = events.filter(item => item.name === 'CallFinish');
       assert.equal(callFinishedEvents.length, 0);
     });
 
-    it.skip('should not fire a CallStarted event if call is duplicate', async function() {
+    it('should not fire a CallStarted event if call is duplicate', async function() {
       // We've already begun and indentical call in the beforeEach block
-      const begin2 = await unit.beginCall(bookData, userInfo, {from: augusto});
-      const events = abiDecoder.decodeLogs(begin2.receipt.logs);
+      const stubData = wtHotel.contract.getUnitsLength.getData();
+      bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      const approve2 = await token.approveData(unit.address, value, beginCallData, {from: augusto});
+
+      events = abiDecoder.decodeLogs(approve2.receipt.logs);
       const callStartedEvents = events.filter(item => item.name === 'CallStarted');
 
       assert.equal(callStartedEvents.length, 0);
     });
 
-    // Waiting for token integration to test this, beginCall needs to be invoked
-    // as an internal call for the return value to have any meaning.
-    it.skip('should return false if call is duplicate');
+    // First beginCall returns true (it's executed in the beforeEach) so tokens ApprovalData is fired
+    // Second beginCall is duplicate. We know it returns false if there is no ApprovalData event
+    it('should return true on success, return false if call is duplicate', async function(){
+      let approvalDataEvents = events.filter(item => item.name === 'ApprovalData');
+      assert.equal(approvalDataEvents.length, 1);
+
+      const stubData = wtHotel.contract.getUnitsLength.getData();
+      bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      const approve2 = await token.approveData(unit.address, value, beginCallData, {from: augusto});
+
+      events = abiDecoder.decodeLogs(approve2.receipt.logs);
+      approvalDataEvents = events.filter(item => item.name === 'ApprovalData');
+      assert.equal(approvalDataEvents.length, 0);
+    });
   });
 
   describe('beginCall: no confirmation required', function(){

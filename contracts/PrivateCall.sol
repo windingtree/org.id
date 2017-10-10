@@ -52,6 +52,7 @@ contract PrivateCall is Ownable {
     waitConfirmation = _waitConfirmation;
   }
 
+  event Debug(string);
   /**
      @dev `beginCall` requests the execution of a call by the contract
 
@@ -59,7 +60,7 @@ contract PrivateCall is Ownable {
      @param privateData The extra, encrypted data stored as a parameter
      returns true if the call was requested succesfully
    */
-  function beginCall(bytes publicCallData, bytes privateData) returns (bool) {
+  function beginCall(bytes publicCallData, bytes privateData) {
 
     bytes32 msgDataHash = sha3(msg.data);
 
@@ -75,12 +76,9 @@ contract PrivateCall is Ownable {
         if (this.call(pendingCalls[msgDataHash].callData))
           pendingCalls[msgDataHash].success = true;
         CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
-        return true;
-      } else {
-        return true;
       }
     } else {
-      return false;
+      revert();
     }
 
   }
