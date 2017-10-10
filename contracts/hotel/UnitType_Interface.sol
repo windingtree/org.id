@@ -3,10 +3,13 @@ pragma solidity ^0.4.15;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
- * UnitType_Owner_Interface
- * Owner interface of UnitType contract
+ * UnitType_Interface
+ * Interface of UnitType contract
  */
-contract UnitType_Owner_Interface is Ownable {
+contract UnitType_Interface is Ownable {
+
+  bytes32 public unitType;
+  uint public totalUnits;
 
   // Owner methods
   function edit(string description, uint minGuests, uint maxGuests, string price) onlyOwner();
@@ -17,5 +20,9 @@ contract UnitType_Owner_Interface is Ownable {
   function removeUnit(uint unitIndex) onlyOwner();
   function increaseUnits() onlyOwner();
   function decreaseUnits() onlyOwner();
+
+  // Public methods
+  function getInfo() constant returns(string, uint, uint, string, bool);
+  function getAmenities() constant returns(uint[]);
 
 }

@@ -12,7 +12,6 @@ contract('WTContracts', function(accounts) {
   it.skip('Should deploy the contractIndex, deploy keysRegistry, register it and edit it', async function() {
 
     let contractsIndex = await WTContracts.new();
-    let keysRegistry = await WTKeysRegistry.new();
     await contractsIndex.register('KeysRegistry', keysRegistry.contract.address, 'http://windingtree.keys.com/', '1.0.0');
 
     let findByAddr = await contractsIndex.getByAddr(keysRegistry.contract.address);
