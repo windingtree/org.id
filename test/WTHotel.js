@@ -84,9 +84,9 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(176296422, await wtHotel.latitude());
     assert.equal(130426371, await wtHotel.longitude());
     assert.equal(3 , await images.getImagesLength());
-    assert.equal('http://wthotel.com/image1', await images.getImage(0));
-    assert.equal('', await images.getImage(1));
-    assert.equal('http://wthotel.com/image3' ,await images.getImage(2));
+    assert.equal('http://wthotel.com/image1', await images.images(0));
+    assert.equal('', await images.images(1));
+    assert.equal('http://wthotel.com/image3' ,await images.images(2));
 
     // Create the unit type on the hotel
     let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[2]});
@@ -288,18 +288,18 @@ contract('WTHotel & UnitType', function(accounts) {
     callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
     assert.equal(3, await images.getImagesLength());
-    assert.equal('http://wthotel.com/image1', await images.getImage(0));
-    assert.equal('http://wthotel.com/image2', await images.getImage(1));
-    assert.equal('http://wthotel.com/image3', await images.getImage(2));
+    assert.equal('http://wthotel.com/image1', await images.images(0));
+    assert.equal('http://wthotel.com/image2', await images.images(1));
+    assert.equal('http://wthotel.com/image3', await images.images(2));
 
     // Remove image
     callUnitData = images.contract.removeImage.getData(1);
     callUnitData = wtHotel.contract.callUnitType.getData(web3.toHex('BASIC_ROOM'), callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
     assert.equal(3, parseInt(await images.getImagesLength()));
-    assert.equal('http://wthotel.com/image1', await images.getImage(0));
-    assert.equal('', await images.getImage(1));
-    assert.equal('http://wthotel.com/image3', await images.getImage(2));
+    assert.equal('http://wthotel.com/image1', await images.images(0));
+    assert.equal('', await images.images(1));
+    assert.equal('http://wthotel.com/image3', await images.images(2));
   });
 
   it('Should edit unit types "active" status and price using interfaces', async function() {

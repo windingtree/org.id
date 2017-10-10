@@ -34,17 +34,6 @@ contract Images is Ownable {
   }
 
   /**
-     @dev `getImage` get the url of an image
-
-     @param i The index of the image in the `images` array
-
-     @return string Url of the image
-   */
-  function getImage(uint i) constant returns (string) {
-    return images[i];
-  }
-
-  /**
      @dev `getImagesLength` get the length of the `images` array
 
      @return uint Length of the `images` array
