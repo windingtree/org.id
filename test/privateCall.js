@@ -4,9 +4,11 @@ const abiDecoder = require('abi-decoder');
 
 const WTHotel = artifacts.require('Hotel.sol')
 const WTIndex = artifacts.require('WTIndex.sol');
+const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol')
 
 abiDecoder.addABI(Unit._json.abi);
+abiDecoder.addABI(LifToken._json.abi);
 
 contract('PrivateCall.sol', function(accounts) {
   const hotelName = 'WTHotel';
@@ -46,12 +48,20 @@ contract('PrivateCall.sol', function(accounts) {
       assert.notEqual(initialState, finalState);
     });
 
-    it('should throw if non-owner changes confirmation', async function(){
-      const data = unit.contract.changeConfirmation.getData(true);
-      const callUnitData = wtHotel.contract.callUnit.getData(unit.address, data);
-
+    // NB - these would work if sent from Hotel & contracts can send gas
+    it('should only be accessible via the index contract', async function(){
+      // Via unit:
       try {
-        await wtIndex.callHotel(0, callUnitData, {from: nonOwnerAccount});
+        await unit.changeConfirmation(true, {from: hotelAccount});
+        assert(false);
+      } catch(e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+
+      // Via Hotel
+      const data = unit.contract.changeConfirmation.getData(true);
+      try {
+        await wtHotel.callUnit(unit.address, data, {from: hotelAccount});
         assert(false);
       } catch(e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -60,23 +70,35 @@ contract('PrivateCall.sol', function(accounts) {
   });
 
   describe('beginCall: (confirmation required)', function(){
-    let bookData;
-    let begin;
+    const value = help.lif2LifWei(10);
+    const userInfo = web3.toHex('user info');
+    let approve;
     let hash;
-    let userInfo = web3.toHex('user info');
+    let bookData;
 
-    // Add a unit that requires confirmation, beginCall w/ book data and synth msgDataHash
+    // Add a unit that accepts instant booking, execute a token.transferData booking
+    // Unit is the recipient of tokens
     beforeEach(async function() {
+      const nullData = '0x00';
+      const userInfo = web3.toHex('user info');
+
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
-      const giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
-      const callIndexData = wtHotel.contract.callIndex.getData(giveVoteData);
-      bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
-      begin = await unit.beginCall(bookData, userInfo, {from: augusto});
-      const input = web3.eth.getTransaction(begin.tx).input;
-      hash = web3.sha3(input, {encoding: 'hex'});
+
+      const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+      const token = LifToken.at(await crowdsale.token.call());
+
+      const stubData = wtHotel.contract.getUnitsLength.getData();
+      bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      approve = await token.approveData(unit.address, value, beginCallData, {from: augusto});
+
+      const events = abiDecoder.decodeLogs(approve.receipt.logs);
+      const approveEvent = events.filter(item => item && item.name === 'CallStarted')[0];
+      const dataHashTopic = approveEvent.events.filter(item => item.name === 'dataHash')[0];
+      hash = dataHashTopic.value;
     });
 
-    it.skip('should store correct information about the call', async function(){
+    it('should store correct information about the call', async function(){
       const [
         callData,
         sender,
@@ -91,7 +113,7 @@ contract('PrivateCall.sol', function(accounts) {
     });
 
     it('should fire a CallStarted event', async function(){
-      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const events = abiDecoder.decodeLogs(approve.receipt.logs);
       const callStarted = events.filter(item => item.name === 'CallStarted')[0];
       const fromTopic = callStarted.events.filter(item => item.name === 'from')[0];
       const dataHashTopic = callStarted.events.filter(item => item.name === 'dataHash')[0];
@@ -101,12 +123,12 @@ contract('PrivateCall.sol', function(accounts) {
     });
 
     it('should not fire a CallFinish event', async function(){
-      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const events = abiDecoder.decodeLogs(approve.receipt.logs);
       const callFinishedEvents = events.filter(item => item.name === 'CallFinish');
       assert.equal(callFinishedEvents.length, 0);
     });
 
-    it('should not fire a CallStarted event if call is duplicate', async function() {
+    it.skip('should not fire a CallStarted event if call is duplicate', async function() {
       // We've already begun and indentical call in the beforeEach block
       const begin2 = await unit.beginCall(bookData, userInfo, {from: augusto});
       const events = abiDecoder.decodeLogs(begin2.receipt.logs);
@@ -121,30 +143,51 @@ contract('PrivateCall.sol', function(accounts) {
   });
 
   describe('beginCall: no confirmation required', function(){
-    let bookData;
     let begin;
     let hash;
-    let userInfo = web3.toHex('user info');
+    let input;
+    let token;
+    const value = help.lif2LifWei(10);
+    let beginCallData
+    let augustoInitialBalance;
+    let hotelInitialBalance;
 
-    // Add a unit that accepts instant booking, beginCall w/ book data, synth msgData hash
+    // Add a unit that accepts instant booking, execute a token.transferData booking
+    // Unit is the recipient of tokens
     beforeEach(async function() {
+      const nullData = '0x00';
+      const userInfo = web3.toHex('user info');
+
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
-      const giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
-      const callIndexData = wtHotel.contract.callIndex.getData(giveVoteData);
-      bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
-      begin = await unit.beginCall(bookData, userInfo, {from: augusto});
-      const input = web3.eth.getTransaction(begin.tx).input;
-      hash = web3.sha3(input, {encoding: 'hex'});
+
+      const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+      token = LifToken.at(await crowdsale.token.call());
+
+      augustoInitialBalance = await token.balanceOf(augusto);
+      unitInitialBalance = await token.balanceOf(unit.address);
+
+      const stubData = wtHotel.contract.getUnitsLength.getData();
+      const bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
+      beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      begin = await token.transferData(unit.address, value, beginCallData, {from: augusto});
+
+      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const callStarted = events.filter(item => item && item.name === 'CallStarted')[0];
+      const dataHashTopic = callStarted.events.filter(item => item.name === 'dataHash')[0];
+      hash = dataHashTopic.value;
     });
 
     it('should execute the passed callData', async function(){
-      // Checking for a 'Book' event, e.g the book call was executed.
-      const events = abiDecoder.decodeLogs(begin.receipt.logs);
-      const bookEvents = events.filter(item => item && item.name === 'Book');
-      assert.equal(bookEvents.length, 1);
+      const augustoFinalBalance = await token.balanceOf(augusto);
+      const unitFinalBalance = await token.balanceOf(unit.address);
+
+      assert(augustoFinalBalance.toNumber() < augustoInitialBalance.toNumber());
+      assert(unitFinalBalance.toNumber() > unitInitialBalance.toNumber())
+      assert.equal(augustoFinalBalance.toNumber(), augustoInitialBalance.sub(value).toNumber());
+      assert.equal(unitFinalBalance.toNumber(), unitInitialBalance.add(value).toNumber());
     });
 
-    it.skip('should set PendingCall success flag to true on success', async function(){
+    it('should set PendingCall success flag to true on success', async function(){
       const [
         callData,
         sender,
@@ -165,27 +208,98 @@ contract('PrivateCall.sol', function(accounts) {
       assert.equal(dataHashTopic.value, hash);
     });
 
-    // Wait for token integration ?
-    it.skip('should return true if the call fails or succeeds');
+    // Token executes beginCall which succeeds, triggering the TransferData event in LifToken
+    it('should return true if the call succeeds', async function(){
+      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const transferData = events.filter(item => item && item.name === 'TransferData')[0];
+      const fromTopic = transferData.events.filter(item => item.name === 'from')[0];
+      const toTopic = transferData.events.filter(item => item.name === 'to')[0];
+      const valueTopic = transferData.events.filter(item => item.name === 'value')[0];
+      const dataTopic = transferData.events.filter(item => item.name === 'data')[0];
+
+      assert.equal(fromTopic.value, augusto);
+      assert.equal(toTopic.value, unit.address);
+      assert.equal(valueTopic.value, value);
+      assert.equal(dataTopic.value, beginCallData);
+    });
+  });
+
+  describe('beginCall: error cases', function(){
+    let begin;
+
+    // Add a unit that accepts instant booking, set Units active status to false (book will throw)
+    beforeEach(async function() {
+      const nullData = '0x00';
+      const value = help.lif2LifWei(10);
+      const userInfo = web3.toHex('user info');
+
+      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
+      const data = unit.contract.setActive.getData(false);
+      const callUnit = wtHotel.contract.callUnit.getData(unit.address, data);
+      await wtIndex.callHotel(0, callUnit, {from: hotelAccount});
+
+      const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+      const token = LifToken.at(await crowdsale.token.call());
+
+      const bookData = unit.contract.book.getData(augusto, 60, 5, nullData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      begin = await token.transferData(unit.address, value, beginCallData, {from: augusto});
+    });
+
+    it('fires a TransferData event and does not fire a Book event', async function(){
+      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const transferDataEvents = events.filter(item => item && item.name === 'TransferData');
+      const bookEvents = events.filter(item => item && item.name === 'Book');
+
+      assert.equal(transferDataEvents.length, 1);
+      assert.equal(bookEvents.length, 0);
+    });
+
+    it('PendingCall success flag is false on failure', async function(){
+      const events = abiDecoder.decodeLogs(begin.receipt.logs);
+      const callStarted = events.filter(item => item && item.name === 'CallStarted')[0];
+      const dataHashTopic = callStarted.events.filter(item => item.name === 'dataHash')[0];
+      const hash = dataHashTopic.value;
+
+      const [
+        callData,
+        sender,
+        approved,
+        success
+      ] = await unit.pendingCalls.call(hash);
+
+      assert.equal(success, false);
+    });
   });
 
   describe('continueCall: success cases', function(){
-    let hash;
+    const nullData = '0x00';
+    const value = help.lif2LifWei(10);
+    const userInfo = web3.toHex('user info');
     let _continue;
-    let userInfo = web3.toHex('user info');
+    let hash;
+    let token;
 
-    // Add a unit that requires confirmation,
-    // beginCall w/ book data,
-    // synth msgDataHash
-    // execute continueCall via wtIndex.callHotel
+
+    // Add a unit that requires confirmation, execute a token.approveData booking
+    // Unit is the recipient of tokens. Have hotel continue call.
     beforeEach(async function() {
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
-      const giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
-      const callIndexData = wtHotel.contract.callIndex.getData(giveVoteData);
-      const bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
-      const begin = await unit.beginCall(bookData, userInfo, {from: augusto});
-      const input = web3.eth.getTransaction(begin.tx).input;
-      hash = web3.sha3(input, {encoding: 'hex'});
+
+      const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+      token = LifToken.at(await crowdsale.token.call());
+
+      // NB: books call fails unless there is a passing call to the dropthrough. Possibly remove this?
+      // ....
+      const stubData = wtHotel.contract.getUnitsLength.getData();
+      const bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      const approve = await token.approveData(unit.address, value, beginCallData, {from: augusto});
+
+      const events = abiDecoder.decodeLogs(approve.receipt.logs);
+      const approveEvent = events.filter(item => item && item.name === 'CallStarted')[0];
+      const dataHashTopic = approveEvent.events.filter(item => item.name === 'dataHash')[0];
+      hash = dataHashTopic.value;
 
       const continueData = unit.contract.continueCall.getData(hash);
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueData);
@@ -198,7 +312,9 @@ contract('PrivateCall.sol', function(accounts) {
       assert.equal(bookEvents.length, 1);
     });
 
-    it.skip('should set the PendingCall records approved flag to true', async function(){
+    it.skip('should be possible to sweep tokens from the unit')
+
+    it('should set the PendingCall records approved flag to true', async function(){
       const [
         callData,
         sender,
@@ -208,7 +324,7 @@ contract('PrivateCall.sol', function(accounts) {
       assert(approved);
     });
 
-    it.skip('should set the PendingCall records success flag to true if call succeeds', async function(){
+    it('should set the PendingCall records success flag to true if call succeeds', async function(){
       const [
         callData,
         sender,
@@ -248,19 +364,23 @@ contract('PrivateCall.sol', function(accounts) {
       }
     })
 
-    // ....Something's wrong here.....
-    it.skip('PendingCalls success flag should be false if call fails', async function(){
+    // Passing book a null Data call will cause the finalCall to fail...
+    it('PendingCalls success flag should be false if call fails', async function(){
+      const nullData = '0x00';
+      const value = help.lif2LifWei(10);
       const userInfo = web3.toHex('user info');
-      const unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
 
-      // Augusto cannot setDao --> terminal call fails
-      const daoData = wtIndex.contract.setDAO.getData(augusto);
-      const callIndexData = wtHotel.contract.callIndex.getData(daoData);
-      const bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
+      const crowdsale = await help.simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+      token = LifToken.at(await crowdsale.token.call());
 
-      const begin = await unit.beginCall(bookData, userInfo, {from: augusto});
-      const input = web3.eth.getTransaction(begin.tx).input;
-      const hash = web3.sha3(input, {encoding: 'hex'});
+      const bookData = unit.contract.book.getData(augusto, 60, 5, nullData);
+      const beginCallData = unit.contract.beginCall.getData(bookData, userInfo);
+      const approve = await token.approveData(unit.address, value, beginCallData, {from: augusto});
+
+      const events = abiDecoder.decodeLogs(approve.receipt.logs);
+      const approveEvent = events.filter(item => item && item.name === 'CallStarted')[0];
+      const dataHashTopic = approveEvent.events.filter(item => item.name === 'dataHash')[0];
+      const hash = dataHashTopic.value;
 
       const continueData = unit.contract.continueCall.getData(hash);
       const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueData);
