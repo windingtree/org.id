@@ -134,62 +134,6 @@ contract('Hotel', function(accounts) {
     });
   });
 
-  describe('addImage / removeImage', function(){
-    const image1 = 'http://wthotel.com/image1';
-    const image2 = 'http://wthotel.com/image2';
-    const image3 = 'http://wthotel.com/image1';
-
-    it('should add and remove images', async function() {
-      const data1 = wtHotel.contract.addImage.getData(image1);
-      const data2 = wtHotel.contract.addImage.getData(image2);
-
-      await wtIndex.callHotel(0, data1, {from: hotelAccount});
-      await wtIndex.callHotel(0, data2, {from: hotelAccount});
-      let info = await help.getHotelInfo(wtHotel);
-
-      const found1 = info.images.findIndex(item => item === image1);
-      const found2 = info.images.findIndex(item => item === image2);
-      assert.notEqual(found1, -1);
-      assert.notEqual(found2, -1);
-
-      const removeImageData = wtHotel.contract.removeImage.getData(1);
-      await wtIndex.callHotel(0, removeImageData, {from: hotelAccount});
-      info = await help.getHotelInfo(wtHotel);
-
-      const notFound = info.images.findIndex(item => item === image2);
-      assert.equal(notFound, -1);
-    });
-
-    it('should throw if non-owner adds and removes images', async function(){
-      const data1 = wtHotel.contract.addImage.getData(image1);
-      const data2 = wtHotel.contract.addImage.getData(image2);
-
-      // Add one image legitimately
-      await wtIndex.callHotel(0, data1, {from: hotelAccount});
-      const info = await help.getHotelInfo(wtHotel);
-      const found1 = info.images.findIndex(item => item === image1);
-      assert.notEqual(found1, -1);
-
-      // Non-owner add
-      try{
-        await wtIndex.callHotel(0, data1, {from: nonOwnerAccount});
-        assert(false);
-      } catch(e){
-        assert(help.isInvalidOpcodeEx(e));
-      }
-
-      // Non-owner remove at index 0
-      const removeImageData = wtHotel.contract.removeImage.getData(0);
-
-      try {
-        await wtIndex.callHotel(0, removeImageData, {from: nonOwnerAccount});
-        assert(false);
-      } catch(e){
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
-
   describe('addUnitType', function(){
     const typeName = 'BASIC_ROOM';
     const typeNameHex = web3.toHex(typeName);
