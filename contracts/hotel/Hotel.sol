@@ -167,10 +167,8 @@ contract Hotel is Ownable, Images {
     bytes32 unitType,
     uint index
   ) onlyOwner() {
-    require(
-      (unitTypes[unitType] != address(0)) &&
-      (unitTypeNames[index] == unitType)
-    );
+    require(unitTypes[unitType] != address(0));
+    require(unitTypeNames[index] == unitType);
     delete unitTypes[unitType];
     delete unitTypeNames[index];
   }
@@ -214,8 +212,8 @@ contract Hotel is Ownable, Images {
     address unitAddress,
     bytes data
   ) onlyOwner() {
-    if (unitsIndex[unitAddress] > 0)
-      unitAddress.call(data);
+    require(unitsIndex[unitAddress] > 0);
+    require(unitAddress.call(data));
   }
 
   /**
