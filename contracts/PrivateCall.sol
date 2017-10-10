@@ -52,7 +52,6 @@ contract PrivateCall is Ownable {
     waitConfirmation = _waitConfirmation;
   }
 
-  event Debug(string);
   /**
      @dev `beginCall` requests the execution of a call by the contract
 
