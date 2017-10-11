@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "../PrivateCall.sol";
 import "../Images.sol";
 import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
@@ -19,7 +19,7 @@ import "./Unit_Interface.sol";
 
    Inherits from OpenZeppelin's `Ownable` and WT's 'Images'
  */
-contract Hotel is Ownable, Images {
+contract Hotel is PrivateCall, Images {
 
   // Main information
   string public name;
@@ -225,6 +225,29 @@ contract Hotel is Ownable, Images {
    */
   function callIndex(bytes data) onlyUnit() {
     require(owner.call(data));
+  }
+
+  /**
+     @dev `book` allows the contract to execute a book function itself
+
+     @param unitAddress The address of the `Unit` contract
+     @param from The address of the opener of the reservation
+     @param fromDay The starting day of the period of days to book
+     @param daysAmount The amount of days in the booking period
+     @param finalDataCall The data to execute a call on the `Hotel` contract
+     that owns this unit
+   */
+  function book(
+    address unitAddress,
+    address from,
+    uint fromDay,
+    uint daysAmount,
+    bytes finalDataCall
+  ) fromSelf() {
+    require(unitsIndex[unitAddress] > 0);
+    require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
+    if (finalDataCall.length != 0)
+      require(owner.call(finalDataCall));
   }
 
   /**
