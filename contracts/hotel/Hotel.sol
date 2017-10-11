@@ -234,8 +234,7 @@ contract Hotel is PrivateCall, Images {
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
-     @param finalDataCall The data to execute a call on the `Hotel` contract
-     that owns this unit
+     @param finalDataCall The data to execute a call on the `WTIndex` contract
    */
   function book(
     address unitAddress,

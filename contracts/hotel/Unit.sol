@@ -73,11 +73,13 @@ contract Unit is Ownable {
   }
 
   /**
-     @dev `book` allows the contract to execute a book function itself
+     @dev `book` allows the owner to make a reservation
 
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
+
+     @return bool Whether the booking was successful or not
    */
   function book(
     address from,
