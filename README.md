@@ -2,7 +2,7 @@
 
 Smart contracts of the Winding Tree platform.
 
-The smart contracts in the [hotel folder](blob/master/contracts) are designed to upload inventory and interact with it in the WT platform.
+The smart contracts in the [hotel folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/hotel) are designed to upload inventory and interact with it in the WT platform.
 
 ## Requirements
 
