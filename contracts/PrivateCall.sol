@@ -59,30 +59,24 @@ contract PrivateCall is Ownable {
      @param privateData The extra, encrypted data stored as a parameter
      returns true if the call was requested succesfully
    */
-  function beginCall(bytes publicCallData, bytes privateData) returns (bool) {
+  function beginCall(bytes publicCallData, bytes privateData) {
 
-    bytes32 msgDataHash = sha3(msg.data);
+    bytes32 msgDataHash = keccak256(msg.data);
 
-    if (pendingCalls[msgDataHash].sender == address(0)) {
-      pendingCalls[msgDataHash] = PendingCall(
-        publicCallData,
-        tx.origin,
-        !waitConfirmation,
-        false
-      );
-      CallStarted( tx.origin, msgDataHash);
-      if (!waitConfirmation){
-        if (this.call(pendingCalls[msgDataHash].callData))
-          pendingCalls[msgDataHash].success = true;
-        CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
-        return true;
-      } else {
-        return true;
-      }
-    } else {
-      return false;
+    require(pendingCalls[msgDataHash].sender == address(0));
+
+    pendingCalls[msgDataHash] = PendingCall(
+      publicCallData,
+      tx.origin,
+      !waitConfirmation,
+      false
+    );
+    CallStarted( tx.origin, msgDataHash);
+    if (!waitConfirmation){
+      if (this.call(pendingCalls[msgDataHash].callData))
+        pendingCalls[msgDataHash].success = true;
+      CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
     }
-
   }
 
   /**

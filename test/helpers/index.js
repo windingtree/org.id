@@ -1,6 +1,7 @@
 const simulateCrowdsale = require('./simulateCrowdsale');
 const hotel = require('./hotel');
 const misc = require('./misc');
+const privateCall = require('./privateCall');
 
 module.exports = {
 
@@ -12,6 +13,10 @@ module.exports = {
   addUnitToHotel: hotel.addUnitToHotel,
   addUnitTypeToHotel : hotel.addUnitTypeToHotel,
   getHotelInfo: hotel.getHotelInfo,
+
+  // PrivateCall
+  runBeginCall: privateCall.runBeginCall,
+  runContinueCall: privateCall.runContinueCall,
 
   // Misc
   isZeroBytes32: misc.isZeroBytes32,
