@@ -18,7 +18,8 @@ abiDecoder.addABI(LifToken._json.abi);
  * @param  {String}  tokenOp          'approveData' or 'transferData'
  * @param  {Array}   accounts         The truffle contract accounts
  * @param  {Code}    passThroughData  call data to be executed in the Book drop through.
- * @param  {String}  userInfo         optional hex string: useful for non-duplicate calls
+ * @param  {String}  userInfo         hex string: useful for non-duplicate calls
+ * @param  {Address} reciever         optional: `to` parameter for transferDataFrom method
  * @return {Object}
  * @example
  *   const result = {
@@ -36,7 +37,7 @@ abiDecoder.addABI(LifToken._json.abi);
  *
  *   } = await help.runBeginCall(unit, augusto, 'approveData', accounts, getUnitsLengthData)
  */
-async function runBeginCall(caller, clientAccount, tokenOp, accounts, passThroughData, _userInfo ){
+async function runBeginCall(caller, clientAccount, tokenOp, accounts, passThroughData, _userInfo, receiver ){
   const userInfo = _userInfo || web3.toHex('user info');
   const value = lif2LifWei(10);
 
@@ -49,10 +50,13 @@ async function runBeginCall(caller, clientAccount, tokenOp, accounts, passThroug
   const bookData = caller.contract.book.getData(clientAccount, 60, 5, passThroughData);
   const beginCallData = caller.contract.beginCall.getData(bookData, userInfo);
 
-  let tx;
-  (tokenOp === 'approveData')
-    ? tx = await token.approveData(caller.address, value, beginCallData, {from: clientAccount})
-    : tx = await token.transferData(caller.address, value, beginCallData, {from: clientAccount});
+  const tokenOpCalls = {
+    'approveData':      async () => await token.approveData(caller.address, value, beginCallData, {from: clientAccount}),
+    'transferData':     async () => await token.transferData(caller.address, value, beginCallData, {from: clientAccount}),
+    'transferDataFrom': async () => await token.transferDataFrom(caller.address, receiver, value, beginCallData, {from: clientAccount})
+  };
+
+  const tx = await tokenOpCalls[tokenOp]();
 
   const events = abiDecoder.decodeLogs(tx.receipt.logs);
   const callStarted = events.filter(item => item && item.name === 'CallStarted')[0];
@@ -102,3 +106,4 @@ module.exports = {
   runBeginCall: runBeginCall,
   runContinueCall: runContinueCall
 }
+

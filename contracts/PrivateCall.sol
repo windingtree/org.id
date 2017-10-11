@@ -63,23 +63,20 @@ contract PrivateCall is Ownable {
 
     bytes32 msgDataHash = keccak256(msg.data);
 
-    if (pendingCalls[msgDataHash].sender == address(0)) {
-      pendingCalls[msgDataHash] = PendingCall(
-        publicCallData,
-        tx.origin,
-        !waitConfirmation,
-        false
-      );
-      CallStarted( tx.origin, msgDataHash);
-      if (!waitConfirmation){
-        if (this.call(pendingCalls[msgDataHash].callData))
-          pendingCalls[msgDataHash].success = true;
-        CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
-      }
-    } else {
-      revert();
-    }
+    require(pendingCalls[msgDataHash].sender == address(0));
 
+    pendingCalls[msgDataHash] = PendingCall(
+      publicCallData,
+      tx.origin,
+      !waitConfirmation,
+      false
+    );
+    CallStarted( tx.origin, msgDataHash);
+    if (!waitConfirmation){
+      if (this.call(pendingCalls[msgDataHash].callData))
+        pendingCalls[msgDataHash].success = true;
+      CallFinish(pendingCalls[msgDataHash].sender, msgDataHash);
+    }
   }
 
   /**
