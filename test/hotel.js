@@ -182,17 +182,20 @@ contract('Hotel', function(accounts) {
 
     beforeEach(async function(){
       unitType = await UnitType.new(wtHotel.address, typeNameHex, {from: hotelAccount});
+      typeInterface = await UnitTypeInterface.at(unitType.address);
       const data = wtHotel.contract.addUnitType.getData(unitType.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
     });
 
     it('should add a Unit', async function(){
+      const unitTypeCount = await typeInterface.totalUnits();
       const unit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
       const data = wtHotel.contract.addUnit.getData(unit.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
 
       assert.isDefined(info.units[unit.address]);
+      assert.isTrue(unitTypeCount.plus(1).equals(await typeInterface.totalUnits()));
     });
 
     it('should throw if non-owner adds a Unit', async function(){
@@ -281,16 +284,19 @@ contract('Hotel', function(accounts) {
     let unit;
 
     beforeEach(async function() {
-      await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
+      unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
+      typeInterface = await UnitTypeInterface.at(unitType.address);
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
     })
 
     it('should remove a Unit', async function() {
+      const unitTypeCount = await typeInterface.totalUnits();
       const data = wtHotel.contract.removeUnit.getData(unit.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
 
       assert.isUndefined(info.units[unit]);
+      assert.isTrue(unitTypeCount.minus(1).equals(await typeInterface.totalUnits()));
     });
 
     it('should throw if non-owner removes unit', async function() {

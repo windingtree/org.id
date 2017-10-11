@@ -145,6 +145,7 @@ contract Hotel is Ownable, Images {
 		require(unitTypes[Unit_Interface(unit).unitType()] != address(0));
     unitsIndex[unit] = units.length;
     units.push(unit);
+    UnitType_Interface(unitTypes[Unit_Interface(unit).unitType()]).increaseUnits();
   }
 
   /**
@@ -155,6 +156,7 @@ contract Hotel is Ownable, Images {
   function removeUnit(address unit) onlyOwner() {
     delete units[ unitsIndex[unit] ];
     delete unitsIndex[unit];
+    UnitType_Interface(unitTypes[Unit_Interface(unit).unitType()]).decreaseUnits();
   }
 
   /**
