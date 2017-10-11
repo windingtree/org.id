@@ -114,10 +114,10 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(wtHotel.address, await wtHotelUnit.owner());
 
     // Config added unit to wait for confirmation fo calls
-    callUnitData = wtHotelUnit.contract.changeConfirmation.getData(true);
-    callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
+    callUnitData = wtHotel.contract.changeConfirmation.getData(true);
+    //callUnitData = wtHotel.contract.callUnit.getData(wtHotelUnit.address, callUnitData);
     await wtIndex.callHotel(0, callUnitData, {from: accounts[2]});
-    assert.equal(true, await wtHotelUnit.waitConfirmation());
+    assert.equal(true, await wtHotel.waitConfirmation());
 
     // Build the data to book a room
     let dataToSend = {
@@ -137,23 +137,22 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Build giveVote call data
     let giveVoteData = wtIndex.contract.giveVote.getData( await wtHotel.manager());
-    giveVoteData = wtHotel.contract.callIndex.getData(giveVoteData);
 
     // Encode Augusto's private data and create the data to call the public function
     let privateData = web3.toHex(JSON.stringify(dataToSend));
-    let publicData = await wtHotelUnit.contract.book.getData(accounts[1], 60, 5, giveVoteData);
+    let publicData = await wtHotel.contract.book.getData(wtHotelUnit.address, accounts[1], 60, 5, giveVoteData);
     if (DEBUG) console.log('Private data:', privateData);
     if (DEBUG) console.log('Public data:', publicData, '\n');
 
     // Augusto begin the call by sending the public bytes of the call to be executed after receivers review it
-    let beginCalltx = await wtHotelUnit.beginCall(publicData, privateData, {from: accounts[1]});
+    let beginCalltx = await wtHotel.beginCall(publicData, privateData, {from: accounts[1]});
     let beginCalltxCode = web3.eth.getTransaction(beginCalltx.tx).input;
     if (DEBUG) console.log('Begin Call tx:', beginCalltx);
     let beginCallEvent = abiDecoder.decodeLogs(beginCalltx.receipt.logs)[0];
     if (DEBUG) console.log('Begin Call events:', beginCallEvent.events);
     assert.equal(accounts[1], beginCallEvent.events[0].value);
     let pendingCallHash = beginCallEvent.events[1].value;
-    let pendingCall = await wtHotelUnit.pendingCalls.call(pendingCallHash);
+    let pendingCall = await wtHotel.pendingCalls.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending:', pendingCall, '\n');
 
     // The receiver can get the privateData encrypted form the blockchian using the abi-decoder
@@ -165,8 +164,7 @@ contract('WTHotel & UnitType', function(accounts) {
     if (DEBUG) console.log('Decrypted data on receiver:', decryptedDataOnReceiver);
     assert.equal(JSON.parse(decryptedDataOnReceiver).payment, "ETH");
     // After the receiver read and verify the privateData sent by Augusto he can continue the call
-    let continueCallData = await wtHotelUnit.contract.continueCall.getData(pendingCallHash);
-    continueCallData = await wtHotel.contract.callUnit.getData(wtHotelUnit.address, continueCallData);
+    let continueCallData = await wtHotel.contract.continueCall.getData(pendingCallHash);
     let continueCalltx = await wtIndex.callHotel(0, continueCallData, {from: accounts[2]});
     if (DEBUG) console.log('Continue Call tx:', continueCalltx,'\n');
 
@@ -186,7 +184,7 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(lastDayBooked[0], '');
 
     // Check pendingCall was confirmed
-    let pendingCallTxConfirmed = await wtHotelUnit.pendingCalls.call(pendingCallHash);
+    let pendingCallTxConfirmed = await wtHotel.pendingCalls.call(pendingCallHash);
     if (DEBUG) console.log('Call Pending confirmed:', pendingCallTxConfirmed);
     assert.equal(true, pendingCallTxConfirmed[2]);
   });
