@@ -1,6 +1,12 @@
 # WT Smart Contracts
 
-The core of the Winding Tree platform are this smart contracts written in solidity language and deployed on the Etherum public blockchain.
+Smart contracts of the Winding Tree platform.
+
+The smart contracts in the [hotel folder](blob/master/contracts) are designed to upload inventory and interact with it in the WT platform.
+
+## Requirements
+
+Node v7.6 or higher (versions before 7.6 do not support async/await that is used in the LifToken tests)
 
 ## Install
 
@@ -11,18 +17,18 @@ npm install
 
 ## Test
 
-To run unit tests on the contracts:
+* To run all tests: `npm test`
 
-```sh
-npm test
-```
+* To run a specific test: `npm test -- test/WTHotel.js`
 
-To generate a coverage report:
-```
-npm run coverage
-```
+* To generate coverage report: `npm run coverage`
 
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
+
+## License
+
+WT-Contracts is open source and distributed under the Apache License v2.0
+
 
