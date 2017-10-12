@@ -10,7 +10,7 @@ const Unit = artifacts.require('Unit.sol')
 abiDecoder.addABI(Unit._json.abi);
 abiDecoder.addABI(LifToken._json.abi);
 
-contract('PrivateCall.sol', function(accounts) {
+contract('PrivateCall', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const typeName = 'BASIC_ROOM';
@@ -316,7 +316,7 @@ contract('PrivateCall.sol', function(accounts) {
     it.skip('should be possible to sweep tokens from the unit')
   });
 
-  describe('continueCall: failure cases', function(){
+  describe('continueCall: edge / failure cases', function(){
     let unit;
 
     beforeEach(async function() {
@@ -336,7 +336,7 @@ contract('PrivateCall.sol', function(accounts) {
     })
 
     // Passing book a null Data call will cause the finalCall to fail...
-    it('PendingCalls success flag should be false if call fails', async function(){
+    it('PendingCalls success flag should be false if final call fails', async function(){
       const nullData = '0x00';
 
       ({ hash } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, nullData));
@@ -350,6 +350,23 @@ contract('PrivateCall.sol', function(accounts) {
       ] = await hotel.pendingCalls.call(hash);
 
       assert.equal(success, false);
+    });
+
+    // Passing book a zero length finalCall will skip that part of book
+    it('PendingCalls success flag should be true if final call is ommitted', async function(){
+      const noData = '';
+
+      ({ hash } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, noData));
+      await help.runContinueCall(index, hotel, hotelAccount, hash);
+
+      const [
+        callData,
+        sender,
+        approved,
+        success
+      ] = await hotel.pendingCalls.call(hash);
+
+      assert(success);
     });
   });
 });
