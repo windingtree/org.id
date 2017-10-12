@@ -485,35 +485,34 @@ contract('Hotel', function(accounts) {
     const userInfo = web3.toHex('user info');
     let unit;
     let bookData;
+    let giveVoteData;
 
     beforeEach(async function() {
       const unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
-      const giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
-      const callIndexData = wtHotel.contract.callIndex.getData(giveVoteData);
-      bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
+      giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
+      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5, giveVoteData);
     });
 
     it('should transfer a call from a Unit to the Index contract', async function(){
       // We expect a giveVote event to have been logged
-      const startTx = await unit.beginCall(bookData, userInfo, {from: augusto});
+      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await unit.contract.continueCall.getData(hash);
-      const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
-      const finishTx = await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
+      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
+      const finishTx = await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
       const voteGivenEvent = abiDecoder.decodeLogs(finishTx.receipt.logs)[1].events[0];
       assert.equal(voteGivenEvent.value, hotelAccount);
     });
 
     it('should throw if the calling Unit does not belong to the hotel', async function(){
       const unknownUnit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
-      const startTx = await unknownUnit.beginCall(bookData, userInfo, {from: augusto});
+      bookData = wtHotel.contract.book.getData(unknownUnit.address, augusto, 60, 5, giveVoteData);
+      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await unit.contract.continueCall.getData(hash);
-      const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
+      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
 
       try {
-        await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
+        await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx);
@@ -524,14 +523,13 @@ contract('Hotel', function(accounts) {
       // Try to have Unit WTIndex.setDao.
       const setDaoData = wtIndex.contract.setDAO.getData(augusto);
       const callIndexData = wtHotel.contract.callIndex.getData(setDaoData);
-      bookData = unit.contract.book.getData(augusto, 60, 5, callIndexData);
-      const startTx = await unit.beginCall(bookData, userInfo, {from: augusto});
+      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5, callIndexData);
+      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await unit.contract.continueCall.getData(hash);
-      const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueCallData);
+      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
 
       try {
-        await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
+        await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx);

@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "../PrivateCall.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
  /**
    @title Unit, contract for an individual unit in a Hotel
@@ -10,7 +10,7 @@ import "../PrivateCall.sol";
 
    Inherits from WT's `PrivateCall`
  */
-contract Unit is PrivateCall {
+contract Unit is Ownable {
 
   // The type of the unit
   bytes32 public unitType;
@@ -73,38 +73,32 @@ contract Unit is PrivateCall {
   }
 
   /**
-     @dev `book` allows the contract to execute a book function itself
+     @dev `book` allows the owner to make a reservation
 
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
-     @param finalDataCall The data to execute a call on the `Hotel` contract
-     that owns this unit
+
+     @return bool Whether the booking was successful or not
    */
   function book(
     address from,
     uint fromDay,
-    uint daysAmount,
-    bytes finalDataCall
-  ) fromSelf() {
+    uint daysAmount
+  ) onlyOwner() returns(bool) {
     require(active);
-    bool canBook = true;
     uint toDay = fromDay+daysAmount;
 
     for (uint i = fromDay; i <= toDay ; i++){
       if (reservations[i].bookedBy != address(0)) {
-        canBook = false;
-        break;
+        return false;
       }
     }
 
-    if (canBook){
-      for (i = fromDay; i <= toDay ; i++)
-        reservations[i].bookedBy = from;
-      Book(from, fromDay, toDay);
-      if(finalDataCall.length != 0)
-        require(owner.call(finalDataCall));
-    }
+    for (i = fromDay; i <= toDay ; i++)
+      reservations[i].bookedBy = from;
+    Book(from, fromDay, toDay);
+    return true;
   }
 
   /**

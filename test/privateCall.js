@@ -10,37 +10,36 @@ const Unit = artifacts.require('Unit.sol')
 abiDecoder.addABI(Unit._json.abi);
 abiDecoder.addABI(LifToken._json.abi);
 
-contract('PrivateCall.sol', function(accounts) {
+contract('PrivateCall', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const typeName = 'BASIC_ROOM';
 
-  let wtIndex;
-  let wtHotel;
+  let index;
+  let hotel;
   let unitType;
   let unit;
   let stubData;
 
   // Create and register a hotel
   beforeEach( async function(){
-    wtIndex = await WTIndex.new();
-    wtHotel = await help.createHotel(wtIndex, hotelAccount);
-    unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
-    stubData = wtHotel.contract.getUnitsLength.getData();
+    index = await WTIndex.new();
+    hotel = await help.createHotel(index, hotelAccount);
+    unitType = await help.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
+    stubData = index.contract.getHotels.getData();
   });
 
   describe('changeConfirmation', function(){
 
     beforeEach( async function(){
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount);
     })
 
     it('should change the waitConfirmation flag', async function(){
-      const initialState = await unit.waitConfirmation();
-      const data = unit.contract.changeConfirmation.getData(true);
-      const callUnitData = wtHotel.contract.callUnit.getData(unit.address, data);
-      await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
-      const finalState = await unit.waitConfirmation();
+      const initialState = await hotel.waitConfirmation();
+      const data = hotel.contract.changeConfirmation.getData(true);
+      await index.callHotel(0, data, {from: hotelAccount});
+      const finalState = await hotel.waitConfirmation();
 
       assert(finalState);
       assert.notEqual(initialState, finalState);
@@ -48,18 +47,9 @@ contract('PrivateCall.sol', function(accounts) {
 
     // NB - these would work if sent from Hotel & contracts can send gas
     it('should only be accessible via the index contract', async function(){
-      // Via unit:
+      // Via hotel:
       try {
-        await unit.changeConfirmation(true, {from: hotelAccount});
-        assert(false);
-      } catch(e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-
-      // Via Hotel
-      const data = unit.contract.changeConfirmation.getData(true);
-      try {
-        await wtHotel.callUnit(unit.address, data, {from: hotelAccount});
+        await hotel.changeConfirmation(true, {from: hotelAccount});
         assert(false);
       } catch(e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -80,7 +70,7 @@ contract('PrivateCall.sol', function(accounts) {
     // Add a unit that requires confirmation, execute a token.approveData booking
     // Unit is the recipient of tokens
     beforeEach(async function() {
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, true);
       ({
         bookData,
         events,
@@ -88,7 +78,7 @@ contract('PrivateCall.sol', function(accounts) {
         token,
         userInfo,
         value
-      } = await help.runBeginCall(unit, augusto, 'approveData', accounts, stubData));
+      } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, stubData));
     });
 
     it('should store correct information about the call', async function(){
@@ -97,7 +87,7 @@ contract('PrivateCall.sol', function(accounts) {
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert.equal(callData, bookData);
       assert.equal(sender, augusto);
@@ -121,9 +111,9 @@ contract('PrivateCall.sol', function(accounts) {
 
     // We've already begun and indentical call in the beforeEach block
     it('should not fire a CallStarted event if call is duplicate', async function() {
-      const bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
-      const beginCall = unit.contract.beginCall.getData(bookData, userInfo);
-      const approveAgain = await token.approveData(unit.address, value, beginCall, {from: augusto});
+      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
+      const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
+      const approveAgain = await token.approveData(hotel.address, value, beginCall, {from: augusto});
 
       events = abiDecoder.decodeLogs(approveAgain.receipt.logs);
       const callStartedEvents = events.filter(item => item.name === 'CallStarted');
@@ -137,9 +127,9 @@ contract('PrivateCall.sol', function(accounts) {
       let approvals = events.filter(item => item.name === 'ApprovalData');
       assert.equal(approvals.length, 1);
 
-      const bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
-      const beginCall = unit.contract.beginCall.getData(bookData, userInfo);
-      const approveAgain = await token.approveData(unit.address, value, beginCall, {from: augusto});
+      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
+      const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
+      const approveAgain = await token.approveData(hotel.address, value, beginCall, {from: augusto});
 
       events = abiDecoder.decodeLogs(approveAgain.receipt.logs);
       approvals = events.filter(item => item.name === 'ApprovalData');
@@ -160,27 +150,27 @@ contract('PrivateCall.sol', function(accounts) {
     // Add a unit that accepts instant booking, execute a token.transferData booking
     // Unit is the recipient of tokens
     beforeEach(async function() {
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, false);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, false);
       ({
         beginCallData,
-        callerInitialBalance,
+        hotelInitialBalance,
         clientInitialBalance,
         events,
         hash,
         token,
         value
-      } = await help.runBeginCall(unit, augusto, 'transferData', accounts, stubData));
+      } = await help.runBeginCall(hotel, unit, augusto, 'transferData', accounts, stubData));
     });
 
     // Verify that token transfer took place
     it('should execute the passed callData', async function(){
       const augustoFinalBalance = await token.balanceOf(augusto);
-      const unitFinalBalance = await token.balanceOf(unit.address);
+      const hotelFinalBalance = await token.balanceOf(hotel.address);
 
       assert(augustoFinalBalance.toNumber() < clientInitialBalance.toNumber());
-      assert(unitFinalBalance.toNumber() > callerInitialBalance.toNumber())
+      assert(hotelFinalBalance.toNumber() > hotelInitialBalance.toNumber())
       assert.equal(augustoFinalBalance.toNumber(), clientInitialBalance.sub(value).toNumber());
-      assert.equal(unitFinalBalance.toNumber(), callerInitialBalance.add(value).toNumber());
+      assert.equal(hotelFinalBalance.toNumber(), hotelInitialBalance.add(value).toNumber());
     });
 
     it('should set PendingCall success flag to true on success', async function(){
@@ -189,7 +179,7 @@ contract('PrivateCall.sol', function(accounts) {
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert(success);
     });
@@ -212,7 +202,7 @@ contract('PrivateCall.sol', function(accounts) {
       const dataTopic = transferData.events.filter(item => item.name === 'data')[0];
 
       assert.equal(fromTopic.value, augusto);
-      assert.equal(toTopic.value, unit.address);
+      assert.equal(toTopic.value, hotel.address);
       assert.equal(valueTopic.value, value);
       assert.equal(dataTopic.value, beginCallData);
     });
@@ -225,16 +215,16 @@ contract('PrivateCall.sol', function(accounts) {
     // Add a unit that accepts instant booking,
     // Set Unit's active status to false (book will throw)
     beforeEach(async function() {
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, false);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, false);
 
       const data = unit.contract.setActive.getData(false);
-      const callUnit = wtHotel.contract.callUnit.getData(unit.address, data);
-      await wtIndex.callHotel(0, callUnit, {from: hotelAccount});
+      const callUnit = hotel.contract.callUnit.getData(unit.address, data);
+      await index.callHotel(0, callUnit, {from: hotelAccount});
 
       ({
         events,
         hash,
-      } = await help.runBeginCall(unit, augusto, 'transferData', accounts, stubData));
+      } = await help.runBeginCall(hotel, unit, augusto, 'transferData', accounts, stubData));
     });
 
     it('fires a TransferData event and does not fire a Book event', async function(){
@@ -251,17 +241,16 @@ contract('PrivateCall.sol', function(accounts) {
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert.equal(success, false);
     });
 
     // This test makes this verifiable by coverage.
     it('fromSelf modifier throws on indirect calls', async function(){
-      const bookData = unit.contract.book.getData(augusto, 60, 5, stubData);
-      const callUnit = wtHotel.contract.callUnit.getData(unit.address, bookData);
+      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
       try {
-        await wtIndex.callHotel(0, callUnit, {from: hotelAccount});
+        await index.callHotel(0, bookData, {from: hotelAccount});
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -278,14 +267,14 @@ contract('PrivateCall.sol', function(accounts) {
     // Add a unit that requires confirmation, execute a token.approveData booking
     // Have hotel continue call.
     beforeEach(async function() {
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, true);
 
       ({
         hash,
         token,
-      } = await help.runBeginCall(unit, augusto, 'approveData', accounts, stubData));
+      } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, stubData));
 
-      ({ events } = await help.runContinueCall(wtIndex, wtHotel, unit, hotelAccount, hash));
+      ({ events } = await help.runContinueCall(index, hotel, hotelAccount, hash));
     });
 
     it('should execute the pending call', async function(){
@@ -299,7 +288,7 @@ contract('PrivateCall.sol', function(accounts) {
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert(approved);
     });
@@ -310,7 +299,7 @@ contract('PrivateCall.sol', function(accounts) {
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert(success);
     });
@@ -327,20 +316,19 @@ contract('PrivateCall.sol', function(accounts) {
     it.skip('should be possible to sweep tokens from the unit')
   });
 
-  describe('continueCall: failure cases', function(){
+  describe('continueCall: edge / failure cases', function(){
     let unit;
 
     beforeEach(async function() {
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, true);
     });
 
     it('should throw if call hash does not exists in the pendingCalls map', async function(){
       const badHash = '0xabcdef';
-      const continueData = unit.contract.continueCall.getData(badHash);
-      const callUnitData = await wtHotel.contract.callUnit.getData(unit.address, continueData);
+      const continueData = hotel.contract.continueCall.getData(badHash);
 
       try {
-        await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
+        await index.callHotel(0, continueData, {from: hotelAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx);
@@ -348,20 +336,37 @@ contract('PrivateCall.sol', function(accounts) {
     })
 
     // Passing book a null Data call will cause the finalCall to fail...
-    it('PendingCalls success flag should be false if call fails', async function(){
+    it('PendingCalls success flag should be false if final call fails', async function(){
       const nullData = '0x00';
 
-      ({ hash } = await help.runBeginCall(unit, augusto, 'approveData', accounts, nullData));
-      await help.runContinueCall(wtIndex, wtHotel, unit, hotelAccount, hash);
+      ({ hash } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, nullData));
+      await help.runContinueCall(index, hotel, hotelAccount, hash);
 
       const [
         callData,
         sender,
         approved,
         success
-      ] = await unit.pendingCalls.call(hash);
+      ] = await hotel.pendingCalls.call(hash);
 
       assert.equal(success, false);
+    });
+
+    // Passing book a zero length finalCall will skip that part of book
+    it('PendingCalls success flag should be true if final call is ommitted', async function(){
+      const noData = '';
+
+      ({ hash } = await help.runBeginCall(hotel, unit, augusto, 'approveData', accounts, noData));
+      await help.runContinueCall(index, hotel, hotelAccount, hash);
+
+      const [
+        callData,
+        sender,
+        approved,
+        success
+      ] = await hotel.pendingCalls.call(hash);
+
+      assert(success);
     });
   });
 });
