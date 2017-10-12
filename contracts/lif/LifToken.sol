@@ -1,5 +1,6 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
+import "./SmartToken.sol";
 import "zeppelin-solidity/contracts/token/MintableToken.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
 
@@ -10,7 +11,7 @@ import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
    to transfer value and data to execute a call on transfer.
    Uses OpenZeppelin MintableToken and Pausable.
  */
-contract LifToken is MintableToken, Pausable {
+contract LifToken is SmartToken, MintableToken, Pausable {
   // Token Name
   string public constant NAME = "Líf";
 
@@ -20,109 +21,28 @@ contract LifToken is MintableToken, Pausable {
   // Token decimals
   uint public constant DECIMALS = 18;
 
-  // Extra events based on ERC20 events
-  event TransferData(address indexed from, address indexed to, uint value, bytes data);
-  event ApprovalData(address indexed from, address indexed spender, uint value, bytes data);
-
-  function transfer(address _to, uint256 _value) whenNotPaused returns (bool) {
+  function transfer(address _to, uint256 _value) public whenNotPaused returns (bool) {
     return super.transfer(_to, _value);
   }
 
-  function approve(address _spender, uint256 _value) whenNotPaused returns (bool) {
+  function approve(address _spender, uint256 _value) public whenNotPaused returns (bool) {
     return super.approve(_spender, _value);
   }
 
-  function transferFrom(address _from, address _to, uint256 _value) whenNotPaused returns (bool) {
+  function transferFrom(address _from, address _to, uint256 _value) public whenNotPaused returns (bool) {
     return super.transferFrom(_from, _to, _value);
   }
 
-  /**
-     @dev `approveData` is an addition to ERC20 token methods. It allows to
-     approve the transfer of value and execute a call with the sent data.
-
-     @param spender The address which will spend the funds.
-     @param value The amount of tokens to be spent.
-     @param data ABI-encoded contract call. For example generated using web3's
-     getData method
-
-     @return true if the call function was executed successfully
-   */
-  function approveData(address spender, uint256 value, bytes data) whenNotPaused returns (bool) {
-
-    require(spender != address(this));
-
-    allowed[tx.origin][spender] = value;
-
-    if (spender.call(data)) {
-      ApprovalData(tx.origin, spender, value, data);
-      return true;
-    } else {
-      return false;
-    }
-
+  function approveData(address spender, uint256 value, bytes data) public whenNotPaused returns (bool) {
+    return super.approveData(spender, value, data);
   }
 
-  /**
-     @dev Addition to ERC20 token methods. Transfer tokens to a specified
-     address and execute a call with the sent data on the same transaction
-
-     @param to address The address which you want to transfer to
-     @param value uint256 the amout of tokens to be transfered
-     @param data ABI-encoded contract call. For example generated using web3's
-     getData method
-
-     @return true if the call function was executed successfully
-   */
-  function transferData(address to, uint256 value, bytes data) whenNotPaused returns (bool) {
-
-    require(to != address(this));
-
-    // If transfer have value process it
-    if (value > 0) {
-      balances[tx.origin] = balances[tx.origin].sub(value);
-      balances[to] = balances[to].add(value);
-    }
-
-    if (to.call(data)) {
-      TransferData(tx.origin, to, value, data);
-      return true;
-    } else {
-      return false;
-    }
-
+  function transferData(address to, uint256 value, bytes data) public whenNotPaused returns (bool) {
+    return super.transferData(to, value, data);
   }
 
-  /**
-     @dev Addition to ERC20 token methods. Transfer tokens from one address to
-     another and make a contract call on the same transaction
-
-     @param from The address which you want to send tokens from
-     @param to The address which you want to transfer to
-     @param value The amout of tokens to be transferred
-     @param data ABI-encoded contract call. For example generated using web3's
-     getData method
-
-     @return true if the call function was executed successfully
-   */
-  function transferDataFrom(address from, address to, uint256 value, bytes data) whenNotPaused returns (bool) {
-
-    require(to != address(this));
-
-    // If transfer have value process it
-    if (value > 0) {
-      uint256 allowance = allowed[from][tx.origin];
-      balances[from] = balances[from].sub(value);
-      balances[to] = balances[to].add(value);
-      allowed[from][tx.origin] = allowance.sub(value);
-    }
-
-    if (to.call(data)) {
-      TransferData(tx.origin, to, value, data);
-      return true;
-    } else {
-      return false;
-    }
-
+  function transferDataFrom(address from, address to, uint256 value, bytes data) public whenNotPaused returns (bool) {
+    return super.transferDataFrom(from, to, value, data);
   }
 
   /**
@@ -137,8 +57,12 @@ contract LifToken is MintableToken, Pausable {
     balances[burner] = balances[burner].sub(_value);
     totalSupply = totalSupply.sub(_value);
     Burn(burner, _value);
+
+    // a Transfer event to 0x0 can be useful for observers to keep track of
+    // all the Lif by just looking at those events
+    Transfer(burner, address(0), _value);
   }
 
-  event Burn(address indexed burner, uint indexed value);
+  event Burn(address indexed burner, uint value);
 
 }

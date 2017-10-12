@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -69,7 +69,6 @@ contract VestedPayment is Ownable {
     token = LifToken(tokenAddress);
   }
 
-  //
   /**
      @dev Get how many tokens are available to be claimed
    */
@@ -86,14 +85,13 @@ contract VestedPayment is Ownable {
     }
   }
 
-  //
   /**
      @dev Claim the tokens, they can be claimed only by the owner
      of the contract
 
      @param amount how many tokens to be claimed
    */
-  function claimTokens(uint256 amount) onlyOwner {
+  function claimTokens(uint256 amount) public onlyOwner {
     assert(getAvailableTokens() >= amount);
 
     claimed = claimed.add(amount);
