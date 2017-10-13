@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
@@ -39,6 +39,9 @@ contract LifMarketValidationMechanism is Ownable {
   // Amount of tokens that were burned by the MVM
   uint256 public totalBurnedTokens = 0;
 
+  // Amount of wei that was reimbursed via sendTokens calls
+  uint256 public totalReimbursedWei = 0;
+
   // Total supply of tokens when the MVM was created
   uint256 public originalTotalSupply;
 
@@ -61,6 +64,9 @@ contract LifMarketValidationMechanism is Ownable {
   // Events
   event Pause();
   event Unpause(uint256 pausedSeconds);
+
+  event ClaimedWei(uint256 claimedWei);
+  event SentTokens(address indexed sender, uint256 price, uint256 tokens, uint256 returnedWei);
 
   modifier whenNotPaused(){
     assert(!paused);
@@ -103,7 +109,7 @@ contract LifMarketValidationMechanism is Ownable {
      @dev Receives the initial funding from the Crowdsale. Calculates the
      initial buy price as initialWei / totalSupply
     */
-  function fund() payable onlyOwner {
+  function fund() public payable onlyOwner {
     assert(!funded);
 
     originalTotalSupply = lifToken.totalSupply();
@@ -120,7 +126,7 @@ contract LifMarketValidationMechanism is Ownable {
      wei can be distributed back to the foundation every month. It starts with
      very low amounts ending with higher chunks at the end of the MVM lifetime
     */
-  function calculateDistributionPeriods() {
+  function calculateDistributionPeriods() public {
     assert(totalPeriods == 24 || totalPeriods == 48);
     assert(periods.length == 0);
 
@@ -132,17 +138,19 @@ contract LifMarketValidationMechanism is Ownable {
     // the 100% remaining can be claimed by the foundation. Values multipled by 10^5
 
     uint256[24] memory accumDistribution24 = [
-      uint256(0), 18, 117, 351, 767, 1407, 2309,3511, 5047, 6952, 9257
-      ,11995, 15196, 18889, 23104, 27870, 33215, 39166, 45749
-      ,52992, 60921, 69561, 78938, 89076
+      uint256(0), 18, 117, 351, 767, 1407,
+      2309, 3511, 5047, 6952, 9257, 11995,
+      15196, 18889, 23104, 27870, 33215, 39166,
+      45749, 52992, 60921, 69561, 78938, 89076
     ];
 
     uint256[48] memory accumDistribution48 = [
-      uint256(0), 3, 18, 54, 117, 214, 351, 534, 767, 1056, 1406, 1822
-      ,2308, 2869, 3510, 4234, 5046, 5950, 6950, 8051, 9256, 10569
-      ,11994, 13535, 15195, 16978, 18888, 20929, 23104, 25416, 27870
-      ,30468, 33214, 36112, 39165, 42376, 45749, 49286, 52992, 56869
-      ,60921, 65150, 69560, 74155, 78937, 83909, 89075, 94438
+      uint256(0), 3, 18, 54, 117, 214, 351, 534,
+      767, 1056, 1406, 1822, 2308, 2869, 3510, 4234,
+      5046, 5950, 6950, 8051, 9256, 10569, 11994, 13535,
+      15195, 16978, 18888, 20929, 23104, 25416, 27870, 30468,
+      33214, 36112, 39165, 42376, 45749, 49286, 52992, 56869,
+      60921, 65150, 69560, 74155, 78937, 83909, 89075, 94438
     ];
 
     for (uint8 i = 0; i < totalPeriods; i++) {
@@ -161,7 +169,7 @@ contract LifMarketValidationMechanism is Ownable {
 
      @return the current period as a number from 0 to totalPeriods
     */
-  function getCurrentPeriodIndex() constant public returns(uint256) {
+  function getCurrentPeriodIndex() public constant returns(uint256) {
     assert(block.timestamp >= startTimestamp);
     return block.timestamp.sub(startTimestamp).
       sub(totalPausedSeconds).
@@ -203,15 +211,19 @@ contract LifMarketValidationMechanism is Ownable {
 
      @return the maximum wei claimable by the foundation as of now
     */
-  function getMaxClaimableWeiAmount() constant public returns (uint256) {
+  function getMaxClaimableWeiAmount() public constant returns (uint256) {
     if (isFinished()) {
       return this.balance;
     } else {
+      uint256 claimableFromReimbursed = initialBuyPrice.
+        mul(totalBurnedTokens).div(PRICE_FACTOR).
+        sub(totalReimbursedWei);
       uint256 currentCirculation = lifToken.totalSupply();
       uint256 accumulatedDistributionPercentage = getAccumulatedDistributionPercentage();
       uint256 maxClaimable = initialWei.
         mul(accumulatedDistributionPercentage).div(PRICE_FACTOR).
-        mul(currentCirculation).div(originalTotalSupply);
+        mul(currentCirculation).div(originalTotalSupply).
+        add(claimableFromReimbursed);
 
       if (maxClaimable > totalWeiClaimed) {
         return maxClaimable.sub(totalWeiClaimed);
@@ -221,13 +233,11 @@ contract LifMarketValidationMechanism is Ownable {
     }
   }
 
-  event SentTokens(address indexed sender, uint256 price, uint256 tokens, uint256 returnedWei);
-
   /**
      @dev allows to send tokens to the MVM in exchange of Eth at the price
      determined by getBuyPrice. The tokens are burned
     */
-  function sendTokens(uint256 tokens) whenNotPaused {
+  function sendTokens(uint256 tokens) public whenNotPaused {
     require(tokens > 0);
 
     uint256 price = getBuyPrice();
@@ -239,6 +249,7 @@ contract LifMarketValidationMechanism is Ownable {
 
     SentTokens(msg.sender, price, tokens, totalWei);
 
+    totalReimbursedWei = totalReimbursedWei.add(totalWei);
     msg.sender.transfer(totalWei);
   }
 
@@ -258,7 +269,7 @@ contract LifMarketValidationMechanism is Ownable {
      Maximum amount that can be claimed is determined by
      getMaxClaimableWeiAmount
     */
-  function claimEth(uint256 weiAmount) whenNotPaused {
+  function claimWei(uint256 weiAmount) public whenNotPaused {
     require(msg.sender == foundationAddr);
 
     uint256 claimable = getMaxClaimableWeiAmount();
@@ -268,6 +279,8 @@ contract LifMarketValidationMechanism is Ownable {
     foundationAddr.transfer(weiAmount);
 
     totalWeiClaimed = totalWeiClaimed.add(weiAmount);
+
+    ClaimedWei(weiAmount);
   }
 
   /**
@@ -275,7 +288,7 @@ contract LifMarketValidationMechanism is Ownable {
      claimed from the MVM while paused. MVM total lifetime is extended by the
      period it stays paused
     */
-  function pause() onlyOwner whenNotPaused {
+  function pause() public onlyOwner whenNotPaused {
     paused = true;
     pausedTimestamp = block.timestamp;
 
@@ -285,7 +298,7 @@ contract LifMarketValidationMechanism is Ownable {
   /**
      @dev Unpauses the MVM. See `pause` for more details about pausing
     */
-  function unpause() onlyOwner whenPaused {
+  function unpause() public onlyOwner whenPaused {
     uint256 pausedSeconds = block.timestamp.sub(pausedTimestamp);
     totalPausedSeconds = totalPausedSeconds.add(pausedSeconds);
     paused = false;

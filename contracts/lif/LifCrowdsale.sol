@@ -1,4 +1,4 @@
-pragma solidity ^0.4.13;
+pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/lifecycle/Pausable.sol";
@@ -111,7 +111,7 @@ contract LifCrowdsale is Ownable, Pausable {
   /**
      @dev Event triggered every time a presale purchase is done
   **/
-  event TokenPresalePurchase(address beneficiary, uint256 weiAmount, uint256 rate);
+  event TokenPresalePurchase(address indexed beneficiary, uint256 weiAmount, uint256 rate);
 
   /**
      @dev Event triggered on every purchase during the TGE
@@ -177,7 +177,7 @@ contract LifCrowdsale is Ownable, Pausable {
 
      @param _weiPerUSD wei per USD rate valid during the TGE
    */
-  function setWeiPerUSDinTGE(uint256 _weiPerUSD) onlyOwner {
+  function setWeiPerUSDinTGE(uint256 _weiPerUSD) public onlyOwner {
     require(_weiPerUSD > 0);
     assert(block.timestamp < startTimestamp.sub(setWeiLockSeconds));
 
@@ -213,9 +213,8 @@ contract LifCrowdsale is Ownable, Pausable {
 
      @param beneficiary Address to which Lif should be sent
    */
-  function buyTokens(address beneficiary) payable {
+  function buyTokens(address beneficiary) public payable whenNotPaused validPurchase {
     require(beneficiary != address(0));
-    require(validPurchase());
     assert(weiPerUSDinTGE > 0);
 
     uint256 weiAmount = msg.value;
@@ -248,7 +247,7 @@ contract LifCrowdsale is Ownable, Pausable {
    */
   function addPrivatePresaleTokens(
     address beneficiary, uint256 weiSent, uint256 rate
-  ) onlyOwner {
+  ) public onlyOwner {
     require(block.timestamp < startTimestamp);
     require(beneficiary != address(0));
     require(weiSent > 0);
@@ -276,7 +275,7 @@ contract LifCrowdsale is Ownable, Pausable {
 
     // if the minimiun cap for the MVM is not reached transfer all funds to foundation
     // else if the min cap for the MVM is reached, create it and send the remaining funds
-    if (this.balance <= foundationBalanceCapWei) {
+    if (weiRaised <= foundationBalanceCapWei) {
 
       foundationWallet.transfer(this.balance);
 
@@ -345,20 +344,23 @@ contract LifCrowdsale is Ownable, Pausable {
 
   /**
      @dev Modifier
-     @return true if the transaction can buy tokens on TGE
+     ok if the transaction can buy tokens on TGE
    */
-  function validPurchase() internal constant returns (bool) {
+  modifier validPurchase() {
     bool withinPeriod = now >= startTimestamp && now <= end2Timestamp;
     bool nonZeroPurchase = msg.value != 0;
-    return (withinPeriod && nonZeroPurchase);
+    assert(withinPeriod && nonZeroPurchase);
+
+    _;
   }
 
   /**
      @dev Modifier
-     @return true if crowdsale event has ended
+     ok when block.timestamp is past end2Timestamp
   */
-  function hasEnded() public constant returns (bool) {
-    return block.timestamp > end2Timestamp;
+  modifier hasEnded() {
+    assert(block.timestamp > end2Timestamp);
+    _;
   }
 
   /**
@@ -374,9 +376,8 @@ contract LifCrowdsale is Ownable, Pausable {
      @dev Allows a TGE contributor to claim their contributed eth in case the
      TGE has finished without reaching the minCapUSD
    */
-  function claimEth() public {
+  function claimEth() public whenNotPaused hasEnded {
     require(isFinalized);
-    require(hasEnded());
     require(!funded());
 
     uint256 toReturn = purchases[msg.sender];
@@ -393,9 +394,8 @@ contract LifCrowdsale is Ownable, Pausable {
      Mechanism in case the soft cap was exceeded. It also unpauses the token to
      enable transfers. It can be called only once, after `end2Timestamp`
    */
-  function finalize() public {
+  function finalize() public whenNotPaused hasEnded {
     require(!isFinalized);
-    require(hasEnded());
 
     // foward founds and unpause token only if minCap is reached
     if (funded()) {
