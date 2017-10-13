@@ -76,7 +76,7 @@ contract WTContracts is Ownable {
   function getContract(
     uint _pos
   ) constant returns(string, address, string){
-    if (_pos < total)
+    if (_pos <= total)
       return (
         contracts[_pos].name,
         contracts[_pos].addr,
