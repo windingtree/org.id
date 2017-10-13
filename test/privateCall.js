@@ -109,31 +109,18 @@ contract('PrivateCall', function(accounts) {
       assert.equal(callFinishedEvents.length, 0);
     });
 
-    // We've already begun and indentical call in the beforeEach block
-    it('should not fire a CallStarted event if call is duplicate', async function() {
+    // We've already begun and indentical call in the beforeEach block. Smart token requires
+    // that the call succeeds, so approveData will also throw.
+    it('should throw if call is duplicate', async function() {
       const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
       const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
-      const approveAgain = await token.approveData(hotel.address, value, beginCall, {from: augusto});
 
-      events = abiDecoder.decodeLogs(approveAgain.receipt.logs);
-      const callStartedEvents = events.filter(item => item.name === 'CallStarted');
-
-      assert.equal(callStartedEvents.length, 0);
-    });
-
-    // First beginCall returns true (it's executed in the beforeEach) so tokens ApprovalData is fired
-    // Second beginCall is duplicate. We know it returns false if there is no ApprovalData event
-    it('should return true on success, return false if call is duplicate', async function(){
-      let approvals = events.filter(item => item.name === 'ApprovalData');
-      assert.equal(approvals.length, 1);
-
-      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
-      const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
-      const approveAgain = await token.approveData(hotel.address, value, beginCall, {from: augusto});
-
-      events = abiDecoder.decodeLogs(approveAgain.receipt.logs);
-      approvals = events.filter(item => item.name === 'ApprovalData');
-      assert.equal(approvals.length, 0);
+      try {
+        await token.approveData(hotel.address, value, beginCall, {from: augusto});
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
     });
   });
 
@@ -193,18 +180,16 @@ contract('PrivateCall', function(accounts) {
       assert.equal(dataHashTopic.value, hash);
     });
 
-    // Token executes beginCall which succeeds, triggering the TransferData event in LifToken
+    // Token executes beginCall which succeeds, triggering the Transfer event in LifToken
     it('should return true if the call succeeds', async function(){
-      const transferData = events.filter(item => item && item.name === 'TransferData')[0];
-      const fromTopic = transferData.events.filter(item => item.name === 'from')[0];
-      const toTopic = transferData.events.filter(item => item.name === 'to')[0];
-      const valueTopic = transferData.events.filter(item => item.name === 'value')[0];
-      const dataTopic = transferData.events.filter(item => item.name === 'data')[0];
+      const transfer = events.filter(item => item && item.name === 'Transfer')[0];
+      const fromTopic = transfer.events.filter(item => item.name === 'from')[0];
+      const toTopic = transfer.events.filter(item => item.name === 'to')[0];
+      const valueTopic = transfer.events.filter(item => item.name === 'value')[0];
 
       assert.equal(fromTopic.value, augusto);
       assert.equal(toTopic.value, hotel.address);
       assert.equal(valueTopic.value, value);
-      assert.equal(dataTopic.value, beginCallData);
     });
   });
 
@@ -227,11 +212,11 @@ contract('PrivateCall', function(accounts) {
       } = await help.runBeginCall(hotel, unit, augusto, 'transferData', accounts, stubData));
     });
 
-    it('fires a TransferData event and does not fire a Book event', async function(){
-      const transferDataEvents = events.filter(item => item && item.name === 'TransferData');
+    it('fires a Transfer event and does not fire a Book event', async function(){
+      const transferEvents = events.filter(item => item && item.name === 'Transfer');
       const bookEvents = events.filter(item => item && item.name === 'Book');
 
-      assert.equal(transferDataEvents.length, 1);
+      assert.equal(transferEvents.length, 1);
       assert.equal(bookEvents.length, 0);
     });
 
