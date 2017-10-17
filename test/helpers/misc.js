@@ -2,6 +2,9 @@ var utf8 = require('utf8');
 
 module.exports = {
 
+  zeroAddress: '0x0000000000000000000000000000000000000000',
+  zeroBytes32: '0x0000000000000000000000000000000000000000000000000000000000000000',
+
   isZeroBytes32: function(val){
     return val === '0x0000000000000000000000000000000000000000000000000000000000000000';
   },
@@ -82,6 +85,12 @@ module.exports = {
     return (zeroComparator !== undefined)
       ? arr.filter(item => !zeroComparator(item))
       : arr;
+  },
+
+  // Debugging helper
+  pretty: function(msg, obj) {
+    console.log(`<------ ${msg} ------>\n` + JSON.stringify(obj, null, ' '))
+    console.log(`<------- END -------->\n`)
   }
 }
 

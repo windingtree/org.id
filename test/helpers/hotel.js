@@ -16,7 +16,6 @@ const {
  * Async method that creates a new empty Hotel.
  * @param  {Instance} wtIndex            WTIndex contract instance
  * @param  {Address} hotelAccount        address of the hotel's account
- * @param  {Boolean} requireConfirmation optional: require manager confirmation to book unit.
  * @return {Instance} Hotel
  * @example
  *   const wtHotel = await createHotel(accounts[2]);
@@ -25,7 +24,7 @@ const {
 async function createHotel(wtIndex, hotelAccount){
   let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: hotelAccount});
   let wtHotelAddress = await wtIndex.getHotelsByManager(hotelAccount);
-  let wtHotel = WTHotel.at(wtHotelAddress[0]);
+  let wtHotel = await WTHotel.at(wtHotelAddress[0]);
 
   return wtHotel;
 }

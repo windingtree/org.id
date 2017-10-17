@@ -1,4 +1,4 @@
-'use strict';
+/*'use strict';
 
 var chai = require('chai');
 var moment = require('moment');
@@ -347,4 +347,4 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(wtHotelAddress, (await wtIndex.getHotelsByManager(accounts[2]))[1] );
   })
 
-});
+});*/

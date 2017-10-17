@@ -23,6 +23,9 @@ contract WTIndex is Ownable {
   // The address of the DAO contract
   address DAO;
 
+  // Address of the LifToken contract
+  address public LifToken;
+
   /**
      @dev Event triggered every time hotel is registered or called
   **/
@@ -53,6 +56,16 @@ contract WTIndex is Ownable {
    */
   function setDAO(address _DAO) onlyOwner() {
     DAO = _DAO;
+  }
+
+  /**
+     @dev `setLifToken` allows the owner of the contract to change the
+     address of the LifToken contract
+
+     @param _LifToken The new contract address
+   */
+  function setLifToken(address _LifToken) onlyOwner() {
+    LifToken = _LifToken;
   }
 
   /**

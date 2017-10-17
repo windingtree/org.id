@@ -18,6 +18,9 @@ contract Unit is Ownable {
   // The status of the unit
   bool public active;
 
+  // The default price for the Unit in LifTokens
+  uint256 public defaultLifTokenPrice;
+
   /*
      Mapping of reservations, indexed by date represented by number of days
      after 01-01-1970
@@ -62,7 +65,7 @@ contract Unit is Ownable {
      @param fromDay The starting date of the period of days to change
      @param daysAmount The amount of days in the period
    */
-  function setPrice(
+  function setSpecialPrice(
     string price,
     uint fromDay,
     uint daysAmount
@@ -70,6 +73,10 @@ contract Unit is Ownable {
     uint toDay = fromDay+daysAmount;
     for (uint i = fromDay; i < toDay; i++)
       reservations[i].specialPrice = price;
+  }
+
+  function setDefaultLifTokenPrice(uint256 price) onlyOwner() {
+    defaultLifTokenPrice = price;
   }
 
   /**
@@ -89,15 +96,15 @@ contract Unit is Ownable {
     require(active);
     uint toDay = fromDay+daysAmount;
 
-    for (uint i = fromDay; i <= toDay ; i++){
+    for (uint i = fromDay; i < toDay ; i++){
       if (reservations[i].bookedBy != address(0)) {
         return false;
       }
     }
 
-    for (i = fromDay; i <= toDay ; i++)
+    for (i = fromDay; i < toDay ; i++)
       reservations[i].bookedBy = from;
-    Book(from, fromDay, toDay);
+    Book(from, fromDay, daysAmount);
     return true;
   }
 
@@ -117,6 +124,24 @@ contract Unit is Ownable {
       reservations[day].specialPrice,
       reservations[day].bookedBy
     );
+  }
+
+  function getPrice(
+    uint fromDay,
+    uint daysAmount
+  ) constant returns(uint256) {
+    uint toDay = fromDay+daysAmount;
+    uint totalPrice = 0;
+
+    for (uint i = fromDay; i < toDay ; i++){
+      if (bytes(reservations[i].specialPrice).length != 0) {
+        //TODO: add the specialPrice to total
+      } else {
+        totalPrice += defaultLifTokenPrice;
+      }
+    }
+
+    return totalPrice;
   }
 
 }

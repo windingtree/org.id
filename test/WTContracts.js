@@ -9,7 +9,6 @@ contract('WTContracts', function(accounts) {
   const nonOwnerAccount = accounts[3];
   const version = '0.0.1';
   const nullString = '';
-  const nullAddress = '0x0000000000000000000000000000000000000000';
 
   let contracts;
   let hotel;
@@ -128,7 +127,7 @@ contract('WTContracts', function(accounts) {
       const [ name, addr, version ] = await contracts.getContract(badIndex);
 
       assert.equal(name, nullString);
-      assert.equal(addr, nullAddress);
+      assert.equal(addr, help.zeroAddress);
       assert.equal(version, nullString);
     });
   });
@@ -152,7 +151,7 @@ contract('WTContracts', function(accounts) {
       const [ name, addr, version ] = await contracts.getByAddr(badAddress);
 
       assert.equal(name, nullString);
-      assert.equal(addr, nullAddress);
+      assert.equal(addr, help.zeroAddress);
       assert.equal(version, nullString);
     });
   });
@@ -176,7 +175,7 @@ contract('WTContracts', function(accounts) {
       const [ name, addr, version ] = await contracts.getByName(badName);
 
       assert.equal(name, nullString);
-      assert.equal(addr, nullAddress);
+      assert.equal(addr, help.zeroAddress);
       assert.equal(version, nullString);
     });
   });

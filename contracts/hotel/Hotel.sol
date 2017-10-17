@@ -4,6 +4,8 @@ import "../PrivateCall.sol";
 import "../Images.sol";
 import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
+import "../Index_Interface.sol";
+import "zeppelin-solidity/contracts/token/ERC20.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network
@@ -244,7 +246,11 @@ contract Hotel is PrivateCall, Images {
     bytes finalDataCall
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
+    require(daysAmount > 0);
+    uint256 price = Unit_Interface(unitAddress).getPrice(fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
+    require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
+
     if (finalDataCall.length != 0)
       require(owner.call(finalDataCall));
   }

@@ -2,6 +2,7 @@ const simulateCrowdsale = require('./simulateCrowdsale');
 const hotel = require('./hotel');
 const misc = require('./misc');
 const privateCall = require('./privateCall');
+const book = require('./book');
 
 module.exports = {
 
@@ -18,7 +19,12 @@ module.exports = {
   runBeginCall: privateCall.runBeginCall,
   runContinueCall: privateCall.runContinueCall,
 
+  // Book
+  bookInstantly: book.bookInstantly,
+
   // Misc
+  zeroAddress: misc.zeroAddress,
+  zeroBytes32: misc.zeroBytes32,
   isZeroBytes32: misc.isZeroBytes32,
   isZeroAddress: misc.isZeroAddress,
   isInvalidOpcodeEx: misc.isInvalidOpcodeEx,
@@ -28,4 +34,5 @@ module.exports = {
   locationToUint: misc.locationToUint,
   locationFromUint: misc.locationToUint,
   jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,
+  pretty: misc.pretty
 }
