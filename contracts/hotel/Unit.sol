@@ -1,7 +1,6 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "../DateTimeAPI.sol";
 
  /**
    @title Unit, contract for an individual unit in a Hotel
@@ -9,12 +8,9 @@ import "../DateTimeAPI.sol";
    A contract that represents an individual unit of a hotel registered in the
    WT network. Tracks the price and availability of this unit.
 
-   Inherits from WT's `PrivateCall` and Piper Merriam's `DateTimeAPI`
+   Inherits from WT's `PrivateCall`
  */
 contract Unit is Ownable {
-
-  // API for using date and time utilities
-  DateTimeAPI date;
 
   // The type of the unit
   bytes32 public unitType;
@@ -62,16 +58,6 @@ contract Unit is Ownable {
   }
 
   /**
-     @dev `setDateTime` allows the owner of the contract to change the
-     address of the DateTime contract
-
-     @param _date The new contract address
-   */
-  function setDateTime(address _date) onlyOwner() {
-    date = DateTimeAPI(_date);
-  }
-
-  /**
      @dev `setPrice` allows the owner of the contract to set a price for
      a range of dates
 
@@ -98,7 +84,6 @@ contract Unit is Ownable {
 
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
-     @param fromDayTimestamp The starting day in seconds since epoch
      @param daysAmount The amount of days in the booking period
 
      @return bool Whether the booking was successful or not
@@ -106,10 +91,8 @@ contract Unit is Ownable {
   function book(
     address from,
     uint fromDay,
-    uint fromDayTimestamp,
     uint daysAmount
   ) onlyOwner() returns(bool) {
-    require(isFutureDay(fromDayTimestamp));
     require(active);
     uint toDay = fromDay+daysAmount;
 
@@ -159,24 +142,6 @@ contract Unit is Ownable {
     }
 
     return totalPrice;
-  }
-
-  /**
-     @dev `isFutureDay` checks that a timestamp is not a past date
-
-     @param time The number of seconds after 01-01-1970
-
-     @return bool If the timestamp is today or in the future
-   */
-  function isFutureDay(uint time) internal returns (bool) {
-    if (date.getYear(time) < date.getYear(now))
-      return false;
-    if(date.getMonth(time) < date.getMonth(now))
-      return false;
-    if(date.getMonth(time) == date.getMonth(now)
-    && date.getDay(time) <= date.getDay(now))
-      return false;
-    return true;
   }
 
 }

@@ -6,7 +6,6 @@ const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol');
 const Hotel = artifacts.require('Hotel.sol');
 const WTIndex = artifacts.require('WTIndex.sol');
-const DateTime = artifacts.require('DateTime.sol');
 
 abiDecoder.addABI(Unit._json.abi);
 abiDecoder.addABI(LifToken._json.abi);
@@ -22,7 +21,6 @@ abiDecoder.addABI(WTIndex._json.abi);
  * @param  {Instance} unit             Unit instance being booked
  * @param  {Address}  client           Address of the person making a booking
  * @param  {Number}   fromDay          Day after 01-01-1970 booking starts
- * @param  {Number}   fromDayTimestamp Seconds after 01-01-1970 booking starts
  * @param  {Number}   daysAmount       Number of days to book for
  * @param  {Number}   price            Default LifToken price ?
  * @param  {String}   tokenOp          'approveData' || 'transferData' || 'transferDataFrom'
@@ -51,7 +49,6 @@ async function runBeginCall(
   unit,
   client,
   fromDay,
-  fromDayTimestamp,
   daysAmount,
   price,
   tokenOp,
@@ -61,8 +58,6 @@ async function runBeginCall(
 ){
 
   const wtIndex = await WTIndex.at(await hotel.owner());
-  // const dateTime = await DateTime.new();
-  // await wtIndex.setDateTime(dateTime.address);
 
   // Options: userInfo?
   let userInfo;
@@ -97,7 +92,7 @@ async function runBeginCall(
   const clientInitialBalance = await token.balanceOf(client);
 
   // Compose token call
-  const bookData = hotel.contract.book.getData(unit.address, client, fromDay, fromDayTimestamp, daysAmount, passThroughData);
+  const bookData = hotel.contract.book.getData(unit.address, client, fromDay, daysAmount, passThroughData);
   const beginCallData = hotel.contract.beginCall.getData(bookData, userInfo);
 
   const tokenOpCalls = {

@@ -26,9 +26,6 @@ contract WTIndex is Ownable {
   // Address of the LifToken contract
   address public LifToken;
 
-  // Address of the DateTime contract
-  address public DateTime;
-
   /**
      @dev Event triggered every time hotel is registered or called
   **/
@@ -46,11 +43,8 @@ contract WTIndex is Ownable {
 
   /**
      @dev Constructor. Creates the `WTIndex` contract
-
-     @param _DateTime Address of the DateTime utility contract
    */
-	function WTIndex(address _DateTime) {
-    DateTime = _DateTime;
+	function WTIndex() {
 		hotels.length ++;
 	}
 
@@ -72,16 +66,6 @@ contract WTIndex is Ownable {
    */
   function setLifToken(address _LifToken) onlyOwner() {
     LifToken = _LifToken;
-  }
-
-  /**
-     @dev `setDateTime` allows the owner of the contract to change the
-     address of the DateTime contract
-
-     @param _DateTime The new contract address
-   */
-  function setDateTime(address _DateTime) onlyOwner() {
-    DateTime = _DateTime;
   }
 
   /**
