@@ -3,6 +3,7 @@ const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
 
 const WTIndex = artifacts.require('WTIndex.sol');
+const DateTime = artifacts.require('DateTime.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 const UnitType = artifacts.require('UnitType.sol');
 const UnitTypeInterface = artifacts.require('UnitType_Interface.sol');
@@ -20,11 +21,16 @@ contract('Hotel', function(accounts) {
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   let wtIndex;
+  let dateTime;
   let wtHotel;
+
+  before(async function() {
+    dateTime = await DateTime.new();
+  })
 
   // Create and register a hotel
   beforeEach( async function(){
-    wtIndex = await WTIndex.new();
+    wtIndex = await WTIndex.new(dateTime.address);
     await wtIndex.registerHotel(hotelName, hotelDescription, {from: hotelAccount});
     let address = await wtIndex.getHotelsByManager(hotelAccount);
     wtHotel = WTHotel.at(address[0]);

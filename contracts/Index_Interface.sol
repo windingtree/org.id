@@ -7,5 +7,6 @@ pragma solidity ^0.4.15;
 contract Index_Interface {
 
   address public LifToken;
+  address public DateTime;
 
 }

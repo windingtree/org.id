@@ -1,9 +1,11 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
+const moment = require('moment');
 
 const WTHotel = artifacts.require('Hotel.sol')
 const WTIndex = artifacts.require('WTIndex.sol');
+const DateTime = artifacts.require('DateTime.sol');
 const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol')
 
@@ -14,22 +16,35 @@ contract('PrivateCall', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const typeName = 'BASIC_ROOM';
-  const fromDay = 60;
   const daysAmount = 5;
   const price = 1;
   const unitArgPos = 1;
-  const dataArgPos = 8;
+  const dataArgPos = 9;
 
   let defaultCallArgs;
   let index;
+  let dateTime;
   let hotel;
   let unitType;
   let unit;
   let stubData;
+  let fromDay;
+  let fromDate;
+  let fromDayTimestamp;
+
+  before(async function() {
+    dateTime = await DateTime.new();
+  });
 
   // Create and register a hotel
   beforeEach( async function(){
-    index = await WTIndex.new();
+    block = await web3.eth.getBlock("latest");
+    fromDate = moment.unix(block.timestamp);
+    fromDate.add(1, 'days');
+    fromDay = fromDate.diff(moment(), 'days');
+    fromDayTimestamp = fromDate.unix();
+
+    index = await WTIndex.new(dateTime.address);
     hotel = await help.createHotel(index, hotelAccount);
     unitType = await help.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
     stubData = index.contract.getHotels.getData();
@@ -38,6 +53,7 @@ contract('PrivateCall', function(accounts) {
       null,
       augusto,
       fromDay,
+      fromDayTimestamp,
       daysAmount,
       price,
       'approveData',
@@ -130,7 +146,7 @@ contract('PrivateCall', function(accounts) {
     // We've already begun and indentical call in the beforeEach block. Smart token requires
     // that the call succeeds, so approveData will also throw.
     it('should throw if call is duplicate', async function() {
-      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
+      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, fromDayTimestamp, 5, stubData);
       const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
 
       try {
@@ -233,7 +249,7 @@ contract('PrivateCall', function(accounts) {
 
     // This test makes this verifiable by coverage.
     it('fromSelf modifier throws on indirect calls', async function(){
-      const bookData = hotel.contract.book.getData(unit.address, augusto, 60, 5, stubData);
+      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, fromDayTimestamp, 5, stubData);
       try {
         await index.callHotel(0, bookData, {from: hotelAccount});
         assert(false);

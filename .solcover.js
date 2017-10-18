@@ -7,6 +7,8 @@ module.exports = {
     'lif/LifToken.sol',
     'lif/Migrations.sol',
     'lif/SmartToken.sol',
-    'lif/VestedPayment.sol'
+    'lif/VestedPayment.sol',
+    'DateTime.sol',
+    'DateTimeAPI.sol'
   ]
 }

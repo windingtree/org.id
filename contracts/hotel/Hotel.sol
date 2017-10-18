@@ -145,6 +145,7 @@ contract Hotel is PrivateCall, Images {
     address unit
   ) onlyOwner() {
 		require(unitTypes[Unit_Interface(unit).unitType()] != address(0));
+    Unit_Interface(unit).setDateTime(Index_Interface(owner).DateTime());
     unitsIndex[unit] = units.length;
     units.push(unit);
     UnitType_Interface(unitTypes[Unit_Interface(unit).unitType()]).increaseUnits();
@@ -235,6 +236,7 @@ contract Hotel is PrivateCall, Images {
      @param unitAddress The address of the `Unit` contract
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
+     @param fromDayTimestamp The starting day in seconds since epoch
      @param daysAmount The amount of days in the booking period
      @param finalDataCall The data to execute a call on the `WTIndex` contract
    */
@@ -242,13 +244,14 @@ contract Hotel is PrivateCall, Images {
     address unitAddress,
     address from,
     uint fromDay,
+    uint fromDayTimestamp,
     uint daysAmount,
     bytes finalDataCall
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
     uint256 price = Unit_Interface(unitAddress).getPrice(fromDay, daysAmount);
-    require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
+    require(Unit_Interface(unitAddress).book(from, fromDay, fromDayTimestamp, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
 
     if (finalDataCall.length != 0)
