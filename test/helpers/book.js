@@ -11,14 +11,12 @@ const typeName = 'BASIC_ROOM';
 let index;
 let hotel;
 let unitType;
-let stubData;
 let accounts;
 
 async function initializeHotel(hotelAccount){
   index = await WTIndex.new();
   hotel = await hotelLib.createHotel(index, hotelAccount);
   unitType = await hotelLib.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
-  stubData = index.contract.getHotels.getData();
 }
 
 async function bookInstantly(
@@ -56,7 +54,6 @@ async function bookInstantly(
     unitPrice,
     tokenMethod,
     accounts,
-    stubData,
     options
   ];
   const result = await privateCallLib.runBeginCall(...args);

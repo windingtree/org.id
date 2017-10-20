@@ -32,16 +32,6 @@ contract WTIndex is Ownable {
   event log();
 
   /**
-     @dev Event triggered when user receives DAO voting power
-  **/
-  event voteGiven(address receiver);
-
-  modifier onlyHotel() {
-    require(hotels[hotelsIndex[msg.sender]] != 0);
-    _;
-  }
-
-  /**
      @dev Constructor. Creates the `WTIndex` contract
    */
 	function WTIndex() {
@@ -105,17 +95,6 @@ contract WTIndex is Ownable {
 		require(hotelsByManager[msg.sender][index].call(data));
 		log();
 	}
-
-  /**
-     @dev `giveVote` give vote to an address, it can be called only
-     by a registered hotel
-
-     @param userAddress The address to receive the votes
-   */
-  function giveVote(address userAddress) onlyHotel() {
-      // TO DO
-      voteGiven(userAddress);
-  }
 
   /**
      @dev `getHotels` Get the addresses of all registered `Hotel` contracts

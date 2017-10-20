@@ -486,13 +486,11 @@ contract('Hotel', function(accounts) {
     const userInfo = web3.toHex('user info');
     let unit;
     let bookData;
-    let giveVoteData;
 
     beforeEach(async function() {
       const unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
-      giveVoteData = wtIndex.contract.giveVote.getData(hotelAccount);
-      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5, giveVoteData);
+      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5);
     });
 
     it('should transfer a call from a Unit to the Index contract', async function(){
@@ -507,7 +505,7 @@ contract('Hotel', function(accounts) {
 
     it('should throw if the calling Unit does not belong to the hotel', async function(){
       const unknownUnit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
-      bookData = wtHotel.contract.book.getData(unknownUnit.address, augusto, 60, 5, giveVoteData);
+      bookData = wtHotel.contract.book.getData(unknownUnit.address, augusto, 60, 5);
       const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
       const hash = startTx.logs[0].args.dataHash;
       const continueCallData = await wtHotel.contract.continueCall.getData(hash);

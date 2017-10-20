@@ -46,12 +46,6 @@ contract Hotel is PrivateCall, Images {
   mapping(address => uint) public unitsIndex;
   address[] public units;
 
-  // Restricts calling a function only to `Unit` contracts of this `Hotel`
-  modifier onlyUnit() {
-    require(units[unitsIndex[msg.sender]] != 0);
-    _;
-  }
-
   /**
      @dev Constructor.
 
@@ -221,38 +215,24 @@ contract Hotel is PrivateCall, Images {
   }
 
   /**
-     @dev `callIndex` allows a `Unit` contract to call `WTIndex`
-
-     @param data The data of the call to execute on the `WTIndex` contract
-   */
-  function callIndex(bytes data) onlyUnit() {
-    require(owner.call(data));
-  }
-
-  /**
      @dev `book` allows the contract to execute a book function itself
 
      @param unitAddress The address of the `Unit` contract
      @param from The address of the opener of the reservation
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
-     @param finalDataCall The data to execute a call on the `WTIndex` contract
    */
   function book(
     address unitAddress,
     address from,
     uint fromDay,
-    uint daysAmount,
-    bytes finalDataCall
+    uint daysAmount
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
     uint256 price = Unit_Interface(unitAddress).getPrice(fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
-
-    if (finalDataCall.length != 0)
-      require(owner.call(finalDataCall));
   }
 
   /**

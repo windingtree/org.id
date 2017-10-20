@@ -25,7 +25,6 @@ abiDecoder.addABI(WTIndex._json.abi);
  * @param  {Number}   price            Default LifToken price ?
  * @param  {String}   tokenOp          'approveData' || 'transferData' || 'transferDataFrom'
  * @param  {Array}    accounts         The truffle contract accounts
- * @param  {Code}     passThroughData  call data to be executed in the Book drop through.
  * @param  {Object}   options          flags that trigger various error conditions in the call seq.
  * @return {Object}
  * @example
@@ -53,7 +52,6 @@ async function runBeginCall(
   price,
   tokenOp,
   accounts,
-  passThroughData,
   options
 ){
 
@@ -92,7 +90,7 @@ async function runBeginCall(
   const clientInitialBalance = await token.balanceOf(client);
 
   // Compose token call
-  const bookData = hotel.contract.book.getData(unit.address, client, fromDay, daysAmount, passThroughData);
+  const bookData = hotel.contract.book.getData(unit.address, client, fromDay, daysAmount);
   const beginCallData = hotel.contract.beginCall.getData(bookData, userInfo);
 
   const tokenOpCalls = {

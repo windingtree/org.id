@@ -18,15 +18,14 @@ contract('PrivateCall', function(accounts) {
   const daysAmount = 5;
   const price = 1;
   const unitArgPos = 1;
+  const accountPos = 2;
   const fromDayPos = 3;
-  const dataArgPos = 9;
 
   let defaultCallArgs;
   let index;
   let hotel;
   let unitType;
   let unit;
-  let stubData;
   let fromDay;
   let fromDate;
 
@@ -40,7 +39,6 @@ contract('PrivateCall', function(accounts) {
     index = await WTIndex.new();
     hotel = await help.createHotel(index, hotelAccount);
     unitType = await help.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
-    stubData = index.contract.getHotels.getData();
     defaultCallArgs = [
       hotel,
       null,
@@ -49,8 +47,7 @@ contract('PrivateCall', function(accounts) {
       daysAmount,
       price,
       'approveData',
-      accounts,
-      stubData
+      accounts
     ];
   });
 
@@ -86,7 +83,6 @@ contract('PrivateCall', function(accounts) {
     let bookData;
     let events;
     let hash;
-    let stubData;
     let token;
     let unit;
     let userInfo;
@@ -138,7 +134,7 @@ contract('PrivateCall', function(accounts) {
     // We've already begun and indentical call in the beforeEach block. Smart token requires
     // that the call succeeds, so approveData will also throw.
     it('should throw if call is duplicate', async function() {
-      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5, stubData);
+      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5);
       const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
 
       try {
@@ -241,7 +237,7 @@ contract('PrivateCall', function(accounts) {
 
     // This test makes this verifiable by coverage.
     it('fromSelf modifier throws on indirect calls', async function(){
-      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5, stubData);
+      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5);
       try {
         await index.callHotel(0, bookData, {from: hotelAccount});
         assert(false);
@@ -327,11 +323,9 @@ contract('PrivateCall', function(accounts) {
       }
     })
 
-    // Passing book a null Data call will cause the finalCall to fail...
+    // Accounts[5] should not have any Lif to pay for the booking
     it('PendingCalls success flag should be false if final call fails', async function(){
-      let pastDate = moment(fromDate);
-      pastDate.subtract(1, 'months');
-      defaultCallArgs[fromDayPos] = pastDate.diff(moment(0), 'days');
+      defaultCallArgs[accountPos] = accounts[5];
 
       ({ hash } = await help.runBeginCall(...defaultCallArgs));
       try {
@@ -351,21 +345,5 @@ contract('PrivateCall', function(accounts) {
       assert.equal(success, false);
     });
 
-    // Passing book a zero length finalCall will skip that part of book
-    it('PendingCalls success flag should be true if final call is ommitted', async function(){
-      const noData = '';
-      defaultCallArgs[dataArgPos] = noData;
-      ({ hash } = await help.runBeginCall(...defaultCallArgs));
-      await help.runContinueCall(index, hotel, hotelAccount, hash);
-
-      const [
-        callData,
-        sender,
-        approved,
-        success
-      ] = await hotel.pendingCalls.call(hash);
-
-      assert(success);
-    });
   });
 });
