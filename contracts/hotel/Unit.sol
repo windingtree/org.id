@@ -93,6 +93,7 @@ contract Unit is Ownable {
     uint fromDay,
     uint daysAmount
   ) onlyOwner() returns(bool) {
+    require(isFutureDay(fromDay));
     require(active);
     uint toDay = fromDay+daysAmount;
 
@@ -142,6 +143,17 @@ contract Unit is Ownable {
     }
 
     return totalPrice;
+  }
+
+  /**
+     @dev `isFutureDay` checks that a timestamp is not a past date
+
+     @param time The number of days after 01-01-1970
+
+     @return bool If the timestamp is today or in the future
+   */
+  function isFutureDay(uint time) internal returns (bool) {
+    return !(now / 86400 > time);
   }
 
 }

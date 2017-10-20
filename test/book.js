@@ -1,22 +1,34 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
+const moment = require('moment');
 
 contract('Hotel / PrivateCall: bookings', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const jakub = accounts[3];
   const typeName = 'BASIC_ROOM';
+  let fromDate;
+  let fromDay;
+  let block;
 
-  describe('reservations', function(){
+  describe('reservations', async function(){
     let events;
     let hash;
     let args;
-    const fromDay = 60;
     const daysAmount = 5;
+    const daysFromNow = 1;
     const unitPrice = 1;
+
+    before(async function() {
+      block = await web3.eth.getBlock("latest");
+      fromDate = moment.unix(block.timestamp);
+      fromDate.add(daysFromNow, 'days');
+      fromDay = fromDate.diff(moment(0), 'days');
+    })
 
     // Add a unit that accepts instant booking, execute a token.transferData booking
     beforeEach(async function() {
+
       args = [
         augusto,
         hotelAccount,
@@ -50,7 +62,8 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
     });
 
     it('should make a res that starts on the day a previous res ends', async () => {
-      let nextFrom = fromDay + daysAmount;
+      let nextDate = moment(fromDate).add(daysAmount, 'days');
+      let nextFrom = nextDate.diff(moment(0), 'days');
       let nextAmount = 2;
       let options = {keepPreviousHotel: true};
       let newArgs = [
@@ -72,7 +85,8 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
     })
 
     it('should throw if zero days are reserved', async () => {
-      let nextFrom = fromDay + daysAmount;
+      let nextDate = moment(fromDate).add(daysAmount, 'months');
+      let nextFrom = nextDate.diff(moment(0), 'days');
       let nextAmount = 0;
       let newArgs = [
         jakub,
@@ -88,13 +102,14 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
     });
 
     it('should should throw if any of the days requested are already reserved', async () => {
-      let takenDay = fromDay + 1;
+      let nextDate = moment(fromDate).add(1, 'days');
+      let nextFrom = nextDate.diff(moment(0), 'days');
       let options = {keepPreviousHotel: true};
       let newArgs = [
         jakub,
         hotelAccount,
         accounts,
-        takenDay,
+        nextFrom,
         daysAmount,
         unitPrice,
         options
@@ -124,14 +139,36 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
     // This needs:
     // Contract logic about the current date.
     // Combing through the helpers and tests to remove '60' and provide an accurate date.
-    it.skip('should throw when reserving dates in the past');
+    it('should throw when reserving dates in the past', async() => {
+      let pastDate = moment(fromDate).subtract(1, 'months');
+      let nextFrom = pastDate.diff(moment(0), 'days');
+      let nextAmount = 2;
+      let newArgs = [
+        augusto,
+        hotelAccount,
+        accounts,
+        nextFrom,
+        daysAmount,
+        unitPrice
+      ];
+
+      const { success } = await help.bookInstantly(...newArgs);
+      assert.equal(success, false);
+    });
   });
 
   describe('instant payment with token', function () {
-    const fromDay = 60;
+    const daysFromNow = 7;
     const daysAmount = 5;
     const unitPrice = 1;
     let args;
+
+    before(async function() {
+      block = await web3.eth.getBlock("latest");
+      fromDate = moment.unix(block.timestamp);
+      fromDate.add(daysFromNow, 'days');
+      fromDay = fromDate.diff(moment(0), 'days');
+    })
 
     beforeEach(function() {
       args = [
@@ -168,13 +205,14 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
       await help.bookInstantly(...args);
 
       // Make another booking that overlaps
-      let takenDay = fromDay + 1;
+      let takenDate = moment(fromDate).add(1, 'days');
+      let nextFrom = takenDate.diff(moment(0), 'days');
       let options = {keepPreviousHotel: true};
       let newArgs = [
         jakub,
         hotelAccount,
         accounts,
-        takenDay,
+        nextFrom,
         daysAmount,
         unitPrice,
         options

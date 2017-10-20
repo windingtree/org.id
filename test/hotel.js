@@ -22,6 +22,7 @@ contract('Hotel', function(accounts) {
   let wtIndex;
   let wtHotel;
 
+
   // Create and register a hotel
   beforeEach( async function(){
     wtIndex = await WTIndex.new();
