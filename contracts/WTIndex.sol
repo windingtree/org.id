@@ -21,7 +21,7 @@ contract WTIndex is Ownable {
   mapping(address => address[]) public hotelsByManager;
 
   // The address of the DAO contract
-  address DAO;
+  address public DAO;
 
   // Address of the LifToken contract
   address public LifToken;
@@ -97,12 +97,12 @@ contract WTIndex is Ownable {
 	}
 
   /**
-     @dev `getHotels` Get the addresses of all registered `Hotel` contracts
+     @dev `getHotelsLength` get the length of the `hotels` array
 
-     returns The `Hotel` contract addresses
+     @return uint Length of the `hotels` array
    */
-  function getHotels() constant returns(address[]){
-    return hotels;
+  function getHotelsLength() constant returns (uint) {
+    return hotels.length;
   }
 
   /**
