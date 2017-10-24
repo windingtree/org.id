@@ -47,6 +47,7 @@ contract('PrivateCall', function(accounts) {
       daysAmount,
       price,
       'approveData',
+      'bookWithLif',
       accounts
     ];
   });
@@ -134,7 +135,7 @@ contract('PrivateCall', function(accounts) {
     // We've already begun and indentical call in the beforeEach block. Smart token requires
     // that the call succeeds, so approveData will also throw.
     it('should throw if call is duplicate', async function() {
-      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5);
+      const bookData = hotel.contract.bookWithLif.getData(unit.address, augusto, fromDay, 5);
       const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
 
       try {
@@ -237,7 +238,7 @@ contract('PrivateCall', function(accounts) {
 
     // This test makes this verifiable by coverage.
     it('fromSelf modifier throws on indirect calls', async function(){
-      const bookData = hotel.contract.book.getData(unit.address, augusto, fromDay, 5);
+      const bookData = hotel.contract.bookWithLif.getData(unit.address, augusto, fromDay, 5);
       try {
         await index.callHotel(0, bookData, {from: hotelAccount});
         assert(false);

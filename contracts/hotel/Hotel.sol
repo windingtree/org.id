@@ -230,6 +230,25 @@ contract Hotel is PrivateCall, Images {
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
+    require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
+  }
+
+  /**
+     @dev `bookWithLif` allows the contract to execute a book function itself
+
+     @param unitAddress The address of the `Unit` contract
+     @param from The address of the opener of the reservation
+     @param fromDay The starting day of the period of days to book
+     @param daysAmount The amount of days in the booking period
+   */
+  function bookWithLif(
+    address unitAddress,
+    address from,
+    uint fromDay,
+    uint daysAmount
+  ) fromSelf() {
+    require(unitsIndex[unitAddress] > 0);
+    require(daysAmount > 0);
     uint256 price = Unit_Interface(unitAddress).getPrice(fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));

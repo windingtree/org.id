@@ -24,6 +24,7 @@ abiDecoder.addABI(WTIndex._json.abi);
  * @param  {Number}   daysAmount       Number of days to book for
  * @param  {Number}   price            Default LifToken price ?
  * @param  {String}   tokenOp          'approveData' || 'transferData' || 'transferDataFrom'
+ * @param  {String}   bookOp           'book' || 'bookWithLif'
  * @param  {Array}    accounts         The truffle contract accounts
  * @param  {Object}   options          flags that trigger various error conditions in the call seq.
  * @return {Object}
@@ -51,6 +52,7 @@ async function runBeginCall(
   daysAmount,
   price,
   tokenOp,
+  bookOp,
   accounts,
   options
 ){
@@ -68,6 +70,12 @@ async function runBeginCall(
     const setPriceData = unit.contract.setDefaultLifTokenPrice.getData(price);
     const callUnitData = hotel.contract.callUnit.getData(unit.address, setPriceData);
     await wtIndex.callHotel(0, callUnitData, {from: (await hotel.manager())});
+  }
+
+  // Options: require confirmation?
+  if(options && options.requireConfirmation) {
+    const changeConfirmationData = hotel.contract.changeConfirmation.getData(true);
+    await wtIndex.callHotel(0, changeConfirmationData, {from: (await hotel.manager())});
   }
 
   // Options: approval value?
@@ -90,8 +98,12 @@ async function runBeginCall(
   const clientInitialBalance = await token.balanceOf(client);
 
   // Compose token call
-  const bookData = hotel.contract.book.getData(unit.address, client, fromDay, daysAmount);
-  const beginCallData = hotel.contract.beginCall.getData(bookData, userInfo);
+  const bookData = {
+    'bookWithLif': hotel.contract.bookWithLif.getData(unit.address, client, fromDay, daysAmount),
+    'book': hotel.contract.book.getData(unit.address, client, fromDay, daysAmount)
+  }
+
+  const beginCallData = hotel.contract.beginCall.getData(bookData[bookOp], userInfo);
 
   const tokenOpCalls = {
     'approveData':      async () => await token.approveData(hotel.address, value, beginCallData, {from: client}),
@@ -122,7 +134,7 @@ async function runBeginCall(
     token: token,
     hotelInitialBalance: hotelInitialBalance,
     clientInitialBalance: clientInitialBalance,
-    bookData: bookData,
+    bookData: bookData[bookOp],
     beginCallData: beginCallData,
     transaction: tx,
     events: events,

@@ -39,6 +39,12 @@ async function bookInstantly(
     ? tokenMethod = 'approveData'
     : tokenMethod = options.tokenMethod;
 
+  // Options: book method?
+  (!options || options && !options.bookMethod)
+    ? bookMethod = 'bookWithLif'
+    : bookMethod = options.bookMethod;
+
+
   // Options: keep previous hotel / perform a subsequent booking?
   if (!options || options && !options.keepPreviousHotel){
     await initializeHotel(hotelAccount);
@@ -53,6 +59,7 @@ async function bookInstantly(
     daysAmount,
     unitPrice,
     tokenMethod,
+    bookMethod,
     accounts,
     options
   ];
