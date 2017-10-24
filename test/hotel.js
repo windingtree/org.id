@@ -380,14 +380,54 @@ contract('Hotel', function(accounts) {
       typeInterface = await UnitTypeInterface.at(unitType.address);
     });
 
-    it('should execute a call on a UnitType', async function(){
+    it('should add an amenity using a UnitType interface', async function(){
       const addAmenityData = typeInterface.contract.addAmenity.getData(amenityNumber);
       const callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, addAmenityData);
       await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
-      const amenity = info.unitTypes[typeName].amenities.filter(item => item === amenityNumber);
+      const amenity = info.unitTypes[typeName].amenities.filter(item => item === amenityNumber)[0];
 
       assert.equal(amenity, amenityNumber);
+    });
+
+    it('should remove an amenity using a UnitType interface', async function(){
+      const addAmenityData = typeInterface.contract.addAmenity.getData(amenityNumber);
+      let callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, addAmenityData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+
+      const removeAmenityData = typeInterface.contract.removeAmenity.getData(amenityNumber);
+      callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, removeAmenityData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+
+      const info = await help.getHotelInfo(wtHotel);
+      const amenity = info.unitTypes[typeName].amenities.filter(item => item === amenityNumber)[0];
+
+      assert.isUndefined(amenity);
+    });
+
+    it('should edit UnitType info using a UnitType interface', async function(){
+      const description = 'Quiet'
+      const minGuests = 1;
+      const maxGuests = 2;
+      const price = '200 euro';
+
+      const editTypeData = typeInterface.contract.edit.getData(
+        description,
+        minGuests,
+        maxGuests,
+        price
+      );
+
+      let callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, editTypeData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+
+      const info = await help.getHotelInfo(wtHotel);
+      const edits = info.unitTypes[typeName].info
+
+      assert.equal(edits.description, description);
+      assert.equal(edits.minGuests, minGuests);
+      assert.equal(edits.maxGuests, maxGuests);
+      assert.equal(edits.price, price);
     });
 
     it('should throw if non-owner executes the call', async function(){
@@ -418,9 +458,8 @@ contract('Hotel', function(accounts) {
       }
     });
 
-    it('should throw if the call to the UnitType returns false', async function(){
-        // Not much throwing on UnitType except OnlyOwner which already throws.
-    });
+    // Not much throwing on UnitType except OnlyOwner which already throws.
+    it.skip('should throw if the call to the UnitType returns false');
   });
 
   describe('callUnit', function(){
@@ -472,65 +511,6 @@ contract('Hotel', function(accounts) {
         await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
         assert(false);
       } catch(e) {
-        assert(help.isInvalidOpcodeEx);
-      }
-    });
-  });
-
-  // These tests are stubs - they validate callIndex but rely on WTIndex behavior that is only
-  // sketched in and likely to change.
-  describe.skip('callIndex', function(){
-    const augusto = accounts[1];
-    const typeName = 'BASIC_ROOM';
-    const typeNameHex = web3.toHex(typeName);
-    const userInfo = web3.toHex('user info');
-    let unit;
-    let bookData;
-
-    beforeEach(async function() {
-      const unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
-      unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount, true);
-      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5);
-    });
-
-    it('should transfer a call from a Unit to the Index contract', async function(){
-      // We expect a giveVote event to have been logged
-      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
-      const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
-      const finishTx = await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
-      const voteGivenEvent = abiDecoder.decodeLogs(finishTx.receipt.logs)[1].events[0];
-      assert.equal(voteGivenEvent.value, hotelAccount);
-    });
-
-    it('should throw if the calling Unit does not belong to the hotel', async function(){
-      const unknownUnit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
-      bookData = wtHotel.contract.book.getData(unknownUnit.address, augusto, 60, 5);
-      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
-      const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
-
-      try {
-        await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
-        assert(false);
-      } catch(e){
-        assert(help.isInvalidOpcodeEx);
-      }
-    });
-
-    it('should throw if the call returns false', async function(){
-      // Try to have Unit WTIndex.setDao.
-      const setDaoData = wtIndex.contract.setDAO.getData(augusto);
-      const callIndexData = wtHotel.contract.callIndex.getData(setDaoData);
-      bookData = wtHotel.contract.book.getData(unit.address, augusto, 60, 5, callIndexData);
-      const startTx = await wtHotel.beginCall(bookData, userInfo, {from: augusto});
-      const hash = startTx.logs[0].args.dataHash;
-      const continueCallData = await wtHotel.contract.continueCall.getData(hash);
-
-      try {
-        await wtIndex.callHotel(0, continueCallData, {from: hotelAccount});
-        assert(false);
-      } catch(e){
         assert(help.isInvalidOpcodeEx);
       }
     });
