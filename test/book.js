@@ -45,7 +45,7 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, bookedBy ] = await unit.getReservation(day);
+        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
         assert.equal(bookedBy, augusto);
       }
     });
@@ -79,7 +79,7 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
 
       const range = _.range(nextFrom, nextFrom + nextAmount);
       for (let day of range) {
-        const [ specialPrice, bookedBy ] = await unit.getReservation(day);
+        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
         assert.equal(bookedBy, jakub);
       }
     })
@@ -272,7 +272,7 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, bookedBy ] = await unit.getReservation(day);
+        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
         assert.notEqual(bookedBy, augusto);
       }
 
@@ -287,7 +287,7 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, bookedBy ] = await unit.getReservation(day);
+        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
         assert.equal(bookedBy, augusto);
       }
 

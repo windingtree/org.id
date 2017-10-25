@@ -67,7 +67,7 @@ async function runBeginCall(
 
   // Options: unit price?
   if (!options || options && !options.keepPreviousHotel){
-    const setPriceData = unit.contract.setDefaultLifTokenPrice.getData(price);
+    const setPriceData = unit.contract.setDefaultLifPrice.getData(price);
     const callUnitData = hotel.contract.callUnit.getData(unit.address, setPriceData);
     await wtIndex.callHotel(0, callUnitData, {from: (await hotel.manager())});
   }
@@ -81,7 +81,7 @@ async function runBeginCall(
   // Options: approval value?
   let value;
   (!options || options && options.approvalValue === undefined)
-    ? value = await unit.getPrice(fromDay, daysAmount)
+    ? value = await unit.getLifCost(fromDay, daysAmount)
     : value = options.approvalValue
 
   // Options: zombie unit?

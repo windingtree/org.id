@@ -225,8 +225,8 @@ contract Hotel is PrivateCall, Images {
   function book(
     address unitAddress,
     address from,
-    uint fromDay,
-    uint daysAmount
+    uint256 fromDay,
+    uint256 daysAmount
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
@@ -244,12 +244,12 @@ contract Hotel is PrivateCall, Images {
   function bookWithLif(
     address unitAddress,
     address from,
-    uint fromDay,
-    uint daysAmount
+    uint256 fromDay,
+    uint256 daysAmount
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
-    uint256 price = Unit_Interface(unitAddress).getPrice(fromDay, daysAmount);
+    uint256 price = Unit_Interface(unitAddress).getLifCost(fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
   }

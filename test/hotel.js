@@ -465,7 +465,7 @@ contract('Hotel', function(accounts) {
   describe('callUnit', function(){
     const typeName = 'BASIC_ROOM';
     const typeNameHex = web3.toHex(typeName);
-    const price = '100 USD';
+    const price = 10000;
     const fromDay = 10;
     const daysAmount = 3;
     let unitType;
@@ -487,7 +487,7 @@ contract('Hotel', function(accounts) {
       const reservation = await unit.getReservation(10);
 
       assert.equal(reservation[0], price);
-      assert(help.isZeroAddress(reservation[1]));
+      assert(help.isZeroAddress(reservation[2]));
     });
 
     it('should fail if a non-owner calls the Unit', async function(){
