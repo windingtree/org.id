@@ -14,6 +14,9 @@ import "../Images.sol";
  */
 contract UnitType is Ownable, Images {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("unittype");
+
   // The name of the unit type
   bytes32 public unitType;
 

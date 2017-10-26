@@ -12,6 +12,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  */
 contract Unit is Ownable {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("unit");
+
   // The type of the unit
   bytes32 public unitType;
 

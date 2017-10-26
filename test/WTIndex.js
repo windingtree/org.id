@@ -2,6 +2,7 @@ const chai = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTIndex = artifacts.require('./WTIndex.sol');
+const Base_Interface = artifacts.require('Base_Interface.sol');
 
 contract('WTIndex', function(accounts) {
   const indexOwner = accounts[1];
@@ -13,6 +14,14 @@ contract('WTIndex', function(accounts) {
   beforeEach(async () => {
     index = await WTIndex.new({from: indexOwner});
   });
+
+  describe('version', () => {
+    it('should have the correct version and contract type', async() => {
+      let base = await Base_Interface.at(index.address);
+      assert.equal(help.bytes32ToString(await base.version()), help.version);
+      assert.equal(help.bytes32ToString(await base.contractType()), "wtindex");
+    })
+  })
 
   describe('setDAO', () => {
     const daoAddress = accounts[4];
@@ -141,4 +150,3 @@ contract('WTIndex', function(accounts) {
     });
   });
 });
-

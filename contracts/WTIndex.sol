@@ -13,6 +13,9 @@ import "./hotel/Hotel.sol";
  */
 contract WTIndex is Ownable {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("wtindex");
+
   // Array of addresses of `Hotel` contracts and mapping of their index position
   address[] public hotels;
   mapping(address => uint) public hotelsIndex;

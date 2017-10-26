@@ -8,6 +8,7 @@ const UnitType = artifacts.require('UnitType.sol');
 const UnitTypeInterface = artifacts.require('UnitType_Interface.sol');
 const Unit = artifacts.require('Unit.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
+const Base_Interface = artifacts.require('Base_Interface.sol');
 
 abiDecoder.addABI(WTHotel._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
@@ -43,6 +44,10 @@ contract('Hotel', function(accounts) {
       // These are false: why?
       assert.equal(info.unitTypeNames.length, 0);
       assert.equal(Object.keys(info.units).length, 0);
+
+      let base = await Base_Interface.at(wtHotel.address);
+      assert.equal(help.bytes32ToString(await base.version()), help.version);
+      assert.equal(help.bytes32ToString(await base.contractType()), "hotel");
     });
 
     it('should be indexed', async function(){

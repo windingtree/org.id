@@ -23,6 +23,9 @@ import "zeppelin-solidity/contracts/token/ERC20.sol";
  */
 contract Hotel is PrivateCall, Images {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("hotel");
+
   // Main information
   string public name;
   string public description;

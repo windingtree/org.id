@@ -4,6 +4,7 @@ const abiDecoder = require('abi-decoder');
 
 const Unit = artifacts.require('Unit.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
+const Base_Interface = artifacts.require('Base_Interface.sol');
 
 abiDecoder.addABI(Unit._json.abi);
 
@@ -28,6 +29,10 @@ contract('Unit', function(accounts) {
       assert.equal(await unit.owner(), owner);
       assert.equal(help.bytes32ToString(await unit.unitType()), unitTypeName);
       assert(await unit.active());
+
+      let base = await Base_Interface.at(unit.address);
+      assert.equal(help.bytes32ToString(await base.version()), help.version);
+      assert.equal(help.bytes32ToString(await base.contractType()), "unit");
     });
 
   });

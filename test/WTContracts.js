@@ -2,6 +2,7 @@ const chai = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTContracts = artifacts.require('./WTContracts.sol');
+const Base_Interface = artifacts.require('Base_Interface.sol');
 const Hotel = artifacts.require('./Hotel.sol');
 
 contract('WTContracts', function(accounts) {
@@ -23,6 +24,14 @@ contract('WTContracts', function(accounts) {
     hotelAddress = hotel.address;
     owner = await contracts.owner();
   });
+
+  describe('version', () => {
+    it('should have the correct version and contract type', async() => {
+      let base = await Base_Interface.at(contracts.address);
+      assert.equal(help.bytes32ToString(await base.version()), help.version);
+      assert.equal(help.bytes32ToString(await base.contractType()), "wtcontracts");
+    })
+  })
 
   describe('register', function(){
 

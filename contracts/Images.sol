@@ -12,6 +12,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  */
 contract Images is Ownable {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("images");
+
   // Array of image urls
   string[] public images;
 

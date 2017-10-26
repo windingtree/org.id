@@ -14,6 +14,9 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
  */
 contract PrivateCall is Ownable {
 
+  bytes32 public version = bytes32("0.0.1-alpha");
+  bytes32 public contractType = bytes32("privatecall");
+
   // The calls requested to be executed indexed by `sha3(data)`
   mapping(bytes32 => PendingCall) public pendingCalls;
 

@@ -3,6 +3,7 @@ const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
 
 const Images = artifacts.require('Images.sol');
+const Base_Interface = artifacts.require('Base_Interface.sol');
 
 contract('Images', function(accounts) {
   let images;
@@ -10,6 +11,14 @@ contract('Images', function(accounts) {
 
   beforeEach(async function() {
     images = await Images.new();
+  })
+
+  describe('version', () => {
+    it('should have the correct version and contract type', async() => {
+      let base = await Base_Interface.at(images.address);
+      assert.equal(help.bytes32ToString(await base.version()), help.version);
+      assert.equal(help.bytes32ToString(await base.contractType()), "images");
+    })
   })
 
   describe('addImage / removeImage', function(){

@@ -5,6 +5,8 @@ const privateCall = require('./privateCall');
 const book = require('./book');
 
 module.exports = {
+  // Curreny version
+  version: "0.0.1-alpha",
 
   // Crowdsale
   simulateCrowdsale: simulateCrowdsale,
