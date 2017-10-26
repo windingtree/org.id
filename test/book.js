@@ -53,10 +53,12 @@ contract('Hotel / PrivateCall: bookings', function(accounts) {
     it('should fire a Book event with the correct info', async () => {
       const bookEvent = events.filter(item => item && item.name === 'Book')[0].events;
       const fromTopic = bookEvent.filter(item => item && item.name === 'from')[0];
+      const unitTopic = bookEvent.filter(item => item && item.name === 'unit')[0];
       const fromDayTopic = bookEvent.filter(item => item && item.name === 'fromDay')[0];
       const daysAmountTopic = bookEvent.filter(item => item && item.name === 'daysAmount')[0];
 
       assert.equal(fromTopic.value, augusto);
+      assert.equal(unitTopic.value, unit.address);
       assert.equal(fromDayTopic.value, fromDay);
       assert.equal(daysAmountTopic.value, daysAmount);
     });
