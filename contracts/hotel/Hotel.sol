@@ -50,6 +50,11 @@ contract Hotel is PrivateCall, Images {
   address[] public units;
 
   /**
+     @dev Event triggered on every booking
+  **/
+  event Book(address from, address unit, uint256 fromDay, uint256 daysAmount);
+
+  /**
      @dev Constructor.
 
      @param _name see `name`
@@ -234,6 +239,7 @@ contract Hotel is PrivateCall, Images {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
+    Book(from, unitAddress, fromDay, daysAmount);
   }
 
   /**
@@ -255,6 +261,7 @@ contract Hotel is PrivateCall, Images {
     uint256 price = Unit_Interface(unitAddress).getLifCost(fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
+    Book(from, unitAddress, fromDay, daysAmount);
   }
 
   /**

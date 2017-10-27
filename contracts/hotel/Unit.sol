@@ -42,11 +42,6 @@ contract Unit is Ownable {
   }
 
   /**
-     @dev Event triggered on every booking
-  **/
-  event Book(address from, uint256 fromDay, uint256 daysAmount);
-
-  /**
      @dev Constructor. Creates the `Unit` contract with an active status
 
      @param _owner see `owner`
@@ -159,7 +154,6 @@ contract Unit is Ownable {
 
     for (i = fromDay; i < toDay ; i++)
       reservations[i].bookedBy = from;
-    Book(from, fromDay, daysAmount);
     return true;
   }
 
