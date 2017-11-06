@@ -4,16 +4,17 @@ const abiDecoder = require('abi-decoder');
 
 const WTIndex = artifacts.require('WTIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
+const WTHotelInterface = artifacts.require('Hotel_Interface.sol');
 const UnitType = artifacts.require('UnitType.sol');
 const UnitTypeInterface = artifacts.require('UnitType_Interface.sol');
 const Unit = artifacts.require('Unit.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
 const Base_Interface = artifacts.require('Base_Interface.sol');
 
-abiDecoder.addABI(WTHotel._json.abi);
+abiDecoder.addABI(WTHotelInterface._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
-abiDecoder.addABI(UnitType._json.abi);
-abiDecoder.addABI(Unit._json.abi);
+abiDecoder.addABI(UnitTypeInterface._json.abi);
+abiDecoder.addABI(UnitInterface._json.abi);
 
 contract('Hotel', function(accounts) {
   const hotelName = 'WTHotel';
@@ -22,7 +23,6 @@ contract('Hotel', function(accounts) {
   const nonOwnerAccount = accounts[3];
   let wtIndex;
   let wtHotel;
-
 
   // Create and register a hotel
   beforeEach( async function(){

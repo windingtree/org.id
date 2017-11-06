@@ -6,7 +6,7 @@ const Unit = artifacts.require('Unit.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
 const Base_Interface = artifacts.require('Base_Interface.sol');
 
-abiDecoder.addABI(Unit._json.abi);
+abiDecoder.addABI(UnitInterface._json.abi);
 
 contract('Unit', function(accounts) {
   let unit;

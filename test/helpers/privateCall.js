@@ -4,12 +4,13 @@ const lif2LifWei = require('./misc').lif2LifWei;
 
 const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol');
-const Hotel = artifacts.require('Hotel.sol');
+const UnitInterface = artifacts.require('Unit_Interface.sol');
+const HotelInterface = artifacts.require('Hotel_Interface.sol');
 const WTIndex = artifacts.require('WTIndex.sol');
 
-abiDecoder.addABI(Unit._json.abi);
+abiDecoder.addABI(UnitInterface._json.abi);
 abiDecoder.addABI(LifToken._json.abi);
-abiDecoder.addABI(Hotel._json.abi);
+abiDecoder.addABI(HotelInterface._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
 /**
  * A library of helpers that spin up various privateCall / booking interactions.
