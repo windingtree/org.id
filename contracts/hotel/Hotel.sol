@@ -1,6 +1,6 @@
 pragma solidity ^0.4.15;
 
-import "../PrivateCall.sol";
+import "../AsyncCall.sol";
 import "../Images.sol";
 import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
@@ -21,7 +21,7 @@ import "zeppelin-solidity/contracts/token/ERC20.sol";
 
    Inherits from OpenZeppelin's `Ownable` and WT's 'Images'
  */
-contract Hotel is PrivateCall, Images {
+contract Hotel is AsyncCall, Images {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("hotel");
@@ -291,6 +291,15 @@ contract Hotel is PrivateCall, Images {
    */
   function getUnitsLength() constant returns (uint) {
     return units.length;
+  }
+
+  /**
+     @dev `getUnits` get the `units` array
+
+     @return address[] the `units` array
+   */
+  function getUnits() constant returns (address[]) {
+    return units;
   }
 
 }

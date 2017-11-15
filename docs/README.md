@@ -12,9 +12,9 @@ This contract will list and provide each important contract of the platform, sav
 
 This contract will index and list every hotel and airline of the platform, it will index hotels by geolocation, country, city and name. And it will index all airlines by their name and flight routes.
 
-### PrivateCall
+### AsyncCall
 
-The PrivateCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using public/private key encryption. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder.By using the `WTKey.js` (from our [example javascript library](https://github.com/windingtree/wt-js-libs/blob/master/libs/WTKey.js)) it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
+The AsyncCall smart contract allows to have pending transactions on smart contracts, with data stored, that would be encrypted/decrypted using public/private key encryption. To obtain the encrypted data the receiver will need to decode the transaction data using the abi decoder.By using the `WTKey.js` (from our [example javascript library](https://github.com/windingtree/wt-js-libs/blob/master/libs/WTKey.js)) it is easy to decrypt the data and check the integrity. If the data is correct it is possible to continue the call and execute the publicCall the user sent at the beginning.
 
 Steps when user Augusto wants to book a Room published by `WTHotel`:
 
@@ -39,4 +39,4 @@ The `UnitType` contract have the description, amenities, minimun and maximun amo
 
 #### Hotel Unit
 
-The `Unit` contract have the avaliability and price. The users will make the bookings and reservations directly to this contract, which also supports PrivateCalls.
+The `Unit` contract have the avaliability and price. The users will make the bookings and reservations directly to this contract, which also supports AsyncCalls.

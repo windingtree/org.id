@@ -109,6 +109,15 @@ contract WTIndex is Ownable {
   }
 
   /**
+     @dev `getHotels` get `hotels` array
+
+     @return address[] `hotels` array
+   */
+  function getHotels() constant returns (address[]) {
+    return hotels;
+  }
+
+  /**
      @dev `getHotelsByManager` get all the hotels belonging to one manager
 
      returns The addresses of `Hotel` contracts that belong to one manager

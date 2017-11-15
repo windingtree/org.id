@@ -41,13 +41,13 @@ contract('Hotel', function(accounts) {
       assert.isAtMost(info.created, web3.eth.blockNumber);
       assert.equal(info.manager, hotelAccount);
 
-      // These are false: why?
       assert.equal(info.unitTypeNames.length, 0);
       assert.equal(Object.keys(info.units).length, 0);
 
       let base = await Base_Interface.at(wtHotel.address);
       assert.equal(help.bytes32ToString(await base.version()), help.version);
       assert.equal(help.bytes32ToString(await base.contractType()), "hotel");
+      assert.equal((await wtIndex.contract.getHotels()).length, 2);
     });
 
     it('should be indexed', async function(){
@@ -199,7 +199,9 @@ contract('Hotel', function(accounts) {
       const data = wtHotel.contract.addUnit.getData(unit.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
+      const units =  await wtHotel.contract.getUnits();
 
+      assert.equal(units.length, 2);
       assert.isDefined(info.units[unit.address]);
       assert.isTrue(unitTypeCount.plus(1).equals(await typeInterface.totalUnits()));
     });
