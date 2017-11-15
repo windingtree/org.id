@@ -199,7 +199,9 @@ contract('Hotel', function(accounts) {
       const data = wtHotel.contract.addUnit.getData(unit.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
+      const units =  await wtHotel.contract.getUnits();
 
+      assert.equal(units.length, 2);
       assert.isDefined(info.units[unit.address]);
       assert.isTrue(unitTypeCount.plus(1).equals(await typeInterface.totalUnits()));
     });

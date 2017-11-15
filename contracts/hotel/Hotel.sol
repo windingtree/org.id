@@ -293,4 +293,13 @@ contract Hotel is PrivateCall, Images {
     return units.length;
   }
 
+  /**
+     @dev `getUnits` get the `units` array
+
+     @return address[] the `units` array
+   */
+  function getUnits() constant returns (address[]) {
+    return units;
+  }
+
 }
