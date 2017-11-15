@@ -1,6 +1,9 @@
 const Unit = artifacts.require('Unit.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 const UnitType = artifacts.require('UnitType.sol');
+const UnitInterface = artifacts.require('Unit_Interface.sol');
+const WTHotelInterface = artifacts.require('Hotel_Interface.sol');
+const UnitTypeInterface = artifacts.require('UnitType_Interface.sol');
 
 const {
   isZeroAddress,
@@ -24,7 +27,7 @@ const {
 async function createHotel(wtIndex, hotelAccount){
   let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: hotelAccount});
   let wtHotelAddress = await wtIndex.getHotelsByManager(hotelAccount);
-  let wtHotel = await WTHotel.at(wtHotelAddress[0]);
+  let wtHotel = await WTHotelInterface.at(wtHotelAddress[0]);
 
   return wtHotel;
 }
@@ -47,14 +50,13 @@ async function addUnitToHotel(wtIndex, wtHotel, unitTypeName, hotelAccount, requ
   let wtHotelUnit = await Unit.new(wtHotel.address, web3.toHex(unitTypeName), {from: hotelAccount});
   let addUnitData = wtHotel.contract.addUnit.getData(wtHotelUnit.address);
   await wtIndex.callHotel(0, addUnitData, {from: hotelAccount});
-
   // Require confirmation of unit booking by manager?
   if (requireConfirmation){
     callUnitData = wtHotel.contract.changeConfirmation.getData(true);
     await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
   }
 
-  return wtHotelUnit;
+  return await UnitInterface.at(wtHotelUnit.address);
 }
 
 /**
@@ -72,7 +74,7 @@ async function addUnitTypeToHotel(wtIndex, wtHotel, unitTypeName, hotelAccount){
    let wtHotelUnitType = await UnitType.new(wtHotel.address, web3.toHex(unitTypeName), {from: hotelAccount});
    let addUnitTypeData = wtHotel.contract.addUnitType.getData(wtHotelUnitType.address);
    await wtIndex.callHotel(0, addUnitTypeData, {from: hotelAccount});
-   return wtHotelUnitType;
+   return await UnitTypeInterface.at(wtHotelUnitType.address);
 }
 
 /**

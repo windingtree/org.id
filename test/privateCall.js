@@ -55,7 +55,7 @@ contract('PrivateCall', function(accounts) {
   describe('changeConfirmation', function(){
 
     beforeEach( async function(){
-      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount);
+      unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, false);
     })
 
     it('should change the waitConfirmation flag', async function(){
