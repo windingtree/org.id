@@ -1,13 +1,13 @@
 pragma solidity ^0.4.15;
 
-import "../PrivateCall_Interface.sol";
+import "../AsyncCall_Interface.sol";
 import "../Images.sol";
 
 /*
  * Hotel_Interface
  * Interface of Hotel contract
  */
-contract Hotel_Interface is PrivateCall_Interface, Images {
+contract Hotel_Interface is AsyncCall_Interface, Images {
 
   // Main information
   string public name;

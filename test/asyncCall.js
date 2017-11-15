@@ -11,7 +11,7 @@ const Unit = artifacts.require('Unit.sol')
 abiDecoder.addABI(Unit._json.abi);
 abiDecoder.addABI(LifToken._json.abi);
 
-contract('PrivateCall', function(accounts) {
+contract('AsyncCall', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const typeName = 'BASIC_ROOM';

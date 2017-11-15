@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const moment = require('moment');
 
-contract('Hotel / PrivateCall: bookings', function(accounts) {
+contract('Hotel / AsyncCall: bookings', function(accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const jakub = accounts[3];

@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
  /**
-   @title PrivateCall_Interface, the interface of the PrivateCall Contract
+   @title AsyncCall_Interface, the interface of the AsyncCall Contract
 
    A contract that can receive requests to execute calls on itself.
    Every request can store encrypted data as a parameter, which can later be
@@ -12,7 +12,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
    Inherits from OpenZeppelin's `Ownable`
  */
-contract PrivateCall_Interface is Ownable {
+contract AsyncCall_Interface is Ownable {
 
   mapping(bytes32 => PendingCall) public pendingCalls;
   bool public waitConfirmation;

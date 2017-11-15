@@ -3,7 +3,7 @@ pragma solidity ^0.4.15;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
  /**
-   @title PrivateCall, a contract to execute calls with private data
+   @title AsyncCall, a contract to execute calls with private data
 
    A contract that can receive requests to execute calls on itself.
    Every request can store encrypted data as a parameter, which can later be
@@ -12,7 +12,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
    Inherits from OpenZeppelin's `Ownable`
  */
-contract PrivateCall is Ownable {
+contract AsyncCall is Ownable {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("privatecall");
