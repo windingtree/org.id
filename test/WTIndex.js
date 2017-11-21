@@ -2,6 +2,7 @@ const chai = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTIndex = artifacts.require('./WTIndex.sol');
+const WTHotel = artifacts.require('Hotel.sol');
 const Base_Interface = artifacts.require('Base_Interface.sol');
 
 contract('WTIndex', function(accounts) {
@@ -148,5 +149,35 @@ contract('WTIndex', function(accounts) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
+  });
+
+  describe('callHotel', async () => {
+    let wtHotel;
+
+    beforeEach(async () => {
+      await index.registerHotel('name', 'desc', {from: hotelAccount});
+      let address = await index.getHotelsByManager(hotelAccount);
+      wtHotel = WTHotel.at(address[0]);
+    })
+
+    it('should throw if sender address does not exist in hotelsByManager mapping', async () => {
+      const data = wtHotel.contract.editInfo.getData('newName', 'newDesc');
+      try {
+        await index.callHotel(0, data, {from: nonOwnerAccount});
+        assert(false);
+      } catch(e){
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    })
+
+    it('should throw if hotel index does not exist', async () => {
+      const data = wtHotel.contract.editInfo.getData('newName', 'newDesc');
+      try {
+        await index.callHotel(1, data, {from: hotelAccount});
+        assert(false);
+      } catch(e){
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    })
   });
 });

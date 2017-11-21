@@ -58,9 +58,10 @@ contract('Hotel', function(accounts) {
 
   describe('editInfo', function(){
 
+    const newName = 'Claridges';
+    const newDescription = 'Near everything';
+
     it('should edit the hotel name and description', async function(){
-      const newName = 'Claridges';
-      const newDescription = 'Near everything';
       const data = wtHotel.contract.editInfo.getData(newName, newDescription);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
@@ -69,13 +70,9 @@ contract('Hotel', function(accounts) {
       assert.equal(info.description, newDescription);
     });
 
-    it('should throw if non-owner edits name / description', async function(){
-      const newName = 'Claridges';
-      const newDescription = 'Near everything';
-      const data = wtHotel.contract.editInfo.getData(newName, newDescription);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.editInfo(newName, newDescription, {from: nonOwnerAccount});
         assert(false);
       } catch (e){
         assert(help.isInvalidOpcodeEx(e));
@@ -100,11 +97,9 @@ contract('Hotel', function(accounts) {
       assert.equal(info.country, country);
     });
 
-    it('should throw if non-owner edits address', async function(){
-      const data = wtHotel.contract.editAddress.getData(lineOne, lineTwo, zip, country);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.editAddress(lineOne, lineTwo, zip, country, {from: nonOwnerAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx(e));
@@ -116,9 +111,9 @@ contract('Hotel', function(accounts) {
     const timezone = 2;
     const longitude = 40.426371;
     const latitude = -3.703578;
+    const { long, lat } = help.locationToUint(longitude, latitude);
 
     it('should edit the gps location', async function() {
-      const { long, lat } = help.locationToUint(longitude, latitude);
       const data = wtHotel.contract.editLocation.getData(timezone, long, lat);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
@@ -127,12 +122,9 @@ contract('Hotel', function(accounts) {
       assert.equal(latitude, info.latitude);
     });
 
-    it('should throw if non-owner edits gps location', async function() {
-      const { long, lat } = help.locationToUint(longitude, latitude);
-      const data = wtHotel.contract.editLocation.getData(timezone, long, lat);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.editLocation(timezone, long, lat, {from: nonOwnerAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx(e));
@@ -157,13 +149,14 @@ contract('Hotel', function(accounts) {
       assert.isDefined(info.unitTypes[typeName]);
     });
 
-    it('should throw if non-owner adds a UnitType', async function(){
-      const data = wtHotel.contract.addUnitType.getData(unitType.address);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
-        assert(false);
-      } catch(e){
+        const unitType2 = await UnitType.new(
+          wtHotel.address, web3.toHex('FANCY_ROOM'), {from: hotelAccount}
+        );
+        await wtHotel.addUnitType(unitType2.address, {from: nonOwnerAccount});
+        assert(false)
+      } catch(e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
@@ -205,13 +198,11 @@ contract('Hotel', function(accounts) {
       assert.isDefined(info.units[unit.address]);
       assert.isTrue(unitTypeCount.plus(1).equals(await typeInterface.totalUnits()));
     });
-
-    it('should throw if non-owner adds a Unit', async function(){
+    
+    it('should throw if not executed by owner', async function() {
       const unit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
-      const data = wtHotel.contract.addUnit.getData(unit.address);
-
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.addUnit(unit.address, {from: nonOwnerAccount});
         assert(false);
       } catch (e){
         assert(help.isInvalidOpcodeEx(e));
@@ -250,11 +241,9 @@ contract('Hotel', function(accounts) {
       assert.isUndefined(info.unitTypes[typeName]);
     });
 
-    it('should throw if non-owner attempts removal', async function() {
-      const data = wtHotel.contract.removeUnitType.getData(typeNameHex, validIndex);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.removeUnitType(typeNameHex, validIndex, {from: nonOwnerAccount});
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -307,16 +296,14 @@ contract('Hotel', function(accounts) {
       assert.isTrue(unitTypeCount.minus(1).equals(await typeInterface.totalUnits()));
     });
 
-    it('should throw if non-owner removes unit', async function() {
-      const data = wtHotel.contract.removeUnit.getData(unit.address);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
+        await wtHotel.removeUnit(unit.address, {from: nonOwnerAccount});
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
-    });
+    })
   });
 
   describe('changeUnitType', function(){
@@ -351,12 +338,10 @@ contract('Hotel', function(accounts) {
       }
     });
 
-    it('should throw if a non-owner changes the UnitType', async function(){
-      const data = wtHotel.contract.changeUnitType.getData(hexBasic, unitTypeReplacement.address);
-
+    it('should throw if not executed by owner', async function() {
       try {
-        await wtIndex.callHotel(0, data, {from: nonOwnerAccount});
-        assert(false);
+        await wtHotel.changeUnitType(hexBasic, unitTypeReplacement.address, {from: nonOwnerAccount});
+        assert(false)
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -436,13 +421,11 @@ contract('Hotel', function(accounts) {
       assert.equal(edits.maxGuests, maxGuests);
       assert.equal(edits.price, price);
     });
-
-    it('should throw if non-owner executes the call', async function(){
+    
+    it('should throw if not executed by owner', async function() {
       const addAmenityData = typeInterface.contract.addAmenity.getData(amenityNumber);
-      const callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, addAmenityData);
-
       try {
-        await wtIndex.callHotel(0, callUnitTypeData, {from: nonOwnerAccount});
+        await wtHotel.callUnitType(typeNameHex, addAmenityData, {from: nonOwnerAccount})
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -496,13 +479,11 @@ contract('Hotel', function(accounts) {
       assert.equal(reservation[0], price);
       assert(help.isZeroAddress(reservation[2]));
     });
-
-    it('should fail if a non-owner calls the Unit', async function(){
+    
+    it('should throw if not executed by owner', async function() {
       setPriceData = unitInterface.contract.setSpecialPrice.getData(price, fromDay, daysAmount);
-      callUnitData = wtHotel.contract.callUnit.getData(unit.address, setPriceData);
-
       try {
-        await wtIndex.callHotel(0, callUnitData, {from: nonOwnerAccount});
+        await wtHotel.callUnit(unit.address, setPriceData, {from: nonOwnerAccount});
         assert(false);
       } catch(e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -518,7 +499,7 @@ contract('Hotel', function(accounts) {
         await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
         assert(false);
       } catch(e) {
-        assert(help.isInvalidOpcodeEx);
+        assert(help.isInvalidOpcodeEx(e));
       }
     });
   });
