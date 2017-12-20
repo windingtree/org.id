@@ -258,10 +258,68 @@ contract Hotel is AsyncCall, Images {
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
-    uint256 price = Unit_Interface(unitAddress).getLifCost(fromDay, daysAmount);
+    uint256 price = getLifCost(unitAddress, fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
     Book(from, unitAddress, fromDay, daysAmount);
+  }
+
+  /**
+     @dev `getCost` calculates the cost of renting the Unit for the given dates
+
+     @param fromDay The starting date of the period of days to book
+     @param daysAmount The amount of days in the period
+
+     @return uint256 The total cost of the booking in the custom currency
+   */
+  function getCost(
+    address unitAddress,
+    uint256 fromDay,
+    uint256 daysAmount
+  ) constant returns(uint256) {
+    uint256 toDay = fromDay+daysAmount;
+    uint256 totalCost = 0;
+    uint256 defaultPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultPrice();
+
+    for (uint256 i = fromDay; i < toDay ; i++){
+      var (specialPrice,,) = Unit_Interface(unitAddress).getReservation(i);
+      if (specialPrice > 0) {
+        totalCost += specialPrice;
+      } else {
+        totalCost += defaultPrice;
+      }
+    }
+
+    return totalCost;
+  }
+
+  /**
+     @dev `getLifCost` calculates the cost of renting the Unit for the given dates
+
+     @param fromDay The starting date of the period of days to book
+     @param daysAmount The amount of days in the period
+
+     @return uint256 The total cost of the booking in Lif
+   */
+  function getLifCost(
+    address unitAddress,
+    uint256 fromDay,
+    uint256 daysAmount
+  ) constant returns(uint256) {
+    uint256 toDay = fromDay+daysAmount;
+    uint256 totalCost = 0;
+    uint256 defaultLifPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultLifPrice();
+
+    for (uint256 i = fromDay; i < toDay ; i++){
+      var (,specialLifPrice,) = Unit_Interface(unitAddress).getReservation(i);
+      if (specialLifPrice > 0) {
+        totalCost += specialLifPrice;
+      } else {
+        totalCost += defaultLifPrice;
+      }
+    }
+
+    return totalCost;
   }
 
   /**

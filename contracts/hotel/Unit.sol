@@ -21,15 +21,6 @@ contract Unit is Ownable {
   // The status of the unit
   bool public active;
 
-  // The default price for the Unit in LifTokens
-  uint256 public defaultLifPrice;
-
-  // Currency code for the custom price
-  bytes8 public currencyCode;
-
-  // Default price in custom currency (10000 = 100.00)
-  uint256 public defaultPrice;
-
   /*
      Mapping of reservations, indexed by date represented by number of days
      after 01-01-1970
@@ -60,16 +51,6 @@ contract Unit is Ownable {
    */
   function setActive(bool _active) onlyOwner() {
     active = _active;
-  }
-
-  /**
-     @dev `setCurrencyCode` allows the owner of the contract to set which
-     currency other than Líf the Unit is priced in
-
-     @param _currencyCode The hex value of the currency code
-   */
-  function setCurrencyCode(bytes8 _currencyCode) onlyOwner() {
-    currencyCode = _currencyCode;
   }
 
   /**
@@ -106,26 +87,6 @@ contract Unit is Ownable {
     uint256 toDay = fromDay+daysAmount;
     for (uint256 i = fromDay; i < toDay; i++)
       reservations[i].specialLifPrice = price;
-  }
-
-  /**
-     @dev `setDefaultPrice` allows the owner of the contract to set the default
-     price in the custom currency for reserving the Unit for 1 day
-
-     @param price The new default price
-   */
-  function setDefaultPrice(uint256 price) onlyOwner() {
-    defaultPrice = price;
-  }
-
-  /**
-     @dev `setDefaultLifPrice` allows the owner of the contract to set the default
-     price in Lif for reserving the Unit for 1 day
-
-     @param price The new default Lif price
-   */
-  function setDefaultLifPrice(uint256 price) onlyOwner() {
-    defaultLifPrice = price;
   }
 
   /**
@@ -185,7 +146,7 @@ contract Unit is Ownable {
 
      @return uint256 The total cost of the booking in the custom currency
    */
-  function getCost(
+  /* function getCost(
     uint256 fromDay,
     uint256 daysAmount
   ) constant returns(uint256) {
@@ -201,7 +162,7 @@ contract Unit is Ownable {
     }
 
     return totalCost;
-  }
+  } */
 
   /**
      @dev `getLifCost` calculates the cost of renting the Unit for the given dates
@@ -211,7 +172,7 @@ contract Unit is Ownable {
 
      @return uint256 The total cost of the booking in Lif
    */
-  function getLifCost(
+  /* function getLifCost(
     uint256 fromDay,
     uint256 daysAmount
   ) constant returns(uint256) {
@@ -227,7 +188,7 @@ contract Unit is Ownable {
     }
 
     return totalCost;
-  }
+  } */
 
   /**
      @dev `isFutureDay` checks that a timestamp is not a past date

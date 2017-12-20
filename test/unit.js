@@ -3,6 +3,8 @@ const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
 
 const Unit = artifacts.require('Unit.sol');
+const UnitType = artifacts.require('UnitType.sol');
+const Hotel = artifacts.require('Hotel.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
 const Base_Interface = artifacts.require('Base_Interface.sol');
 
@@ -39,21 +41,6 @@ contract('Unit', function(accounts) {
 
   describe('Setting price info', function() {
 
-    it('should let owner set custom currency code', async function() {
-      await unit.setCurrencyCode(currencyCodeHex, {from: owner});
-      assert.equal(help.bytes32ToString(await unit.currencyCode()), currencyCode);
-    });
-
-    it('should let owner set defaultPrice', async function() {
-      await unit.setDefaultPrice(defaultPrice, {from: owner});
-      assert.equal(await unit.defaultPrice(), defaultPrice);
-    });
-
-    it('should let owner set defaultLifPrice', async function() {
-      await unit.setDefaultLifPrice(defaultLifPrice, {from: owner});
-      assert.equal(await unit.defaultLifPrice(), defaultLifPrice);
-    });
-
     it('should let owner set specialPrice for a set of dates', async function() {
       await unit.setSpecialPrice(specialPrice, fromSpecialDate, daysAmount, {from: owner});
 
@@ -84,20 +71,32 @@ contract('Unit', function(accounts) {
 
   describe('Getting price info', function() {
 
+    let hotel;
+
+    before(async function() {
+      hotel = await Hotel.new('Hotel', 'Hotel desc', accounts[0]);
+      unitTypeInstance = await UnitType.new(hotel.address, unitType);
+      await hotel.addUnitType(unitTypeInstance.address);
+      let setPriceData = unitTypeInstance.contract.setDefaultPrice.getData(defaultPrice);
+      await hotel.callUnitType(unitType, setPriceData);
+      setPriceData = unitTypeInstance.contract.setDefaultLifPrice.getData(defaultLifPrice);
+      await hotel.callUnitType(unitType, setPriceData);
+    })
+
     it('should charge 3x default rate in custom currency for 3 regular days', async function() {
-      assert.equal(await unit.getCost(100, 3), 3*defaultPrice);
+      assert.equal(await hotel.getCost(unit.address, 100, 3), 3*defaultPrice);
     });
 
     it('should charge 2x default rate + special rate in custom currency for 2 regular days and 1 special day', async function() {
-      assert.equal(await unit.getCost(fromSpecialDate-2, 3), 2*defaultPrice + specialPrice);
+      assert.equal(await hotel.getCost(unit.address, fromSpecialDate-2, 3), 2*defaultPrice + specialPrice);
     });
 
     it('should charge 3x default rate in Lif for 3 regular days', async function() {
-      assert.equal(await unit.getLifCost(100, 3), 3*defaultLifPrice);
+      assert.equal(await hotel.getLifCost(unit.address, 100, 3), 3*defaultLifPrice);
     });
 
     it('should charge 2x default rate + special rate in Lif for 2 regular days and 1 special day', async function() {
-      assert.equal(await unit.getLifCost(fromSpecialDate-2, 3), 2*defaultLifPrice + specialLifPrice);
+      assert.equal(await hotel.getLifCost(unit.address, fromSpecialDate-2, 3), 2*defaultLifPrice + specialLifPrice);
     });
   });
 

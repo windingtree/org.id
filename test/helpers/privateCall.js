@@ -4,6 +4,7 @@ const lif2LifWei = require('./misc').lif2LifWei;
 
 const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol');
+const UnitType = artifacts.require('UnitType.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
 const HotelInterface = artifacts.require('Hotel_Interface.sol');
 const WTIndex = artifacts.require('WTIndex.sol');
@@ -68,9 +69,11 @@ async function runBeginCall(
 
   // Options: unit price?
   if (!options || options && !options.keepPreviousHotel){
-    const setPriceData = unit.contract.setDefaultLifPrice.getData(price);
-    const callUnitData = hotel.contract.callUnit.getData(unit.address, setPriceData);
-    await wtIndex.callHotel(0, callUnitData, {from: (await hotel.manager())});
+    const unitTypeName= await unit.unitType();
+    const unitType = await UnitType.at(await hotel.unitTypes(unitTypeName));
+    const setPriceData = unitType.contract.setDefaultLifPrice.getData(price);
+    const callUnitTypeData = hotel.contract.callUnitType.getData(unitTypeName, setPriceData);
+    await wtIndex.callHotel(0, callUnitTypeData, {from: (await hotel.manager())});
   }
 
   // Options: require confirmation?
@@ -82,7 +85,7 @@ async function runBeginCall(
   // Options: approval value?
   let value;
   (!options || options && options.approvalValue === undefined)
-    ? value = await unit.getLifCost(fromDay, daysAmount)
+    ? value = await hotel.getLifCost(unit.address, fromDay, daysAmount)
     : value = options.approvalValue
 
   // Options: zombie unit?

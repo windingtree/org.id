@@ -198,7 +198,7 @@ contract('Hotel', function(accounts) {
       assert.isDefined(info.units[unit.address]);
       assert.isTrue(unitTypeCount.plus(1).equals(await typeInterface.totalUnits()));
     });
-    
+
     it('should throw if not executed by owner', async function() {
       const unit = await Unit.new(wtHotel.address, typeNameHex, {from: hotelAccount});
       try {
@@ -401,13 +401,11 @@ contract('Hotel', function(accounts) {
       const description = 'Quiet'
       const minGuests = 1;
       const maxGuests = 2;
-      const price = '200 euro';
 
       const editTypeData = typeInterface.contract.edit.getData(
         description,
         minGuests,
-        maxGuests,
-        price
+        maxGuests
       );
 
       let callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, editTypeData);
@@ -419,9 +417,33 @@ contract('Hotel', function(accounts) {
       assert.equal(edits.description, description);
       assert.equal(edits.minGuests, minGuests);
       assert.equal(edits.maxGuests, maxGuests);
-      assert.equal(edits.price, price);
     });
-    
+
+    it('should let owner set custom currency code', async function() {
+      const currencyCode = "CHF";
+      const currencyCodeHex = web3.toHex(currencyCode);
+      const setCurrencyData = typeInterface.contract.setCurrencyCode.getData(currencyCodeHex);
+      const callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, setCurrencyData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+      assert.equal(help.bytes32ToString(await unitType.currencyCode()), currencyCode);
+    });
+
+    it('should let owner set defaultPrice', async function() {
+      const defaultPrice = 10000;
+      const setPriceData = typeInterface.contract.setDefaultPrice.getData(defaultPrice);
+      const callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, setPriceData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+      assert.equal(await unitType.defaultPrice(), defaultPrice);
+    });
+
+    it('should let owner set defaultLifPrice', async function() {
+      const defaultLifPrice = 10;
+      const setPriceData = typeInterface.contract.setDefaultLifPrice.getData(defaultLifPrice);
+      const callUnitTypeData = wtHotel.contract.callUnitType.getData(typeNameHex, setPriceData);
+      await wtIndex.callHotel(0, callUnitTypeData, {from: hotelAccount});
+      assert.equal(await unitType.defaultLifPrice(), defaultLifPrice);
+    });
+
     it('should throw if not executed by owner', async function() {
       const addAmenityData = typeInterface.contract.addAmenity.getData(amenityNumber);
       try {
@@ -479,7 +501,7 @@ contract('Hotel', function(accounts) {
       assert.equal(reservation[0], price);
       assert(help.isZeroAddress(reservation[2]));
     });
-    
+
     it('should throw if not executed by owner', async function() {
       setPriceData = unitInterface.contract.setSpecialPrice.getData(price, fromDay, daysAmount);
       try {

@@ -30,8 +30,14 @@ contract UnitType is Ownable, Images {
   uint minGuests;
   uint maxGuests;
 
-  // The price of the unit
-  string price;
+  // The default price for the UnitType in Lif
+  uint256 public defaultLifPrice;
+
+  // Default price in custom currency (10000 = 100.00)
+  uint256 public defaultPrice;
+
+  // Currency code for the custom price
+  bytes8 public currencyCode;
 
   // The amenities in the unit type, represented by uints
   uint[] amenities;
@@ -52,7 +58,6 @@ contract UnitType is Ownable, Images {
      @dev `edit` allows the owner of the contract to change the description,
      min/max guests and base price
 
-     @param _price The base price of the unit
      @param _minGuests The minimun amount of guests allowed
      @param _maxGuests The maximun amount of guests allowed
      @param _description The new description
@@ -60,13 +65,11 @@ contract UnitType is Ownable, Images {
   function edit(
     string _description,
     uint _minGuests,
-    uint _maxGuests,
-    string _price
+    uint _maxGuests
   ) onlyOwner() {
     description = _description;
     minGuests = _minGuests;
     maxGuests = _maxGuests;
-    price = _price;
   }
 
   /**
@@ -104,15 +107,45 @@ contract UnitType is Ownable, Images {
   }
 
   /**
+     @dev `setCurrencyCode` allows the owner of the contract to set which
+     currency other than Líf the UnitType is priced in
+
+     @param _currencyCode The hex value of the currency code
+   */
+  function setCurrencyCode(bytes8 _currencyCode) onlyOwner() {
+    currencyCode = _currencyCode;
+  }
+
+  /**
+     @dev `setDefaultPrice` allows the owner of the contract to set the default
+     price in the custom currency for reserving the UnitType for 1 day
+
+     @param price The new default price
+   */
+  function setDefaultPrice(uint256 price) onlyOwner() {
+    defaultPrice = price;
+  }
+
+  /**
+     @dev `setDefaultLifPrice` allows the owner of the contract to set the default
+     price in Lif for reserving the UnitType for 1 day
+
+     @param price The new default Lif price
+   */
+  function setDefaultLifPrice(uint256 price) onlyOwner() {
+    defaultLifPrice = price;
+  }
+
+  /**
      @dev `GetInfo` get the information of the unit
 
      @return string The description of the unit type
      @return uint The minimun amount guests
      @return uint The maximun amount guests
-     @return string The base price
+     @return uint The default fiat price
    */
-  function getInfo() constant returns(string, uint, uint, string) {
-    return (description, minGuests, maxGuests, price);
+  function getInfo() constant returns(string, uint, uint, uint) {
+    return (description, minGuests, maxGuests, defaultPrice);
   }
 
   /**

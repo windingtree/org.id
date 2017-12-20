@@ -53,5 +53,7 @@ contract Hotel_Interface is AsyncCall_Interface, Images {
   // Public constant methods
   function getUnitType(bytes32 unitType) constant returns (address);
   function getUnitTypeNames() constant returns (bytes32[]);
+  function getCost(address unitAddress, uint256 fromDay, uint256 daysAmount) constant returns(uint256);
+  function getLifCost(address unitAddress, uint256 fromDay, uint256 daysAmount) constant returns(uint256);
 
 }
