@@ -1,4 +1,4 @@
-pragma solidity ^0.4.15;
+pragma solidity ^0.4.18;
 
 import "../AsyncCall_Interface.sol";
 import "../Images.sol";

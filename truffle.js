@@ -7,8 +7,8 @@ module.exports = {
       host: 'localhost',
       port: 8545,
       network_id: '*',
-      gas: 0x5B8D80, // 6000000 gas
-      gasPrice: 21000000000 // 21 Gwei
+      gas: 0xfffffffffff,
+      gasPrice: 0x01
     },
     coverage: {
       host: "localhost",
@@ -16,6 +16,12 @@ module.exports = {
       port: 8555,
       gas: 0xfffffffffff,
       gasPrice: 0x01
+    }
+  },
+  solc: {
+    optimizer: {
+      enabled: true,
+      runs: 200
     }
   }
 };
