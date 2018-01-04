@@ -36,8 +36,8 @@ contract Hotel is AsyncCall, Images {
   string public lineOne;
   string public lineTwo;
   string public zip;
-  string public country;
-  uint public timezone;
+  bytes2 public country;
+  string public timezone;
   uint public latitude;
   uint public longitude;
 
@@ -86,42 +86,33 @@ contract Hotel is AsyncCall, Images {
   }
 
   /**
-     @dev `editAddress` allows the owner of the contract to change the hotel's
-     physical address
+     @dev `editLocation` allows the owner of the contract to change the hotel's
+     address and geolocation
 
      @param _lineOne The new main address of the hotel
      @param _lineTwo The new second address of the hotel
      @param _zip The new zip code of the hotel
-     @param _country The new country of the hotel
+     @param _country The new ISO3166-1 Alpha2 country code of the hotel
+     @param _timezone The new tz database timezone of the hotel
+     @param _longitude The new longitude value of the location of the hotel
+     @param _latitude The new longitude value of the latitude of the hotel
    */
-  function editAddress(
+  function editLocation(
     string _lineOne,
     string _lineTwo,
     string _zip,
-    string _country
+    bytes2 _country,
+    string _timezone,
+    uint _longitude,
+    uint _latitude
   ) onlyOwner() {
     lineOne = _lineOne;
     lineTwo = _lineTwo;
     zip = _zip;
     country = _country;
-  }
-
-  /**
-     @dev `editLocation` allows the owner of the contract to change the hotel's
-     location
-
-     @param _timezone The new timezone of the hotel
-     @param _longitude The new longitude value of the location of the hotel
-     @param _latitude The new longitude value of the latitude of the hotel
-   */
-  function editLocation(
-    uint _timezone,
-    uint _longitude,
-    uint _latitude
-  ) onlyOwner() {
     timezone = _timezone;
-    latitude = _latitude;
     longitude = _longitude;
+    latitude = _latitude;
   }
 
   /**

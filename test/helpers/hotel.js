@@ -168,7 +168,7 @@ async function getHotelInfo(wtHotel){
     zip : isZeroString(zip) ? null : zip,
     country : isZeroString(country) ? null : country,
     created: isZeroUint(created) ? null : parseInt(created),
-    timezone : isZeroUint(timezone) ? null : parseInt(timezone),
+    timezone : isZeroString(timezone) ? null : timezone,
     latitude : isZeroUint(latitude) ? null : locationFromUint(longitude, latitude).lat,
     longitude : isZeroUint(longitude) ? null : locationFromUint(longitude, latitude).long,
     images: images,

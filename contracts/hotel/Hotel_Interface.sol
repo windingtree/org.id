@@ -19,8 +19,8 @@ contract Hotel_Interface is AsyncCall_Interface, Images {
   string public lineOne;
   string public lineTwo;
   string public zip;
-  string public country;
-  uint public timezone;
+  bytes2 public country;
+  string public timezone;
   uint public latitude;
   uint public longitude;
 
@@ -36,8 +36,7 @@ contract Hotel_Interface is AsyncCall_Interface, Images {
 
   // Owner methods
   function editInfo(string _name, string _description) onlyOwner();
-  function editAddress(string _lineOne, string _lineTwo, string _zip, string _country) onlyOwner() ;
-  function editLocation(uint _timezone, uint _longitude, uint _latitude) onlyOwner();
+  function editAddress(string _lineOne, string _lineTwo, string _zip, bytes2 _country, string _timezone, uint _longitude, uint _latitude) onlyOwner();
   function addUnit(address unit) onlyOwner();
   function removeUnit(address unit) onlyOwner();
   function addUnitType(address addr) onlyOwner();

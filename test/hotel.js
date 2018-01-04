@@ -84,53 +84,35 @@ contract('Hotel', function(accounts) {
     const lineOne = 'Common street 123';
     const lineTwo = '';
     const zip = '6655';
-    const country = 'Spain';
+    const country = 'ES';
+    const timezone = 'Europe/Madrid';
+    const longitude = 40.426371;
+    const latitude = -3.703578;
+    const { long, lat } = help.locationToUint(longitude, latitude);
 
-    it('should edit the address', async function() {
-      const data = wtHotel.contract.editAddress.getData(lineOne, lineTwo, zip, country);
+    it('should edit the location', async function() {
+      const data = wtHotel.contract.editLocation.getData(lineOne, lineTwo, zip, web3.toHex(country), timezone, long, lat);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
 
       assert.equal(info.lineOne, lineOne);
       assert.equal(info.lineTwo, null);
       assert.equal(info.zip, zip);
-      assert.equal(info.country, country);
+      assert.equal(info.country, web3.toHex(country));
+      assert.equal(info.timezone, timezone);
+      assert.equal(info.longitude, longitude);
+      assert.equal(info.latitude, latitude);
     });
 
     it('should throw if not executed by owner', async function() {
       try {
-        await wtHotel.editAddress(lineOne, lineTwo, zip, country, {from: nonOwnerAccount});
+        await wtHotel.editLocation(lineOne, lineTwo, zip, web3.toHex(country), timezone, long, lat, {from: nonOwnerAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx(e));
       }
     });
   })
-
-  describe('editLocation', function(){
-    const timezone = 2;
-    const longitude = 40.426371;
-    const latitude = -3.703578;
-    const { long, lat } = help.locationToUint(longitude, latitude);
-
-    it('should edit the gps location', async function() {
-      const data = wtHotel.contract.editLocation.getData(timezone, long, lat);
-      await wtIndex.callHotel(0, data, {from: hotelAccount});
-      const info = await help.getHotelInfo(wtHotel);
-
-      assert.equal(longitude, info.longitude);
-      assert.equal(latitude, info.latitude);
-    });
-
-    it('should throw if not executed by owner', async function() {
-      try {
-        await wtHotel.editLocation(timezone, long, lat, {from: nonOwnerAccount});
-        assert(false);
-      } catch(e){
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
 
   describe('addUnitType', function(){
     const typeName = 'BASIC_ROOM';
