@@ -93,7 +93,7 @@ contract('WTIndex', function(accounts) {
     });
   });
 
-  describe('removeHotel', () => {
+  describe('deleteHotel', () => {
     const expectedIndexPos = 0; // Position of the hotel in the managers array
 
     it ('should remove a hotel', async () => {
@@ -107,12 +107,14 @@ contract('WTIndex', function(accounts) {
       );
       const hotel = allHotels[0];
 
+
       // Verify existence
+      assert((await web3.eth.getCode(hotel)) !== '0x0');
       assert.isDefined(hotel);
       assert.isFalse(help.isZeroAddress(hotel));
 
       // Remove and verify non-existence of hotel
-      await index.removeHotel(expectedIndexPos, {from: hotelAccount});
+      await index.deleteHotel(expectedIndexPos, {from: hotelAccount});
 
       allHotels = await help.jsArrayFromSolidityArray(
         index.hotels,
@@ -125,6 +127,7 @@ contract('WTIndex', function(accounts) {
 
       assert.equal(allHotels.length, 0);
       assert.isTrue(hotelDeleted);
+      assert((await web3.eth.getCode(hotel)) === '0x0');
     });
 
     it('should throw if the hotel is not registered', async () => {
@@ -132,7 +135,7 @@ contract('WTIndex', function(accounts) {
 
       try {
         const invalidIndexPos = 1;
-        await index.removeHotel(invalidIndexPos, {from: hotelAccount});
+        await index.deleteHotel(invalidIndexPos, {from: hotelAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx(e));
@@ -143,7 +146,7 @@ contract('WTIndex', function(accounts) {
       await index.registerHotel('name', 'desc', {from: hotelAccount});
 
       try {
-        await index.removeHotel(expectedIndexPos, {from: nonOwnerAccount});
+        await index.deleteHotel(expectedIndexPos, {from: nonOwnerAccount});
         assert(false);
       } catch(e){
         assert(help.isInvalidOpcodeEx(e));

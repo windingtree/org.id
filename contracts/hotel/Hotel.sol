@@ -6,6 +6,7 @@ import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
 import "../Index_Interface.sol";
 import "zeppelin-solidity/contracts/token/ERC20.sol";
+import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network
@@ -21,7 +22,7 @@ import "zeppelin-solidity/contracts/token/ERC20.sol";
 
    Inherits from OpenZeppelin's `Ownable` and WT's 'Images'
  */
-contract Hotel is AsyncCall, Images {
+contract Hotel is AsyncCall, Images, Destructible {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("hotel");
@@ -144,30 +145,51 @@ contract Hotel is AsyncCall, Images {
   }
 
   /**
-     @dev `removeUnit` allows the owner to remove a unit from the inventory
+     @dev `deleteUnit` allows the owner to remove a unit from the inventory
 
      @param unit The address of the `Unit` contract
    */
-  function removeUnit(address unit) onlyOwner() {
+  function deleteUnit(address unit) onlyOwner() {
+    Destructible(units[ unitsIndex[unit] ]).destroyAndSend(tx.origin);
     delete units[ unitsIndex[unit] ];
     delete unitsIndex[unit];
     UnitType_Interface(unitTypes[Unit_Interface(unit).unitType()]).decreaseUnits();
   }
 
   /**
-     @dev `removeUnitType` allows the owner to remove a unit type
+     @dev `deleteUnitType` allows the owner to delete a unit type
 
      @param unitType The type of unit
      @param index The unit's index in the `unitTypeNames` array
    */
-  function removeUnitType(
+  function deleteUnitType(
     bytes32 unitType,
     uint index
   ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
     require(unitTypeNames[index] == unitType);
+    require(UnitType_Interface(unitTypes[unitType]).totalUnits() == 0);
+    Destructible(unitTypes[unitType]).destroyAndSend(tx.origin);
     delete unitTypes[unitType];
     delete unitTypeNames[index];
+  }
+
+  /**
+    @dev 'destroy' allows the owner to delete the Hotel and all of its Units
+    and UnitTypes
+  */
+  function destroy() onlyOwner() public {
+    for(uint i = 0; i < units.length; i++) {
+      if(units[i] != address(0)) {
+        deleteUnit(units[i]);
+      }
+    }
+    for(uint j = 0; j < unitTypeNames.length; j++) {
+      if(unitTypes[unitTypeNames[j]] != address(0)) {
+        deleteUnitType(unitTypeNames[j], j);
+      }
+    }
+    super.destroyAndSend(tx.origin);
   }
 
   /**

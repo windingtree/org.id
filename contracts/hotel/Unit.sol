@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 
  /**
    @title Unit, contract for an individual unit in a Hotel
@@ -10,7 +10,7 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
    Inherits from WT's `PrivateCall`
  */
-contract Unit is Ownable {
+contract Unit is Destructible {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("unit");

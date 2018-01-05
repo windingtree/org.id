@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "../Images.sol";
 
  /**
@@ -10,9 +10,9 @@ import "../Images.sol";
    total number of units, description, min/max guests, price, amenities and
    images.
 
-   Inherits from OpenZeppelin's `Ownable` and WT's 'Images'.
+   Inherits from OpenZeppelin's `Destructible` and WT's 'Images'.
  */
-contract UnitType is Ownable, Images {
+contract UnitType is Destructible, Images {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("unittype");

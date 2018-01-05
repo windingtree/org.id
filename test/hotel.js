@@ -205,36 +205,38 @@ contract('Hotel', function(accounts) {
     });
   });
 
-  describe('removeUnitType', function(){
+  describe('deleteUnitType', function(){
     const typeName = 'BASIC_ROOM';
     const typeNameHex = web3.toHex(typeName);
     const validIndex = 1;
     let unitType;
 
     beforeEach(async function(){
-      await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
+      unitType = await help.addUnitTypeToHotel(wtIndex, wtHotel, typeName, hotelAccount);
     })
 
-    it('should remove a UnitType', async function(){
-      const data = wtHotel.contract.removeUnitType.getData(typeNameHex, validIndex);
+    it('should delete a UnitType', async function(){
+      assert((await web3.eth.getCode(unitType.address)) !== '0x0');
+      const data = wtHotel.contract.deleteUnitType.getData(typeNameHex, validIndex);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
 
       assert.isUndefined(info.unitTypes[typeName]);
+      assert((await web3.eth.getCode(unitType.address)) === '0x0');
     });
 
     it('should throw if not executed by owner', async function() {
       try {
-        await wtHotel.removeUnitType(typeNameHex, validIndex, {from: nonOwnerAccount});
+        await wtHotel.deleteUnitType(typeNameHex, validIndex, {from: nonOwnerAccount});
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should throw if the unit type to be removed does not exist', async function(){
+    it('should throw if the unit type to be deleted does not exist', async function(){
       const unknownTypeNameHex = web3.toHex('UNKNOWN');
-      const data = wtHotel.contract.removeUnitType.getData(unknownTypeNameHex, validIndex);
+      const data = wtHotel.contract.deleteUnitType.getData(unknownTypeNameHex, validIndex);
 
       try {
         await wtIndex.callHotel(0, data, {from: hotelAccount});
@@ -246,7 +248,7 @@ contract('Hotel', function(accounts) {
 
     it('should throw if the passed index does not match up with the UnitType', async function(){
       const invalidIndex = 2;
-      const data = wtHotel.contract.removeUnitType.getData(typeNameHex, invalidIndex);
+      const data = wtHotel.contract.deleteUnitType.getData(typeNameHex, invalidIndex);
 
       try {
         await wtIndex.callHotel(0, data, {from: hotelAccount});
@@ -257,7 +259,7 @@ contract('Hotel', function(accounts) {
     });
   });
 
-  describe('removeUnit', function(){
+  describe('deleteUnit', function(){
     const typeName = 'BASIC_ROOM';
     const typeNameHex = web3.toHex(typeName);
     let unit;
@@ -268,19 +270,21 @@ contract('Hotel', function(accounts) {
       unit = await help.addUnitToHotel(wtIndex, wtHotel, typeName, hotelAccount);
     })
 
-    it('should remove a Unit', async function() {
+    it('should delete a Unit', async function() {
+      assert((await web3.eth.getCode(unit.address)) !== '0x0');
       const unitTypeCount = await typeInterface.totalUnits();
-      const data = wtHotel.contract.removeUnit.getData(unit.address);
+      const data = wtHotel.contract.deleteUnit.getData(unit.address);
       await wtIndex.callHotel(0, data, {from: hotelAccount});
       const info = await help.getHotelInfo(wtHotel);
 
       assert.isUndefined(info.units[unit]);
       assert.isTrue(unitTypeCount.minus(1).equals(await typeInterface.totalUnits()));
+      assert((await web3.eth.getCode(unit.address)) === '0x0');
     });
 
     it('should throw if not executed by owner', async function() {
       try {
-        await wtHotel.removeUnit(unit.address, {from: nonOwnerAccount});
+        await wtHotel.deleteUnit(unit.address, {from: nonOwnerAccount});
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
