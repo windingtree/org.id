@@ -20,7 +20,7 @@
     "smart-contracts"
   ],
   "author": "Winding Tree Developers <dev@windingtree.com>",
-  "license": "MIT",
+  "license": "GPLv3",
   "dependencies": {
     "abi-decoder": "^1.0.8",
     "babel-polyfill": "^6.23.0",
@@ -35,5 +35,8 @@
     "ethereumjs-testrpc": "4.1.3",
     "solidity-coverage": "^0.2.4",
     "truffle": "4.0.0"
+  },
+  "engines": {
+    "node": ">=8.9.4"
   }
 }
