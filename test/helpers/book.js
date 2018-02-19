@@ -3,7 +3,6 @@ const hotelLib = require('./hotel');
 
 const WTHotel = artifacts.require('Hotel.sol')
 const WTIndex = artifacts.require('WTIndex.sol');
-const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol')
 
 const typeName = 'BASIC_ROOM';
@@ -36,7 +35,7 @@ async function bookInstantly(
 
   // Options: token method?
   (!options || options && !options.tokenMethod)
-    ? tokenMethod = 'approveData'
+    ? tokenMethod = 'approve'
     : tokenMethod = options.tokenMethod;
 
   // Options: book method?

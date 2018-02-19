@@ -51,7 +51,7 @@ async function addUnitToHotel(wtIndex, wtHotel, unitTypeName, hotelAccount, requ
   let addUnitData = wtHotel.contract.addUnit.getData(wtHotelUnit.address);
   await wtIndex.callHotel(0, addUnitData, {from: hotelAccount});
   // Require confirmation of unit booking by manager?
-  if (requireConfirmation){
+  if (requireConfirmation) {
     callUnitData = wtHotel.contract.changeConfirmation.getData(true);
     await wtIndex.callHotel(0, callUnitData, {from: hotelAccount});
   }

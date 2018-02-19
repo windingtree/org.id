@@ -1,6 +1,11 @@
-var LifCrowdsale = artifacts.require('./LifCrowdsale.sol');
-var latestTime = require('./latestTime');
-var { increaseTimeTestRPC, increaseTimeTestRPCTo } = require('./increaseTime');
+// This has to go through truffle-contract, because we're not compiling crowdsale in test setup
+const contract = require("truffle-contract");
+const LifCrowdsaleData = require("@windingtree/lif-token/build/contracts/LifCrowdsale.json");
+const LifCrowdsale = contract(LifCrowdsaleData);
+const LifTokenData = require("@windingtree/lif-token/build/contracts/LifToken.json");
+const LifToken = contract(LifTokenData);
+const latestTime = require('./latestTime');
+const { increaseTimeTestRPC, increaseTimeTestRPCTo } = require('./increaseTime');
 
 /**
  * Generates a crowdsale which funds the first five accounts of param `accounts` with
@@ -27,6 +32,13 @@ async function simulateCrowdsale(rate, balances, accounts, weiPerUSD) {
     var startTime = latestTime() + 5;
     var endTime = startTime + 20;
 
+    // Get LifCrowdsale ready to be deployed
+    LifCrowdsale.setProvider(web3.currentProvider);
+    LifCrowdsale.defaults({
+        from: accounts[0],
+        gas: 4712388*2,
+        gasPrice: 100000000000,
+    });
     var crowdsale = await LifCrowdsale.new(
       startTime+3, startTime+15, endTime,
       rate, rate+10, 1,
@@ -41,7 +53,11 @@ async function simulateCrowdsale(rate, balances, accounts, weiPerUSD) {
         await crowdsale.sendTransaction({ value: web3.toWei(balances[i]/rate, 'ether'), from: accounts[i + 1]});
     }
     await increaseTimeTestRPCTo(endTime+1);
-    await crowdsale.finalize();
+    await crowdsale.finalize(true);
+    LifToken.setProvider(web3.currentProvider);
+    const token = LifToken.at(await crowdsale.token.call());
+    await token.unpause({from: accounts[0]});
+    
     return crowdsale;
 }
 

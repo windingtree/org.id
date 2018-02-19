@@ -7,10 +7,7 @@
   },
   "scripts": {
     "test": "scripts/test.sh",
-    "postinstall": "scripts/install.sh",
     "testrpc": "./node_modules/.bin/testrpc",
-    "update-submodules": "git submodule update --recursive && npm run postinstall",
-    "pull-submodules": "git submodule foreach git pull origin master && npm run postinstall",
     "coverage": "scripts/coverage.sh"
   },
   "keywords": [
@@ -22,19 +19,22 @@
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPLv3",
   "dependencies": {
+    "@windingtree/lif-token": "^0.1.2-erc827",
     "abi-decoder": "^1.0.8",
     "babel-polyfill": "^6.23.0",
     "chai": "^3.5.0",
     "moment": "^2.19.1",
     "truffle-hdwallet-provider": "0.0.3",
     "web3": "^1.0.0-beta.23",
-    "zeppelin-solidity": "1.3.0"
+    "zeppelin-solidity": "^1.6.0"
   },
   "devDependencies": {
     "coveralls": "^2.13.1",
     "ethereumjs-testrpc": "4.1.3",
     "solidity-coverage": "^0.2.4",
-    "truffle": "4.0.0"
+    "truffle": "4.0.5",
+    "truffle-contract": "^3.0.3",
+    "web3-eth-abi": "^1.0.0-beta.30"
   },
   "engines": {
     "node": ">=8.9.4"
