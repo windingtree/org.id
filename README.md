@@ -9,7 +9,7 @@ The smart contracts in the [hotel folder](https://github.com/windingtree/wt-cont
 
 ## Requirements
 
-Node v7.6 or higher (versions before 7.6 do not support async/await that is used in the LifToken tests)
+LTS Node 8.9.4 is required for running the tests.
 
 ## Install
 
@@ -32,6 +32,6 @@ npm install
 
 ## License
 
-WT-Contracts is open source and distributed under the Apache License v2.0
+Líf Token is open source and distributed under the GPL v3 license.
 
 
