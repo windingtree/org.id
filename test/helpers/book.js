@@ -1,24 +1,20 @@
 const privateCallLib = require('./privateCall');
 const hotelLib = require('./hotel');
 
-const WTHotel = artifacts.require('Hotel.sol')
 const WTIndex = artifacts.require('WTIndex.sol');
-const Unit = artifacts.require('Unit.sol')
-
 const typeName = 'BASIC_ROOM';
 
 let index;
 let hotel;
-let unitType;
-let accounts;
+let unit;
 
-async function initializeHotel(hotelAccount){
+async function initializeHotel (hotelAccount) {
   index = await WTIndex.new();
   hotel = await hotelLib.createHotel(index, hotelAccount);
-  unitType = await hotelLib.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
+  unit = await hotelLib.addUnitTypeToHotel(index, hotel, typeName, hotelAccount);
 }
 
-async function bookInstantly(
+async function bookInstantly (
   client,
   hotelAccount,
   accounts,
@@ -27,25 +23,15 @@ async function bookInstantly(
   unitPrice,
   options
 ) {
-
   // Options: require confirmation?
-  (!options || options && !options.requireConfirmation)
-    ? confirmation = false
-    : confirmation = true;
-
+  let confirmation = (options && options.requireConfirmation) || false;
   // Options: token method?
-  (!options || options && !options.tokenMethod)
-    ? tokenMethod = 'approve'
-    : tokenMethod = options.tokenMethod;
-
+  let tokenMethod = (options && options.tokenMethod) || 'approveData';
   // Options: book method?
-  (!options || options && !options.bookMethod)
-    ? bookMethod = 'bookWithLif'
-    : bookMethod = options.bookMethod;
-
+  let bookMethod = (options && options.bookMethod) || 'bookWithLif';
 
   // Options: keep previous hotel / perform a subsequent booking?
-  if (!options || options && !options.keepPreviousHotel){
+  if (!(options && options.keepPreviousHotel)) {
     await initializeHotel(hotelAccount);
     unit = await hotelLib.addUnitToHotel(index, hotel, typeName, hotelAccount, confirmation);
   }
@@ -60,7 +46,7 @@ async function bookInstantly(
     tokenMethod,
     bookMethod,
     accounts,
-    options
+    options,
   ];
   const result = await privateCallLib.runBeginCall(...args);
 
@@ -71,5 +57,5 @@ async function bookInstantly(
 }
 
 module.exports = {
-  bookInstantly: bookInstantly
-}
+  bookInstantly: bookInstantly,
+};

@@ -7,6 +7,7 @@
   },
   "scripts": {
     "test": "scripts/test.sh",
+    "lint": "eslint test",
     "testrpc": "./node_modules/.bin/testrpc",
     "coverage": "scripts/coverage.sh",
     "clean": "rimraf build",
@@ -45,7 +46,13 @@
     "solidity-coverage": "^0.2.4",
     "truffle": "4.0.5",
     "truffle-contract": "^3.0.3",
-    "web3-eth-abi": "^1.0.0-beta.30"
+    "web3-eth-abi": "^1.0.0-beta.30",
+    "eslint": "^4.16.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
   },
   "engines": {
     "node": ">=8.9.4"

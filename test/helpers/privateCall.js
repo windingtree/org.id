@@ -1,7 +1,6 @@
 const abiDecoder = require('abi-decoder');
 const web3Abi = require('web3-eth-abi');
 const simulateCrowdsale = require('./simulateCrowdsale');
-const lif2LifWei = require('./misc').lif2LifWei;
 const contract = require('truffle-contract');
 
 const Unit = artifacts.require('Unit.sol');
@@ -9,7 +8,7 @@ const UnitType = artifacts.require('UnitType.sol');
 const UnitInterface = artifacts.require('Unit_Interface.sol');
 const HotelInterface = artifacts.require('Hotel_Interface.sol');
 const WTIndex = artifacts.require('WTIndex.sol');
-const LifTokenData = require("@windingtree/lif-token/build/contracts/LifToken.json");
+const LifTokenData = require('@windingtree/lif-token/build/contracts/LifToken.json');
 const LifToken = contract(LifTokenData);
 
 abiDecoder.addABI(UnitInterface._json.abi);
@@ -19,10 +18,10 @@ abiDecoder.addABI(WTIndex._json.abi);
 /**
  * A library of helpers that spin up various privateCall / booking interactions.
  */
-function getERC827tokenOverridingMethodData(methodName, parameters) {
+function getERC827tokenOverridingMethodData (methodName, parameters) {
   const methodAbi = LifToken._json.abi.filter((n) => n.name === methodName && n.inputs.length === parameters.length).pop();
-  if (! methodAbi) {
-    throw Error("Method not found on LifToken, maybe you are using an invalid signature?");
+  if (!methodAbi) {
+    throw Error('Method not found on LifToken, maybe you are using an invalid signature?');
   }
   return web3Abi.encodeFunctionCall(methodAbi, parameters);
 }
@@ -55,7 +54,7 @@ function getERC827tokenOverridingMethodData(methodName, parameters) {
  *
  *   } = await help.runBeginCall(hotel, unit, augusto, 60, 5, 1, 'approve', accounts, lengthData)
  */
-async function runBeginCall(
+async function runBeginCall (
   hotel,
   unit,
   client,
@@ -70,39 +69,35 @@ async function runBeginCall(
   const wtIndex = await WTIndex.at(await hotel.owner());
 
   // Options: userInfo?
-  let userInfo;
-  (!options || options && !options.userInfo)
-    ? userInfo = web3.toHex('user info')
-    : userInfo = options.userInfo;
+  let userInfo = (options && options.userInfo) || web3.toHex('user info');
 
   // Options: unit price?
-  if (!options || options && !options.keepPreviousHotel) {
+  if (!(options && options.keepPreviousHotel)) {
     const unitTypeName = await unit.unitType();
     const unitType = await UnitType.at(await hotel.unitTypes(unitTypeName));
     const setPriceData = unitType.contract.setDefaultLifPrice.getData(price);
     const callUnitTypeData = hotel.contract.callUnitType.getData(unitTypeName, setPriceData);
-    await wtIndex.callHotel(0, callUnitTypeData, {from: (await hotel.manager())});
+    await wtIndex.callHotel(0, callUnitTypeData, { from: (await hotel.manager()) });
   }
 
   // Options: require confirmation?
-  if(options && options.requireConfirmation) {
+  if (options && options.requireConfirmation) {
     const changeConfirmationData = hotel.contract.changeConfirmation.getData(true);
-    await wtIndex.callHotel(0, changeConfirmationData, {from: (await hotel.manager())});
+    await wtIndex.callHotel(0, changeConfirmationData, { from: (await hotel.manager()) });
   }
 
   // Options: approval value?
-  let value;
-  (!options || options && options.approvalValue === undefined)
-    ? value = await hotel.getLifCost(unit.address, fromDay, daysAmount)
-    : value = options.approvalValue
+  let value = (!options || (options && options.approvalValue === undefined))
+    ? await hotel.getLifCost(unit.address, fromDay, daysAmount)
+    : options.approvalValue;
 
   // Options: zombie unit?
-  if (options && options.badUnit){
-    unit = await Unit.new(hotel.address, web3.toHex('BASIC_ROOM'), {from: accounts[5]});
+  if (options && options.badUnit) {
+    unit = await Unit.new(hotel.address, web3.toHex('BASIC_ROOM'), { from: accounts[5] });
   }
 
   // Run crowdsale
-  const crowdsale = await simulateCrowdsale(100000000000, [40,30,20,10,0], accounts, 1);
+  const crowdsale = await simulateCrowdsale(100000000000, [40, 30, 20, 10, 0], accounts, 1);
   LifToken.setProvider(web3.currentProvider);
   const token = await LifToken.at(await crowdsale.token.call());
   await wtIndex.setLifToken(token.address);
@@ -113,8 +108,8 @@ async function runBeginCall(
   // Compose token call
   const bookData = {
     'bookWithLif': hotel.contract.bookWithLif.getData(unit.address, client, fromDay, daysAmount),
-    'book': hotel.contract.book.getData(unit.address, client, fromDay, daysAmount)
-  }
+    'book': hotel.contract.book.getData(unit.address, client, fromDay, daysAmount),
+  };
   const beginCallData = hotel.contract.beginCall.getData(bookData[bookOp], userInfo);
 
   // See https://github.com/trufflesuite/truffle/issues/569, we have to make a workaround with web3
@@ -129,12 +124,12 @@ async function runBeginCall(
     var gas = await web3.eth.estimateGas(txData);
     txData.gas = Math.round(gas * 1.5);
     const txHash = await web3.eth.sendTransaction(txData);
-    return await web3.eth.getTransactionReceipt(txHash);
+    return web3.eth.getTransactionReceipt(txHash);
   };
   const tokenOpCalls = {
-    'approve':      async () => await tokenOpCall('approve', [hotel.address, value, beginCallData]),
-    'transfer':     async () => await tokenOpCall('transfer', [hotel.address, value, beginCallData]),
-    'transferFrom': async () => await tokenOpCall('approve', [hotel.address, receiver, value, beginCallData]),
+    'approve': async () => tokenOpCall('approve', [hotel.address, value, beginCallData]),
+    'transfer': async () => tokenOpCall('transfer', [hotel.address, value, beginCallData]),
+    // TODO this is unused 'transferFrom': async () => tokenOpCall('approve', [hotel.address, receiver, value, beginCallData]),
   };
 
   // Execute
@@ -164,8 +159,8 @@ async function runBeginCall(
     beginCallData: beginCallData,
     events: events,
     hash: dataHashTopic ? dataHashTopic.value : null,
-    success: success
-  }
+    success: success,
+  };
 }
 
 /**
@@ -181,16 +176,16 @@ async function runBeginCall(
  *     events,       // All abi-decoded events generated by the token call
  *   } = await help.runContinueCall(wtIndex, wtHotel, unit, hotelAccount, hash)
  */
-async function runContinueCall(index, hotel, hotelAccount, hash){
+async function runContinueCall (index, hotel, hotelAccount, hash) {
   const _continue = hotel.contract.continueCall.getData(hash);
-  const tx = await index.callHotel(0, _continue, {from: hotelAccount});
+  const tx = await index.callHotel(0, _continue, { from: hotelAccount });
   const events = abiDecoder.decodeLogs(tx.receipt.logs);
   return {
-    events: events
-  }
+    events: events,
+  };
 }
 
 module.exports = {
   runBeginCall: runBeginCall,
-  runContinueCall: runContinueCall
-}
+  runContinueCall: runContinueCall,
+};
