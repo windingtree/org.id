@@ -26,7 +26,7 @@ async function bookInstantly (
   // Options: require confirmation?
   let confirmation = (options && options.requireConfirmation) || false;
   // Options: token method?
-  let tokenMethod = (options && options.tokenMethod) || 'approveData';
+  let tokenMethod = (options && options.tokenMethod) || 'approve';
   // Options: book method?
   let bookMethod = (options && options.bookMethod) || 'bookWithLif';
 
