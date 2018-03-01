@@ -17,3 +17,13 @@ script:
   - set -e
   - jshint --show-non-errors test/*.js || echo "Errors in jshint ignored bc it doesn't support async/await"
   - npm test
+before_deploy: npm run buildfornpm
+deploy:
+  provider: npm
+  email: augusto.lemble@gmail.com
+  skip_cleanup: true
+  api_key: $NPM_TOKEN
+  on:
+    repo: windingtree/wt-contracts
+    tags: true
+
