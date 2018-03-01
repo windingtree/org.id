@@ -26,7 +26,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       fromDay = fromDate.diff(moment(0), 'days');
     })
 
-    // Add a unit that accepts instant booking, execute a token.transferData booking
+    // Add a unit that accepts instant booking, execute a token.transfer booking
     beforeEach(async function() {
 
       args = [

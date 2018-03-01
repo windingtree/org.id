@@ -2,6 +2,7 @@
 logs
 *.log
 npm-debug.log*
+.node-xmlhttprequest-sync-[0-9]*
 
 # Compiled
 build

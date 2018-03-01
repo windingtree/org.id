@@ -14,7 +14,7 @@ LTS Node 8.9.4 is required for running the tests.
 ## Install
 
 ```sh
-git clone https://github.com/windingtree/wt-contracts --recursive
+git clone https://github.com/windingtree/wt-contracts
 npm install
 ```
 

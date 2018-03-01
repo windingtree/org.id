@@ -5,6 +5,7 @@ var moment = require('moment');
 var Web3 = require('web3');
 var abiDecoder = require('abi-decoder');
 var help = require('./helpers/index.js');
+var contract = require('truffle-contract');
 var assert = chai.assert;
 
 var WTIndex = artifacts.require('../contracts/WTIndex.sol');
@@ -15,7 +16,8 @@ var Unit = artifacts.require('../contracts/hotel/Unit.sol');
 var UnitInterface = artifacts.require('../contracts/hotel/Unit_Interface.sol');
 var PrivateCall = artifacts.require('../contracts/PrivateCall.sol');
 var Images = artifacts.require('../contracts/Images.sol');
-var LifToken = artifacts.require('../contracts/lif/LifToken.sol');
+var LifTokenData = require("@windingtree/lif-token/build/contracts/LifToken.json");
+var LifToken = contract(LifTokenData);
 
 var augustoKey, hotelKey;
 
@@ -29,6 +31,7 @@ contract('WTHotel & UnitType', function(accounts) {
 
     // Create the WTIndex contract
     wtIndex = await WTIndex.new();
+    LifToken.setProvider(web3.currentProvider);
 
   });
 

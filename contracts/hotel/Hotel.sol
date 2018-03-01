@@ -5,8 +5,8 @@ import "../Images.sol";
 import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
 import "../Index_Interface.sol";
-import "zeppelin-solidity/contracts/token/ERC20.sol";
 import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network

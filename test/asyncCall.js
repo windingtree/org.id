@@ -1,15 +1,15 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
+const web3Abi = require('web3-eth-abi');
 const moment = require('moment');
 
 const WTHotel = artifacts.require('Hotel.sol')
 const WTIndex = artifacts.require('WTIndex.sol');
-const LifToken = artifacts.require('LifToken.sol');
 const Unit = artifacts.require('Unit.sol')
+const LifTokenJson = require('@windingtree/lif-token/build/contracts/LifToken');
 
 abiDecoder.addABI(Unit._json.abi);
-abiDecoder.addABI(LifToken._json.abi);
 
 contract('AsyncCall', function(accounts) {
   const augusto = accounts[1];
@@ -46,7 +46,7 @@ contract('AsyncCall', function(accounts) {
       fromDay,
       daysAmount,
       price,
-      'approveData',
+      'approve',
       'bookWithLif',
       accounts
     ];
@@ -89,7 +89,7 @@ contract('AsyncCall', function(accounts) {
     let userInfo;
     let value;
 
-    // Add a unit that requires confirmation, execute a token.approveData booking
+    // Add a unit that requires confirmation, execute a token.approve booking
     // Unit is the recipient of tokens
     beforeEach(async function() {
       unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, true);
@@ -104,7 +104,7 @@ contract('AsyncCall', function(accounts) {
       } = await help.runBeginCall(...defaultCallArgs));
     });
 
-    it('should store correct information about the call', async function(){
+    it('should store correct information about the call', async function() {
       const [
         callData,
         sender,
@@ -133,13 +133,25 @@ contract('AsyncCall', function(accounts) {
     });
 
     // We've already begun and indentical call in the beforeEach block. Smart token requires
-    // that the call succeeds, so approveData will also throw.
+    // that the call succeeds, so approve will also throw.
     it('should throw if call is duplicate', async function() {
       const bookData = hotel.contract.bookWithLif.getData(unit.address, augusto, fromDay, 5);
       const beginCall = hotel.contract.beginCall.getData(bookData, userInfo);
 
       try {
-        await token.approveData(hotel.address, value, beginCall, {from: augusto});
+        // See https://github.com/trufflesuite/truffle/issues/569, we have to make a workaround with web3
+        // for overloaded methods with the same name but different signatures
+        const approveAbi = LifTokenJson.abi.filter((n) => n.name === 'approve' && n.inputs.length === 3).pop();
+        const approveData = web3Abi.encodeFunctionCall(approveAbi, [hotel.address, value, beginCall]);
+        let txData = {
+          from: augusto,
+          to: token.address,
+          data: approveData,
+          value: 0,
+        };
+        var gas = await web3.eth.estimateGas(txData);
+        txData.gas = Math.round(gas * 1.5);
+        const txHash = await web3.eth.sendTransaction(txData);
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -147,7 +159,7 @@ contract('AsyncCall', function(accounts) {
     });
   });
 
-  describe('beginCall: (no confirmation required)', function(){
+  describe('beginCall: (no confirmation required)', function() {
     let beginCallData;
     let callerInitialBalance;
     let clientInitialBalance;
@@ -157,7 +169,7 @@ contract('AsyncCall', function(accounts) {
     let unit;
     let value;
 
-    // Add a unit that accepts instant booking, execute a token.transferData booking
+    // Add a unit that accepts instant booking, execute a token.transfer booking
     // Unit is the recipient of tokens
     beforeEach(async function() {
       unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, false);
@@ -174,7 +186,7 @@ contract('AsyncCall', function(accounts) {
     });
 
     // Verify that token transfer took place
-    it('should execute the passed callData', async function(){
+    it('should execute the passed callData', async function() {
       const augustoFinalBalance = await token.balanceOf(augusto);
       const hotelFinalBalance = await token.balanceOf(hotel.address);
 
@@ -237,7 +249,7 @@ contract('AsyncCall', function(accounts) {
     });
 
     // This test makes this verifiable by coverage.
-    it('fromSelf modifier throws on indirect calls', async function(){
+    it('fromSelf modifier throws on indirect calls', async function() {
       const bookData = hotel.contract.bookWithLif.getData(unit.address, augusto, fromDay, 5);
       try {
         await index.callHotel(0, bookData, {from: hotelAccount});
@@ -248,13 +260,13 @@ contract('AsyncCall', function(accounts) {
     });
   });
 
-  describe('continueCall: success cases', function(){
+  describe('continueCall: success cases', function() {
     let events;
     let hash;
     let token;
     let unit;
 
-    // Add a unit that requires confirmation, execute a token.approveData booking
+    // Add a unit that requires confirmation, execute a token.approve booking
     // Have hotel continue call.
     beforeEach(async function() {
       unit = await help.addUnitToHotel(index, hotel, typeName, hotelAccount, true);
@@ -267,7 +279,7 @@ contract('AsyncCall', function(accounts) {
       ({ events } = await help.runContinueCall(index, hotel, hotelAccount, hash));
     });
 
-    it('should execute the pending call', async function(){
+    it('should execute the pending call', async function() {
       const bookEvents = events.filter(item => item && item.name === 'Book');
       assert.equal(bookEvents.length, 1);
     });
@@ -335,7 +347,6 @@ contract('AsyncCall', function(accounts) {
       } catch(e) {
         assert(help.isInvalidOpcodeEx);
       }
-
       const [
         callData,
         sender,
