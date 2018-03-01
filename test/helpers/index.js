@@ -5,8 +5,8 @@ const privateCall = require('./privateCall');
 const book = require('./book');
 
 module.exports = {
-  // Curreny version
-  version: "0.0.1-alpha",
+  // Current version
+  version: '0.0.1-alpha',
 
   // Crowdsale
   simulateCrowdsale: simulateCrowdsale,
@@ -14,7 +14,7 @@ module.exports = {
   // Hotel
   createHotel: hotel.createHotel,
   addUnitToHotel: hotel.addUnitToHotel,
-  addUnitTypeToHotel : hotel.addUnitTypeToHotel,
+  addUnitTypeToHotel: hotel.addUnitTypeToHotel,
   getHotelInfo: hotel.getHotelInfo,
 
   // PrivateCall
@@ -36,5 +36,5 @@ module.exports = {
   locationToUint: misc.locationToUint,
   locationFromUint: misc.locationToUint,
   jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,
-  pretty: misc.pretty
-}
+  pretty: misc.pretty,
+};

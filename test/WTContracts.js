@@ -1,40 +1,36 @@
-const chai = require('chai').assert;
+const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTContracts = artifacts.require('./WTContracts.sol');
-const Base_Interface = artifacts.require('Base_Interface.sol');
+const BaseInterface = artifacts.require('Base_Interface.sol');
 const Hotel = artifacts.require('./Hotel.sol');
 
-contract('WTContracts', function(accounts) {
+contract('WTContracts', function (accounts) {
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
-  const version = '0.0.1';
   const nullString = '';
 
   let contracts;
   let hotel;
   let hotelName;
   let hotelAddress;
-  let owner;
 
   beforeEach(async () => {
     contracts = await WTContracts.new();
     hotel = await Hotel.new('EuroLux-Zug', 'Valets & Chalets', hotelAccount);
     hotelName = await hotel.name();
     hotelAddress = hotel.address;
-    owner = await contracts.owner();
   });
 
   describe('version', () => {
-    it('should have the correct version and contract type', async() => {
-      let base = await Base_Interface.at(contracts.address);
+    it('should have the correct version and contract type', async () => {
+      let base = await BaseInterface.at(contracts.address);
       assert.equal(help.bytes32ToString(await base.version()), help.version);
-      assert.equal(help.bytes32ToString(await base.contractType()), "wtcontracts");
-    })
-  })
+      assert.equal(help.bytes32ToString(await base.contractType()), 'wtcontracts');
+    });
+  });
 
-  describe('register', function(){
-
+  describe('register', function () {
     it('should register a contract', async () => {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
       const [ name, addr, version ] = await contracts.getContract(1);
@@ -56,7 +52,7 @@ contract('WTContracts', function(accounts) {
       assert.equal(initialTotal.toNumber(), finalTotal.toNumber());
     });
 
-    it('should not register if the contract address exists in the registry', async() => {
+    it('should not register if the contract address exists in the registry', async () => {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
       const initialTotal = await contracts.total();
 
@@ -70,17 +66,16 @@ contract('WTContracts', function(accounts) {
 
     it('should throw if a non-owner registers', async () => {
       try {
-        await contracts.register(hotelName, hotelAddress, hotelAccount, {from: nonOwnerAccount});
+        await contracts.register(hotelName, hotelAddress, hotelAccount, { from: nonOwnerAccount });
         assert(false);
-      } catch(e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
   });
 
-  describe('edit', function(){
-
-    it('should edit contracts name and address', async() => {
+  describe('edit', function () {
+    it('should edit contracts name and address', async () => {
       const newAddress = accounts[5];
       const newVersion = '0.0.2';
 
@@ -115,19 +110,18 @@ contract('WTContracts', function(accounts) {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
 
       try {
-        await contracts.edit(hotelName, newAddress, newVersion, {from: nonOwnerAccount});
+        await contracts.edit(hotelName, newAddress, newVersion, { from: nonOwnerAccount });
         assert(false);
-      } catch(e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
   });
 
-  describe('getContract', function(){
-
-    beforeEach( async () => {
+  describe('getContract', function () {
+    beforeEach(async () => {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
-    })
+    });
 
     it('should return null values if index does not exist', async () => {
       const total = await contracts.total();
@@ -141,11 +135,10 @@ contract('WTContracts', function(accounts) {
     });
   });
 
-  describe('getByAddr', function(){
-
-    beforeEach( async () => {
+  describe('getByAddr', function () {
+    beforeEach(async () => {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
-    })
+    });
 
     it('should get contract by address', async () => {
       const [ name, addr, version ] = await contracts.getByAddr(hotelAddress);
@@ -165,11 +158,10 @@ contract('WTContracts', function(accounts) {
     });
   });
 
-  describe('getByName', function(){
-
-    beforeEach( async () => {
+  describe('getByName', function () {
+    beforeEach(async () => {
       await contracts.register(hotelName, hotelAddress, hotelAccount);
-    })
+    });
 
     it('should get contract by name', async () => {
       const [ name, addr, version ] = await contracts.getByName(hotelName);

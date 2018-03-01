@@ -5,7 +5,8 @@ import "../Images.sol";
 import "./UnitType_Interface.sol";
 import "./Unit_Interface.sol";
 import "../Index_Interface.sol";
-import "zeppelin-solidity/contracts/token/ERC20.sol";
+import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
    @title Hotel, contract for a Hotel registered in the WT network
@@ -21,7 +22,7 @@ import "zeppelin-solidity/contracts/token/ERC20.sol";
 
    Inherits from OpenZeppelin's `Ownable` and WT's 'Images'
  */
-contract Hotel is AsyncCall, Images {
+contract Hotel is AsyncCall, Images, Destructible {
 
   bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("hotel");
@@ -36,8 +37,8 @@ contract Hotel is AsyncCall, Images {
   string public lineOne;
   string public lineTwo;
   string public zip;
-  string public country;
-  uint public timezone;
+  bytes2 public country;
+  string public timezone;
   uint public latitude;
   uint public longitude;
 
@@ -86,42 +87,33 @@ contract Hotel is AsyncCall, Images {
   }
 
   /**
-     @dev `editAddress` allows the owner of the contract to change the hotel's
-     physical address
+     @dev `editLocation` allows the owner of the contract to change the hotel's
+     address and geolocation
 
      @param _lineOne The new main address of the hotel
      @param _lineTwo The new second address of the hotel
      @param _zip The new zip code of the hotel
-     @param _country The new country of the hotel
+     @param _country The new ISO3166-1 Alpha2 country code of the hotel
+     @param _timezone The new tz database timezone of the hotel
+     @param _longitude The new longitude value of the location of the hotel
+     @param _latitude The new longitude value of the latitude of the hotel
    */
-  function editAddress(
+  function editLocation(
     string _lineOne,
     string _lineTwo,
     string _zip,
-    string _country
+    bytes2 _country,
+    string _timezone,
+    uint _longitude,
+    uint _latitude
   ) onlyOwner() {
     lineOne = _lineOne;
     lineTwo = _lineTwo;
     zip = _zip;
     country = _country;
-  }
-
-  /**
-     @dev `editLocation` allows the owner of the contract to change the hotel's
-     location
-
-     @param _timezone The new timezone of the hotel
-     @param _longitude The new longitude value of the location of the hotel
-     @param _latitude The new longitude value of the latitude of the hotel
-   */
-  function editLocation(
-    uint _timezone,
-    uint _longitude,
-    uint _latitude
-  ) onlyOwner() {
     timezone = _timezone;
-    latitude = _latitude;
     longitude = _longitude;
+    latitude = _latitude;
   }
 
   /**
@@ -153,30 +145,51 @@ contract Hotel is AsyncCall, Images {
   }
 
   /**
-     @dev `removeUnit` allows the owner to remove a unit from the inventory
+     @dev `deleteUnit` allows the owner to remove a unit from the inventory
 
      @param unit The address of the `Unit` contract
    */
-  function removeUnit(address unit) onlyOwner() {
+  function deleteUnit(address unit) onlyOwner() {
+    Destructible(units[ unitsIndex[unit] ]).destroyAndSend(tx.origin);
     delete units[ unitsIndex[unit] ];
     delete unitsIndex[unit];
     UnitType_Interface(unitTypes[Unit_Interface(unit).unitType()]).decreaseUnits();
   }
 
   /**
-     @dev `removeUnitType` allows the owner to remove a unit type
+     @dev `deleteUnitType` allows the owner to delete a unit type
 
      @param unitType The type of unit
      @param index The unit's index in the `unitTypeNames` array
    */
-  function removeUnitType(
+  function deleteUnitType(
     bytes32 unitType,
     uint index
   ) onlyOwner() {
     require(unitTypes[unitType] != address(0));
     require(unitTypeNames[index] == unitType);
+    require(UnitType_Interface(unitTypes[unitType]).totalUnits() == 0);
+    Destructible(unitTypes[unitType]).destroyAndSend(tx.origin);
     delete unitTypes[unitType];
     delete unitTypeNames[index];
+  }
+
+  /**
+    @dev 'destroy' allows the owner to delete the Hotel and all of its Units
+    and UnitTypes
+  */
+  function destroy() onlyOwner() public {
+    for(uint i = 0; i < units.length; i++) {
+      if(units[i] != address(0)) {
+        deleteUnit(units[i]);
+      }
+    }
+    for(uint j = 0; j < unitTypeNames.length; j++) {
+      if(unitTypes[unitTypeNames[j]] != address(0)) {
+        deleteUnitType(unitTypeNames[j], j);
+      }
+    }
+    super.destroyAndSend(tx.origin);
   }
 
   /**
@@ -258,10 +271,68 @@ contract Hotel is AsyncCall, Images {
   ) fromSelf() {
     require(unitsIndex[unitAddress] > 0);
     require(daysAmount > 0);
-    uint256 price = Unit_Interface(unitAddress).getLifCost(fromDay, daysAmount);
+    uint256 price = getLifCost(unitAddress, fromDay, daysAmount);
     require(Unit_Interface(unitAddress).book(from, fromDay, daysAmount));
     require(ERC20(Index_Interface(owner).LifToken()).transferFrom(from, this, price));
     Book(from, unitAddress, fromDay, daysAmount);
+  }
+
+  /**
+     @dev `getCost` calculates the cost of renting the Unit for the given dates
+
+     @param fromDay The starting date of the period of days to book
+     @param daysAmount The amount of days in the period
+
+     @return uint256 The total cost of the booking in the custom currency
+   */
+  function getCost(
+    address unitAddress,
+    uint256 fromDay,
+    uint256 daysAmount
+  ) constant returns(uint256) {
+    uint256 toDay = fromDay+daysAmount;
+    uint256 totalCost = 0;
+    uint256 defaultPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultPrice();
+
+    for (uint256 i = fromDay; i < toDay ; i++){
+      var (specialPrice,,) = Unit_Interface(unitAddress).getReservation(i);
+      if (specialPrice > 0) {
+        totalCost += specialPrice;
+      } else {
+        totalCost += defaultPrice;
+      }
+    }
+
+    return totalCost;
+  }
+
+  /**
+     @dev `getLifCost` calculates the cost of renting the Unit for the given dates
+
+     @param fromDay The starting date of the period of days to book
+     @param daysAmount The amount of days in the period
+
+     @return uint256 The total cost of the booking in Lif
+   */
+  function getLifCost(
+    address unitAddress,
+    uint256 fromDay,
+    uint256 daysAmount
+  ) constant returns(uint256) {
+    uint256 toDay = fromDay+daysAmount;
+    uint256 totalCost = 0;
+    uint256 defaultLifPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultLifPrice();
+
+    for (uint256 i = fromDay; i < toDay ; i++){
+      var (,specialLifPrice,) = Unit_Interface(unitAddress).getReservation(i);
+      if (specialLifPrice > 0) {
+        totalCost += specialLifPrice;
+      } else {
+        totalCost += defaultLifPrice;
+      }
+    }
+
+    return totalCost;
   }
 
   /**

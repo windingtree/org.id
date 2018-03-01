@@ -1,52 +1,51 @@
+const _ = require('lodash');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const moment = require('moment');
 
-contract('Hotel / AsyncCall: bookings', function(accounts) {
+contract('Hotel / AsyncCall: bookings', function (accounts) {
   const augusto = accounts[1];
   const hotelAccount = accounts[2];
   const jakub = accounts[3];
-  const typeName = 'BASIC_ROOM';
   let fromDate;
   let fromDay;
   let block;
 
-  describe('reservations', async function(){
+  describe('reservations', async function () {
     let events;
-    let hash;
     let args;
     const daysAmount = 5;
     const daysFromNow = 1;
     const unitPrice = 1;
+    let unit;
 
-    before(async function() {
-      block = await web3.eth.getBlock("latest");
+    before(async function () {
+      block = await web3.eth.getBlock('latest');
       fromDate = moment.unix(block.timestamp);
       fromDate.add(daysFromNow, 'days');
       fromDay = fromDate.diff(moment(0), 'days');
-    })
+    });
 
-    // Add a unit that accepts instant booking, execute a token.transferData booking
-    beforeEach(async function() {
-
+    // Add a unit that accepts instant booking, execute a token.transfer booking
+    beforeEach(async function () {
       args = [
         augusto,
         hotelAccount,
         accounts,
         fromDay,
         daysAmount,
-        unitPrice
+        unitPrice,
       ];
 
-      ({ events, hash, unit } = await help.bookInstantly(...args));
+      ({ events, unit } = await help.bookInstantly(...args));
     });
 
     it('should make a reservation', async () => {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
-        assert.equal(bookedBy, augusto);
+        const reservationResult = await unit.getReservation(day);
+        assert.equal(reservationResult[2], augusto);
       }
     });
 
@@ -67,7 +66,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       let nextDate = moment(fromDate).add(daysAmount, 'days');
       let nextFrom = nextDate.diff(moment(0), 'days');
       let nextAmount = 2;
-      let options = {keepPreviousHotel: true};
+      let options = { keepPreviousHotel: true };
       let newArgs = [
         jakub,
         hotelAccount,
@@ -75,16 +74,16 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         nextFrom,
         nextAmount,
         unitPrice,
-        options
+        options,
       ];
       const { unit } = await help.bookInstantly(...newArgs);
 
       const range = _.range(nextFrom, nextFrom + nextAmount);
       for (let day of range) {
-        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
-        assert.equal(bookedBy, jakub);
+        const reservationResult = await unit.getReservation(day);
+        assert.equal(reservationResult[2], jakub);
       }
-    })
+    });
 
     it('should throw if zero days are reserved', async () => {
       let nextDate = moment(fromDate).add(daysAmount, 'months');
@@ -96,7 +95,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         accounts,
         nextFrom,
         nextAmount,
-        unitPrice
+        unitPrice,
       ];
 
       const { success } = await help.bookInstantly(...newArgs);
@@ -106,7 +105,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
     it('should should throw if any of the days requested are already reserved', async () => {
       let nextDate = moment(fromDate).add(1, 'days');
       let nextFrom = nextDate.diff(moment(0), 'days');
-      let options = {keepPreviousHotel: true};
+      let options = { keepPreviousHotel: true };
       let newArgs = [
         jakub,
         hotelAccount,
@@ -114,16 +113,16 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         nextFrom,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       const { success } = await help.bookInstantly(...newArgs);
       assert.equal(success, false);
-    })
+    });
 
     // This requires more setup work.....
-    it('should throw if the requested unit does not exist', async() => {
-      let options = {badUnit: true};
+    it('should throw if the requested unit does not exist', async () => {
+      let options = { badUnit: true };
       let newArgs = [
         augusto,
         hotelAccount,
@@ -131,24 +130,23 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         fromDay,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       const { success } = await help.bookInstantly(...newArgs);
       assert.equal(success, false);
-    })
+    });
 
-    it('should throw when reserving dates in the past', async() => {
+    it('should throw when reserving dates in the past', async () => {
       let pastDate = moment(fromDate).subtract(1, 'months');
       let nextFrom = pastDate.diff(moment(0), 'days');
-      let nextAmount = 2;
       let newArgs = [
         augusto,
         hotelAccount,
         accounts,
         nextFrom,
         daysAmount,
-        unitPrice
+        unitPrice,
       ];
 
       const { success } = await help.bookInstantly(...newArgs);
@@ -162,14 +160,14 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
     const unitPrice = 1;
     let args;
 
-    before(async function() {
-      block = await web3.eth.getBlock("latest");
+    before(async function () {
+      block = await web3.eth.getBlock('latest');
       fromDate = moment.unix(block.timestamp);
       fromDate.add(daysFromNow, 'days');
       fromDay = fromDate.diff(moment(0), 'days');
-    })
+    });
 
-    beforeEach(function() {
+    beforeEach(function () {
       args = [
         augusto,
         hotelAccount,
@@ -178,14 +176,14 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         daysAmount,
         unitPrice,
       ];
-    })
+    });
 
     it('should transfer tokens from client account to the hotel contract', async () => {
       const {
         clientInitialBalance,
         hotelInitialBalance,
         hotel,
-        token
+        token,
       } = await help.bookInstantly(...args);
 
       const totalCost = daysAmount * unitPrice;
@@ -206,7 +204,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       // Make another booking that overlaps
       let takenDate = moment(fromDate).add(1, 'days');
       let nextFrom = takenDate.diff(moment(0), 'days');
-      let options = {keepPreviousHotel: true};
+      let options = { keepPreviousHotel: true };
       let newArgs = [
         jakub,
         hotelAccount,
@@ -214,7 +212,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         nextFrom,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       const { hotel, token, success } = await help.bookInstantly(...newArgs);
@@ -225,7 +223,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
     });
 
     it('should throw if the approval is too low to execute the transfer', async () => {
-      let options = {approvalValue: 0}
+      let options = { approvalValue: 0 };
       args.push(options);
 
       const { hotel, token, success } = await help.bookInstantly(...args);
@@ -238,7 +236,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
     it.skip('should clear allowances in excess of the room cost');
   });
 
-  describe('manual payment, without token', async function(){
+  describe('manual payment, without token', async function () {
     let events;
     let hash;
     let hotel;
@@ -250,13 +248,13 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
     const unitPrice = 0;
 
     // Add a unit that requires approval
-    before(async function() {
-      block = await web3.eth.getBlock("latest");
+    before(async function () {
+      block = await web3.eth.getBlock('latest');
       fromDate = moment.unix(block.timestamp);
       fromDate.add(daysFromNow, 'days');
       fromDay = fromDate.diff(moment(0), 'days');
 
-      let options = {bookMethod: 'book', requireConfirmation: true, approvalValue: 1};
+      let options = { bookMethod: 'book', requireConfirmation: true, approvalValue: 1 };
       args = [
         augusto,
         hotelAccount,
@@ -264,7 +262,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         fromDay,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       ({ events, hash, hotel, index, unit } = await help.bookInstantly(...args));
@@ -274,8 +272,8 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
-        assert.notEqual(bookedBy, augusto);
+        const reservationResult = await unit.getReservation(day);
+        assert.notEqual(reservationResult[2], augusto);
       }
 
       const bookEvent = events.filter(item => item && item.name === 'Book')[0];
@@ -289,8 +287,8 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       const range = _.range(fromDay, fromDay + daysAmount);
 
       for (let day of range) {
-        const [ specialPrice, specialLifPrice, bookedBy ] = await unit.getReservation(day);
-        assert.equal(bookedBy, augusto);
+        const reservationResult = await unit.getReservation(day);
+        assert.equal(reservationResult[2], augusto);
       }
 
       const bookEvent = events.filter(item => item && item.name === 'Book')[0].events;
@@ -303,11 +301,10 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       assert.equal(daysAmountTopic.value, daysAmount);
     });
 
-    it('should throw when reserving dates in the past', async() => {
-      let options = {bookMethod: 'book', requireConfirmation: true, approvalValue: 1, keepPreviousHotel: true};
+    it('should throw when reserving dates in the past', async () => {
+      let options = { bookMethod: 'book', requireConfirmation: true, approvalValue: 1, keepPreviousHotel: true };
       let pastDate = moment(fromDate).subtract(1, 'months');
       let nextFrom = pastDate.diff(moment(0), 'days');
-      let nextAmount = 2;
       let newArgs = [
         augusto,
         hotelAccount,
@@ -315,7 +312,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         nextFrom,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       ({ events, hash, hotel, index, unit } = await help.bookInstantly(...newArgs));
@@ -323,13 +320,13 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       try {
         await help.runContinueCall(index, hotel, hotelAccount, hash);
         assert(false);
-      } catch (e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should throw if the requested unit does not exist', async() => {
-      let options = {bookMethod: 'book', requireConfirmation: true, approvalValue: 1, badUnit: true};
+    it('should throw if the requested unit does not exist', async () => {
+      let options = { bookMethod: 'book', requireConfirmation: true, approvalValue: 1, badUnit: true };
       let newArgs = [
         augusto,
         hotelAccount,
@@ -337,7 +334,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         fromDay,
         daysAmount,
         unitPrice,
-        options
+        options,
       ];
 
       ({ events, hash, hotel, index, unit } = await help.bookInstantly(...newArgs));
@@ -345,13 +342,13 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       try {
         await help.runContinueCall(index, hotel, hotelAccount, hash);
         assert(false);
-      } catch (e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
     it('should throw if zero days are reserved', async () => {
-      let options = {bookMethod: 'book', requireConfirmation: true, approvalValue: 1};
+      let options = { bookMethod: 'book', requireConfirmation: true, approvalValue: 1 };
       let nextDate = moment(fromDate).add(daysAmount, 'months');
       let nextFrom = nextDate.diff(moment(0), 'days');
       let nextAmount = 0;
@@ -362,7 +359,7 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
         nextFrom,
         nextAmount,
         unitPrice,
-        options
+        options,
       ];
 
       ({ events, hash, hotel, index, unit } = await help.bookInstantly(...newArgs));
@@ -370,11 +367,9 @@ contract('Hotel / AsyncCall: bookings', function(accounts) {
       try {
         await help.runContinueCall(index, hotel, hotelAccount, hash);
         assert(false);
-      } catch (e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
-
   });
-
 });

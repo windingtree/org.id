@@ -1,32 +1,30 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
-const abiDecoder = require('abi-decoder');
 
 const Images = artifacts.require('Images.sol');
-const Base_Interface = artifacts.require('Base_Interface.sol');
+const BaseInterface = artifacts.require('Base_Interface.sol');
 
-contract('Images', function(accounts) {
+contract('Images', function (accounts) {
   let images;
   const nonOwnerAccount = accounts[1];
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     images = await Images.new();
-  })
+  });
 
   describe('version', () => {
-    it('should have the correct version and contract type', async() => {
-      let base = await Base_Interface.at(images.address);
+    it('should have the correct version and contract type', async () => {
+      let base = await BaseInterface.at(images.address);
       assert.equal(help.bytes32ToString(await base.version()), help.version);
-      assert.equal(help.bytes32ToString(await base.contractType()), "images");
-    })
-  })
+      assert.equal(help.bytes32ToString(await base.contractType()), 'images');
+    });
+  });
 
-  describe('addImage / removeImage', function(){
+  describe('addImage / removeImage', function () {
     const image1 = 'http://wthotel.com/image1';
     const image2 = 'http://wthotel.com/image2';
-    const image3 = 'http://wthotel.com/image1';
 
-    it('should add and remove images', async function() {
+    it('should add and remove images', async function () {
       await images.addImage(image1);
       await images.addImage(image2);
 
@@ -47,7 +45,7 @@ contract('Images', function(accounts) {
       assert.equal(notFound, -1);
     });
 
-    it('should throw if non-owner adds and removes images', async function() {
+    it('should throw if non-owner adds and removes images', async function () {
       // Add one image legitimately
       await images.addImage(image1);
 
@@ -57,20 +55,20 @@ contract('Images', function(accounts) {
       assert.notEqual(found1, -1);
 
       // Non-owner add
-      try{
-        await images.addImage(image1, {from: nonOwnerAccount});
+      try {
+        await images.addImage(image1, { from: nonOwnerAccount });
         assert(false);
-      } catch(e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
 
       // Non-owner remove at index 0
       try {
-        await images.removeImage(0, {from: nonOwnerAccount})
+        await images.removeImage(0, { from: nonOwnerAccount });
         assert(false);
-      } catch(e){
+      } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
   });
-})
+});
