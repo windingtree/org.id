@@ -1,4 +1,4 @@
-/*'use strict';
+/* 'use strict';
 
 var chai = require('chai');
 var moment = require('moment');
@@ -42,7 +42,6 @@ contract('WTHotel & UnitType', function(accounts) {
     abiDecoder.addABI(WTIndex._json.abi);
     abiDecoder.addABI(UnitType._json.abi);
     abiDecoder.addABI(Unit._json.abi);
-
 
     // Register hotel on index
     let hotelRegisterTx = await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', {from: accounts[2]});
@@ -350,4 +349,4 @@ contract('WTHotel & UnitType', function(accounts) {
     assert.equal(wtHotelAddress, (await wtIndex.getHotelsByManager(accounts[2]))[1] );
   })
 
-});*/
+}); */
