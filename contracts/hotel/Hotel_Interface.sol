@@ -1,58 +1,20 @@
 pragma solidity ^0.4.18;
 
-import "../AsyncCall_Interface.sol";
-import "../Images.sol";
+import "../Base_Interface.sol";
+import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /*
  * Hotel_Interface
  * Interface of Hotel contract
  */
-contract Hotel_Interface is AsyncCall_Interface, Images {
+contract Hotel_Interface is Ownable, Base_Interface {
 
   // Main information
-  string public name;
-  string public description;
   address public manager;
   uint public created;
 
-  // Address and Location
-  string public lineOne;
-  string public lineTwo;
-  string public zip;
-  bytes2 public country;
-  string public timezone;
-  uint public latitude;
-  uint public longitude;
+  string public name;
+  string public description;
 
-  // The `UnitType` contracts indexed by type and index
-  mapping(bytes32 => address) public unitTypes;
-  bytes32[] public unitTypeNames;
-
-  // Array of addresses of `Unit` contracts and mapping of their index position
-  mapping(address => uint) public unitsIndex;
-  address[] public units;
-
-  event Book(address from, address unit, uint256 fromDay, uint256 daysAmount);
-
-  // Owner methods
-  function editInfo(string _name, string _description) onlyOwner();
-  function editAddress(string _lineOne, string _lineTwo, string _zip, bytes2 _country, string _timezone, uint _longitude, uint _latitude) onlyOwner();
-  function addUnit(address unit) onlyOwner();
-  function removeUnit(address unit) onlyOwner();
-  function addUnitType(address addr) onlyOwner();
-  function removeUnitType(bytes32 unitType, uint index) onlyOwner();
-  function changeUnitType(bytes32 unitType, address newAddr) onlyOwner();
-  function callUnitType(bytes32 unitType, bytes data) onlyOwner();
-  function callUnit(address unitAddress, bytes data) onlyOwner();
-
-  // Private call methods
-  function book(address unitAddress, address from, uint fromDay, uint daysAmount) fromSelf();
-  function bookWithLif(address unitAddress, address from, uint256 fromDay, uint256 daysAmount) fromSelf();
-
-  // Public constant methods
-  function getUnitType(bytes32 unitType) constant returns (address);
-  function getUnitTypeNames() constant returns (bytes32[]);
-  function getCost(address unitAddress, uint256 fromDay, uint256 daysAmount) constant returns(uint256);
-  function getLifCost(address unitAddress, uint256 fromDay, uint256 daysAmount) constant returns(uint256);
-
+  function editInfo(string _name, string _description) onlyOwner() public;
 }

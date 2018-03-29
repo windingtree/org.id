@@ -1,6 +1,7 @@
 pragma solidity ^0.4.18;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./Base_Interface.sol";
 import "./hotel/Hotel.sol";
 
 /**
@@ -11,9 +12,8 @@ import "./hotel/Hotel.sol";
 
    Inherits from OpenZeppelin's `Ownable`
  */
-contract WTIndex is Ownable {
+contract WTIndex is Ownable, Base_Interface {
 
-  bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("wtindex");
 
   // Array of addresses of `Hotel` contracts and mapping of their index position
@@ -22,9 +22,6 @@ contract WTIndex is Ownable {
 
   // Mapping of the hotels indexed by manager's address
   mapping(address => address[]) public hotelsByManager;
-
-  // The address of the DAO contract
-  address public DAO;
 
   // Address of the LifToken contract
   address public LifToken;
@@ -37,19 +34,9 @@ contract WTIndex is Ownable {
   /**
      @dev Constructor. Creates the `WTIndex` contract
    */
-	function WTIndex() {
+	function WTIndex() public {
 		hotels.length ++;
 	}
-
-  /**
-     @dev `setDAO` allows the owner of the contract to change the
-     address of the DAO contract
-
-     @param _DAO The new contract address
-   */
-  function setDAO(address _DAO) onlyOwner() {
-    DAO = _DAO;
-  }
 
   /**
      @dev `setLifToken` allows the owner of the contract to change the
@@ -57,7 +44,7 @@ contract WTIndex is Ownable {
 
      @param _LifToken The new contract address
    */
-  function setLifToken(address _LifToken) onlyOwner() {
+  function setLifToken(address _LifToken) onlyOwner() public {
     LifToken = _LifToken;
   }
 
@@ -76,8 +63,7 @@ contract WTIndex is Ownable {
 	}
 
   /**
-     @dev `deleteHotel` Allows a manager to delete a hotel, along with its
-     Units and UnitTypes
+     @dev `deleteHotel` Allows a manager to delete a hotel.
 
      @param index The hotel's index
    */
@@ -106,7 +92,7 @@ contract WTIndex is Ownable {
 
      @return uint Length of the `hotels` array
    */
-  function getHotelsLength() constant returns (uint) {
+  function getHotelsLength() constant public returns (uint) {
     return hotels.length;
   }
 
@@ -115,7 +101,7 @@ contract WTIndex is Ownable {
 
      @return address[] `hotels` array
    */
-  function getHotels() constant returns (address[]) {
+  function getHotels() constant public returns (address[]) {
     return hotels;
   }
 
@@ -124,7 +110,7 @@ contract WTIndex is Ownable {
 
      returns The addresses of `Hotel` contracts that belong to one manager
    */
-	function getHotelsByManager(address owner) constant returns(address[]){
+	function getHotelsByManager(address owner) constant public returns(address[]){
 		return hotelsByManager[owner];
 	}
 

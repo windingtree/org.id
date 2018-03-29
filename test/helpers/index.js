@@ -1,28 +1,18 @@
-const simulateCrowdsale = require('./simulateCrowdsale');
+const simulateCrowdsale = require('./simulate-crowdsale');
 const hotel = require('./hotel');
 const misc = require('./misc');
-const privateCall = require('./privateCall');
-const book = require('./book');
+const packageFile = require('../../package');
 
 module.exports = {
   // Current version
-  version: '0.0.1-alpha',
+  version: packageFile.version,
 
   // Crowdsale
   simulateCrowdsale: simulateCrowdsale,
 
   // Hotel
   createHotel: hotel.createHotel,
-  addUnitToHotel: hotel.addUnitToHotel,
-  addUnitTypeToHotel: hotel.addUnitTypeToHotel,
   getHotelInfo: hotel.getHotelInfo,
-
-  // PrivateCall
-  runBeginCall: privateCall.runBeginCall,
-  runContinueCall: privateCall.runContinueCall,
-
-  // Book
-  bookInstantly: book.bookInstantly,
 
   // Misc
   zeroAddress: misc.zeroAddress,

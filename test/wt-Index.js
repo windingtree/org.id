@@ -24,26 +24,6 @@ contract('WTIndex', function (accounts) {
     });
   });
 
-  describe('setDAO', () => {
-    const daoAddress = accounts[4];
-
-    it('should set the DAOs address', async () => {
-      await index.setDAO(daoAddress, { from: indexOwner });
-      const setValue = await index.DAO();
-
-      assert.equal(setValue, daoAddress);
-    });
-
-    it('should throw if non-owner sets the DAO', async () => {
-      try {
-        await index.setDAO(daoAddress, { from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
-
   describe('setLifToken', () => {
     const tokenAddress = accounts[5];
 

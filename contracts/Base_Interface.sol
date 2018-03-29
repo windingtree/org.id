@@ -11,9 +11,10 @@ pragma solidity ^0.4.18;
 contract Base_Interface {
 
   // The hex-encoded version, follows the semantic standard MAJOR.MINOR.PATCH-EXTENSION
-  bytes32 public version;
+  bytes32 public version = bytes32("0.1.0");
 
-  //The hex encoded type of the contract, in all lowercase letters without any spaces
+  // The hex encoded type of the contract, in all lowercase letters without any spaces.
+  // It has to be defined in each contract that uses this interface.
   bytes32 public contractType;
 
 }

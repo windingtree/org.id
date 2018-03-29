@@ -4,8 +4,7 @@ const LifCrowdsaleData = require('@windingtree/lif-token/build/contracts/LifCrow
 const LifCrowdsale = contract(LifCrowdsaleData);
 const LifTokenData = require('@windingtree/lif-token/build/contracts/LifToken.json');
 const LifToken = contract(LifTokenData);
-const latestTime = require('./latestTime');
-const { increaseTimeTestRPC, increaseTimeTestRPCTo } = require('./increaseTime');
+const { increaseTimeTestRPC, increaseTimeTestRPCTo, latestTime } = require('./time-management');
 
 /**
  * Generates a crowdsale which funds the first five accounts of param `accounts` with
