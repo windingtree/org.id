@@ -28,7 +28,7 @@
   ],
   "main": "index.js",
   "author": "Winding Tree Developers <dev@windingtree.com>",
-  "license": "GPLv3",
+  "license": "GPL-3.0",
   "dependencies": {
     "@windingtree/lif-token": "^0.1.2-erc827",
     "abi-decoder": "^1.0.8",
