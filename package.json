@@ -9,7 +9,7 @@
     "test": "scripts/test.sh",
     "lint": "eslint test",
     "testrpc": "./node_modules/.bin/testrpc",
-    "coverage": "scripts/coverage.sh",
+    "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "clean": "rimraf build",
     "buildfornpm": "npm run clean && truffle compile"
   },
