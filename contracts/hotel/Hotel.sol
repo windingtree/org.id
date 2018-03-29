@@ -16,25 +16,33 @@ contract Hotel is Destructible, Base_Interface {
 
   bytes32 public contractType = bytes32("hotel");
 
-  // Main information
+  // Who owns this Hotel and can manage it.
   address public manager;
+  // Arbitrary locator of the off-chain stored hotel data
+  // This might be an HTTPS resource, IPFS hash, Swarm address...
+  // This is intentionally generic
+  string public url;
+  // keccak256 hash of the customer identifier. This can be used
+  // as a reference when someone does not know the hotel's address.
+  // It is the responsibility of contract users to derive the hash
+  // in a repeatable and well-documented way
+  bytes32 public customIdHash;
+  // Number of block when Hotel was created
   uint public created;
-
-  string public name;
-  string public description;
-
 
   /**
      @dev Constructor.
 
-     @param _name see `name`
-     @param _description see `description`
-     @param _manager see `_manager`
+     @param _manager see `manager`
+     @param _url see `url`
+     @param _customIdHash see `customIdHash`
    */
-  function Hotel(string _name, string _description, address _manager) public {
+  function Hotel(address _manager, string _url, bytes32 _customIdHash) public {
+    require(_manager != address(0));
+    require(bytes(_url).length != 0);
     manager = _manager;
-    name = _name;
-    description = _description;
+    url = _url;
+    customIdHash = _customIdHash;
     created = block.number;
   }
 
@@ -42,15 +50,14 @@ contract Hotel is Destructible, Base_Interface {
      @dev `editInfo` allows the owner of the contract to change the hotel's
      main information
 
-     @param _name The new name of the hotel
-     @param _description The new description of the hotel
+     @param _url see `url`
+     @param _customIdHash see `customIdHash`
    */
-  function editInfo(
-    string _name,
-    string _description
-  ) onlyOwner() public {
-     name = _name;
-     description = _description;
+  function editInfo(string _url, bytes32 _customIdHash) onlyOwner() public {
+    //require(_url.length != 0);
+    //require(_customIdHash.length != 0);
+    url = _url;
+    customIdHash = _customIdHash;
   }
 
 

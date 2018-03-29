@@ -1,16 +1,20 @@
-var utf8 = require('utf8');
+const web3 = require('web3');
+const _ = require('lodash');
+
+const zeroAddress = '0x0000000000000000000000000000000000000000';
+const zeroBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
 
-  zeroAddress: '0x0000000000000000000000000000000000000000',
-  zeroBytes32: '0x0000000000000000000000000000000000000000000000000000000000000000',
+  zeroAddress: zeroAddress,
+  zeroBytes32: zeroBytes32,
 
   isZeroBytes32: function (val) {
-    return val === '0x0000000000000000000000000000000000000000000000000000000000000000';
+    return val === zeroBytes32;
   },
 
   isZeroAddress: function (val) {
-    return val === '0x0000000000000000000000000000000000000000';
+    return val === zeroAddress;
   },
 
   isZeroString: function (val) {
@@ -50,20 +54,16 @@ module.exports = {
     };
   },
 
-  // Stolen from the web3 1.0 lib (method is called toUtf8)
   bytes32ToString: function (hex) {
-    var str = '';
-    var i = 0, l = hex.length;
-    if (hex.substring(0, 2) === '0x') {
-      i = 2;
-    }
-    for (; i < l; i += 2) {
-      var code = parseInt(hex.substr(i, 2), 16);
-      if (code === 0) { break; }
-      str += String.fromCharCode(code);
-    }
+    return web3.utils.hexToUtf8(hex);
+  },
 
-    return utf8.decode(str);
+  stringToBytes32: function (text) {
+    return web3.utils.utf8ToHex(text);
+  },
+
+  hashCustomId: function (id) {
+    return web3.utils.soliditySha3(id);
   },
 
   /**
@@ -84,6 +84,10 @@ module.exports = {
     return (zeroComparator !== undefined)
       ? arr.filter(item => !zeroComparator(item))
       : arr;
+  },
+
+  filterZeroAddresses: function (listOfAddresses) {
+    return _.filter(listOfAddresses, (a) => a != zeroAddress);
   },
 
   // Debugging helper

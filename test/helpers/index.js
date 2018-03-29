@@ -23,8 +23,11 @@ module.exports = {
   lifWei2Lif: misc.lifWei2Lif,
   lif2LifWei: misc.lif2LifWei,
   bytes32ToString: misc.bytes32ToString,
+  stringToBytes32: misc.stringToBytes32,
+  hashCustomId: misc.hashCustomId,
   locationToUint: misc.locationToUint,
   locationFromUint: misc.locationToUint,
+  filterZeroAddresses: misc.filterZeroAddresses,
   jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,
   pretty: misc.pretty,
 };
