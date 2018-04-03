@@ -5,10 +5,6 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 const zeroBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
-
-  zeroAddress: zeroAddress,
-  zeroBytes32: zeroBytes32,
-
   isZeroBytes32: function (val) {
     return val === zeroBytes32;
   },
@@ -35,31 +31,6 @@ module.exports = {
       console.error(e);
       return false;
     }
-  },
-
-  lifWei2Lif: function (value) {
-    return web3.fromWei(value, 'ether');
-  },
-
-  lif2LifWei: function (value) {
-    return web3.toWei(value, 'ether');
-  },
-
-  locationToUint: function (longitude, latitude) {
-    return {
-      long: Math.round((90 + longitude) * 10e5),
-      lat: Math.round((180 + latitude) * 10e5),
-    };
-  },
-
-  locationFromUint: function (longitude, latitude) {
-    latitude = parseInt(latitude);
-    longitude = parseInt(longitude);
-
-    return {
-      lat: parseFloat((latitude - (180 * 10e5)) / 10e5).toFixed(6),
-      long: parseFloat((longitude - (90 * 10e5)) / 10e5).toFixed(6),
-    };
   },
 
   bytes32ToString: function (hex) {
@@ -98,9 +69,4 @@ module.exports = {
     return _.filter(listOfAddresses, (a) => a !== zeroAddress);
   },
 
-  // Debugging helper
-  pretty: function (msg, obj) {
-    console.log(`<------ ${msg} ------>\n` + JSON.stringify(obj, null, ' '));
-    console.log('<------- END -------->\n');
-  },
 };
