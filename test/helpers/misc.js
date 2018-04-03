@@ -29,10 +29,10 @@ module.exports = {
     if (
       e.message.search('invalid opcode') >= 0 || // ethereumjs-testrpc at least <= 4
       e.message.search('revert') >= 0 // ganache-cli at least 6+
-      ) {
+    ) {
       return true;
     } else {
-      console.log(e);
+      console.error(e);
       return false;
     }
   },
@@ -95,7 +95,7 @@ module.exports = {
   },
 
   filterZeroAddresses: function (listOfAddresses) {
-    return _.filter(listOfAddresses, (a) => a != zeroAddress);
+    return _.filter(listOfAddresses, (a) => a !== zeroAddress);
   },
 
   // Debugging helper

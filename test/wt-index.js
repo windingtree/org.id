@@ -237,17 +237,17 @@ contract('WTIndex', (accounts) => {
         await index.registerHotel('bbb', help.hashCustomId('myid2'), { from: hotelAccount });
         const hotelList = await index.getHotelsByManager(hotelAccount);
         assert.equal(hotelList.length, 1);
-      })
+      });
 
       it('should return empty list for a manager without hotels', async () => {
         const hotelList = await index.getHotelsByManager(hotelAccount);
         assert.equal(hotelList.length, 0);
-      })
+      });
 
       it('should return empty list for a non-existing manager', async () => {
         const hotelList = await index.getHotelsByManager(nonOwnerAccount);
         assert.equal(hotelList.length, 0);
-      })
+      });
     });
   });
 });

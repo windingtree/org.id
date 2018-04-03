@@ -33,6 +33,9 @@ contract('Hotel', (accounts) => {
       assert.equal(info.customIdHash, hotelHash);
       // We need callback, because getBlockNumber for some reason cannot be called with await
       return web3.eth.getBlockNumber(async (err, value) => {
+        if (err) {
+          throw new Error('Cannot get block number', err);
+        }
         assert.isAtMost(info.created, value);
         assert.equal(info.manager, hotelAccount);
         assert.equal((await wtIndex.getHotels()).length, 2);
@@ -59,10 +62,10 @@ contract('Hotel', (accounts) => {
       try {
         const data = await wtHotel.contract.editInfo.getData('', newHotelHash);
         await wtIndex.callHotel(hotelHash, data, { from: hotelAccount });
-        throw new Error('should not have been called')
+        throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
-      }      
+      }
     });
 
     it('should update hotel\'s url and custom id hash', async () => {
@@ -77,7 +80,7 @@ contract('Hotel', (accounts) => {
     it('should throw if not executed by owner', async () => {
       try {
         await wtHotel.editInfo(newUrl, newHotelHash, { from: nonOwnerAccount });
-        throw new Error('should not have been called')
+        throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
