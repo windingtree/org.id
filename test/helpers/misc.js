@@ -26,7 +26,15 @@ module.exports = {
   },
 
   isInvalidOpcodeEx: function (e) {
-    return e.message.search('invalid opcode') >= 0;
+    if (
+      e.message.search('invalid opcode') >= 0 || // ethereumjs-testrpc at least <= 4
+      e.message.search('revert') >= 0 // ganache-cli at least 6+
+      ) {
+      return true;
+    } else {
+      console.log(e);
+      return false;
+    }
   },
 
   lifWei2Lif: function (value) {
