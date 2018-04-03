@@ -226,7 +226,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should return empty address for non-existing hotel', async () => {
-        const hotel = await index.getHotel(hotelAccount, help.hashCustomId('myid2'));
+        const hotel = await index.getHotel(hotelAccount, help.hashCustomId('myid35'));
         assert.isDefined(hotel);
         assert(help.isZeroAddress(hotel));
       });

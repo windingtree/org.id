@@ -6,11 +6,9 @@ import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 /**
-   @title Hotel, contract for a Hotel registered in the WT network
-
-   A contract that represents a hotel in the WT network.
-
-   Inherits from OpenZeppelin's `Destructible` and WT's 'Base_Interface'.
+ * @title Hotel, contract for a Hotel registered in the WT network
+ * @dev A contract that represents a hotel in the WT network. Inherits
+ * from OpenZeppelin's `Destructible` and WT's 'Base_Interface'.
  */
 contract Hotel is Destructible, Base_Interface {
 
@@ -20,22 +18,21 @@ contract Hotel is Destructible, Base_Interface {
   address public manager;
   // Arbitrary locator of the off-chain stored hotel data
   // This might be an HTTPS resource, IPFS hash, Swarm address...
-  // This is intentionally generic
+  // This is intentionally generic.
   string public url;
-  // keccak256 hash of the customer identifier. This can be used
+  // Hex-encoded customer identifier. This can be used
   // as a reference when someone does not know the hotel's address.
-  // It is the responsibility of contract users to derive the hash
-  // in a repeatable and well-documented way
+  // It makes sense to use some form of hash (keccak256 for example)
+  // to ensure that the id fits bytes32.
   bytes32 public customIdHash;
-  // Number of block when Hotel was created
+  // Number of block when the Hotel was created
   uint public created;
 
   /**
-     @dev Constructor.
-
-     @param _manager see `manager`
-     @param _url see `url`
-     @param _customIdHash see `customIdHash`
+   * @dev Constructor.
+   * @param _manager address of hotel owner
+   * @param _url pointer to hotel data
+   * @param _customIdHash custom hotel identifier's hash
    */
   function Hotel(address _manager, string _url, bytes32 _customIdHash) public {
     require(_manager != address(0));
@@ -47,11 +44,10 @@ contract Hotel is Destructible, Base_Interface {
   }
 
   /**
-     @dev `editInfo` allows the owner of the contract to change the hotel's
-     main information
-
-     @param _url see `url`
-     @param _customIdHash see `customIdHash`
+   * @dev `editInfo` Allows manager to change hotel's url and customIdHash. If only
+   * one of these values changed, pass the old value as well.
+   * @param  _url New url pointer of this hotel
+   * @param  _customIdHash new customIdHash
    */
   function editInfo(string _url, bytes32 _customIdHash) onlyOwner() public {
     require(bytes(_url).length != 0);
@@ -61,9 +57,8 @@ contract Hotel is Destructible, Base_Interface {
 
 
   /**
-    @dev 'destroy' allows the owner to delete the Hotel and all of its Units
-    and UnitTypes
-  */
+   * @dev `destroy` allows the owner to delete the Hotel
+   */
   function destroy() onlyOwner() public {
     super.destroyAndSend(tx.origin);
   }
