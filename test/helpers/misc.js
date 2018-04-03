@@ -5,6 +5,7 @@ const zeroAddress = '0x0000000000000000000000000000000000000000';
 const zeroBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
+  zeroAddress: zeroAddress,
   isZeroBytes32: function (val) {
     return val === zeroBytes32;
   },

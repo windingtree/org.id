@@ -52,6 +52,15 @@ contract('Hotel', (accounts) => {
       assert.equal(help.bytes32ToString(await base.version()), help.version);
       assert.equal(help.bytes32ToString(await base.contractType()), 'hotel');
     });
+
+    it('should not be created with zero address for a manager', async () => {
+      try {
+        await WTHotel.new(help.zeroAddress, 'goo.gl', 'hash');
+        throw new Error('should not have been called');
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
   });
 
   describe('editInfo', () => {

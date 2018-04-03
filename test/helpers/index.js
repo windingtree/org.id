@@ -15,6 +15,7 @@ module.exports = {
   getHotelInfo: hotel.getHotelInfo,
 
   // Misc
+  zeroAddress: misc.zeroAddress,
   isZeroBytes32: misc.isZeroBytes32,
   isZeroAddress: misc.isZeroAddress,
   isInvalidOpcodeEx: misc.isInvalidOpcodeEx,
