@@ -13,8 +13,8 @@ contract Hotel_Interface is Ownable, Base_Interface {
   address public manager;
   uint public created;
 
-  string public name;
-  string public description;
+  string public url;
+  bytes32 public customIdHash;
 
-  function editInfo(string _name, string _description) onlyOwner() public;
+  function editInfo(string _url, bytes32 _customIdHash) onlyOwner() public;
 }

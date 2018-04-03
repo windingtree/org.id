@@ -54,8 +54,7 @@ contract Hotel is Destructible, Base_Interface {
      @param _customIdHash see `customIdHash`
    */
   function editInfo(string _url, bytes32 _customIdHash) onlyOwner() public {
-    //require(_url.length != 0);
-    //require(_customIdHash.length != 0);
+    require(bytes(_url).length != 0);
     url = _url;
     customIdHash = _customIdHash;
   }
