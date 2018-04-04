@@ -16,19 +16,12 @@ contract Hotel_Interface is Destructible, Base_Interface {
   // This might be an HTTPS resource, IPFS hash, Swarm address...
   // This is intentionally generic.
   string public url;
-  // Hex-encoded customer identifier. This can be used
-  // as a reference when someone does not know the hotel's address.
-  // It makes sense to use some form of hash (keccak256 for example)
-  // to ensure that the id fits bytes32.
-  bytes32 public customIdHash;
   // Number of block when the Hotel was created
   uint public created;
 
   /**
-   * @dev `editInfo` Allows manager to change hotel's url and customIdHash. If only
-   * one of these values changed, pass the old value as well.
+   * @dev `editInfo` Allows manager to change hotel's url.
    * @param  _url New url pointer of this hotel
-   * @param  _customIdHash new customIdHash
    */
-  function editInfo(string _url, bytes32 _customIdHash) onlyOwner() public;
+  function editInfo(string _url) onlyOwner() public;
 }

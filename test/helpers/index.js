@@ -16,12 +16,12 @@ module.exports = {
 
   // Misc
   zeroAddress: misc.zeroAddress,
-  isZeroBytes32: misc.isZeroBytes32,
   isZeroAddress: misc.isZeroAddress,
   isInvalidOpcodeEx: misc.isInvalidOpcodeEx,
   bytes32ToString: misc.bytes32ToString,
   stringToBytes32: misc.stringToBytes32,
-  hashCustomId: misc.hashCustomId,
   filterZeroAddresses: misc.filterZeroAddresses,
   jsArrayFromSolidityArray: misc.jsArrayFromSolidityArray,
+  promisify: misc.promisify,
+  determineAddress: misc.determineAddress,
 };

@@ -1,14 +1,11 @@
 const web3 = require('web3');
 const _ = require('lodash');
+const ethJsUtil = require('ethereumjs-util');
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
-const zeroBytes32 = '0x0000000000000000000000000000000000000000000000000000000000000000';
 
 module.exports = {
   zeroAddress: zeroAddress,
-  isZeroBytes32: function (val) {
-    return val === zeroBytes32;
-  },
 
   isZeroAddress: function (val) {
     return val === zeroAddress;
@@ -42,8 +39,12 @@ module.exports = {
     return web3.utils.utf8ToHex(text);
   },
 
-  hashCustomId: function (id) {
-    return web3.utils.soliditySha3(id);
+  // Sample implementation for later re-use
+  determineAddress: function (sender, nonce) {
+    return ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
+      sender,
+      nonce
+    ));
   },
 
   /**
@@ -70,4 +71,15 @@ module.exports = {
     return _.filter(listOfAddresses, (a) => a !== zeroAddress);
   },
 
+  promisify: function (inner) {
+    return new Promise((resolve, reject) => {
+      inner((err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
+  },
 };

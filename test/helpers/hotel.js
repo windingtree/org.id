@@ -4,7 +4,6 @@ const {
   isZeroAddress,
   isZeroUint,
   isZeroString,
-  isZeroBytes32,
 } = require('./misc');
 
 /**
@@ -34,13 +33,11 @@ async function createHotel (wtIndex, hotelAccount) {
 async function getHotelInfo (wtHotel) {
   // Hotel Info
   const url = await wtHotel.url();
-  const customIdHash = await wtHotel.customIdHash();
   const manager = await wtHotel.manager();
   const created = await wtHotel.created();
 
   return {
     url: isZeroString(url) ? null : url,
-    customIdHash: isZeroBytes32(customIdHash) ? null : customIdHash,
     manager: isZeroAddress(manager) ? null : manager,
     created: isZeroUint(created) ? null : parseInt(created),
   };

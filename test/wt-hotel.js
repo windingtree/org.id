@@ -12,9 +12,9 @@ abiDecoder.addABI(WTIndex._json.abi);
 
 contract('Hotel', (accounts) => {
   const hotelUrl = 'bzz://something';
-  const hotelHash = help.hashCustomId('WT Test Hotel');
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
+  let hotelAddress = help.zeroAddress;
   let wtIndex;
   let wtHotel;
 
@@ -22,24 +22,20 @@ contract('Hotel', (accounts) => {
     // Create and register a hotel
     beforeEach(async () => {
       wtIndex = await WTIndex.new();
-      await wtIndex.registerHotel(hotelUrl, hotelHash, { from: hotelAccount });
+      await wtIndex.registerHotel(hotelUrl, { from: hotelAccount });
       let address = await wtIndex.getHotelsByManager(hotelAccount);
+      hotelAddress = address[0];
       wtHotel = WTHotel.at(address[0]);
     });
 
     it('should be initialised with the correct data', async () => {
       const info = await help.getHotelInfo(wtHotel);
       assert.equal(info.url, hotelUrl);
-      assert.equal(info.customIdHash, hotelHash);
       // We need callback, because getBlockNumber for some reason cannot be called with await
-      return web3.eth.getBlockNumber(async (err, value) => {
-        if (err) {
-          throw new Error('Cannot get block number', err);
-        }
-        assert.isAtMost(info.created, value);
-        assert.equal(info.manager, hotelAccount);
-        assert.equal((await wtIndex.getHotels()).length, 2);
-      });
+      const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
+      assert.isAtMost(info.created, blockNumber);
+      assert.equal(info.manager, hotelAccount);
+      assert.equal((await wtIndex.getHotels()).length, 2);
     });
 
     it('should be indexed', async () => {
@@ -55,7 +51,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTHotel.new(help.zeroAddress, 'goo.gl', 'hash');
+        await WTHotel.new(help.zeroAddress, 'goo.gl');
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -65,30 +61,27 @@ contract('Hotel', (accounts) => {
 
   describe('editInfo', () => {
     const newUrl = 'goo.gl/12345';
-    const newHotelHash = help.hashCustomId('hotel-12345');
 
     it('should not update hotel to an empty url', async () => {
       try {
-        const data = await wtHotel.contract.editInfo.getData('', newHotelHash);
-        await wtIndex.callHotel(hotelHash, data, { from: hotelAccount });
+        const data = await wtHotel.contract.editInfo.getData('');
+        await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should update hotel\'s url and custom id hash', async () => {
-      const data = wtHotel.contract.editInfo.getData(newUrl, newHotelHash);
-      await wtIndex.callHotel(hotelHash, data, { from: hotelAccount });
+    it('should update hotel\'s url', async () => {
+      const data = wtHotel.contract.editInfo.getData(newUrl);
+      await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
       const info = await help.getHotelInfo(wtHotel);
-
       assert.equal(info.url, newUrl);
-      assert.equal(info.customIdHash, newHotelHash);
     });
 
     it('should throw if not executed by owner', async () => {
       try {
-        await wtHotel.editInfo(newUrl, newHotelHash, { from: nonOwnerAccount });
+        await wtHotel.editInfo(newUrl, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

@@ -18,8 +18,6 @@ contract WTIndex is Ownable, Base_Interface {
   // Mapping of hotels position in the general hotel index
   mapping(address => uint) public hotelsIndex;
 
-  // Mapping of hotels indexed by a a manager's address and customIdHash
-  mapping(address => mapping(bytes32 => address)) public hotelsByManagerAndCustomHash;
   // Mapping of the hotels indexed by manager's address
   mapping(address => address[]) public hotelsByManager;
   // Mapping of hotels position in the manager's indexed hotel index
@@ -61,34 +59,36 @@ contract WTIndex is Ownable, Base_Interface {
    * @dev `registerHotel` Register new hotel in the index.
    * Emits `HotelRegistered` on success.
    * @param  url Hotel's data pointer
-   * @param  customIdHash Hotel's custom id hash
    */
-  function registerHotel(string url, bytes32 customIdHash) external {
-    Hotel newHotel = new Hotel(msg.sender, url, customIdHash);
+  function registerHotel(string url) external {
+    Hotel newHotel = new Hotel(msg.sender, url);
     hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
     hotelsByManager[msg.sender].push(newHotel);
-    hotelsByManagerAndCustomHash[msg.sender][customIdHash] = newHotel;
-		HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
+    HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
 	}
 
   /**
    * @dev `deleteHotel` Allows a manager to delete a hotel, i. e. call destroy
    * on the target Hotel contract. Emits `HotelDeleted` on success.
-   * @param  customIdHash  Hotel's custom id hash
+   * @param  hotel  Hotel's address
    */
-  function deleteHotel(bytes32 customIdHash) external {
-    require(hotelsByManagerAndCustomHash[msg.sender][customIdHash] != address(0));
-    Hotel(hotelsByManagerAndCustomHash[msg.sender][customIdHash]).destroy();
-    address hotel = hotelsByManagerAndCustomHash[msg.sender][customIdHash];
+  function deleteHotel(address hotel) external {
+    // Ensure hotel address is valid
+    require(hotel != address(0));
+    // Ensure we know about the hotel at all
+    require(hotelsIndex[hotel] != uint(0));
+    // Ensure that the caller is the hotel's rightful owner
+    // There may actually be a hotel on index zero, that's why we use a double check
+    require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
+    Hotel(hotel).destroy();
     uint index = hotelsByManagerIndex[hotel];
     uint allIndex = hotelsIndex[hotel];
-    delete hotels[hotelsIndex[hotel]];
+    delete hotels[allIndex];
     delete hotelsIndex[hotel];
     delete hotelsByManager[msg.sender][index];
     delete hotelsByManagerIndex[hotel];
-    delete hotelsByManagerAndCustomHash[msg.sender][customIdHash];
     HotelDeleted(hotel, index, allIndex);
 	}
 
@@ -96,13 +96,18 @@ contract WTIndex is Ownable, Base_Interface {
    * @dev `callHotel` Call hotel in the index, the hotel can only
    * be called by its manager. Effectively proxies a hotel call.
    * Emits HotelCalled on success.
-   * @param  customIdHash Hotel's custom id hash
+   * @param  hotel Hotel's address
    * @param  data Encoded method call to be done on Hotel contract.
    */
-	function callHotel(bytes32 customIdHash, bytes data) external {
-    require(hotelsByManagerAndCustomHash[msg.sender][customIdHash] != address(0));
-		require(hotelsByManagerAndCustomHash[msg.sender][customIdHash].call(data));
-    HotelCalled(hotelsByManagerAndCustomHash[msg.sender][customIdHash]);
+	function callHotel(address hotel, bytes data) external {
+    // Ensure hotel address is valid
+    require(hotel != address(0));
+    // Ensure we know about the hotel at all
+    require(hotelsIndex[hotel] != uint(0));
+    // Ensure that the caller is the hotel's rightful owner
+    require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
+		require(hotel.call(data));
+    HotelCalled(hotel);
 	}
 
   /**
@@ -119,16 +124,6 @@ contract WTIndex is Ownable, Base_Interface {
    */
   function getHotels() constant public returns (address[]) {
     return hotels;
-  }
-
-  /**
-   * @dev `getHotel` get Hotel address by owner and custom ID hash
-   * @param  manager Manager address
-   * @param  customIdHash Hotel's custom id hash
-   * @return Hotel address
-   */
-  function getHotel(address manager, bytes32 customIdHash) public view returns (address) {
-    return hotelsByManagerAndCustomHash[manager][customIdHash];
   }
 
   /**

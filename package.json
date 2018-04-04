@@ -8,7 +8,7 @@
   "scripts": {
     "test": "scripts/test.sh",
     "lint": "eslint test",
-    "testrpc": "./node_modules/.bin/testrpc",
+    "testrpc": "./node_modules/.bin/ganache-cli",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "clean": "rimraf build",
     "buildfornpm": "npm run clean && truffle compile"
@@ -34,6 +34,7 @@
     "abi-decoder": "^1.1.0",
     "babel-polyfill": "^6.23.0",
     "chai": "^4.1.2",
+    "ethereumjs-util": "^5.1.5",
     "moment": "^2.21.0",
     "truffle-hdwallet-provider": "0.0.3",
     "web3": "^1.0.0-beta.33",
