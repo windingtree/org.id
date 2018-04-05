@@ -1,131 +1,138 @@
 pragma solidity ^0.4.18;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./Base_Interface.sol";
 import "./hotel/Hotel.sol";
 
 /**
-   @title WTIndex, registry of all hotels registered on WT
-
-   The hotels are stored in an array and can be filtered by the owner
-   address.
-
-   Inherits from OpenZeppelin's `Ownable`
+ * @title WTIndex, registry of all hotels registered on WT
+ * @dev The hotels are stored in an array and can be filtered by the owner
+ * address. Inherits from OpenZeppelin's `Ownable` and `Base_Interface`.
  */
-contract WTIndex is Ownable {
+contract WTIndex is Ownable, Base_Interface {
 
-  bytes32 public version = bytes32("0.0.1-alpha");
   bytes32 public contractType = bytes32("wtindex");
 
-  // Array of addresses of `Hotel` contracts and mapping of their index position
+  // Array of addresses of `Hotel` contracts
   address[] public hotels;
+  // Mapping of hotels position in the general hotel index
   mapping(address => uint) public hotelsIndex;
 
   // Mapping of the hotels indexed by manager's address
   mapping(address => address[]) public hotelsByManager;
-
-  // The address of the DAO contract
-  address public DAO;
+  // Mapping of hotels position in the manager's indexed hotel index
+  mapping(address => uint) public hotelsByManagerIndex;
 
   // Address of the LifToken contract
   address public LifToken;
 
   /**
-     @dev Event triggered every time hotel is registered or called
-  **/
-  event log();
+   * @dev Event triggered every time hotel is registered
+   */
+  event HotelRegistered(address hotel, uint managerIndex, uint allIndex);
+  /**
+   * @dev Event triggered every time hotel is deleted
+   */
+  event HotelDeleted(address hotel, uint managerIndex, uint allIndex);
+  /**
+   * @dev Event triggered every time hotel is called
+   */
+  event HotelCalled(address hotel);
 
   /**
-     @dev Constructor. Creates the `WTIndex` contract
+   * @dev Constructor. Creates the `WTIndex` contract
    */
-	function WTIndex() {
+	function WTIndex() public {
 		hotels.length ++;
 	}
 
   /**
-     @dev `setDAO` allows the owner of the contract to change the
-     address of the DAO contract
-
-     @param _DAO The new contract address
+   * @dev `setLifToken` allows the owner of the contract to change the
+   * address of the LifToken contract
+   * @param _LifToken The new contract address
    */
-  function setDAO(address _DAO) onlyOwner() {
-    DAO = _DAO;
-  }
-
-  /**
-     @dev `setLifToken` allows the owner of the contract to change the
-     address of the LifToken contract
-
-     @param _LifToken The new contract address
-   */
-  function setLifToken(address _LifToken) onlyOwner() {
+  function setLifToken(address _LifToken) onlyOwner() public {
     LifToken = _LifToken;
   }
 
   /**
-     @dev `registerHotel` Register new hotel in the index
-
-     @param name The name of the hotel
-     @param description The description of the hotel
+   * @dev `registerHotel` Register new hotel in the index.
+   * Emits `HotelRegistered` on success.
+   * @param  url Hotel's data pointer
    */
-  function registerHotel(string name, string description) external {
-    Hotel newHotel = new Hotel(name, description, msg.sender);
+  function registerHotel(string url) external {
+    Hotel newHotel = new Hotel(msg.sender, url);
     hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
+    hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
     hotelsByManager[msg.sender].push(newHotel);
-		log();
+    HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
 	}
 
   /**
-     @dev `deleteHotel` Allows a manager to delete a hotel, along with its
-     Units and UnitTypes
-
-     @param index The hotel's index
+   * @dev `deleteHotel` Allows a manager to delete a hotel, i. e. call destroy
+   * on the target Hotel contract. Emits `HotelDeleted` on success.
+   * @param  hotel  Hotel's address
    */
-  function deleteHotel(uint index) external {
-    require(hotelsByManager[msg.sender][index] != address(0));
-    Hotel(hotelsByManager[msg.sender][index]).destroy();
-    delete hotels[hotelsIndex[hotelsByManager[msg.sender][index]]];
-    delete hotelsIndex[hotelsByManager[msg.sender][index]];
+  function deleteHotel(address hotel) external {
+    // Ensure hotel address is valid
+    require(hotel != address(0));
+    // Ensure we know about the hotel at all
+    require(hotelsIndex[hotel] != uint(0));
+    // Ensure that the caller is the hotel's rightful owner
+    // There may actually be a hotel on index zero, that's why we use a double check
+    require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
+    Hotel(hotel).destroy();
+    uint index = hotelsByManagerIndex[hotel];
+    uint allIndex = hotelsIndex[hotel];
+    delete hotels[allIndex];
+    delete hotelsIndex[hotel];
     delete hotelsByManager[msg.sender][index];
+    delete hotelsByManagerIndex[hotel];
+    HotelDeleted(hotel, index, allIndex);
 	}
 
   /**
-     @dev `callHotel` Call hotel in the index, the hotel can only
-     be called by its manager
-
-     @param index The index position of the hotel
-     @param data The data to be executed in the hotel contract
+   * @dev `callHotel` Call hotel in the index, the hotel can only
+   * be called by its manager. Effectively proxies a hotel call.
+   * Emits HotelCalled on success.
+   * @param  hotel Hotel's address
+   * @param  data Encoded method call to be done on Hotel contract.
    */
-	function callHotel(uint index, bytes data) external {
-		require(hotelsByManager[msg.sender][index].call(data));
-		log();
+	function callHotel(address hotel, bytes data) external {
+    // Ensure hotel address is valid
+    require(hotel != address(0));
+    // Ensure we know about the hotel at all
+    require(hotelsIndex[hotel] != uint(0));
+    // Ensure that the caller is the hotel's rightful owner
+    require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
+		require(hotel.call(data));
+    HotelCalled(hotel);
 	}
 
   /**
-     @dev `getHotelsLength` get the length of the `hotels` array
-
-     @return uint Length of the `hotels` array
+   * @dev `getHotelsLength` get the length of the `hotels` array
+   * @return Length of the hotels array. Might contain zero addresses.
    */
-  function getHotelsLength() constant returns (uint) {
+  function getHotelsLength() constant public returns (uint) {
     return hotels.length;
   }
 
   /**
-     @dev `getHotels` get `hotels` array
-
-     @return address[] `hotels` array
+   * @dev `getHotels` get `hotels` array
+   * @return Array of hotel addresses. Might contain zero addresses.
    */
-  function getHotels() constant returns (address[]) {
+  function getHotels() constant public returns (address[]) {
     return hotels;
   }
 
   /**
-     @dev `getHotelsByManager` get all the hotels belonging to one manager
-
-     returns The addresses of `Hotel` contracts that belong to one manager
+   * @dev `getHotelsByManager` get all the hotels belonging to one manager
+   * @param  manager Manager address
+   * @return Array of hotels belonging to one manager. Might contain zero addresses.
    */
-	function getHotelsByManager(address owner) constant returns(address[]){
-		return hotelsByManager[owner];
+	function getHotelsByManager(address manager) constant public returns (address[]) {
+		return hotelsByManager[manager];
 	}
 
 }

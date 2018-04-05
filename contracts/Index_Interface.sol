@@ -1,8 +1,8 @@
 pragma solidity ^0.4.18;
 
-/*
- * Index_Interface
- * Interface of WTIndex contract
+/**
+ * @title Index_Interface
+ * @dev Interface of WTIndex contract. Currently not really used.
  */
 contract Index_Interface {
 

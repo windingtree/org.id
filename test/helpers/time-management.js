@@ -1,4 +1,7 @@
-var latestTime = require('./latestTime');
+// Returns the time of the last mined block in seconds
+function latestTime () {
+  return web3.eth.getBlock('latest').timestamp;
+};
 
 // Increases testrpc time by the passed duration in seconds
 
@@ -43,6 +46,7 @@ module.exports = {
    */
   increaseTimeTestRPC: increaseTimeTestRPC,
   increaseTimeTestRPCTo: increaseTimeTestRPCTo,
+  latestTime: latestTime,
   duration: {
     seconds: function (val) { return val; },
     minutes: function (val) { return val * this.seconds(60); },
