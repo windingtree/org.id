@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
@@ -14,7 +14,8 @@
     "buildfornpm": "npm run clean && truffle compile"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "tag": "next"
   },
   "repository": {
     "type": "git",
