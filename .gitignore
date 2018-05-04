@@ -13,5 +13,5 @@ node_modules
 # Coverage artifacts
 coverage
 coverage.json
-scTopics
+.flattened
 allFiredEvents
