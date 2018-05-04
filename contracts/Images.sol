@@ -39,9 +39,9 @@ contract Images is Ownable {
   /**
      @dev `getImagesLength` get the length of the `images` array
 
-     @return uint Length of the `images` array
+     @return { "_length": "Length of the `images` array" }
    */
-  function getImagesLength() constant returns (uint) {
+  function getImagesLength() constant returns (uint _length) {
     return images.length;
   }
 

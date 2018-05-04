@@ -105,9 +105,9 @@ contract AsyncCall is Ownable {
 
     @param msgDataHash The hash of the pending call
 
-    @return bytes The public call data
+    @return { "_callData": "The public call data" }
   */
-  function getPublicCallData(bytes32 msgDataHash) constant returns (bytes) {
+  function getPublicCallData(bytes32 msgDataHash) constant returns (bytes _callData) {
     return pendingCalls[msgDataHash].callData;
   }
 

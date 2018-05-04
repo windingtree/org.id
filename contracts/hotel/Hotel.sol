@@ -283,13 +283,13 @@ contract Hotel is AsyncCall, Images, Destructible {
      @param fromDay The starting date of the period of days to book
      @param daysAmount The amount of days in the period
 
-     @return uint256 The total cost of the booking in the custom currency
+     @return { "_totalCost": "The total cost of the booking in the custom currency" }
    */
   function getCost(
     address unitAddress,
     uint256 fromDay,
     uint256 daysAmount
-  ) constant returns(uint256) {
+  ) constant returns(uint256 _totalCost) {
     uint256 toDay = fromDay+daysAmount;
     uint256 totalCost = 0;
     uint256 defaultPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultPrice();
@@ -312,13 +312,13 @@ contract Hotel is AsyncCall, Images, Destructible {
      @param fromDay The starting date of the period of days to book
      @param daysAmount The amount of days in the period
 
-     @return uint256 The total cost of the booking in Lif
+     @return { "_totalCost": "The total cost of the booking in Lif" }
    */
   function getLifCost(
     address unitAddress,
     uint256 fromDay,
     uint256 daysAmount
-  ) constant returns(uint256) {
+  ) constant returns(uint256 _totalCost) {
     uint256 toDay = fromDay+daysAmount;
     uint256 totalCost = 0;
     uint256 defaultLifPrice = UnitType_Interface(unitTypes[Unit_Interface(unitAddress).unitType()]).defaultLifPrice();
@@ -340,36 +340,36 @@ contract Hotel is AsyncCall, Images, Destructible {
 
      @param unitType The type of the unit
 
-     @return address Address of the `UnitType` contract
+     @return { "_unitTypeAddress": "Address of the `UnitType` contract"}
    */
-  function getUnitType(bytes32 unitType) constant returns (address) {
+  function getUnitType(bytes32 unitType) constant returns (address _unitTypeAddress) {
     return unitTypes[unitType];
   }
 
   /**
      @dev `getUnitTypeNames` get the names of all the unitTypes
 
-     @return bytes32[] Names of all the unit types
+     @return { "_unitTypeNames": "Names of all the unit types" }
    */
-  function getUnitTypeNames() constant returns (bytes32[]) {
+  function getUnitTypeNames() constant returns (bytes32[] _unitTypeNames) {
     return unitTypeNames;
   }
 
   /**
      @dev `getUnitsLength` get the length of the `units` array
 
-     @return uint Length of the `units` array
+     @return { "_length": "Length of the `units` array" }
    */
-  function getUnitsLength() constant returns (uint) {
+  function getUnitsLength() constant returns (uint _length) {
     return units.length;
   }
 
   /**
      @dev `getUnits` get the `units` array
 
-     @return address[] the `units` array
+     @return { "_units": "the `units` array" }
    */
-  function getUnits() constant returns (address[]) {
+  function getUnits() constant returns (address[] _units) {
     return units;
   }
 
