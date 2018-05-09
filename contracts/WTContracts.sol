@@ -93,11 +93,15 @@ contract WTContracts is Ownable {
      @dev `getByAddr` get the info of a registered contract by address
 
      @param _addr The registered contract's address
-     returns {name, address, url, version} The contract's information
+     @return {
+      "_name": "Contract name or empty string",
+      "_address": "Contract address or zero address",
+      "_version": "Contract version or empty string"
+    }
    */
   function getByAddr(
     address _addr
-  ) constant returns(string, address, string){
+  ) constant returns(string _name, address _address, string _version) {
     if (addrs[_addr] > 0)
       return (
         contracts[ addrs[_addr] ].name,
@@ -112,11 +116,15 @@ contract WTContracts is Ownable {
      @dev `getByName` get the info of a registered contract by name
 
      @param _name The registered contract's name
-     returns {name, address, url, version} The contract's information
+     @return {
+      "_contractName": "Contract name or empty string",
+      "_address": "Contract address or zero address",
+      "_version": "Contract version or empty string"
+    }
    */
   function getByName(
     string _name
-  ) constant returns(string, address, string){
+  ) constant returns(string _contractName, address _address, string _version) {
     if (names[_name] > 0)
       return (
         contracts[ names[_name] ].name,

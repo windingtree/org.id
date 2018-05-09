@@ -96,13 +96,13 @@ contract Unit is Destructible {
      @param fromDay The starting day of the period of days to book
      @param daysAmount The amount of days in the booking period
 
-     @return bool Whether the booking was successful or not
+     @return { "_bookingResult": "Whether the booking was successful or not" }
    */
   function book(
     address from,
     uint256 fromDay,
     uint256 daysAmount
-  ) onlyOwner() returns(bool) {
+  ) onlyOwner() returns(bool _bookingResult) {
     require(isFutureDay(fromDay));
     require(active);
     uint256 toDay = fromDay+daysAmount;
@@ -123,14 +123,15 @@ contract Unit is Destructible {
 
      @param day The number of days after 01-01-1970
 
-     @return uint256 The price of the day in the custom currency, 0 if default price
-     @return uint256 The price of the day in Líf, 0 if default price
-     @return address The address of the owner of the reservation
-     returns 0x0 if its available
+     @return {
+       "_specialPrice": "The price of the day in the custom currency, 0 if default price",
+       "_specialLifPrice": "The price of the day in Líf, 0 if default price",
+       "_bookedBy": "The address of the owner of the reservation, returns 0x0 if its available"
+     }
    */
   function getReservation(
     uint256 day
-  ) constant returns(uint256, uint256, address) {
+  ) constant returns(uint256 _specialPrice, uint256 _specialLifPrice, address _bookedBy) {
     return (
       reservations[day].specialPrice,
       reservations[day].specialLifPrice,
@@ -144,12 +145,12 @@ contract Unit is Destructible {
      @param fromDay The starting date of the period of days to book
      @param daysAmount The amount of days in the period
 
-     @return uint256 The total cost of the booking in the custom currency
+     @return { "_totalCost": "The total cost of the booking in the custom currency" }
    */
   /* function getCost(
     uint256 fromDay,
     uint256 daysAmount
-  ) constant returns(uint256) {
+  ) constant returns(uint256 _totalCost) {
     uint256 toDay = fromDay+daysAmount;
     uint256 totalCost = 0;
 
@@ -170,12 +171,12 @@ contract Unit is Destructible {
      @param fromDay The starting date of the period of days to book
      @param daysAmount The amount of days in the period
 
-     @return uint256 The total cost of the booking in Lif
+     @return {"_totalCost": "The total cost of the booking in Lif" }
    */
   /* function getLifCost(
     uint256 fromDay,
     uint256 daysAmount
-  ) constant returns(uint256) {
+  ) constant returns(uint256 _totalCost) {
     uint256 toDay = fromDay+daysAmount;
     uint256 totalCost = 0;
 
@@ -195,9 +196,9 @@ contract Unit is Destructible {
 
      @param time The number of days after 01-01-1970
 
-     @return bool If the timestamp is today or in the future
+     @return { "_isFutureDay": "If the timestamp is today or in the future" }
    */
-  function isFutureDay(uint256 time) internal returns (bool) {
+  function isFutureDay(uint256 time) internal returns (bool _isFutureDay) {
     return !(now / 86400 > time);
   }
 

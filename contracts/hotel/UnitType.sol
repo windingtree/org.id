@@ -26,7 +26,7 @@ contract UnitType is Destructible, Images {
   // The description of the unit type
   string description;
 
-  // The minimun and maximun amount of guests
+  // The minimun and maximum amount of guests
   uint minGuests;
   uint maxGuests;
 
@@ -59,7 +59,7 @@ contract UnitType is Destructible, Images {
      min/max guests and base price
 
      @param _minGuests The minimun amount of guests allowed
-     @param _maxGuests The maximun amount of guests allowed
+     @param _maxGuests The maximum amount of guests allowed
      @param _description The new description
    */
   function edit(
@@ -139,21 +139,23 @@ contract UnitType is Destructible, Images {
   /**
      @dev `GetInfo` get the information of the unit
 
-     @return string The description of the unit type
-     @return uint The minimun amount guests
-     @return uint The maximun amount guests
-     @return uint The default fiat price
+     @return {
+      "_description": "The description of the unit type",
+      "_minGuests": "The minimun amount guests",
+      "_maxGuests": "The maximum amount guests",
+      "_defaultPrice": "The default fiat price"
+    }
    */
-  function getInfo() constant returns(string, uint, uint, uint) {
+  function getInfo() constant returns(string _description, uint _minGuests, uint _maxGuests, uint _defaultPrice) {
     return (description, minGuests, maxGuests, defaultPrice);
   }
 
   /**
      @dev `getAmenities` get the amenities ids
 
-     @return uint[] Array of all the amenities ids in the unit type
+     @return {"_amenities": "Array of all the amenities ids in the unit type" }
    */
-  function getAmenities() constant returns(uint[]) {
+  function getAmenities() constant returns(uint[] _amenities) {
     return (amenities);
   }
 

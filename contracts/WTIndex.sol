@@ -104,27 +104,27 @@ contract WTIndex is Ownable {
   /**
      @dev `getHotelsLength` get the length of the `hotels` array
 
-     @return uint Length of the `hotels` array
+     @return { "_length" : "Length of the `hotels` array" }
    */
-  function getHotelsLength() constant returns (uint) {
+  function getHotelsLength() constant returns (uint _length) {
     return hotels.length;
   }
 
   /**
      @dev `getHotels` get `hotels` array
 
-     @return address[] `hotels` array
+     @return { "_hotels" : "The addresses of all `Hotel` contracts" }
    */
-  function getHotels() constant returns (address[]) {
+  function getHotels() constant returns (address[] _hotels) {
     return hotels;
   }
 
   /**
      @dev `getHotelsByManager` get all the hotels belonging to one manager
 
-     returns The addresses of `Hotel` contracts that belong to one manager
+     @return { "_hotels" : "The addresses of `Hotel` contracts that belong to one manager" }
    */
-	function getHotelsByManager(address owner) constant returns(address[]){
+	function getHotelsByManager(address owner) constant returns(address[] _hotels) {
 		return hotelsByManager[owner];
 	}
 
