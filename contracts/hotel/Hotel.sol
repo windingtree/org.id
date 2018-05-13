@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "../Index_Interface.sol";
+import "../WTIndex_Interface.sol";
 import "../Base_Interface.sol";
 import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
 import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";

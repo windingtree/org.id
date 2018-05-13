@@ -2,8 +2,8 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTIndex = artifacts.require('./WTIndex.sol');
+const WTIndexInterface = artifacts.require('./WTIndex_Interface.sol');
 const WTHotel = artifacts.require('Hotel.sol');
-const BaseInterface = artifacts.require('Base_Interface.sol');
 
 contract('WTIndex', (accounts) => {
   const indexOwner = accounts[1];
@@ -12,15 +12,16 @@ contract('WTIndex', (accounts) => {
 
   let index;
 
+  // Deploy new index but use WTIndexInterface for contract interaction
   beforeEach(async () => {
     index = await WTIndex.new({ from: indexOwner });
+    index = await WTIndexInterface.at(index.address);
   });
 
   describe('version', () => {
     it('should have the correct version and contract type', async () => {
-      let base = await BaseInterface.at(index.address);
-      assert.equal(help.bytes32ToString(await base.version()), help.version);
-      assert.equal(help.bytes32ToString(await base.contractType()), 'wtindex');
+      assert.equal(help.bytes32ToString(await index.version()), help.version);
+      assert.equal(help.bytes32ToString(await index.contractType()), 'wtindex');
     });
   });
 
@@ -28,7 +29,7 @@ contract('WTIndex', (accounts) => {
     const tokenAddress = accounts[5];
 
     it('should set the LifToken address', async () => {
-      await index.setLifToken(tokenAddress, { from: indexOwner });
+      await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
       const setValue = await index.LifToken();
 
       assert.equal(setValue, tokenAddress);
@@ -36,7 +37,7 @@ contract('WTIndex', (accounts) => {
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await index.setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
