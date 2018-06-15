@@ -49,7 +49,7 @@ contract('WTIndex', (accounts) => {
     describe('registerHotel', () => {
       const expectedIndexPos = 1; // Position of the first hotel
 
-      it('should not register hotel with empty url', async () => {
+      it('should not register hotel with empty dataUri', async () => {
         try {
           await index.registerHotel('', { from: hotelAccount });
           throw new Error('should not have been called');
@@ -61,13 +61,13 @@ contract('WTIndex', (accounts) => {
       it('should put hotel where we expect it to be', async () => {
         const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
         const hotelAddress = help.determineAddress(index.address, indexNonce);
-        await index.registerHotel('url', { from: hotelAccount });
+        await index.registerHotel('dataUri', { from: hotelAccount });
         let address = await index.getHotelsByManager(hotelAccount);
         assert.equal(hotelAddress, address[0]);
       });
 
       it('should add a hotel to the registry', async () => {
-        await index.registerHotel('url', { from: hotelAccount });
+        await index.registerHotel('dataUri', { from: hotelAccount });
         const length = await index.getHotelsLength();
 
         const allHotels = await help.jsArrayFromSolidityArray(
@@ -91,7 +91,7 @@ contract('WTIndex', (accounts) => {
         assert.equal(hotel, hotelsByManager);
 
         const hotelInstance = await WTHotel.at(hotel);
-        assert.equal(await hotelInstance.url(), 'url');
+        assert.equal(await hotelInstance.dataUri(), 'dataUri');
       });
     });
 
@@ -99,7 +99,7 @@ contract('WTIndex', (accounts) => {
       const expectedIndexPos = 0; // Position of the hotel in the managers array
 
       it('should remove a hotel', async () => {
-        await index.registerHotel('url', { from: hotelAccount });
+        await index.registerHotel('dataUri', { from: hotelAccount });
         const length = await index.getHotelsLength();
 
         let allHotels = await help.jsArrayFromSolidityArray(
@@ -167,20 +167,20 @@ contract('WTIndex', (accounts) => {
       let wtHotel, hotelAddress;
 
       beforeEach(async () => {
-        await index.registerHotel('url', { from: hotelAccount });
+        await index.registerHotel('dataUri', { from: hotelAccount });
         let address = await index.getHotelsByManager(hotelAccount);
         hotelAddress = address[0];
         wtHotel = WTHotel.at(address[0]);
       });
 
       it('should proceed when calling as an owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUrl');
+        const data = wtHotel.contract.editInfo.getData('newDataUri');
         await index.callHotel(hotelAddress, data, { from: hotelAccount });
-        assert.equal('newUrl', await wtHotel.contract.url());
+        assert.equal('newDataUri', await wtHotel.contract.dataUri());
       });
 
       it('should throw if calling as a non-owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUrl');
+        const data = wtHotel.contract.editInfo.getData('newUri');
         try {
           await index.callHotel(hotelAddress, data, { from: nonOwnerAccount });
           throw new Error('should not have been called');
@@ -190,7 +190,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if a hotel has zero address', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUrl');
+        const data = wtHotel.contract.editInfo.getData('newUri');
         try {
           // Mocking address with existing contract
           await index.callHotel(help.zeroAddress, data, { from: hotelAccount });
@@ -201,7 +201,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if hotel does not exist', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUrl');
+        const data = wtHotel.contract.editInfo.getData('newUri');
         try {
           // mocking address with existing account
           await index.callHotel(nonOwnerAccount, data, { from: hotelAccount });
