@@ -9,7 +9,7 @@ The smart contracts in the [hotel folder](https://github.com/windingtree/wt-cont
 
 ## Requirements
 
-LTS Node 8.9.4 is required for running the tests.
+LTS Node 10.3.0 is required for running the tests.
 
 ## Install
 

@@ -19,30 +19,30 @@ contract Hotel is Destructible, Base_Interface {
   // Arbitrary locator of the off-chain stored hotel data
   // This might be an HTTPS resource, IPFS hash, Swarm address...
   // This is intentionally generic.
-  string public url;
+  string public dataUri;
   // Number of block when the Hotel was created
   uint public created;
 
   /**
    * @dev Constructor.
    * @param _manager address of hotel owner
-   * @param _url pointer to hotel data
+   * @param _dataUri pointer to hotel data
    */
-  function Hotel(address _manager, string _url) public {
+  function Hotel(address _manager, string _dataUri) public {
     require(_manager != address(0));
-    require(bytes(_url).length != 0);
+    require(bytes(_dataUri).length != 0);
     manager = _manager;
-    url = _url;
+    dataUri = _dataUri;
     created = block.number;
   }
 
   /**
-   * @dev `editInfo` Allows manager to change hotel's url.
-   * @param  _url New url pointer of this hotel
+   * @dev `editInfo` Allows manager to change hotel's dataUri.
+   * @param  _dataUri New dataUri pointer of this hotel
    */
-  function editInfo(string _url) onlyOwner() public {
-    require(bytes(_url).length != 0);
-    url = _url;
+  function editInfo(string _dataUri) onlyOwner() public {
+    require(bytes(_dataUri).length != 0);
+    dataUri = _dataUri;
   }
 
 

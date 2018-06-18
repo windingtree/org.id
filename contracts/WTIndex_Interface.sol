@@ -15,7 +15,7 @@ contract WTIndex_Interface is Base_Interface {
   mapping(address => uint) public hotelsByManagerIndex;
   address public LifToken;
 
-  function registerHotel(string url) external;
+  function registerHotel(string dataUri) external;
   function deleteHotel(address hotel) external;
   function callHotel(address hotel, bytes data) external;
   function getHotelsLength() constant public returns (uint);

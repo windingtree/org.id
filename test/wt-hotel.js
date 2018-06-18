@@ -11,7 +11,7 @@ abiDecoder.addABI(WTHotelInterface._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
 
 contract('Hotel', (accounts) => {
-  const hotelUrl = 'bzz://something';
+  const hotelUri = 'bzz://something';
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   let hotelAddress = help.zeroAddress;
@@ -22,7 +22,7 @@ contract('Hotel', (accounts) => {
     // Create and register a hotel
     beforeEach(async () => {
       wtIndex = await WTIndex.new();
-      await wtIndex.registerHotel(hotelUrl, { from: hotelAccount });
+      await wtIndex.registerHotel(hotelUri, { from: hotelAccount });
       let address = await wtIndex.getHotelsByManager(hotelAccount);
       hotelAddress = address[0];
       wtHotel = WTHotel.at(address[0]);
@@ -30,7 +30,7 @@ contract('Hotel', (accounts) => {
 
     it('should be initialised with the correct data', async () => {
       const info = await help.getHotelInfo(wtHotel);
-      assert.equal(info.url, hotelUrl);
+      assert.equal(info.dataUri, hotelUri);
       // We need callback, because getBlockNumber for some reason cannot be called with await
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.isAtMost(info.created, blockNumber);
@@ -60,9 +60,9 @@ contract('Hotel', (accounts) => {
   });
 
   describe('editInfo', () => {
-    const newUrl = 'goo.gl/12345';
+    const newDataUri = 'goo.gl/12345';
 
-    it('should not update hotel to an empty url', async () => {
+    it('should not update hotel to an empty dataUri', async () => {
       try {
         const data = await wtHotel.contract.editInfo.getData('');
         await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
@@ -72,16 +72,16 @@ contract('Hotel', (accounts) => {
       }
     });
 
-    it('should update hotel\'s url', async () => {
-      const data = wtHotel.contract.editInfo.getData(newUrl);
+    it('should update hotel\'s dataUri', async () => {
+      const data = wtHotel.contract.editInfo.getData(newDataUri);
       await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
       const info = await help.getHotelInfo(wtHotel);
-      assert.equal(info.url, newUrl);
+      assert.equal(info.dataUri, newDataUri);
     });
 
     it('should throw if not executed by owner', async () => {
       try {
-        await wtHotel.editInfo(newUrl, { from: nonOwnerAccount });
+        await wtHotel.editInfo(newDataUri, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

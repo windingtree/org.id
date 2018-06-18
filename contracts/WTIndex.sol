@@ -58,10 +58,10 @@ contract WTIndex is Ownable, Base_Interface {
   /**
    * @dev `registerHotel` Register new hotel in the index.
    * Emits `HotelRegistered` on success.
-   * @param  url Hotel's data pointer
+   * @param  dataUri Hotel's data pointer
    */
-  function registerHotel(string url) external {
-    Hotel newHotel = new Hotel(msg.sender, url);
+  function registerHotel(string dataUri) external {
+    Hotel newHotel = new Hotel(msg.sender, dataUri);
     hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
