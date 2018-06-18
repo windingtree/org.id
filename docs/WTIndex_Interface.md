@@ -135,14 +135,14 @@ Inputs
 
 ## *function* registerHotel
 
-WTIndex_Interface.registerHotel(url) `nonpayable` `f88a067f`
+WTIndex_Interface.registerHotel(dataUri) `nonpayable` `f88a067f`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | url | undefined |
+| *string* | dataUri | undefined |
 
 
 ## *function* deleteHotel

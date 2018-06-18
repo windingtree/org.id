@@ -203,7 +203,7 @@ Inputs
 
 ## *function* registerHotel
 
-WTIndex.registerHotel(url) `nonpayable` `f88a067f`
+WTIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
 
 > `registerHotel` Register new hotel in the index. Emits `HotelRegistered` on success.
 
@@ -211,7 +211,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | url | Hotel's data pointer |
+| *string* | dataUri | Hotel's data pointer |
 
 
 ## *function* deleteHotel

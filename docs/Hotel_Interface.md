@@ -2,9 +2,9 @@
   * [created](#function-created)
   * [manager](#function-manager)
   * [version](#function-version)
-  * [url](#function-url)
   * [renounceOwnership](#function-renounceownership)
   * [destroy](#function-destroy)
+  * [dataUri](#function-datauri)
   * [owner](#function-owner)
   * [editInfo](#function-editinfo)
   * [contractType](#function-contracttype)
@@ -40,14 +40,6 @@ Hotel_Interface.version() `view` `54fd4d50`
 
 
 
-## *function* url
-
-Hotel_Interface.url() `view` `5600f04f`
-
-
-
-
-
 ## *function* renounceOwnership
 
 Hotel_Interface.renounceOwnership() `nonpayable` `715018a6`
@@ -66,6 +58,14 @@ Hotel_Interface.destroy() `nonpayable` `83197ef0`
 
 
 
+## *function* dataUri
+
+Hotel_Interface.dataUri() `view` `8a9b29eb`
+
+
+
+
+
 ## *function* owner
 
 Hotel_Interface.owner() `view` `8da5cb5b`
@@ -76,15 +76,15 @@ Hotel_Interface.owner() `view` `8da5cb5b`
 
 ## *function* editInfo
 
-Hotel_Interface.editInfo(_url) `nonpayable` `9d9b5342`
+Hotel_Interface.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
-> `editInfo` Allows manager to change hotel's url.
+> `editInfo` Allows manager to change hotel's dataUri.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | _url | New url pointer of this hotel |
+| *string* | _dataUri | New dataUri pointer of this hotel |
 
 
 ## *function* contractType
