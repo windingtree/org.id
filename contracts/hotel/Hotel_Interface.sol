@@ -1,7 +1,7 @@
 pragma solidity ^0.4.24;
 
 import "../Base_Interface.sol";
-import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 
 /**
  * @title Hotel_Interface

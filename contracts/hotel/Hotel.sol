@@ -2,8 +2,7 @@ pragma solidity ^0.4.24;
 
 import "../WTIndex_Interface.sol";
 import "../Base_Interface.sol";
-import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 
 /**
  * @title Hotel, contract for a Hotel registered in the WT network
