@@ -50,7 +50,7 @@ contract WTIndex is AbstractWTIndex {
    * address of the LifToken contract
    * @param _LifToken The new contract address
    */
-  function setLifToken(address _LifToken) onlyOwner() public {
+  function setLifToken(address _LifToken) onlyOwner public {
     LifToken = _LifToken;
   }
 

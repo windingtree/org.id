@@ -33,20 +33,15 @@ contract Hotel is AbstractHotel {
     created = block.number;
   }
 
-  /**
-   * @dev `editInfo` Allows manager to change hotel's dataUri.
-   * @param  _dataUri New dataUri pointer of this hotel
-   */
-  function editInfo(string _dataUri) onlyOwner() public {
+  function _editInfoImpl(string _dataUri) internal {
     require(bytes(_dataUri).length != 0);
     dataUri = _dataUri;
   }
 
-
   /**
    * @dev `destroy` allows the owner to delete the Hotel
    */
-  function destroy() onlyOwner() public {
+  function destroy() onlyOwner public {
     super.destroyAndSend(tx.origin);
   }
 

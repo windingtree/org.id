@@ -19,9 +19,14 @@ contract AbstractHotel is Destructible, AbstractBaseContract {
   // Number of block when the Hotel was created
   uint public created;
 
+
+  function _editInfoImpl(string _dataUri) internal;
+
   /**
    * @dev `editInfo` Allows manager to change hotel's dataUri.
    * @param  _dataUri New dataUri pointer of this hotel
    */
-  function editInfo(string _dataUri) onlyOwner() public;
+  function editInfo(string _dataUri) onlyOwner public {
+    _editInfoImpl(_dataUri);
+  }
 }
