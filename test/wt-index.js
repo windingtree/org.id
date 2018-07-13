@@ -2,7 +2,7 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const WTIndex = artifacts.require('./WTIndex.sol');
-const WTIndexInterface = artifacts.require('./WTIndex_Interface.sol');
+const AbstractWTIndex = artifacts.require('./AbstractWTIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 
 contract('WTIndex', (accounts) => {
@@ -12,10 +12,10 @@ contract('WTIndex', (accounts) => {
 
   let index;
 
-  // Deploy new index but use WTIndexInterface for contract interaction
+  // Deploy new index but use AbstractWTIndex for contract interaction
   beforeEach(async () => {
     index = await WTIndex.new({ from: indexOwner });
-    index = await WTIndexInterface.at(index.address);
+    index = await AbstractWTIndex.at(index.address);
   });
 
   describe('version', () => {

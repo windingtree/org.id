@@ -1,15 +1,14 @@
 pragma solidity ^0.4.24;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./Base_Interface.sol";
+import "./AbstractWTIndex.sol";
 import "./hotel/Hotel.sol";
 
 /**
  * @title WTIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `Base_Interface`.
+ * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
  */
-contract WTIndex is Ownable, Base_Interface {
+contract WTIndex is AbstractWTIndex {
 
   bytes32 public contractType = bytes32("wtindex");
 

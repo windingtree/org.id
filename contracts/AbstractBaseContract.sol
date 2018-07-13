@@ -1,12 +1,12 @@
 pragma solidity ^0.4.24;
 
 /**
- * @title Base_Interface
- * @dev The basic interface that every contract in the WT platform should have.
+ * @title AbstractBaseContract
+ * @dev The basic abstract contract that every contract in the WT platform should implement.
  * The version and contract type are used to identify the correct interface
- * for each WT contract
+ * for each WT contract.
  */
-contract Base_Interface {
+contract AbstractBaseContract {
 
   // The hex-encoded version, follows the semantic standard MAJOR.MINOR.PATCH-EXTENSION
   // It should always match the version in package.json.

@@ -1,15 +1,13 @@
 pragma solidity ^0.4.24;
 
-import "../WTIndex_Interface.sol";
-import "../Base_Interface.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "./AbstractHotel.sol";
 
 /**
  * @title Hotel, contract for a Hotel registered in the WT network
  * @dev A contract that represents a hotel in the WT network. Inherits
- * from OpenZeppelin's `Destructible` and WT's 'Base_Interface'.
+ * from OpenZeppelin's `Destructible` and WT's 'AbstractBaseContract'.
  */
-contract Hotel is Destructible, Base_Interface {
+contract Hotel is AbstractHotel {
 
   bytes32 public contractType = bytes32("hotel");
 
