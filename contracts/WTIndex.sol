@@ -111,7 +111,7 @@ contract WTIndex is AbstractWTIndex {
 
   /**
    * @dev `getHotelsLength` get the length of the `hotels` array
-   * @return Length of the hotels array. Might contain zero addresses.
+   * @return {" ": "Length of the hotels array. Might contain zero addresses."}
    */
   function getHotelsLength() view public returns (uint) {
     return hotels.length;
@@ -119,7 +119,7 @@ contract WTIndex is AbstractWTIndex {
 
   /**
    * @dev `getHotels` get `hotels` array
-   * @return Array of hotel addresses. Might contain zero addresses.
+   * @return {" ": "Array of hotel addresses. Might contain zero addresses."}
    */
   function getHotels() view public returns (address[]) {
     return hotels;
@@ -128,7 +128,7 @@ contract WTIndex is AbstractWTIndex {
   /**
    * @dev `getHotelsByManager` get all the hotels belonging to one manager
    * @param  manager Manager address
-   * @return Array of hotels belonging to one manager. Might contain zero addresses.
+   * @return {" ": "Array of hotels belonging to one manager. Might contain zero addresses."}
    */
 	function getHotelsByManager(address manager) view public returns (address[]) {
 		return hotelsByManager[manager];

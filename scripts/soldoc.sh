@@ -1,8 +1,5 @@
 mkdir docs .flattened
-# Preserve README
-mv docs/README.md docs/README.keep
 rm docs/*.md
-mv docs/README.keep docs/README.md
 for f in $(find contracts -name *.sol)
   do if [ `basename $f` != "Migrations.sol" ]; then
     file=`basename $f`

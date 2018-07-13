@@ -1,4 +1,4 @@
-* [Hotel_Interface](#hotel_interface)
+* [AbstractHotel](#abstracthotel)
   * [created](#function-created)
   * [manager](#function-manager)
   * [version](#function-version)
@@ -13,12 +13,12 @@
   * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# Hotel_Interface
+# AbstractHotel
 
 
 ## *function* created
 
-Hotel_Interface.created() `view` `325a19f1`
+AbstractHotel.created() `view` `325a19f1`
 
 
 
@@ -26,7 +26,7 @@ Hotel_Interface.created() `view` `325a19f1`
 
 ## *function* manager
 
-Hotel_Interface.manager() `view` `481c6a75`
+AbstractHotel.manager() `view` `481c6a75`
 
 
 
@@ -34,7 +34,7 @@ Hotel_Interface.manager() `view` `481c6a75`
 
 ## *function* version
 
-Hotel_Interface.version() `view` `54fd4d50`
+AbstractHotel.version() `view` `54fd4d50`
 
 
 
@@ -42,7 +42,7 @@ Hotel_Interface.version() `view` `54fd4d50`
 
 ## *function* renounceOwnership
 
-Hotel_Interface.renounceOwnership() `nonpayable` `715018a6`
+AbstractHotel.renounceOwnership() `nonpayable` `715018a6`
 
 > Allows the current owner to relinquish control of the contract.
 
@@ -51,7 +51,7 @@ Hotel_Interface.renounceOwnership() `nonpayable` `715018a6`
 
 ## *function* destroy
 
-Hotel_Interface.destroy() `nonpayable` `83197ef0`
+AbstractHotel.destroy() `nonpayable` `83197ef0`
 
 > Transfers the current balance to the owner and terminates the contract.
 
@@ -60,7 +60,7 @@ Hotel_Interface.destroy() `nonpayable` `83197ef0`
 
 ## *function* dataUri
 
-Hotel_Interface.dataUri() `view` `8a9b29eb`
+AbstractHotel.dataUri() `view` `8a9b29eb`
 
 
 
@@ -68,7 +68,7 @@ Hotel_Interface.dataUri() `view` `8a9b29eb`
 
 ## *function* owner
 
-Hotel_Interface.owner() `view` `8da5cb5b`
+AbstractHotel.owner() `view` `8da5cb5b`
 
 
 
@@ -76,7 +76,7 @@ Hotel_Interface.owner() `view` `8da5cb5b`
 
 ## *function* editInfo
 
-Hotel_Interface.editInfo(_dataUri) `nonpayable` `9d9b5342`
+AbstractHotel.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
 > `editInfo` Allows manager to change hotel's dataUri.
 
@@ -89,7 +89,7 @@ Inputs
 
 ## *function* contractType
 
-Hotel_Interface.contractType() `view` `cb2ef6f7`
+AbstractHotel.contractType() `view` `cb2ef6f7`
 
 
 
@@ -97,7 +97,7 @@ Hotel_Interface.contractType() `view` `cb2ef6f7`
 
 ## *function* transferOwnership
 
-Hotel_Interface.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+AbstractHotel.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -110,7 +110,7 @@ Inputs
 
 ## *function* destroyAndSend
 
-Hotel_Interface.destroyAndSend(_recipient) `nonpayable` `f5074f41`
+AbstractHotel.destroyAndSend(_recipient) `nonpayable` `f5074f41`
 
 
 Inputs
@@ -121,7 +121,7 @@ Inputs
 
 ## *event* OwnershipRenounced
 
-Hotel_Interface.OwnershipRenounced(previousOwner) `f8df3114`
+AbstractHotel.OwnershipRenounced(previousOwner) `f8df3114`
 
 Arguments
 
@@ -131,7 +131,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-Hotel_Interface.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+AbstractHotel.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
