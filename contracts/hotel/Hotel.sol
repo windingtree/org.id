@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 import "../WTIndex_Interface.sol";
 import "../Base_Interface.sol";
@@ -28,7 +28,7 @@ contract Hotel is Destructible, Base_Interface {
    * @param _manager address of hotel owner
    * @param _dataUri pointer to hotel data
    */
-  function Hotel(address _manager, string _dataUri) public {
+  constructor(address _manager, string _dataUri) public {
     require(_manager != address(0));
     require(bytes(_dataUri).length != 0);
     manager = _manager;

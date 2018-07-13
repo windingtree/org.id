@@ -1,4 +1,4 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "./Base_Interface.sol";
@@ -42,7 +42,7 @@ contract WTIndex is Ownable, Base_Interface {
   /**
    * @dev Constructor. Creates the `WTIndex` contract
    */
-	function WTIndex() public {
+	constructor() public {
 		hotels.length ++;
 	}
 
@@ -66,7 +66,7 @@ contract WTIndex is Ownable, Base_Interface {
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
     hotelsByManager[msg.sender].push(newHotel);
-    HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
+    emit HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
 	}
 
   /**
@@ -89,7 +89,7 @@ contract WTIndex is Ownable, Base_Interface {
     delete hotelsIndex[hotel];
     delete hotelsByManager[msg.sender][index];
     delete hotelsByManagerIndex[hotel];
-    HotelDeleted(hotel, index, allIndex);
+    emit HotelDeleted(hotel, index, allIndex);
 	}
 
   /**
@@ -107,14 +107,14 @@ contract WTIndex is Ownable, Base_Interface {
     // Ensure that the caller is the hotel's rightful owner
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
 		require(hotel.call(data));
-    HotelCalled(hotel);
+    emit HotelCalled(hotel);
 	}
 
   /**
    * @dev `getHotelsLength` get the length of the `hotels` array
    * @return Length of the hotels array. Might contain zero addresses.
    */
-  function getHotelsLength() constant public returns (uint) {
+  function getHotelsLength() view public returns (uint) {
     return hotels.length;
   }
 
@@ -122,7 +122,7 @@ contract WTIndex is Ownable, Base_Interface {
    * @dev `getHotels` get `hotels` array
    * @return Array of hotel addresses. Might contain zero addresses.
    */
-  function getHotels() constant public returns (address[]) {
+  function getHotels() view public returns (address[]) {
     return hotels;
   }
 
@@ -131,7 +131,7 @@ contract WTIndex is Ownable, Base_Interface {
    * @param  manager Manager address
    * @return Array of hotels belonging to one manager. Might contain zero addresses.
    */
-	function getHotelsByManager(address manager) constant public returns (address[]) {
+	function getHotelsByManager(address manager) view public returns (address[]) {
 		return hotelsByManager[manager];
 	}
 
