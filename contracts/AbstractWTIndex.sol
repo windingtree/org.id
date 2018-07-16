@@ -1,14 +1,14 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
-import "./Base_Interface.sol";
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "./AbstractBaseContract.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
- * @title WTIndex_Interface
+ * @title AbstractWTIndex
  * @dev Interface of WTIndex contract, inherits from OpenZeppelin's Ownable and
- * from WT's 'Base_Interface'.
+ * from WT's 'AbstractBaseContract'.
  */
-contract WTIndex_Interface is Base_Interface {
+contract AbstractWTIndex is Ownable, AbstractBaseContract {
   address[] public hotels;
   mapping(address => uint) public hotelsIndex;
   mapping(address => address[]) public hotelsByManager;
@@ -18,9 +18,9 @@ contract WTIndex_Interface is Base_Interface {
   function registerHotel(string dataUri) external;
   function deleteHotel(address hotel) external;
   function callHotel(address hotel, bytes data) external;
-  function getHotelsLength() constant public returns (uint);
-  function getHotels() constant public returns (address[]);
-  function getHotelsByManager(address manager) constant public returns (address[]);
+  function getHotelsLength() view public returns (uint);
+  function getHotels() view public returns (address[]);
+  function getHotelsByManager(address manager) view public returns (address[]);
 
   event HotelRegistered(address hotel, uint managerIndex, uint allIndex);
   event HotelDeleted(address hotel, uint managerIndex, uint allIndex);

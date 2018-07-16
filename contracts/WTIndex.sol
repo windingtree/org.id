@@ -1,15 +1,14 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
-import "./Base_Interface.sol";
+import "./AbstractWTIndex.sol";
 import "./hotel/Hotel.sol";
 
 /**
  * @title WTIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `Base_Interface`.
+ * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
  */
-contract WTIndex is Ownable, Base_Interface {
+contract WTIndex is AbstractWTIndex {
 
   bytes32 public contractType = bytes32("wtindex");
 
@@ -42,7 +41,7 @@ contract WTIndex is Ownable, Base_Interface {
   /**
    * @dev Constructor. Creates the `WTIndex` contract
    */
-	function WTIndex() public {
+	constructor() public {
 		hotels.length ++;
 	}
 
@@ -51,7 +50,7 @@ contract WTIndex is Ownable, Base_Interface {
    * address of the LifToken contract
    * @param _LifToken The new contract address
    */
-  function setLifToken(address _LifToken) onlyOwner() public {
+  function setLifToken(address _LifToken) onlyOwner public {
     LifToken = _LifToken;
   }
 
@@ -66,7 +65,7 @@ contract WTIndex is Ownable, Base_Interface {
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
     hotelsByManager[msg.sender].push(newHotel);
-    HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
+    emit HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
 	}
 
   /**
@@ -89,7 +88,7 @@ contract WTIndex is Ownable, Base_Interface {
     delete hotelsIndex[hotel];
     delete hotelsByManager[msg.sender][index];
     delete hotelsByManagerIndex[hotel];
-    HotelDeleted(hotel, index, allIndex);
+    emit HotelDeleted(hotel, index, allIndex);
 	}
 
   /**
@@ -107,31 +106,31 @@ contract WTIndex is Ownable, Base_Interface {
     // Ensure that the caller is the hotel's rightful owner
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
 		require(hotel.call(data));
-    HotelCalled(hotel);
+    emit HotelCalled(hotel);
 	}
 
   /**
    * @dev `getHotelsLength` get the length of the `hotels` array
-   * @return Length of the hotels array. Might contain zero addresses.
+   * @return {" ": "Length of the hotels array. Might contain zero addresses."}
    */
-  function getHotelsLength() constant public returns (uint) {
+  function getHotelsLength() view public returns (uint) {
     return hotels.length;
   }
 
   /**
    * @dev `getHotels` get `hotels` array
-   * @return Array of hotel addresses. Might contain zero addresses.
+   * @return {" ": "Array of hotel addresses. Might contain zero addresses."}
    */
-  function getHotels() constant public returns (address[]) {
+  function getHotels() view public returns (address[]) {
     return hotels;
   }
 
   /**
    * @dev `getHotelsByManager` get all the hotels belonging to one manager
    * @param  manager Manager address
-   * @return Array of hotels belonging to one manager. Might contain zero addresses.
+   * @return {" ": "Array of hotels belonging to one manager. Might contain zero addresses."}
    */
-	function getHotelsByManager(address manager) constant public returns (address[]) {
+	function getHotelsByManager(address manager) view public returns (address[]) {
 		return hotelsByManager[manager];
 	}
 

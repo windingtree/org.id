@@ -1,14 +1,14 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
-import "../Base_Interface.sol";
-import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "../AbstractBaseContract.sol";
+import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
 
 /**
- * @title Hotel_Interface
+ * @title AbstractHotel
  * @dev Interface of Hotel contract, inherits
- * from OpenZeppelin's `Destructible` and WT's 'Base_Interface'.
+ * from OpenZeppelin's `Destructible` and WT's 'AbstractBaseContract'.
  */
-contract Hotel_Interface is Destructible, Base_Interface {
+contract AbstractHotel is Destructible, AbstractBaseContract {
 
   // Who owns this Hotel and can manage it.
   address public manager;
@@ -19,9 +19,14 @@ contract Hotel_Interface is Destructible, Base_Interface {
   // Number of block when the Hotel was created
   uint public created;
 
+
+  function _editInfoImpl(string _dataUri) internal;
+
   /**
    * @dev `editInfo` Allows manager to change hotel's dataUri.
    * @param  _dataUri New dataUri pointer of this hotel
    */
-  function editInfo(string _dataUri) onlyOwner() public;
+  function editInfo(string _dataUri) onlyOwner public {
+    _editInfoImpl(_dataUri);
+  }
 }

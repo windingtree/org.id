@@ -1,4 +1,4 @@
-const WTHotelInterface = artifacts.require('Hotel_Interface.sol');
+const WTHotelInterface = artifacts.require('AbstractHotel.sol');
 
 const {
   isZeroAddress,

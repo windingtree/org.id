@@ -1,16 +1,13 @@
-pragma solidity ^0.4.18;
+pragma solidity ^0.4.24;
 
-import "../WTIndex_Interface.sol";
-import "../Base_Interface.sol";
-import "zeppelin-solidity/contracts/lifecycle/Destructible.sol";
-import "zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
+import "./AbstractHotel.sol";
 
 /**
  * @title Hotel, contract for a Hotel registered in the WT network
  * @dev A contract that represents a hotel in the WT network. Inherits
- * from OpenZeppelin's `Destructible` and WT's 'Base_Interface'.
+ * from OpenZeppelin's `Destructible` and WT's 'AbstractBaseContract'.
  */
-contract Hotel is Destructible, Base_Interface {
+contract Hotel is AbstractHotel {
 
   bytes32 public contractType = bytes32("hotel");
 
@@ -28,7 +25,7 @@ contract Hotel is Destructible, Base_Interface {
    * @param _manager address of hotel owner
    * @param _dataUri pointer to hotel data
    */
-  function Hotel(address _manager, string _dataUri) public {
+  constructor(address _manager, string _dataUri) public {
     require(_manager != address(0));
     require(bytes(_dataUri).length != 0);
     manager = _manager;
@@ -36,20 +33,15 @@ contract Hotel is Destructible, Base_Interface {
     created = block.number;
   }
 
-  /**
-   * @dev `editInfo` Allows manager to change hotel's dataUri.
-   * @param  _dataUri New dataUri pointer of this hotel
-   */
-  function editInfo(string _dataUri) onlyOwner() public {
+  function _editInfoImpl(string _dataUri) internal {
     require(bytes(_dataUri).length != 0);
     dataUri = _dataUri;
   }
 
-
   /**
    * @dev `destroy` allows the owner to delete the Hotel
    */
-  function destroy() onlyOwner() public {
+  function destroy() onlyOwner public {
     super.destroyAndSend(tx.origin);
   }
 

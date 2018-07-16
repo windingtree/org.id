@@ -1,27 +1,32 @@
-* [WTIndex_Interface](#wtindex_interface)
+* [AbstractWTIndex](#abstractwtindex)
   * [getHotels](#function-gethotels)
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
   * [version](#function-version)
   * [LifToken](#function-liftoken)
+  * [renounceOwnership](#function-renounceownership)
   * [hotelsByManager](#function-hotelsbymanager)
+  * [owner](#function-owner)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
   * [contractType](#function-contracttype)
   * [hotels](#function-hotels)
+  * [transferOwnership](#function-transferownership)
   * [registerHotel](#function-registerhotel)
   * [deleteHotel](#function-deletehotel)
   * [HotelRegistered](#event-hotelregistered)
   * [HotelDeleted](#event-hoteldeleted)
   * [HotelCalled](#event-hotelcalled)
+  * [OwnershipRenounced](#event-ownershiprenounced)
+  * [OwnershipTransferred](#event-ownershiptransferred)
 
-# WTIndex_Interface
+# AbstractWTIndex
 
 
 ## *function* getHotels
 
-WTIndex_Interface.getHotels() `view` `0d2e677a`
+AbstractWTIndex.getHotels() `view` `0d2e677a`
 
 
 
@@ -29,7 +34,7 @@ WTIndex_Interface.getHotels() `view` `0d2e677a`
 
 ## *function* callHotel
 
-WTIndex_Interface.callHotel(hotel, data) `nonpayable` `154d56db`
+AbstractWTIndex.callHotel(hotel, data) `nonpayable` `154d56db`
 
 
 Inputs
@@ -42,7 +47,7 @@ Inputs
 
 ## *function* hotelsByManagerIndex
 
-WTIndex_Interface.hotelsByManagerIndex() `view` `189f6aef`
+AbstractWTIndex.hotelsByManagerIndex() `view` `189f6aef`
 
 
 Inputs
@@ -54,7 +59,7 @@ Inputs
 
 ## *function* version
 
-WTIndex_Interface.version() `view` `54fd4d50`
+AbstractWTIndex.version() `view` `54fd4d50`
 
 
 
@@ -62,15 +67,24 @@ WTIndex_Interface.version() `view` `54fd4d50`
 
 ## *function* LifToken
 
-WTIndex_Interface.LifToken() `view` `554d8b37`
+AbstractWTIndex.LifToken() `view` `554d8b37`
 
+
+
+
+
+## *function* renounceOwnership
+
+AbstractWTIndex.renounceOwnership() `nonpayable` `715018a6`
+
+> Allows the current owner to relinquish control of the contract.
 
 
 
 
 ## *function* hotelsByManager
 
-WTIndex_Interface.hotelsByManager(, ) `view` `7cf2dfae`
+AbstractWTIndex.hotelsByManager(, ) `view` `7cf2dfae`
 
 
 Inputs
@@ -81,9 +95,17 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* owner
+
+AbstractWTIndex.owner() `view` `8da5cb5b`
+
+
+
+
+
 ## *function* hotelsIndex
 
-WTIndex_Interface.hotelsIndex() `view` `9f9bfeb8`
+AbstractWTIndex.hotelsIndex() `view` `9f9bfeb8`
 
 
 Inputs
@@ -95,7 +117,7 @@ Inputs
 
 ## *function* getHotelsByManager
 
-WTIndex_Interface.getHotelsByManager(manager) `view` `bb979c3d`
+AbstractWTIndex.getHotelsByManager(manager) `view` `bb979c3d`
 
 
 Inputs
@@ -107,7 +129,7 @@ Inputs
 
 ## *function* getHotelsLength
 
-WTIndex_Interface.getHotelsLength() `view` `ca63a55b`
+AbstractWTIndex.getHotelsLength() `view` `ca63a55b`
 
 
 
@@ -115,7 +137,7 @@ WTIndex_Interface.getHotelsLength() `view` `ca63a55b`
 
 ## *function* contractType
 
-WTIndex_Interface.contractType() `view` `cb2ef6f7`
+AbstractWTIndex.contractType() `view` `cb2ef6f7`
 
 
 
@@ -123,7 +145,7 @@ WTIndex_Interface.contractType() `view` `cb2ef6f7`
 
 ## *function* hotels
 
-WTIndex_Interface.hotels() `view` `cd338265`
+AbstractWTIndex.hotels() `view` `cd338265`
 
 
 Inputs
@@ -133,9 +155,22 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* transferOwnership
+
+AbstractWTIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+
+> Allows the current owner to transfer control of the contract to a newOwner.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _newOwner | The address to transfer ownership to. |
+
+
 ## *function* registerHotel
 
-WTIndex_Interface.registerHotel(dataUri) `nonpayable` `f88a067f`
+AbstractWTIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
 
 
 Inputs
@@ -147,7 +182,7 @@ Inputs
 
 ## *function* deleteHotel
 
-WTIndex_Interface.deleteHotel(hotel) `nonpayable` `fb6f6875`
+AbstractWTIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
 
 
 Inputs
@@ -158,7 +193,7 @@ Inputs
 
 ## *event* HotelRegistered
 
-WTIndex_Interface.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
+AbstractWTIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
 
 Arguments
 
@@ -170,7 +205,7 @@ Arguments
 
 ## *event* HotelDeleted
 
-WTIndex_Interface.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
+AbstractWTIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
 
 Arguments
 
@@ -182,13 +217,34 @@ Arguments
 
 ## *event* HotelCalled
 
-WTIndex_Interface.HotelCalled(hotel) `e09d7761`
+AbstractWTIndex.HotelCalled(hotel) `e09d7761`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | not indexed |
+
+## *event* OwnershipRenounced
+
+AbstractWTIndex.OwnershipRenounced(previousOwner) `f8df3114`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | previousOwner | indexed |
+
+## *event* OwnershipTransferred
+
+AbstractWTIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | previousOwner | indexed |
+| *address* | newOwner | indexed |
 
 
 ---

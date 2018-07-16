@@ -4,8 +4,8 @@ const abiDecoder = require('abi-decoder');
 
 const WTIndex = artifacts.require('WTIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
-const WTHotelInterface = artifacts.require('Hotel_Interface.sol');
-const BaseInterface = artifacts.require('Base_Interface.sol');
+const WTHotelInterface = artifacts.require('AbstractHotel.sol');
+const AbstractBaseContract = artifacts.require('AbstractBaseContract.sol');
 
 abiDecoder.addABI(WTHotelInterface._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
@@ -44,7 +44,7 @@ contract('Hotel', (accounts) => {
     });
 
     it('should have the correct version and contract type', async () => {
-      let base = await BaseInterface.at(wtHotel.address);
+      let base = await AbstractBaseContract.at(wtHotel.address);
       assert.equal(help.bytes32ToString(await base.version()), help.version);
       assert.equal(help.bytes32ToString(await base.contractType()), 'hotel');
     });

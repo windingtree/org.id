@@ -1,4 +1,3 @@
-const simulateCrowdsale = require('./simulate-crowdsale');
 const hotel = require('./hotel');
 const misc = require('./misc');
 const packageFile = require('../../package');
@@ -6,9 +5,6 @@ const packageFile = require('../../package');
 module.exports = {
   // Current version
   version: packageFile.version,
-
-  // Crowdsale
-  simulateCrowdsale: simulateCrowdsale,
 
   // Hotel
   createHotel: hotel.createHotel,
