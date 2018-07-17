@@ -32,6 +32,6 @@ npm install
 
 ## License
 
-Líf Token is open source and distributed under the GPL v3 license.
+Winding Tree contracts are open source and distributed under the GPL v3 license.
 
 
