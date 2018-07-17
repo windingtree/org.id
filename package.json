@@ -13,7 +13,9 @@
     "soldoc": "scripts/soldoc.sh",
     "flattener": "scripts/flattener.sh",
     "clean": "rimraf build",
-    "buildfornpm": "npm run clean && truffle compile"
+    "buildfornpm": "npm run clean && truffle compile",
+    "deploy-mainnet": "./node_modules/.bin/truffle migrate --network mainnet --reset",
+    "deploy-ropsten": "./node_modules/.bin/truffle migrate --network ropsten --reset"
   },
   "publishConfig": {
     "access": "public",

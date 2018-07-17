@@ -18,6 +18,20 @@ git clone https://github.com/windingtree/wt-contracts
 npm install
 ```
 
+## Deploy
+
+keys.json example:
+```
+{
+  "mnemonic": SEED_PHRASE,
+  "infura_apikey": API_KEY
+}
+```
+
+```sh
+npm run deploy-NETWORK
+```
+
 ## Test
 
 * To run all tests: `npm test`
@@ -30,8 +44,10 @@ npm install
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
 
+## Deployed Implementations
+
+[WTIndex - Ropsten](https://ropsten.etherscan.io/address/0x8a28895feec6cec757a0b8a8206125ca445f036f)
+
 ## License
 
 Winding Tree contracts are open source and distributed under the GPL v3 license.
-
-
