@@ -40,6 +40,10 @@ npm run deploy-NETWORK
 
 * To generate coverage report: `npm run coverage`
 
+## Flattener
+
+A flattener script is available by running `npm run flattener`, this will create flattened version of the contracts without imports in one single file for all contracts in the contracts folder.
+
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
