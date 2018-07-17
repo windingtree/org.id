@@ -16,8 +16,5 @@ coverage.json
 .flattened
 allFiredEvents
 
-# truffle build
-build
-
 # ETH keys
 keys.json
