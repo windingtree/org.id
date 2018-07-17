@@ -11,6 +11,7 @@
     "testrpc": "./node_modules/.bin/ganache-cli",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
+    "flattener": "scripts/flattener.sh",
     "clean": "rimraf build",
     "buildfornpm": "npm run clean && truffle compile"
   },
