@@ -1,14 +1,14 @@
 pragma solidity ^0.4.24;
 
 import "../AbstractBaseContract.sol";
-import "openzeppelin-solidity/contracts/lifecycle/Destructible.sol";
+import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * @title AbstractHotel
  * @dev Interface of Hotel contract, inherits
- * from OpenZeppelin's `Destructible` and WT's 'AbstractBaseContract'.
+ * from OpenZeppelin's `Ownable` and WT's 'AbstractBaseContract'.
  */
-contract AbstractHotel is Destructible, AbstractBaseContract {
+contract AbstractHotel is Ownable, AbstractBaseContract {
 
   // Who owns this Hotel and can manage it.
   address public manager;
