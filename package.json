@@ -18,8 +18,7 @@
     "deploy-ropsten": "./node_modules/.bin/truffle migrate --network ropsten --reset"
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   },
   "repository": {
     "type": "git",
