@@ -18,6 +18,20 @@ git clone https://github.com/windingtree/wt-contracts
 npm install
 ```
 
+## Deploy
+
+keys.json example:
+```
+{
+  "mnemonic": SEED_PHRASE,
+  "infura_apikey": API_KEY
+}
+```
+
+```sh
+npm run deploy-NETWORK
+```
+
 ## Test
 
 * To run all tests: `npm test`
@@ -26,6 +40,10 @@ npm install
 
 * To generate coverage report: `npm run coverage`
 
+## Flattener
+
+A flattener script is available by running `npm run flattener`, this will create flattened version of the contracts without imports in one single file for all contracts in the contracts folder. This is needed if you plan to use tools like [etherscan verifier](https://etherscan.io/verifyContract) or [securify.ch](https://securify.ch/).
+
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
@@ -33,5 +51,3 @@ npm install
 ## License
 
 Winding Tree contracts are open source and distributed under the GPL v3 license.
-
-
