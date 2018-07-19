@@ -38,6 +38,7 @@
     "abi-decoder": "^1.1.0",
     "babel-polyfill": "^6.23.0",
     "chai": "^4.1.2",
+    "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^5.1.5",
     "moment": "^2.21.0",
     "openzeppelin-solidity": "^1.11.0",
