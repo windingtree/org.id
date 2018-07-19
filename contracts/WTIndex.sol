@@ -81,7 +81,7 @@ contract WTIndex is AbstractWTIndex {
     // Ensure that the caller is the hotel's rightful owner
     // There may actually be a hotel on index zero, that's why we use a double check
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-    Hotel(hotel).destroy(msg.sender);
+    Hotel(hotel).destroy();
     uint index = hotelsByManagerIndex[hotel];
     uint allIndex = hotelsIndex[hotel];
     delete hotels[allIndex];

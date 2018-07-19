@@ -41,8 +41,8 @@ contract Hotel is AbstractHotel {
   /**
    * @dev `destroy` allows the owner to delete the Hotel
    */
-  function destroy(address _manager) onlyOwner public {
-    selfdestruct(_manager);
+  function destroy() onlyOwner public {
+    selfdestruct(manager);
   }
 
 }
