@@ -132,6 +132,7 @@ contract WTIndex is AbstractWTIndex {
    */
 	function getHotelsByManager(address manager) view public returns (address[]) {
 		return hotelsByManager[manager];
+		return hotelsByManager[owner];
 	}
 
 }
