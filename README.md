@@ -42,15 +42,11 @@ npm run deploy-NETWORK
 
 ## Flattener
 
-A flattener script is available by running `npm run flattener`, this will create flattened version of the contracts without imports in one single file for all contracts in the contracts folder.
+A flattener script is available by running `npm run flattener`, this will create flattened version of the contracts without imports in one single file for all contracts in the contracts folder. This is needed if you plan to use tools like [etherscan verifier](https://etherscan.io/verifyContract) or [securify.ch](https://securify.ch/).
 
 ## Documentation
 
 [Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
-
-## Deployed Implementations
-
-[WTIndex - Ropsten](https://ropsten.etherscan.io/address/0x8a28895feec6cec757a0b8a8206125ca445f036f)
 
 ## License
 
