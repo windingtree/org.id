@@ -5,7 +5,7 @@ import "./AbstractHotel.sol";
 /**
  * @title Hotel, contract for a Hotel registered in the WT network
  * @dev A contract that represents a hotel in the WT network. Inherits
- * from OpenZeppelin's `Destructible` and WT's 'AbstractBaseContract'.
+ * from OpenZeppelin's `Ownable` and WT's 'AbstractBaseContract'.
  */
 contract Hotel is AbstractHotel {
 
@@ -42,7 +42,7 @@ contract Hotel is AbstractHotel {
    * @dev `destroy` allows the owner to delete the Hotel
    */
   function destroy() onlyOwner public {
-    super.destroyAndSend(tx.origin);
+    selfdestruct(manager);
   }
 
 }
