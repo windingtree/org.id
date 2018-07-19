@@ -1,5 +1,6 @@
 mkdir docs .flattened
 rm docs/*.md
+rm .flattened/*
 for f in $(find contracts -name *.sol)
   do if [ `basename $f` != "Migrations.sol" ]; then
     file=`basename $f`
