@@ -34,13 +34,13 @@ contract('Hotel', (accounts) => {
       // We need callback, because getBlockNumber for some reason cannot be called with await
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.isAtMost(info.created, blockNumber);
-      assert.equal(info.manager, hotelAccount);
+      assert.equal(info.owner, hotelAccount);
       assert.equal((await wtIndex.getHotels()).length, 2);
     });
 
-    it('should be indexed', async () => {
-      assert.equal(wtIndex.contract.address, await wtHotel.owner());
-      assert.equal(hotelAccount, await wtHotel.manager());
+    it('should properly setup ownership', async () => {
+      assert.equal(wtIndex.contract.address, await wtHotel.index());
+      assert.equal(hotelAccount, await wtHotel.owner());
     });
 
     it('should have the correct version and contract type', async () => {
@@ -51,7 +51,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTHotel.new(help.zeroAddress, 'goo.gl');
+        await WTHotel.new(help.zeroAddress, 'goo.gl', wtIndex.contract.address);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -61,6 +61,15 @@ contract('Hotel', (accounts) => {
 
   describe('editInfo', () => {
     const newDataUri = 'goo.gl/12345';
+
+    // Create and register a hotel
+    beforeEach(async () => {
+      wtIndex = await WTIndex.new();
+      await wtIndex.registerHotel(hotelUri, { from: hotelAccount });
+      let address = await wtIndex.getHotelsByManager(hotelAccount);
+      hotelAddress = address[0];
+      wtHotel = WTHotel.at(address[0]);
+    });
 
     it('should not update hotel to an empty dataUri', async () => {
       try {

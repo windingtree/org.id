@@ -33,12 +33,12 @@ async function createHotel (wtIndex, hotelAccount) {
 async function getHotelInfo (wtHotel) {
   // Hotel Info
   const dataUri = await wtHotel.dataUri();
-  const manager = await wtHotel.manager();
+  const owner = await wtHotel.owner();
   const created = await wtHotel.created();
 
   return {
     dataUri: isZeroString(dataUri) ? null : dataUri,
-    manager: isZeroAddress(manager) ? null : manager,
+    owner: isZeroAddress(owner) ? null : owner,
     created: isZeroUint(created) ? null : parseInt(created),
   };
 }

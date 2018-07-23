@@ -11,24 +11,18 @@ contract Hotel is AbstractHotel {
 
   bytes32 public contractType = bytes32("hotel");
 
-  // Who owns this Hotel and can manage it.
-  address public manager;
-  // Arbitrary locator of the off-chain stored hotel data
-  // This might be an HTTPS resource, IPFS hash, Swarm address...
-  // This is intentionally generic.
-  string public dataUri;
-  // Number of block when the Hotel was created
-  uint public created;
-
   /**
    * @dev Constructor.
    * @param _manager address of hotel owner
    * @param _dataUri pointer to hotel data
+   * @param _index originating WTIndex address
    */
-  constructor(address _manager, string _dataUri) public {
+  constructor(address _manager, string _dataUri, address _index) public {
     require(_manager != address(0));
+    require(_index != address(0));
     require(bytes(_dataUri).length != 0);
-    manager = _manager;
+    owner = _manager;
+    index = _index;
     dataUri = _dataUri;
     created = block.number;
   }
@@ -41,8 +35,8 @@ contract Hotel is AbstractHotel {
   /**
    * @dev `destroy` allows the owner to delete the Hotel
    */
-  function destroy() onlyOwner public {
-    selfdestruct(manager);
+  function destroy() onlyFromIndex public {
+    selfdestruct(owner);
   }
 
 }

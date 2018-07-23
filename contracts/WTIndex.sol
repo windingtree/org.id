@@ -60,7 +60,7 @@ contract WTIndex is AbstractWTIndex {
    * @param  dataUri Hotel's data pointer
    */
   function registerHotel(string dataUri) external {
-    Hotel newHotel = new Hotel(msg.sender, dataUri);
+    Hotel newHotel = new Hotel(msg.sender, dataUri, this);
     hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
@@ -81,7 +81,12 @@ contract WTIndex is AbstractWTIndex {
     // Ensure that the caller is the hotel's rightful owner
     // There may actually be a hotel on index zero, that's why we use a double check
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-    Hotel(hotel).destroy();
+
+    Hotel hotelInstance = Hotel(hotel);
+    // Ensure we are calling only our own hotels
+    require(hotelInstance.index() == address(this));
+    hotelInstance.destroy();
+    
     uint index = hotelsByManagerIndex[hotel];
     uint allIndex = hotelsIndex[hotel];
     delete hotels[allIndex];
@@ -105,7 +110,10 @@ contract WTIndex is AbstractWTIndex {
     require(hotelsIndex[hotel] != uint(0));
     // Ensure that the caller is the hotel's rightful owner
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-		require(hotel.call(data));
+    Hotel hotelInstance = Hotel(hotel);
+    // Ensure we are calling only our own hotels
+    require(hotelInstance.index() == address(this));
+    require(hotel.call(data));
     emit HotelCalled(hotel);
 	}
 
