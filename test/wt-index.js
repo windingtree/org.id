@@ -213,6 +213,63 @@ contract('WTIndex', (accounts) => {
     });
   });
 
+  describe('transferHotel', () => {
+    let hotelAddress;
+
+    beforeEach(async () => {
+      await index.registerHotel('dataUri', { from: hotelAccount });
+      let address = await index.getHotelsByManager(hotelAccount);
+      hotelAddress = address[0];
+    });
+
+    it('should throw if transferring to a zero address', async () => {
+      try {
+        await index.transferHotel(hotelAddress, help.zeroAddress, { from: hotelAccount });
+        throw new Error('should not have been called');
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if transferring a non-existing hotel', async () => {
+      try {
+        await index.transferHotel(index.address, nonOwnerAccount, { from: hotelAccount });
+        throw new Error('should not have been called');
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if not executed from hotel owner address', async () => {
+      try {
+        await index.transferHotel(hotelAddress, nonOwnerAccount, { from: nonOwnerAccount });
+        throw new Error('should not have been called');
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should change the hotel manager', async () => {
+      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(hotelAccount)).length, 1);
+      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(nonOwnerAccount)).length, 0);
+      const originalLength = (await index.getHotelsLength()).toNumber();
+      const originalHotels = await index.getHotels();
+      await index.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(hotelAccount)).length, 0);
+      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(nonOwnerAccount)).length, 1);
+      assert.equal((await index.getHotelsLength()).toNumber(), originalLength);
+      assert.deepEqual(await index.getHotels(), originalHotels);
+    });
+
+    it('should fire an event', async () => {
+      const result = await index.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      assert.equal(result.logs.length, 1);
+      assert.equal(result.logs[0].event, 'HotelTransferred');
+      assert.equal(result.logs[0].args.previousManager, hotelAccount);
+      assert.equal(result.logs[0].args.newManager, nonOwnerAccount);
+    });
+  });
+
   describe('data getters', () => {
     describe('getHotelsLength', () => {
       it('should count hotels properly', async () => {

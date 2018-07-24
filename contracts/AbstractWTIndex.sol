@@ -18,6 +18,7 @@ contract AbstractWTIndex is Ownable, AbstractBaseContract {
   function registerHotel(string dataUri) external;
   function deleteHotel(address hotel) external;
   function callHotel(address hotel, bytes data) external;
+  function transferHotel(address hotel, address newManager) external;
   function getHotelsLength() view public returns (uint);
   function getHotels() view public returns (address[]);
   function getHotelsByManager(address manager) view public returns (address[]);
@@ -25,4 +26,5 @@ contract AbstractWTIndex is Ownable, AbstractBaseContract {
   event HotelRegistered(address hotel, uint managerIndex, uint allIndex);
   event HotelDeleted(address hotel, uint managerIndex, uint allIndex);
   event HotelCalled(address hotel);
+  event HotelTransferred(address hotel, address previousManager, address newManager);
 }

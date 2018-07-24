@@ -1,14 +1,16 @@
 pragma solidity ^0.4.24;
 
 import "../AbstractBaseContract.sol";
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 /**
  * @title AbstractHotel
- * @dev Interface of Hotel contract, inherits
- * from OpenZeppelin's `Ownable` and WT's 'AbstractBaseContract'.
+ * @dev Interface of Hotel contract, inherits from
+ * WT's 'AbstractBaseContract'.
  */
-contract AbstractHotel is Ownable, AbstractBaseContract {
+contract AbstractHotel is AbstractBaseContract {
+
+  // Who owns this Hotel and can manage it.
+  address public manager;
 
   // Arbitrary locator of the off-chain stored hotel data
   // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -31,6 +33,8 @@ contract AbstractHotel is Ownable, AbstractBaseContract {
 
 
   function _editInfoImpl(string _dataUri) internal;
+  function _destroyImpl() internal;
+  function _changeManagerImpl(address _newManager) internal;
 
   /**
    * @dev `editInfo` Allows owner to change hotel's dataUri.
@@ -38,5 +42,20 @@ contract AbstractHotel is Ownable, AbstractBaseContract {
    */
   function editInfo(string _dataUri) onlyFromIndex public {
     _editInfoImpl(_dataUri);
+  }
+
+  /**
+   * @dev `destroy` allows the owner to delete the Hotel
+   */
+  function destroy() onlyFromIndex public {
+    _destroyImpl();
+  }
+
+  /**
+   * @dev Allows owner to change hotel manager.
+   * @param _newManager New manager's address
+   */
+  function changeManager(address _newManager) onlyFromIndex public {
+    _changeManagerImpl(_newManager);
   }
 }

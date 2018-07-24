@@ -33,16 +33,16 @@ contract('Hotel', (accounts) => {
       // We need callback, because getBlockNumber for some reason cannot be called with await
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.isAtMost(info.created, blockNumber);
-      assert.equal(info.owner, hotelAccount);
+      assert.equal(info.manager, hotelAccount);
       assert.equal(info.dataUri, hotelUri);
       assert.equal(info.index, wtIndex.contract.address);
       // There's an empty address as an initial value, that's why we compare
       assert.equal((await wtIndex.getHotels()).length, 2);
     });
 
-    it('should properly setup owner and index references', async () => {
+    it('should properly setup manager and index references', async () => {
       assert.equal(wtIndex.contract.address, await wtHotel.index());
-      assert.equal(hotelAccount, await wtHotel.owner());
+      assert.equal(hotelAccount, await wtHotel.manager());
     });
 
     it('should have the correct version and contract type', async () => {
@@ -107,6 +107,23 @@ contract('Hotel', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+  });
+
+  describe('changeManager', () => {
+    it('should throw if not executed from index address', async () => {
+      try {
+        await wtHotel.contract.changeManager(nonOwnerAccount, { from: nonOwnerAccount });
+        throw new Error('should not have been called');
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should change the hotel manager', async () => {
+      assert(await wtHotel.manager(), hotelAccount);
+      await wtIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      assert(await wtHotel.manager(), nonOwnerAccount);
     });
   });
 });

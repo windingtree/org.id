@@ -5,7 +5,7 @@ import "./AbstractHotel.sol";
 /**
  * @title Hotel, contract for a Hotel registered in the WT network
  * @dev A contract that represents a hotel in the WT network. Inherits
- * from OpenZeppelin's `Ownable` and WT's 'AbstractBaseContract'.
+ * from WT's 'AbstractHotel'.
  */
 contract Hotel is AbstractHotel {
 
@@ -21,7 +21,7 @@ contract Hotel is AbstractHotel {
     require(_manager != address(0));
     require(_index != address(0));
     require(bytes(_dataUri).length != 0);
-    owner = _manager;
+    manager = _manager;
     index = _index;
     dataUri = _dataUri;
     created = block.number;
@@ -32,11 +32,13 @@ contract Hotel is AbstractHotel {
     dataUri = _dataUri;
   }
 
-  /**
-   * @dev `destroy` allows the owner to delete the Hotel
-   */
-  function destroy() onlyFromIndex public {
-    selfdestruct(owner);
+  function _destroyImpl() internal {
+    selfdestruct(manager);
+  }
+
+  function _changeManagerImpl(address _newManager) internal {
+    require(_newManager != address(0));
+    manager = _newManager;
   }
 
 }
