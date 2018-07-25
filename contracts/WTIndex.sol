@@ -39,6 +39,11 @@ contract WTIndex is AbstractWTIndex {
   event HotelCalled(address hotel);
 
   /**
+   * @dev Event triggered every time a hotel changes a manager.
+   */
+  event HotelTransferred(address hotel, address previousManager, address newManager);
+
+  /**
    * @dev Constructor. Creates the `WTIndex` contract
    */
 	constructor() public {
@@ -60,7 +65,7 @@ contract WTIndex is AbstractWTIndex {
    * @param  dataUri Hotel's data pointer
    */
   function registerHotel(string dataUri) external {
-    Hotel newHotel = new Hotel(msg.sender, dataUri);
+    Hotel newHotel = new Hotel(msg.sender, dataUri, this);
     hotelsIndex[newHotel] = hotels.length;
     hotels.push(newHotel);
     hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
@@ -81,7 +86,12 @@ contract WTIndex is AbstractWTIndex {
     // Ensure that the caller is the hotel's rightful owner
     // There may actually be a hotel on index zero, that's why we use a double check
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-    Hotel(hotel).destroy();
+
+    Hotel hotelInstance = Hotel(hotel);
+    // Ensure we are calling only our own hotels
+    require(hotelInstance.index() == address(this));
+    hotelInstance.destroy();
+    
     uint index = hotelsByManagerIndex[hotel];
     uint allIndex = hotelsIndex[hotel];
     delete hotels[allIndex];
@@ -105,9 +115,38 @@ contract WTIndex is AbstractWTIndex {
     require(hotelsIndex[hotel] != uint(0));
     // Ensure that the caller is the hotel's rightful owner
     require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-		require(hotel.call(data));
+    Hotel hotelInstance = Hotel(hotel);
+    // Ensure we are calling only our own hotels
+    require(hotelInstance.index() == address(this));
+    require(hotel.call(data));
     emit HotelCalled(hotel);
 	}
+
+  function transferHotel(address hotel, address newManager) external {
+    // Ensure hotel address is valid
+    require(hotel != address(0));
+    // Ensure new manager is valid
+    require(newManager != address(0));
+    // Ensure we know about the hotel at all
+    require(hotelsIndex[hotel] != uint(0));
+    // Ensure that the caller is the hotel's rightful owner
+    // There may actually be a hotel on index zero, that's why we use a double check
+    require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
+
+    Hotel hotelInstance = Hotel(hotel);
+    // Ensure we are calling only our own hotels
+    require(hotelInstance.index() == address(this));
+    // Change ownership in the Hotel contract
+    hotelInstance.changeManager(newManager);
+    
+    // Detach from the old manager ...
+    uint index = hotelsByManagerIndex[hotel];
+    delete hotelsByManager[msg.sender][index];
+    // ... and attach to new manager
+    hotelsByManagerIndex[hotel] = hotelsByManager[newManager].length;
+    hotelsByManager[newManager].push(hotel);
+    emit HotelTransferred(hotel, msg.sender, newManager);
+  }
 
   /**
    * @dev `getHotelsLength` get the length of the `hotels` array
@@ -132,7 +171,6 @@ contract WTIndex is AbstractWTIndex {
    */
 	function getHotelsByManager(address manager) view public returns (address[]) {
 		return hotelsByManager[manager];
-		return hotelsByManager[owner];
 	}
 
 }

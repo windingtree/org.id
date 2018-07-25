@@ -2,6 +2,7 @@
   * [getHotels](#function-gethotels)
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
+  * [transferHotel](#function-transferhotel)
   * [version](#function-version)
   * [LifToken](#function-liftoken)
   * [renounceOwnership](#function-renounceownership)
@@ -18,6 +19,7 @@
   * [HotelRegistered](#event-hotelregistered)
   * [HotelDeleted](#event-hoteldeleted)
   * [HotelCalled](#event-hotelcalled)
+  * [HotelTransferred](#event-hoteltransferred)
   * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
@@ -55,6 +57,19 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
+
+
+## *function* transferHotel
+
+AbstractWTIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | undefined |
+| *address* | newManager | undefined |
 
 
 ## *function* version
@@ -226,6 +241,18 @@ Arguments
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | not indexed |
+
+## *event* HotelTransferred
+
+AbstractWTIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | not indexed |
+| *address* | previousManager | not indexed |
+| *address* | newManager | not indexed |
 
 ## *event* OwnershipRenounced
 
