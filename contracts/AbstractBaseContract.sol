@@ -10,7 +10,7 @@ contract AbstractBaseContract {
 
   // The hex-encoded version, follows the semantic standard MAJOR.MINOR.PATCH-EXTENSION
   // It should always match the version in package.json.
-  bytes32 public version = bytes32("0.2.3");
+  bytes32 public version = bytes32("0.2.4");
 
   // The hex-encoded type of the contract, in all lowercase letters without any spaces.
   // It has to be defined in each contract that uses this interface.
