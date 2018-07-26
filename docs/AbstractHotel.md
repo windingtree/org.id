@@ -1,4 +1,4 @@
-* [Hotel](#hotel)
+* [AbstractHotel](#abstracthotel)
   * [index](#function-index)
   * [created](#function-created)
   * [manager](#function-manager)
@@ -9,12 +9,12 @@
   * [changeManager](#function-changemanager)
   * [contractType](#function-contracttype)
 
-# Hotel
+# AbstractHotel
 
 
 ## *function* index
 
-Hotel.index() `view` `2986c0e5`
+AbstractHotel.index() `view` `2986c0e5`
 
 
 
@@ -22,7 +22,7 @@ Hotel.index() `view` `2986c0e5`
 
 ## *function* created
 
-Hotel.created() `view` `325a19f1`
+AbstractHotel.created() `view` `325a19f1`
 
 
 
@@ -30,7 +30,7 @@ Hotel.created() `view` `325a19f1`
 
 ## *function* manager
 
-Hotel.manager() `view` `481c6a75`
+AbstractHotel.manager() `view` `481c6a75`
 
 
 
@@ -38,7 +38,7 @@ Hotel.manager() `view` `481c6a75`
 
 ## *function* version
 
-Hotel.version() `view` `54fd4d50`
+AbstractHotel.version() `view` `54fd4d50`
 
 
 
@@ -46,7 +46,7 @@ Hotel.version() `view` `54fd4d50`
 
 ## *function* destroy
 
-Hotel.destroy() `nonpayable` `83197ef0`
+AbstractHotel.destroy() `nonpayable` `83197ef0`
 
 > `destroy` allows the owner to delete the Hotel
 
@@ -55,7 +55,7 @@ Hotel.destroy() `nonpayable` `83197ef0`
 
 ## *function* dataUri
 
-Hotel.dataUri() `view` `8a9b29eb`
+AbstractHotel.dataUri() `view` `8a9b29eb`
 
 
 
@@ -63,7 +63,7 @@ Hotel.dataUri() `view` `8a9b29eb`
 
 ## *function* editInfo
 
-Hotel.editInfo(_dataUri) `nonpayable` `9d9b5342`
+AbstractHotel.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
 > `editInfo` Allows owner to change hotel's dataUri.
 
@@ -76,7 +76,7 @@ Inputs
 
 ## *function* changeManager
 
-Hotel.changeManager(_newManager) `nonpayable` `a3fbbaae`
+AbstractHotel.changeManager(_newManager) `nonpayable` `a3fbbaae`
 
 > Allows owner to change hotel manager.
 
@@ -89,8 +89,7 @@ Inputs
 
 ## *function* contractType
 
-Hotel.contractType() `view` `cb2ef6f7`
-
+AbstractHotel.contractType() `view` `cb2ef6f7`
 
 
 

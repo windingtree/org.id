@@ -3,25 +3,27 @@ sudo: required
 group: beta
 language: node_js
 node_js:
-  - "8"
+- 10.3.0
 env:
-  -
+  matrix:
+  - 
   - SOLIDITY_COVERAGE=true
+  global:
+    secure: ID5vaVncWZkzlEy/4dlSteISOeHpt8+VZTSmEHzaTPiCX2TUGQH7zdyXcJB1N9xXvmTJrYhDN/D9LzzDajIJMPeooqWBdgSLSfLOMO9ERNC6Pj8lVWzH7yrUcendqAjFZc1VLuj0kWS2glMhfuxCteYVMSGqeOOb/vgk31nJ0uy7htaCiXB7+32o9oO/5ANMb4rgIeDbA+FZJCoIxn3oFRuQj515cRVakOZL2BgYEcozgr+Nbg3EgsySnbNScpl4X02j9m8LzfCBhBvNIvsqi+YiPClzedBEaiXXDMV4F8RLhcEwMQSkMSvHSv/lNyCyLPPm2FbyIpb3xnx5KAQCnl8noeduhwFjFH2rn6TRp40GoOCEICB2tBOXH4xmSiY5wKgT3RBLcMdvIZThjcfceDa4mXlVfFfIBtk6UTRTZu8rLBfWT3tsZLTuJumLuAd0XZ0qtaMZqavj+NLq2G65pkvJ2aAxyIe9VY/7DXojApxZnvfmooBqEykL8FMnoPp2Oo4swhBVZMGoQX1x2MJ/WDjTLN7RSoSqyZYikjVyKFb/6DbIIJmtm6j3jyR7q/fdXU0cVxrff1FbhSwJrgLYYBl8NZxuD+xm0jhzXknw1sfnWquz8Uh5wA2bJVunME52bHJfxYvMD5RgmB2cJ6jYUQopRDiapKf5Y++ppdojfSU=
 matrix:
   fast_finish: true
   allow_failures:
-    - env: SOLIDITY_COVERAGE=true
+  - env: SOLIDITY_COVERAGE=true
 script:
-  - set -e
-  - npm run lint
-  - npm test
+- set -e
+- npm run lint
+- npm test
 before_deploy: npm run buildfornpm
 deploy:
   provider: npm
-  email: augusto.lemble@gmail.com
+  email: chadima.jiri@gmail.com
   skip_cleanup: true
-  api_key: $NPM_TOKEN
+  api_key: "$NPM_TOKEN"
   on:
     repo: windingtree/wt-contracts
     tags: true
-
