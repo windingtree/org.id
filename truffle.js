@@ -16,7 +16,9 @@ module.exports = {
       port: 8555,
       gas: 0xfffffffffff,
       gasPrice: 0x01
-    }
+    },
+    mainnet: getInfuraConfig('mainnet', 1),
+    ropsten: getInfuraConfig('ropsten', 3)
   },
   solc: {
     optimizer: {
@@ -25,3 +27,21 @@ module.exports = {
     }
   }
 };
+
+function getInfuraConfig (networkName, networkId) {
+  var HDWalletProvider = require('truffle-hdwallet-provider')
+  var keys = {}
+  try {
+    keys = require('./keys.json')
+  } catch (err) {
+    console.log('could not find ./keys.json')
+  }
+
+  return {
+    network_id: networkId,
+    provider: () => {
+      return new HDWalletProvider(keys.mnemonic, `https://${networkName}.infura.io/` + keys.infura_apikey)
+    },
+    gas: 4600000
+  }
+}

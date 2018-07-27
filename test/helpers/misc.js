@@ -1,16 +1,14 @@
-var utf8 = require('utf8');
+const web3 = require('web3');
+const _ = require('lodash');
+const ethJsUtil = require('ethereumjs-util');
+
+const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 module.exports = {
-
-  zeroAddress: '0x0000000000000000000000000000000000000000',
-  zeroBytes32: '0x0000000000000000000000000000000000000000000000000000000000000000',
-
-  isZeroBytes32: function (val) {
-    return val === '0x0000000000000000000000000000000000000000000000000000000000000000';
-  },
+  zeroAddress: zeroAddress,
 
   isZeroAddress: function (val) {
-    return val === '0x0000000000000000000000000000000000000000';
+    return val === zeroAddress;
   },
 
   isZeroString: function (val) {
@@ -22,48 +20,31 @@ module.exports = {
   },
 
   isInvalidOpcodeEx: function (e) {
-    return e.message.search('invalid opcode') >= 0;
+    if (
+      e.message.search('invalid opcode') >= 0 || // ethereumjs-testrpc at least <= 4
+      e.message.search('revert') >= 0 // ganache-cli at least 6+
+    ) {
+      return true;
+    } else {
+      console.error(e);
+      return false;
+    }
   },
 
-  lifWei2Lif: function (value) {
-    return web3.fromWei(value, 'ether');
-  },
-
-  lif2LifWei: function (value) {
-    return web3.toWei(value, 'ether');
-  },
-
-  locationToUint: function (longitude, latitude) {
-    return {
-      long: Math.round((90 + longitude) * 10e5),
-      lat: Math.round((180 + latitude) * 10e5),
-    };
-  },
-
-  locationFromUint: function (longitude, latitude) {
-    latitude = parseInt(latitude);
-    longitude = parseInt(longitude);
-
-    return {
-      lat: parseFloat((latitude - (180 * 10e5)) / 10e5).toFixed(6),
-      long: parseFloat((longitude - (90 * 10e5)) / 10e5).toFixed(6),
-    };
-  },
-
-  // Stolen from the web3 1.0 lib (method is called toUtf8)
   bytes32ToString: function (hex) {
-    var str = '';
-    var i = 0, l = hex.length;
-    if (hex.substring(0, 2) === '0x') {
-      i = 2;
-    }
-    for (; i < l; i += 2) {
-      var code = parseInt(hex.substr(i, 2), 16);
-      if (code === 0) { break; }
-      str += String.fromCharCode(code);
-    }
+    return web3.utils.hexToUtf8(hex);
+  },
 
-    return utf8.decode(str);
+  stringToBytes32: function (text) {
+    return web3.utils.utf8ToHex(text);
+  },
+
+  // Sample implementation for later re-use
+  determineAddress: function (sender, nonce) {
+    return ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
+      sender,
+      nonce
+    ));
   },
 
   /**
@@ -86,9 +67,19 @@ module.exports = {
       : arr;
   },
 
-  // Debugging helper
-  pretty: function (msg, obj) {
-    console.log(`<------ ${msg} ------>\n` + JSON.stringify(obj, null, ' '));
-    console.log('<------- END -------->\n');
+  filterZeroAddresses: function (listOfAddresses) {
+    return _.filter(listOfAddresses, (a) => a !== zeroAddress);
+  },
+
+  promisify: function (inner) {
+    return new Promise((resolve, reject) => {
+      inner((err, res) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(res);
+        }
+      });
+    });
   },
 };
