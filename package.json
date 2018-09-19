@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "scripts/test.sh",
-    "lint": "eslint test",
+    "lint": "eslint test; solhint 'contracts/**/*.sol'",
     "testrpc": "./node_modules/.bin/ganache-cli",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
@@ -55,6 +55,7 @@
     "ganache-cli": "^6.1.6",
     "lodash": "^4.17.5",
     "rimraf": "^2.6.2",
+    "solhint": "^1.2.1",
     "solidity-coverage": "^0.5.5",
     "solmd": "^0.3.0",
     "truffle": "^4.1.13",
