@@ -71,13 +71,14 @@ Inputs
 
 WTIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
 
+> `transferHotel` Allows to change ownership of the hotel contract. Emits HotelTransferred on success.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
-| *address* | newManager | undefined |
+| *address* | hotel | Hotel's address |
+| *address* | newManager | Address to which the hotel will belong after transfer. |
 
 
 ## *function* version
@@ -194,7 +195,7 @@ Inputs
 
 ## *function* setLifToken
 
-WTIndex.setLifToken(_LifToken) `nonpayable` `f2f0967b`
+WTIndex.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract
 
@@ -202,7 +203,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _LifToken | The new contract address |
+| *address* | _lifToken | The new contract address |
 
 
 ## *function* transferOwnership
