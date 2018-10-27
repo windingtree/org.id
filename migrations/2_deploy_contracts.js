@@ -6,7 +6,7 @@ module.exports = function (deployer, network, accounts) {
     console.log('Network:', network);
     console.log('Accounts:', accounts);
 
-    const lifTokenAddress = (network == 'mainnent')
+    const lifTokenAddress = (network == 'mainnet')
       ? '0xeb9951021698b42e4399f9cbb6267aa35f82d59d'
       : '0x5FDFBa355A30FB00ee12965cf3a1c24CA8DF77FB';
 
