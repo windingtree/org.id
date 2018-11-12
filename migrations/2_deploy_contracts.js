@@ -8,7 +8,7 @@ module.exports = function (deployer, network, accounts) {
 
     const lifTokenAddress = (network == 'mainnet')
       ? '0xeb9951021698b42e4399f9cbb6267aa35f82d59d'
-      : '0x5FDFBa355A30FB00ee12965cf3a1c24CA8DF77FB';
+      : '0xb6e225194a1c892770c43d4b529841c99b3da1d7';
 
     deployer.deploy(WTIndex).then(function (wtIndexContract) {
       console.log('WTIndex address:', wtIndexContract.address);
