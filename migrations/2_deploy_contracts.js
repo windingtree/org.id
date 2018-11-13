@@ -10,11 +10,12 @@ module.exports = function (deployer, network, accounts) {
       ? '0xeb9951021698b42e4399f9cbb6267aa35f82d59d'
       : '0xb6e225194a1c892770c43d4b529841c99b3da1d7';
 
-    deployer.deploy(WTIndex).then(function (wtIndexContract) {
+    return deployer.deploy(WTIndex).then(function (wtIndexContract) {
       console.log('WTIndex address:', wtIndexContract.address);
-      wtIndexContract.setLifToken(lifTokenAddress).then(function (tx) {
+      return wtIndexContract.setLifToken(lifTokenAddress);
+    }).then(function (tx) {
         console.log('LifToken set on tx:', tx.tx);
-      });
+        console.log('LifToken address set to:', lifTokenAddress);
     });
   }
 };
