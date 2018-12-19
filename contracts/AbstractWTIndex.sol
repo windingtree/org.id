@@ -17,7 +17,7 @@ contract AbstractWTIndex is Ownable, AbstractBaseContract {
     // solhint-disable-next-line var-name-mixedcase
     address public LifToken;
 
-    function registerHotel(string dataUri) external;
+    function registerHotel(string dataUri) external returns (address);
     function deleteHotel(address hotel) external;
     function callHotel(address hotel, bytes data) external;
     function transferHotel(address hotel, address newManager) external;

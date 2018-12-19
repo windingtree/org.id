@@ -66,6 +66,14 @@ contract('WTIndex', (accounts) => {
         assert.equal(hotelAddress, address[0]);
       });
 
+      it('should return new hotel address', async () => {
+        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
+        const hotelAddress = help.determineAddress(index.address, indexNonce);
+        // This does not actually create the hotel... but it does spit out the return value
+        const result = await index.registerHotel.call('dataUri', { from: hotelAccount });
+        assert.equal(result, hotelAddress);
+      });
+
       it('should add a hotel to the registry', async () => {
         await index.registerHotel('dataUri', { from: hotelAccount });
         const length = await index.getHotelsLength();

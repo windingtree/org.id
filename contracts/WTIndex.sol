@@ -57,14 +57,16 @@ contract WTIndex is AbstractWTIndex {
      * @dev `registerHotel` Register new hotel in the index.
      * Emits `HotelRegistered` on success.
      * @param  dataUri Hotel's data pointer
+     * @return {" ": "Address of the new hotel."}
      */
-    function registerHotel(string dataUri) external {
+    function registerHotel(string dataUri) external returns (address) {
         Hotel newHotel = new Hotel(msg.sender, dataUri, this);
         hotelsIndex[newHotel] = hotels.length;
         hotels.push(newHotel);
         hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
         hotelsByManager[msg.sender].push(newHotel);
         emit HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
+        return newHotel;
     }
 
     /**

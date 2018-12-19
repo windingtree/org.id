@@ -231,6 +231,11 @@ Inputs
 |-|-|-|
 | *string* | dataUri | Hotel's data pointer |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* deleteHotel
 
