@@ -41,10 +41,12 @@ module.exports = {
 
   // Sample implementation for later re-use
   determineAddress: function (sender, nonce) {
-    return ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
-      sender,
-      nonce
-    ));
+    return web3.utils.toChecksumAddress(
+      ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
+        sender,
+        nonce
+      )
+      ));
   },
 
   /**
