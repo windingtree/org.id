@@ -134,7 +134,7 @@ contract('WTIndex', (accounts) => {
         assert.equal(allHotels.length, 0);
         assert.isTrue(hotelDeleted);
         const code = await help.promisify(cb => web3.eth.getCode(hotel, cb));
-        assert.equal(code, '0x0');
+        assert.equal(code, '0x');
       });
 
       it('should throw if the hotel is not registered', async () => {
@@ -178,17 +178,18 @@ contract('WTIndex', (accounts) => {
         await index.registerHotel('dataUri', { from: hotelAccount });
         let address = await index.getHotelsByManager(hotelAccount);
         hotelAddress = address[0];
-        wtHotel = WTHotel.at(address[0]);
+        wtHotel = await WTHotel.at(address[0]);
+        wtHotel.web3Instance = new web3.eth.Contract(wtHotel.abi, wtHotel.address);
       });
 
       it('should proceed when calling as an owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newDataUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newDataUri').encodeABI();
         await index.callHotel(hotelAddress, data, { from: hotelAccount });
-        assert.equal('newDataUri', await wtHotel.contract.dataUri());
+        assert.equal('newDataUri', await wtHotel.dataUri());
       });
 
       it('should throw if calling as a non-owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           await index.callHotel(hotelAddress, data, { from: nonOwnerAccount });
           throw new Error('should not have been called');
@@ -198,7 +199,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if a hotel has zero address', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // Mocking address with existing contract
           await index.callHotel(help.zeroAddress, data, { from: hotelAccount });
@@ -209,7 +210,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if hotel does not exist', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // mocking address with existing account
           await index.callHotel(nonOwnerAccount, data, { from: hotelAccount });
