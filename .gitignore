@@ -18,3 +18,5 @@ allFiredEvents
 
 # ETH keys
 keys.json
+
+.zos.session

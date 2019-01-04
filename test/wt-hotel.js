@@ -2,16 +2,18 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
 
-const WTIndex = artifacts.require('WTIndex.sol');
-const WTHotel = artifacts.require('Hotel.sol');
-const AbstractWTHotel = artifacts.require('AbstractHotel.sol');
-const AbstractBaseContract = artifacts.require('AbstractBaseContract.sol');
+const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
+const WTIndex = artifacts.require('WTIndex');
+const WTHotel = artifacts.require('Hotel');
+const AbstractWTHotel = artifacts.require('AbstractHotel');
+const AbstractBaseContract = artifacts.require('AbstractBaseContract');
 
 abiDecoder.addABI(AbstractWTHotel._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
 
 contract('Hotel', (accounts) => {
   const hotelUri = 'bzz://something';
+  const indexOwner = accounts[1];
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   let hotelAddress = help.zeroAddress;
@@ -20,7 +22,12 @@ contract('Hotel', (accounts) => {
 
   // Create and register a hotel
   beforeEach(async () => {
-    wtIndex = await WTIndex.new();
+    const indexDeployed = await WTIndex.new({ from: indexOwner });
+    indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
+    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
+    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, {from: indexOwner});
+    wtIndex = await WTIndex.at(indexProxy.address);
+
     await wtIndex.registerHotel(hotelUri, { from: hotelAccount });
     let address = await wtIndex.getHotelsByManager(hotelAccount);
     hotelAddress = address[0];

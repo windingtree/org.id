@@ -1,21 +1,27 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const WTIndex = artifacts.require('./WTIndex.sol');
-const AbstractWTIndex = artifacts.require('./AbstractWTIndex.sol');
-const WTHotel = artifacts.require('Hotel.sol');
+const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
+const WTIndex = artifacts.require('WTIndex');
+const WTHotel = artifacts.require('Hotel');
+const AbstractWTIndex = artifacts.require('AbstractWTIndex');
+const AbstractBaseContract = artifacts.require('AbstractBaseContract');
 
 contract('WTIndex', (accounts) => {
   const indexOwner = accounts[1];
-  const hotelAccount = accounts[2];
-  const nonOwnerAccount = accounts[3];
+  const proxyOwner = accounts[2];
+  const hotelAccount = accounts[3];
+  const nonOwnerAccount = accounts[4];
 
   let index;
 
   // Deploy new index but use AbstractWTIndex for contract interaction
   beforeEach(async () => {
-    index = await WTIndex.new({ from: indexOwner });
-    index = await AbstractWTIndex.at(index.address);
+    const indexDeployed = await WTIndex.new({ from: indexOwner });
+    indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
+    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
+    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, {from: proxyOwner});
+    index = await AbstractWTIndex.at(indexProxy.address);
   });
 
   describe('version', () => {
@@ -29,8 +35,9 @@ contract('WTIndex', (accounts) => {
     const tokenAddress = accounts[5];
 
     it('should set the LifToken address', async () => {
-      await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
-      const setValue = await index.LifToken();
+      const wtIndex = await WTIndex.at(index.address);
+      await wtIndex.setLifToken(tokenAddress, {from: indexOwner});
+      const setValue = await wtIndex.LifToken();
 
       assert.equal(setValue, tokenAddress);
     });

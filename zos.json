@@ -1,0 +1,9 @@
+{
+  "zosversion": "2",
+  "name": "wt-contracts",
+  "version": "0.2.4",
+  "publish": false,
+  "contracts": {
+    "WTIndex": "WTIndex"
+  }
+}

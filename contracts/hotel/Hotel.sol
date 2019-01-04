@@ -10,8 +10,6 @@ import "./AbstractHotel.sol";
  */
 contract Hotel is AbstractHotel {
 
-    bytes32 public contractType = bytes32("hotel");
-
     /**
      * @dev Constructor.
      * @param _manager address of hotel owner
@@ -19,6 +17,8 @@ contract Hotel is AbstractHotel {
      * @param _index originating WTIndex address
      */
     constructor(address _manager, string _dataUri, address _index) public {
+        contractType = bytes32("hotel");
+        version = bytes32("0.2.4");
         require(_manager != address(0));
         require(_index != address(0));
         require(bytes(_dataUri).length != 0);
