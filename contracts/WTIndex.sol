@@ -51,8 +51,6 @@ contract WTIndex is Initializable, AbstractWTIndex {
      */
     function initialize(address _owner) initializer public {
         hotels.length++;
-        contractType = bytes32("wtindex");
-        version = bytes32("0.2.4");
         owner = _owner;
     }
 
