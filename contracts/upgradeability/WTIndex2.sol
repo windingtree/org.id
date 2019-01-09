@@ -17,7 +17,7 @@ contract WTIndex2 is WTIndex {
     }
 
     function newFunction() public view returns(uint) {
-      return 100;
+        return 100;
     }
 
 }

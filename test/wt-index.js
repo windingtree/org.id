@@ -5,7 +5,6 @@ const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
 const WTIndex = artifacts.require('WTIndex');
 const WTHotel = artifacts.require('Hotel');
 const AbstractWTIndex = artifacts.require('AbstractWTIndex');
-const AbstractBaseContract = artifacts.require('AbstractBaseContract');
 const WTIndex2 = artifacts.require('WTIndex2');
 const WTHotel2 = artifacts.require('Hotel2');
 
@@ -22,7 +21,7 @@ contract('WTIndex', (accounts) => {
     const indexDeployed = await WTIndex.new({ from: indexOwner });
     indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
     const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
-    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, {from: proxyOwner});
+    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: proxyOwner });
     index = await AbstractWTIndex.at(indexProxy.address);
   });
 
@@ -40,7 +39,7 @@ contract('WTIndex', (accounts) => {
       // Deploy new Index
       const newIndex = await WTIndex2.new({ from: indexOwner });
       const indexProxy = await AdminUpgradeabilityProxy.at(index.address);
-      await indexProxy.upgradeTo(newIndex.address, {from: proxyOwner});
+      await indexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
       index = await WTIndex2.at(indexProxy.address);
 
       await index.registerHotel('dataUri2', { from: hotelAccount });
@@ -54,7 +53,6 @@ contract('WTIndex', (accounts) => {
       );
 
       const hotelsByManager = await index.getHotelsByManager(hotelAccount);
-      const actualIndexPos = await index.hotelsIndex(allHotels[0]);
 
       assert.isDefined(allHotels[0]);
       assert.isDefined(hotelsByManager[0]);
@@ -71,7 +69,6 @@ contract('WTIndex', (accounts) => {
 
       assert.equal(await (await WTHotel2.at(allHotels[1])).newFunction(), 100);
       assert.equal(await index.newFunction(), 100);
-
     });
   });
 
@@ -80,7 +77,7 @@ contract('WTIndex', (accounts) => {
 
     it('should set the LifToken address', async () => {
       const wtIndex = await WTIndex.at(index.address);
-      await wtIndex.setLifToken(tokenAddress, {from: indexOwner});
+      await wtIndex.setLifToken(tokenAddress, { from: indexOwner });
       const setValue = await wtIndex.LifToken();
 
       assert.equal(setValue, tokenAddress);

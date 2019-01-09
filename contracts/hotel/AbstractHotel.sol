@@ -1,5 +1,6 @@
 pragma solidity ^0.4.25;
 
+
 /**
  * @title AbstractHotel
  * @dev Interface of Hotel contract, inherits from

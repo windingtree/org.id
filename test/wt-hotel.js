@@ -25,7 +25,7 @@ contract('Hotel', (accounts) => {
     const indexDeployed = await WTIndex.new({ from: indexOwner });
     indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
     const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
-    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, {from: indexOwner});
+    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: indexOwner });
     wtIndex = await WTIndex.at(indexProxy.address);
 
     await wtIndex.registerHotel(hotelUri, { from: hotelAccount });

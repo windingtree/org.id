@@ -26,6 +26,10 @@ contract Hotel2 is AbstractHotel {
         created = block.number;
     }
 
+    function newFunction() public view returns(uint) {
+        return 100;
+    }
+
     function _editInfoImpl(string _dataUri) internal {
         require(bytes(_dataUri).length != 0);
         dataUri = _dataUri;
@@ -38,10 +42,6 @@ contract Hotel2 is AbstractHotel {
     function _changeManagerImpl(address _newManager) internal {
         require(_newManager != address(0));
         manager = _newManager;
-    }
-
-    function newFunction() public view returns(uint) {
-      return 100;
     }
 
 }

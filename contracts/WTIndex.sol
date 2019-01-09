@@ -46,15 +46,6 @@ contract WTIndex is Initializable, AbstractWTIndex {
     event HotelTransferred(address hotel, address previousManager, address newManager);
 
     /**
-     * @dev Initializer for upgradeable contracts.
-     * @param  _owner The address of the contract owner
-     */
-    function initialize(address _owner) initializer public {
-        hotels.length++;
-        owner = _owner;
-    }
-
-    /**
      * @dev `registerHotel` Register new hotel in the index.
      * Emits `HotelRegistered` on success.
      * @param  dataUri Hotel's data pointer
@@ -150,6 +141,15 @@ contract WTIndex is Initializable, AbstractWTIndex {
         hotelsByManagerIndex[hotel] = hotelsByManager[newManager].length;
         hotelsByManager[newManager].push(hotel);
         emit HotelTransferred(hotel, msg.sender, newManager);
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param  _owner The address of the contract owner
+     */
+    function initialize(address _owner) public initializer {
+        hotels.length++;
+        owner = _owner;
     }
 
     /**
