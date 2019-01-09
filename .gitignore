@@ -20,3 +20,4 @@ allFiredEvents
 keys.json
 
 .zos.session
+.zos.dev-*
