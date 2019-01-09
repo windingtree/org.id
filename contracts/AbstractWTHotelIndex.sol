@@ -5,11 +5,11 @@ import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 /**
- * @title AbstractWTIndex
- * @dev Interface of WTIndex contract, inherits from OpenZeppelin's Ownable and
+ * @title AbstractWTHotelIndex
+ * @dev Interface of WTHotelIndex contract, inherits from OpenZeppelin's Ownable and
  * from WT's 'AbstractBaseContract'.
  */
-contract AbstractWTIndex is Ownable, AbstractBaseContract {
+contract AbstractWTHotelIndex is Ownable, AbstractBaseContract {
     address[] public hotels;
     mapping(address => uint) public hotelsIndex;
     mapping(address => address[]) public hotelsByManager;

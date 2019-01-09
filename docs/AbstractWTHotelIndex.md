@@ -1,4 +1,4 @@
-* [AbstractWTIndex](#abstractwtindex)
+* [AbstractWTHotelIndex](#abstractwthotelindex)
   * [getHotels](#function-gethotels)
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
@@ -23,12 +23,12 @@
   * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# AbstractWTIndex
+# AbstractWTHotelIndex
 
 
 ## *function* getHotels
 
-AbstractWTIndex.getHotels() `view` `0d2e677a`
+AbstractWTHotelIndex.getHotels() `view` `0d2e677a`
 
 
 
@@ -36,7 +36,7 @@ AbstractWTIndex.getHotels() `view` `0d2e677a`
 
 ## *function* callHotel
 
-AbstractWTIndex.callHotel(hotel, data) `nonpayable` `154d56db`
+AbstractWTHotelIndex.callHotel(hotel, data) `nonpayable` `154d56db`
 
 
 Inputs
@@ -49,7 +49,7 @@ Inputs
 
 ## *function* hotelsByManagerIndex
 
-AbstractWTIndex.hotelsByManagerIndex() `view` `189f6aef`
+AbstractWTHotelIndex.hotelsByManagerIndex() `view` `189f6aef`
 
 
 Inputs
@@ -61,7 +61,7 @@ Inputs
 
 ## *function* transferHotel
 
-AbstractWTIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
+AbstractWTHotelIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
 
 
 Inputs
@@ -74,7 +74,7 @@ Inputs
 
 ## *function* version
 
-AbstractWTIndex.version() `view` `54fd4d50`
+AbstractWTHotelIndex.version() `view` `54fd4d50`
 
 
 
@@ -82,7 +82,7 @@ AbstractWTIndex.version() `view` `54fd4d50`
 
 ## *function* LifToken
 
-AbstractWTIndex.LifToken() `view` `554d8b37`
+AbstractWTHotelIndex.LifToken() `view` `554d8b37`
 
 
 
@@ -90,7 +90,7 @@ AbstractWTIndex.LifToken() `view` `554d8b37`
 
 ## *function* renounceOwnership
 
-AbstractWTIndex.renounceOwnership() `nonpayable` `715018a6`
+AbstractWTHotelIndex.renounceOwnership() `nonpayable` `715018a6`
 
 **Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
 
@@ -101,7 +101,7 @@ AbstractWTIndex.renounceOwnership() `nonpayable` `715018a6`
 
 ## *function* hotelsByManager
 
-AbstractWTIndex.hotelsByManager(, ) `view` `7cf2dfae`
+AbstractWTHotelIndex.hotelsByManager(, ) `view` `7cf2dfae`
 
 
 Inputs
@@ -114,7 +114,7 @@ Inputs
 
 ## *function* owner
 
-AbstractWTIndex.owner() `view` `8da5cb5b`
+AbstractWTHotelIndex.owner() `view` `8da5cb5b`
 
 
 
@@ -122,7 +122,7 @@ AbstractWTIndex.owner() `view` `8da5cb5b`
 
 ## *function* hotelsIndex
 
-AbstractWTIndex.hotelsIndex() `view` `9f9bfeb8`
+AbstractWTHotelIndex.hotelsIndex() `view` `9f9bfeb8`
 
 
 Inputs
@@ -134,7 +134,7 @@ Inputs
 
 ## *function* getHotelsByManager
 
-AbstractWTIndex.getHotelsByManager(manager) `view` `bb979c3d`
+AbstractWTHotelIndex.getHotelsByManager(manager) `view` `bb979c3d`
 
 
 Inputs
@@ -146,7 +146,7 @@ Inputs
 
 ## *function* getHotelsLength
 
-AbstractWTIndex.getHotelsLength() `view` `ca63a55b`
+AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
 
 
 
@@ -154,7 +154,7 @@ AbstractWTIndex.getHotelsLength() `view` `ca63a55b`
 
 ## *function* contractType
 
-AbstractWTIndex.contractType() `view` `cb2ef6f7`
+AbstractWTHotelIndex.contractType() `view` `cb2ef6f7`
 
 
 
@@ -162,7 +162,7 @@ AbstractWTIndex.contractType() `view` `cb2ef6f7`
 
 ## *function* hotels
 
-AbstractWTIndex.hotels() `view` `cd338265`
+AbstractWTHotelIndex.hotels() `view` `cd338265`
 
 
 Inputs
@@ -174,7 +174,7 @@ Inputs
 
 ## *function* transferOwnership
 
-AbstractWTIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+AbstractWTHotelIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -187,7 +187,7 @@ Inputs
 
 ## *function* registerHotel
 
-AbstractWTIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
+AbstractWTHotelIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
 
 
 Inputs
@@ -199,7 +199,7 @@ Inputs
 
 ## *function* deleteHotel
 
-AbstractWTIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
+AbstractWTHotelIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
 
 
 Inputs
@@ -210,7 +210,7 @@ Inputs
 
 ## *event* HotelRegistered
 
-AbstractWTIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
+AbstractWTHotelIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
 
 Arguments
 
@@ -222,7 +222,7 @@ Arguments
 
 ## *event* HotelDeleted
 
-AbstractWTIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
+AbstractWTHotelIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
 
 Arguments
 
@@ -234,7 +234,7 @@ Arguments
 
 ## *event* HotelCalled
 
-AbstractWTIndex.HotelCalled(hotel) `e09d7761`
+AbstractWTHotelIndex.HotelCalled(hotel) `e09d7761`
 
 Arguments
 
@@ -244,7 +244,7 @@ Arguments
 
 ## *event* HotelTransferred
 
-AbstractWTIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
+AbstractWTHotelIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
 
 Arguments
 
@@ -256,7 +256,7 @@ Arguments
 
 ## *event* OwnershipRenounced
 
-AbstractWTIndex.OwnershipRenounced(previousOwner) `f8df3114`
+AbstractWTHotelIndex.OwnershipRenounced(previousOwner) `f8df3114`
 
 Arguments
 
@@ -266,7 +266,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-AbstractWTIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+AbstractWTHotelIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
