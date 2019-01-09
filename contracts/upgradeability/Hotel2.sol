@@ -1,6 +1,6 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractHotel.sol";
+import "../hotel/AbstractHotel.sol";
 
 
 /**
@@ -8,7 +8,7 @@ import "./AbstractHotel.sol";
  * @dev A contract that represents a hotel in the WT network. Inherits
  * from WT's 'AbstractHotel'.
  */
-contract Hotel is AbstractHotel {
+contract Hotel2 is AbstractHotel {
 
     /**
      * @dev Constructor.
@@ -38,6 +38,10 @@ contract Hotel is AbstractHotel {
     function _changeManagerImpl(address _newManager) internal {
         require(_newManager != address(0));
         manager = _newManager;
+    }
+
+    function newFunction() public view returns(uint) {
+      return 100;
     }
 
 }

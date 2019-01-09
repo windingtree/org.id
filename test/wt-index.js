@@ -6,6 +6,8 @@ const WTIndex = artifacts.require('WTIndex');
 const WTHotel = artifacts.require('Hotel');
 const AbstractWTIndex = artifacts.require('AbstractWTIndex');
 const AbstractBaseContract = artifacts.require('AbstractBaseContract');
+const WTIndex2 = artifacts.require('WTIndex2');
+const WTHotel2 = artifacts.require('Hotel2');
 
 contract('WTIndex', (accounts) => {
   const indexOwner = accounts[1];
@@ -28,6 +30,48 @@ contract('WTIndex', (accounts) => {
     it.skip('should have the correct version and contract type', async () => {
       assert.equal(help.bytes32ToString(await index.version()), help.version);
       assert.equal(help.bytes32ToString(await index.contractType()), 'wtindex');
+    });
+  });
+
+  describe('upgradeability', () => {
+    it('should upgrade WTIndex and have new functions in Index and Hotel contracts', async () => {
+      await index.registerHotel('dataUri', { from: hotelAccount });
+
+      // Deploy new Index
+      const newIndex = await WTIndex2.new({ from: indexOwner });
+      const indexProxy = await AdminUpgradeabilityProxy.at(index.address);
+      await indexProxy.upgradeTo(newIndex.address, {from: proxyOwner});
+      index = await WTIndex2.at(indexProxy.address);
+
+      await index.registerHotel('dataUri2', { from: hotelAccount });
+
+      const length = await index.getHotelsLength();
+
+      const allHotels = await help.jsArrayFromSolidityArray(
+        index.hotels,
+        length,
+        help.isZeroAddress
+      );
+
+      const hotelsByManager = await index.getHotelsByManager(hotelAccount);
+      const actualIndexPos = await index.hotelsIndex(allHotels[0]);
+
+      assert.isDefined(allHotels[0]);
+      assert.isDefined(hotelsByManager[0]);
+      assert.isFalse(help.isZeroAddress(allHotels[0]));
+      assert.isFalse(help.isZeroAddress(hotelsByManager[0]));
+
+      assert.equal(await index.hotelsIndex(allHotels[0]), 1);
+      assert.equal(await index.hotelsIndex(allHotels[1]), 2);
+      assert.equal(allHotels[0], hotelsByManager[0]);
+      assert.equal(allHotels[1], hotelsByManager[1]);
+
+      assert.equal(await (await WTHotel.at(allHotels[0])).dataUri(), 'dataUri');
+      assert.equal(await (await WTHotel.at(allHotels[1])).dataUri(), 'dataUri2');
+
+      assert.equal(await (await WTHotel2.at(allHotels[1])).newFunction(), 100);
+      assert.equal(await index.newFunction(), 100);
+
     });
   });
 
