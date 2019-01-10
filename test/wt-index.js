@@ -5,8 +5,8 @@ const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
 const WTIndex = artifacts.require('WTIndex');
 const WTHotel = artifacts.require('Hotel');
 const AbstractWTIndex = artifacts.require('AbstractWTIndex');
-const WTIndex2 = artifacts.require('WTIndex2');
-const WTHotel2 = artifacts.require('Hotel2');
+const WTIndexUpgradeabilityTest = artifacts.require('WTIndexUpgradeabilityTest');
+const HotelUpgradeabilityTest = artifacts.require('HotelUpgradeabilityTest');
 
 contract('WTIndex', (accounts) => {
   const indexOwner = accounts[1];
@@ -37,10 +37,10 @@ contract('WTIndex', (accounts) => {
       await index.registerHotel('dataUri', { from: hotelAccount });
 
       // Deploy new Index
-      const newIndex = await WTIndex2.new({ from: indexOwner });
+      const newIndex = await WTIndexUpgradeabilityTest.new({ from: indexOwner });
       const indexProxy = await AdminUpgradeabilityProxy.at(index.address);
       await indexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
-      index = await WTIndex2.at(indexProxy.address);
+      index = await WTIndexUpgradeabilityTest.at(indexProxy.address);
 
       await index.registerHotel('dataUri2', { from: hotelAccount });
 
@@ -67,7 +67,7 @@ contract('WTIndex', (accounts) => {
       assert.equal(await (await WTHotel.at(allHotels[0])).dataUri(), 'dataUri');
       assert.equal(await (await WTHotel.at(allHotels[1])).dataUri(), 'dataUri2');
 
-      assert.equal(await (await WTHotel2.at(allHotels[1])).newFunction(), 100);
+      assert.equal(await (await HotelUpgradeabilityTest.at(allHotels[1])).newFunction(), 100);
       assert.equal(await index.newFunction(), 100);
     });
   });

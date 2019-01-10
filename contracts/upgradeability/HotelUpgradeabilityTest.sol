@@ -3,19 +3,8 @@ pragma solidity ^0.4.25;
 import "../hotel/AbstractHotel.sol";
 
 
-/**
- * @title Hotel, contract for a Hotel registered in the WT network
- * @dev A contract that represents a hotel in the WT network. Inherits
- * from WT's 'AbstractHotel'.
- */
-contract Hotel2 is AbstractHotel {
+contract HotelUpgradeabilityTest is AbstractHotel {
 
-    /**
-     * @dev Constructor.
-     * @param _manager address of hotel owner
-     * @param _dataUri pointer to hotel data
-     * @param _index originating WTIndex address
-     */
     constructor(address _manager, string _dataUri, address _index) public {
         require(_manager != address(0));
         require(_index != address(0));

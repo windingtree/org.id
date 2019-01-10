@@ -1,13 +1,13 @@
 pragma solidity ^0.4.25;
 
 import "../WTIndex.sol";
-import "./Hotel2.sol";
+import "./HotelUpgradeabilityTest.sol";
 
 
-contract WTIndex2 is WTIndex {
+contract WTIndexUpgradeabilityTest is WTIndex {
 
     function registerHotel(string dataUri) external returns (address) {
-        Hotel2 newHotel = new Hotel2(msg.sender, dataUri, this);
+        HotelUpgradeabilityTest newHotel = new HotelUpgradeabilityTest(msg.sender, dataUri, this);
         hotelsIndex[newHotel] = hotels.length;
         hotels.push(newHotel);
         hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
