@@ -6,7 +6,6 @@ const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
 const WTIndex = artifacts.require('WTIndex');
 const WTHotel = artifacts.require('Hotel');
 const AbstractWTHotel = artifacts.require('AbstractHotel');
-const AbstractBaseContract = artifacts.require('AbstractBaseContract');
 
 abiDecoder.addABI(AbstractWTHotel._json.abi);
 abiDecoder.addABI(WTIndex._json.abi);
