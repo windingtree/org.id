@@ -11,7 +11,7 @@ import "./hotel/Hotel.sol";
  */
 contract WTHotelIndex is AbstractWTHotelIndex {
 
-    bytes32 public contractType = bytes32("wthotelindex");
+    bytes32 public contractType = bytes32("WTHotelIndex");
 
     // Array of addresses of `Hotel` contracts
     address[] public hotels;
