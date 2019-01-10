@@ -21,7 +21,7 @@ contract('WTHotelIndex', (accounts) => {
   describe('version', () => {
     it('should have the correct version and contract type', async () => {
       assert.equal(help.bytes32ToString(await index.version()), help.version);
-      assert.equal(help.bytes32ToString(await index.contractType()), 'wthotelindex');
+      assert.equal(help.bytes32ToString(await index.contractType()), 'WTHotelIndex');
     });
   });
 
