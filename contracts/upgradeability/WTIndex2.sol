@@ -16,7 +16,7 @@ contract WTIndex2 is WTIndex {
         return newHotel;
     }
 
-    function newFunction() public view returns(uint) {
+    function newFunction() public pure returns(uint) {
         return 100;
     }
 

@@ -26,7 +26,7 @@ contract Hotel2 is AbstractHotel {
         created = block.number;
     }
 
-    function newFunction() public view returns(uint) {
+    function newFunction() public pure returns(uint) {
         return 100;
     }
 
