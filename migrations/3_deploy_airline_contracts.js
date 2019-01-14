@@ -1,4 +1,4 @@
-const WTHotelIndex = artifacts.require('WTHotelIndex');
+const WTAirlineIndex = artifacts.require('WTAirlineIndex');
 
 module.exports = function (deployer, network, accounts) {
   if (network === 'mainnet' || network === 'ropsten') {
@@ -9,9 +9,9 @@ module.exports = function (deployer, network, accounts) {
       ? '0xeb9951021698b42e4399f9cbb6267aa35f82d59d'
       : '0xb6e225194a1c892770c43d4b529841c99b3da1d7';
 
-    return deployer.deploy(WTHotelIndex).then(function (wtHotelIndexContract) {
-      console.log('WTHotelIndex address:', wtHotelIndexContract.address);
-      return wtHotelIndexContract.setLifToken(lifTokenAddress);
+    return deployer.deploy(WTAirlineIndex).then(function (wtAirlineIndexContract) {
+      console.log('WTAirlineIndex address:', wtAirlineIndexContract.address);
+      return wtAirlineIndexContract.setLifToken(lifTokenAddress);
     }).then(function (tx) {
       console.log('LifToken set on tx:', tx.tx);
       console.log('LifToken address set to:', lifTokenAddress);

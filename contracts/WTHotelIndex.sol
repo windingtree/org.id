@@ -1,17 +1,17 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractWTIndex.sol";
+import "./AbstractWTHotelIndex.sol";
 import "./hotel/Hotel.sol";
 
 
 /**
- * @title WTIndex, registry of all hotels registered on WT
+ * @title WTHotelIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
  * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
  */
-contract WTIndex is AbstractWTIndex {
+contract WTHotelIndex is AbstractWTHotelIndex {
 
-    bytes32 public contractType = bytes32("wtindex");
+    bytes32 public contractType = bytes32("WTHotelIndex");
 
     // Array of addresses of `Hotel` contracts
     address[] public hotels;
@@ -47,7 +47,7 @@ contract WTIndex is AbstractWTIndex {
     event HotelTransferred(address hotel, address previousManager, address newManager);
 
     /**
-     * @dev Constructor. Creates the `WTIndex` contract
+     * @dev Constructor. Creates the `WTHotelIndex` contract
      */
     constructor() public {
         hotels.length++;

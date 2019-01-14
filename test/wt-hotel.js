@@ -2,27 +2,27 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const abiDecoder = require('abi-decoder');
 
-const WTIndex = artifacts.require('WTIndex.sol');
+const WTHotelIndex = artifacts.require('WTHotelIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 const AbstractWTHotel = artifacts.require('AbstractHotel.sol');
 const AbstractBaseContract = artifacts.require('AbstractBaseContract.sol');
 
 abiDecoder.addABI(AbstractWTHotel._json.abi);
-abiDecoder.addABI(WTIndex._json.abi);
+abiDecoder.addABI(WTHotelIndex._json.abi);
 
 contract('Hotel', (accounts) => {
   const hotelUri = 'bzz://something';
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   let hotelAddress = help.zeroAddress;
-  let wtIndex;
+  let wTHotelIndex;
   let wtHotel;
 
   // Create and register a hotel
   beforeEach(async () => {
-    wtIndex = await WTIndex.new();
-    await wtIndex.registerHotel(hotelUri, { from: hotelAccount });
-    let address = await wtIndex.getHotelsByManager(hotelAccount);
+    wTHotelIndex = await WTHotelIndex.new();
+    await wTHotelIndex.registerHotel(hotelUri, { from: hotelAccount });
+    let address = await wTHotelIndex.getHotelsByManager(hotelAccount);
     hotelAddress = address[0];
     wtHotel = await WTHotel.at(address[0]);
     wtHotel.web3Instance = new web3.eth.Contract(wtHotel.abi, wtHotel.address);
@@ -36,13 +36,13 @@ contract('Hotel', (accounts) => {
       assert.isAtMost(info.created, blockNumber);
       assert.equal(info.manager, hotelAccount);
       assert.equal(info.dataUri, hotelUri);
-      assert.equal(info.index, wtIndex.address);
+      assert.equal(info.index, wTHotelIndex.address);
       // There's an empty address as an initial value, that's why we compare
-      assert.equal((await wtIndex.getHotels()).length, 2);
+      assert.equal((await wTHotelIndex.getHotels()).length, 2);
     });
 
     it('should properly setup manager and index references', async () => {
-      assert.equal(wtIndex.address, await wtHotel.index());
+      assert.equal(wTHotelIndex.address, await wtHotel.index());
       assert.equal(hotelAccount, await wtHotel.manager());
     });
 
@@ -54,7 +54,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTHotel.new(help.zeroAddress, 'goo.gl', wtIndex.address);
+        await WTHotel.new(help.zeroAddress, 'goo.gl', wTHotelIndex.address);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -77,7 +77,7 @@ contract('Hotel', (accounts) => {
     it('should not update hotel to an empty dataUri', async () => {
       try {
         const data = await wtHotel.web3Instance.methods.editInfo('').encodeABI();
-        await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
+        await wTHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -86,7 +86,7 @@ contract('Hotel', (accounts) => {
 
     it('should update hotel\'s dataUri', async () => {
       const data = wtHotel.web3Instance.methods.editInfo(newDataUri).encodeABI();
-      await wtIndex.callHotel(hotelAddress, data, { from: hotelAccount });
+      await wTHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
       const info = await help.getHotelInfo(wtHotel);
       assert.equal(info.dataUri, newDataUri);
     });
@@ -94,7 +94,7 @@ contract('Hotel', (accounts) => {
     it('should throw if not executed by hotel owner', async () => {
       try {
         const data = wtHotel.web3Instance.methods.editInfo(newDataUri).encodeABI();
-        await wtIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
+        await wTHotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -123,7 +123,7 @@ contract('Hotel', (accounts) => {
 
     it('should change the hotel manager', async () => {
       assert(await wtHotel.manager(), hotelAccount);
-      await wtIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      await wTHotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
       assert(await wtHotel.manager(), nonOwnerAccount);
     });
   });

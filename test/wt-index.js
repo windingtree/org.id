@@ -1,27 +1,27 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const WTIndex = artifacts.require('./WTIndex.sol');
-const AbstractWTIndex = artifacts.require('./AbstractWTIndex.sol');
+const WTHotelIndex = artifacts.require('./WTHotelIndex.sol');
+const AbstractWTHotelIndex = artifacts.require('./AbstractWTHotelIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 
-contract('WTIndex', (accounts) => {
+contract('WTHotelIndex', (accounts) => {
   const indexOwner = accounts[1];
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
 
   let index;
 
-  // Deploy new index but use AbstractWTIndex for contract interaction
+  // Deploy new index but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
-    index = await WTIndex.new({ from: indexOwner });
-    index = await AbstractWTIndex.at(index.address);
+    index = await WTHotelIndex.new({ from: indexOwner });
+    index = await AbstractWTHotelIndex.at(index.address);
   });
 
   describe('version', () => {
     it('should have the correct version and contract type', async () => {
       assert.equal(help.bytes32ToString(await index.version()), help.version);
-      assert.equal(help.bytes32ToString(await index.contractType()), 'wtindex');
+      assert.equal(help.bytes32ToString(await index.contractType()), 'WTHotelIndex');
     });
   });
 
@@ -29,7 +29,7 @@ contract('WTIndex', (accounts) => {
     const tokenAddress = accounts[5];
 
     it('should set the LifToken address', async () => {
-      await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
+      await (await WTHotelIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
       const setValue = await index.LifToken();
 
       assert.equal(setValue, tokenAddress);
@@ -37,7 +37,7 @@ contract('WTIndex', (accounts) => {
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await WTHotelIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
