@@ -1,22 +1,22 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractHotel.sol";
+import "./AbstractAirline.sol";
 
 
 /**
- * @title Hotel, contract for a Hotel registered in the WT network
- * @dev A contract that represents a hotel in the WT network. Inherits
- * from WT's 'AbstractHotel'.
+ * @title Airline, contract for an Airline registered in the WT network
+ * @dev A contract that represents an airline in the WT network. Inherits
+ * from WT's 'AbstractAirline'.
  */
-contract Hotel is AbstractHotel {
+contract Airline is AbstractAirline {
 
-    bytes32 public contractType = bytes32("hotel");
+    bytes32 public contractType = bytes32("airline");
 
     /**
      * @dev Constructor.
-     * @param _manager address of hotel owner
-     * @param _dataUri pointer to hotel data
-     * @param _index originating WTHotelIndex address
+     * @param _manager address of airline owner
+     * @param _dataUri pointer to airline data
+     * @param _index originating WTAirlineIndex address
      */
     constructor(address _manager, string _dataUri, address _index) public {
         require(_manager != address(0));

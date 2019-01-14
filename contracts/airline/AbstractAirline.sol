@@ -4,16 +4,16 @@ import "../AbstractBaseContract.sol";
 
 
 /**
- * @title AbstractHotel
- * @dev Interface of Hotel contract, inherits from
+ * @title AbstractAirline
+ * @dev Interface of Airline contract, inherits from
  * WT's 'AbstractBaseContract'.
  */
-contract AbstractHotel is AbstractBaseContract {
+contract AbstractAirline is AbstractBaseContract {
 
-    // Who owns this Hotel and can manage it.
+    // Who owns this Airline and can manage it.
     address public manager;
 
-    // Arbitrary locator of the off-chain stored hotel data
+    // Arbitrary locator of the off-chain stored airline data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
     // This is intentionally generic.
     string public dataUri;
@@ -21,12 +21,12 @@ contract AbstractHotel is AbstractBaseContract {
     // Number of block when the Hotel was created
     uint public created;
 
-    // WTHotelIndex address
+    // WTAirlineIndex address
     address public index;
 
     /**
      * Allows calling such methods only when msg.sender is equal
-     * to previously set index propert.y
+     * to previously set index property.
      */
     modifier onlyFromIndex() {
         require(msg.sender == index);
@@ -34,7 +34,7 @@ contract AbstractHotel is AbstractBaseContract {
     }
 
     /**
-     * @dev `editInfo` Allows owner to change hotel's dataUri.
+     * @dev `editInfo` Allows owner to change airline's dataUri.
      * @param  _dataUri New dataUri pointer of this hotel
      */
     function editInfo(string _dataUri) public onlyFromIndex {
@@ -42,14 +42,14 @@ contract AbstractHotel is AbstractBaseContract {
     }
 
     /**
-     * @dev `destroy` allows the owner to delete the Hotel
+     * @dev `destroy` allows the owner to delete the airline
      */
     function destroy() public onlyFromIndex {
         _destroyImpl();
     }
 
     /**
-     * @dev Allows owner to change hotel manager.
+     * @dev Allows owner to change airline manager.
      * @param _newManager New manager's address
      */
     function changeManager(address _newManager) public onlyFromIndex {

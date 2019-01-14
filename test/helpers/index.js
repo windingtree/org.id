@@ -1,4 +1,5 @@
 const hotel = require('./hotel');
+const airline = require('./airline');
 const misc = require('./misc');
 const packageFile = require('../../package');
 
@@ -9,6 +10,10 @@ module.exports = {
   // Hotel
   createHotel: hotel.createHotel,
   getHotelInfo: hotel.getHotelInfo,
+
+  // Airline
+  createAirline: airline.createAirline,
+  getAirlineInfo: airline.getAirlineInfo,
 
   // Misc
   zeroAddress: misc.zeroAddress,

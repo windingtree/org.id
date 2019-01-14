@@ -1,13 +1,13 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.2.4",
+  "version": "0.3.0",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "scripts/test.sh",
-    "lint": "eslint test",
+    "lint": "eslint test; solhint 'contracts/**/*.sol'",
     "testrpc": "./node_modules/.bin/ganache-cli",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
@@ -34,33 +34,35 @@
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "abi-decoder": "^1.1.0",
+    "abi-decoder": "^1.2.0",
     "babel-polyfill": "^6.23.0",
-    "chai": "^4.1.2",
+    "chai": "^4.2.0",
     "ethereumjs-abi": "^0.6.5",
     "ethereumjs-util": "^5.1.5",
-    "moment": "^2.21.0",
-    "openzeppelin-solidity": "^1.11.0",
+    "moment": "^2.23.0",
+    "openzeppelin-solidity": "^1.12.0",
+    "solc": "^0.4.25",
+    "solhint": "^1.4.1",
     "truffle-hdwallet-provider": "0.0.5",
-    "web3": "^1.0.0-beta.33"
+    "web3": "^1.0.0-beta.37"
   },
   "devDependencies": {
     "coveralls": "^3.0.2",
-    "eslint": "^5.1.0",
+    "eslint": "^5.10.0",
     "eslint-config-standard": "^11.0.0",
-    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
-    "ganache-cli": "^6.1.6",
-    "lodash": "^4.17.5",
+    "ganache-cli": "^6.2.4",
+    "lodash": "^4.17.11",
     "rimraf": "^2.6.2",
-    "solidity-coverage": "^0.5.5",
+    "solidity-coverage": "^0.5.11",
     "solmd": "^0.3.0",
-    "truffle": "^4.1.13",
+    "truffle": "^5.0.0",
     "truffle-contract": "^3.0.6",
-    "truffle-flattener": "^1.2.5",
-    "web3-eth-abi": "^1.0.0-beta.34"
+    "truffle-flattener": "^1.2.10",
+    "web3-eth-abi": "^1.0.0-beta.37"
   },
   "engines": {
     "node": ">=10.3.0"

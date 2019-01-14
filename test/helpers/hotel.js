@@ -8,16 +8,16 @@ const {
 
 /**
  * Async method that creates a new empty Hotel.
- * @param  {Instance} wtIndex            WTIndex contract instance
+ * @param  {Instance} wtHotelIndex            WTHotelIndex contract instance
  * @param  {Address} hotelAccount        address of the hotel's account
  * @return {Instance} Hotel
  * @example
  *   const wtHotel = await createHotel(accounts[2]);
  *   wtHotel.callHotel(..etc..)
  */
-async function createHotel (wtIndex, hotelAccount) {
-  await wtIndex.registerHotel('WT Hotel', 'WT Test Hotel', { from: hotelAccount });
-  let wtHotelAddress = await wtIndex.getHotelsByManager(hotelAccount);
+async function createHotel (wtHotelIndex, hotelAccount) {
+  await wtHotelIndex.registerHotel('WT Hotel', 'WT Test Hotel', { from: hotelAccount });
+  let wtHotelAddress = await wtHotelIndex.getHotelsByManager(hotelAccount);
   let wtHotel = await WTHotelInterface.at(wtHotelAddress[0]);
 
   return wtHotel;

@@ -1,27 +1,27 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const WTIndex = artifacts.require('./WTIndex.sol');
-const AbstractWTIndex = artifacts.require('./AbstractWTIndex.sol');
+const WTHotelIndex = artifacts.require('./WTHotelIndex.sol');
+const AbstractWTHotelIndex = artifacts.require('./AbstractWTHotelIndex.sol');
 const WTHotel = artifacts.require('Hotel.sol');
 
-contract('WTIndex', (accounts) => {
+contract('WTHotelIndex', (accounts) => {
   const indexOwner = accounts[1];
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
 
   let index;
 
-  // Deploy new index but use AbstractWTIndex for contract interaction
+  // Deploy new index but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
-    index = await WTIndex.new({ from: indexOwner });
-    index = await AbstractWTIndex.at(index.address);
+    index = await WTHotelIndex.new({ from: indexOwner });
+    index = await AbstractWTHotelIndex.at(index.address);
   });
 
   describe('version', () => {
     it('should have the correct version and contract type', async () => {
       assert.equal(help.bytes32ToString(await index.version()), help.version);
-      assert.equal(help.bytes32ToString(await index.contractType()), 'wtindex');
+      assert.equal(help.bytes32ToString(await index.contractType()), 'WTHotelIndex');
     });
   });
 
@@ -29,7 +29,7 @@ contract('WTIndex', (accounts) => {
     const tokenAddress = accounts[5];
 
     it('should set the LifToken address', async () => {
-      await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
+      await (await WTHotelIndex.at(index.address)).setLifToken(tokenAddress, { from: indexOwner });
       const setValue = await index.LifToken();
 
       assert.equal(setValue, tokenAddress);
@@ -37,7 +37,7 @@ contract('WTIndex', (accounts) => {
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await WTHotelIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -64,6 +64,14 @@ contract('WTIndex', (accounts) => {
         await index.registerHotel('dataUri', { from: hotelAccount });
         let address = await index.getHotelsByManager(hotelAccount);
         assert.equal(hotelAddress, address[0]);
+      });
+
+      it('should return new hotel address', async () => {
+        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
+        const hotelAddress = help.determineAddress(index.address, indexNonce);
+        // This does not actually create the hotel... but it does spit out the return value
+        const result = await index.registerHotel.call('dataUri', { from: hotelAccount });
+        assert.equal(result, hotelAddress);
       });
 
       it('should add a hotel to the registry', async () => {
@@ -126,7 +134,7 @@ contract('WTIndex', (accounts) => {
         assert.equal(allHotels.length, 0);
         assert.isTrue(hotelDeleted);
         const code = await help.promisify(cb => web3.eth.getCode(hotel, cb));
-        assert.equal(code, '0x0');
+        assert.equal(code, '0x');
       });
 
       it('should throw if the hotel is not registered', async () => {
@@ -170,17 +178,18 @@ contract('WTIndex', (accounts) => {
         await index.registerHotel('dataUri', { from: hotelAccount });
         let address = await index.getHotelsByManager(hotelAccount);
         hotelAddress = address[0];
-        wtHotel = WTHotel.at(address[0]);
+        wtHotel = await WTHotel.at(address[0]);
+        wtHotel.web3Instance = new web3.eth.Contract(wtHotel.abi, wtHotel.address);
       });
 
       it('should proceed when calling as an owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newDataUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newDataUri').encodeABI();
         await index.callHotel(hotelAddress, data, { from: hotelAccount });
-        assert.equal('newDataUri', await wtHotel.contract.dataUri());
+        assert.equal('newDataUri', await wtHotel.dataUri());
       });
 
       it('should throw if calling as a non-owner', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           await index.callHotel(hotelAddress, data, { from: nonOwnerAccount });
           throw new Error('should not have been called');
@@ -190,7 +199,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if a hotel has zero address', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // Mocking address with existing contract
           await index.callHotel(help.zeroAddress, data, { from: hotelAccount });
@@ -201,7 +210,7 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if hotel does not exist', async () => {
-        const data = wtHotel.contract.editInfo.getData('newUri');
+        const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // mocking address with existing account
           await index.callHotel(nonOwnerAccount, data, { from: hotelAccount });
