@@ -1,19 +1,19 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractHotel.sol";
+import "./AbstractAirline.sol";
 
 
 /**
- * @title Hotel, contract for a Hotel registered in the WT network
- * @dev A contract that represents a hotel in the WT network.
+ * @title Airline, contract for an Airline registered in the WT network
+ * @dev A contract that represents an airline in the WT network.
  */
-contract Hotel is AbstractHotel {
+contract Airline is AbstractAirline {
 
     /**
      * @dev Constructor.
-     * @param _manager address of hotel owner
-     * @param _dataUri pointer to hotel data
-     * @param _index originating WTHotelIndex address
+     * @param _manager address of airline owner
+     * @param _dataUri pointer to airline data
+     * @param _index originating WTAirlineIndex address
      */
     constructor(address _manager, string _dataUri, address _index) public {
         require(_manager != address(0));
@@ -38,5 +38,4 @@ contract Hotel is AbstractHotel {
         require(_newManager != address(0));
         manager = _newManager;
     }
-
 }

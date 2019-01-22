@@ -7,7 +7,7 @@ const Unit_InterfaceContract = require('./build/contracts/Unit_Interface.json');
 const UnitContract = require('./build/contracts/Unit.json');
 const UnitType_InterfaceContract = require('./build/contracts/UnitType_Interface.json');
 const UnitTypeContract = require('./build/contracts/UnitType.json');
-const WTIndexContract = require('./build/contracts/WTIndex.json');
+const WTHotelIndexContract = require('./build/contracts/WTHotelIndex.json');
 
 module.exports = {
     Base_InterfaceContract: Base_InterfaceContract,
@@ -19,5 +19,5 @@ module.exports = {
     UnitContract: UnitContract,
     UnitType_InterfaceContract: UnitType_InterfaceContract,
     UnitTypeContract: UnitTypeContract,
-    WTIndexContract: WTIndexContract,
+    WTHotelIndexContract: WTHotelIndexContract,
 };

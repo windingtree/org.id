@@ -1,16 +1,16 @@
 pragma solidity ^0.4.25;
 
 import "zos-lib/contracts/Initializable.sol";
-import "./AbstractWTIndex.sol";
+import "./AbstractWTHotelIndex.sol";
 import "./hotel/Hotel.sol";
 
 
 /**
- * @title WTIndex, registry of all hotels registered on WT
+ * @title WTHotelIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
+ * address.
  */
-contract WTIndex is Initializable, AbstractWTIndex {
+contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
 
     // Array of addresses of `Hotel` contracts
     address[] public hotels;

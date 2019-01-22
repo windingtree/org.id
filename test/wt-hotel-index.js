@@ -2,65 +2,58 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
 const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const WTIndex = artifacts.require('WTIndex');
+const WTHotelIndex = artifacts.require('WTHotelIndex');
 const WTHotel = artifacts.require('Hotel');
-const AbstractWTIndex = artifacts.require('AbstractWTIndex');
-const WTIndexUpgradeabilityTest = artifacts.require('WTIndexUpgradeabilityTest');
+const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
+const WTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
 const HotelUpgradeabilityTest = artifacts.require('HotelUpgradeabilityTest');
 
-contract('WTIndex', (accounts) => {
-  const indexOwner = accounts[1];
+contract('WTHotelIndex', (accounts) => {
+  const hotelIndexOwner = accounts[1];
   const proxyOwner = accounts[2];
   const hotelAccount = accounts[3];
   const nonOwnerAccount = accounts[4];
 
-  let index;
+  let hotelIndex;
 
-  // Deploy new index but use AbstractWTIndex for contract interaction
+  // Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
-    const indexDeployed = await WTIndex.new({ from: indexOwner });
-    indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
-    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
-    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: proxyOwner });
-    index = await AbstractWTIndex.at(indexProxy.address);
-  });
-
-  describe('version', () => {
-    it.skip('should have the correct version and contract type', async () => {
-      assert.equal(help.bytes32ToString(await index.version()), help.version);
-      assert.equal(help.bytes32ToString(await index.contractType()), 'wtindex');
-    });
+    const hotelIndexDeployed = await WTHotelIndex.new({ from: hotelIndexOwner });
+    hotelIndexDeployed.web3Instance = new web3.eth.Contract(hotelIndexDeployed.abi, hotelIndexDeployed.address);
+    const initializeData = hotelIndexDeployed.web3Instance.methods.initialize(hotelIndexOwner).encodeABI();
+    const hotelIndexProxy = await AdminUpgradeabilityProxy.new(hotelIndexDeployed.address, initializeData, { from: proxyOwner });
+    hotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
   });
 
   describe('upgradeability', () => {
-    it('should upgrade WTIndex and have new functions in Index and Hotel contracts', async () => {
-      await index.registerHotel('dataUri', { from: hotelAccount });
+    it('should upgrade WTHotelIndex and have new functions in Index and Hotel contracts', async () => {
+      await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
 
       // Deploy new Index
-      const newIndex = await WTIndexUpgradeabilityTest.new({ from: indexOwner });
-      const indexProxy = await AdminUpgradeabilityProxy.at(index.address);
-      await indexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
-      index = await WTIndexUpgradeabilityTest.at(indexProxy.address);
+      const newIndex = await WTHotelIndexUpgradeabilityTest.new({ from: hotelIndexOwner });
+      const hotelIndexProxy = await AdminUpgradeabilityProxy.at(hotelIndex.address);
+      await hotelIndexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
+      hotelIndex = await WTHotelIndexUpgradeabilityTest.at(hotelIndexProxy.address);
 
-      await index.registerHotel('dataUri2', { from: hotelAccount });
+      await hotelIndex.registerHotel('dataUri2', { from: hotelAccount });
 
-      const length = await index.getHotelsLength();
+      const length = await hotelIndex.getHotelsLength();
 
       const allHotels = await help.jsArrayFromSolidityArray(
-        index.hotels,
+        hotelIndex.hotels,
         length,
         help.isZeroAddress
       );
 
-      const hotelsByManager = await index.getHotelsByManager(hotelAccount);
+      const hotelsByManager = await hotelIndex.getHotelsByManager(hotelAccount);
 
       assert.isDefined(allHotels[0]);
       assert.isDefined(hotelsByManager[0]);
       assert.isFalse(help.isZeroAddress(allHotels[0]));
       assert.isFalse(help.isZeroAddress(hotelsByManager[0]));
 
-      assert.equal(await index.hotelsIndex(allHotels[0]), 1);
-      assert.equal(await index.hotelsIndex(allHotels[1]), 2);
+      assert.equal(await hotelIndex.hotelsIndex(allHotels[0]), 1);
+      assert.equal(await hotelIndex.hotelsIndex(allHotels[1]), 2);
       assert.equal(allHotels[0], hotelsByManager[0]);
       assert.equal(allHotels[1], hotelsByManager[1]);
 
@@ -68,7 +61,7 @@ contract('WTIndex', (accounts) => {
       assert.equal(await (await WTHotel.at(allHotels[1])).dataUri(), 'dataUri2');
 
       assert.equal(await (await HotelUpgradeabilityTest.at(allHotels[1])).newFunction(), 100);
-      assert.equal(await index.newFunction(), 100);
+      assert.equal(await hotelIndex.newFunction(), 100);
     });
   });
 
@@ -76,16 +69,16 @@ contract('WTIndex', (accounts) => {
     const tokenAddress = accounts[5];
 
     it('should set the LifToken address', async () => {
-      const wtIndex = await WTIndex.at(index.address);
-      await wtIndex.setLifToken(tokenAddress, { from: indexOwner });
-      const setValue = await wtIndex.LifToken();
+      const wtHotelIndex = await WTHotelIndex.at(hotelIndex.address);
+      await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });
+      const setValue = await wtHotelIndex.LifToken();
 
       assert.equal(setValue, tokenAddress);
     });
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await (await WTIndex.at(index.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await WTHotelIndex.at(hotelIndex.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -99,7 +92,7 @@ contract('WTIndex', (accounts) => {
 
       it('should not register hotel with empty dataUri', async () => {
         try {
-          await index.registerHotel('', { from: hotelAccount });
+          await hotelIndex.registerHotel('', { from: hotelAccount });
           throw new Error('should not have been called');
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -107,33 +100,33 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should put hotel where we expect it to be', async () => {
-        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
-        const hotelAddress = help.determineAddress(index.address, indexNonce);
-        await index.registerHotel('dataUri', { from: hotelAccount });
-        let address = await index.getHotelsByManager(hotelAccount);
+        const hotelIndexNonce = await help.promisify(cb => web3.eth.getTransactionCount(hotelIndex.address, cb));
+        const hotelAddress = help.determineAddress(hotelIndex.address, hotelIndexNonce);
+        await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
+        let address = await hotelIndex.getHotelsByManager(hotelAccount);
         assert.equal(hotelAddress, address[0]);
       });
 
       it('should return new hotel address', async () => {
-        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
-        const hotelAddress = help.determineAddress(index.address, indexNonce);
+        const hotelIndexNonce = await help.promisify(cb => web3.eth.getTransactionCount(hotelIndex.address, cb));
+        const hotelAddress = help.determineAddress(hotelIndex.address, hotelIndexNonce);
         // This does not actually create the hotel... but it does spit out the return value
-        const result = await index.registerHotel.call('dataUri', { from: hotelAccount });
+        const result = await hotelIndex.registerHotel.call('dataUri', { from: hotelAccount });
         assert.equal(result, hotelAddress);
       });
 
       it('should add a hotel to the registry', async () => {
-        await index.registerHotel('dataUri', { from: hotelAccount });
-        const length = await index.getHotelsLength();
+        await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
+        const length = await hotelIndex.getHotelsLength();
 
         const allHotels = await help.jsArrayFromSolidityArray(
-          index.hotels,
+          hotelIndex.hotels,
           length,
           help.isZeroAddress
         );
 
-        const hotelsByManager = await index.getHotelsByManager(hotelAccount);
-        const actualIndexPos = await index.hotelsIndex(allHotels[0]);
+        const hotelsByManager = await hotelIndex.getHotelsByManager(hotelAccount);
+        const actualIndexPos = await hotelIndex.hotelsIndex(allHotels[0]);
 
         const hotel = allHotels[0];
         const hotelByManager = hotelsByManager[0];
@@ -155,11 +148,11 @@ contract('WTIndex', (accounts) => {
       const expectedIndexPos = 0; // Position of the hotel in the managers array
 
       it('should remove a hotel', async () => {
-        await index.registerHotel('dataUri', { from: hotelAccount });
-        const length = await index.getHotelsLength();
+        await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
+        const length = await hotelIndex.getHotelsLength();
 
         let allHotels = await help.jsArrayFromSolidityArray(
-          index.hotels,
+          hotelIndex.hotels,
           length,
           help.isZeroAddress
         );
@@ -170,13 +163,13 @@ contract('WTIndex', (accounts) => {
         assert.isFalse(help.isZeroAddress(hotel));
 
         // Remove and verify non-existence of hotel
-        await index.deleteHotel(hotel, { from: hotelAccount });
+        await hotelIndex.deleteHotel(hotel, { from: hotelAccount });
         allHotels = await help.jsArrayFromSolidityArray(
-          index.hotels,
+          hotelIndex.hotels,
           length,
           help.isZeroAddress
         );
-        const hotelsByManager = await index.getHotelsByManager(hotelAccount);
+        const hotelsByManager = await hotelIndex.getHotelsByManager(hotelAccount);
         const hotelDeleted = help.isZeroAddress(hotelsByManager[expectedIndexPos]);
 
         assert.equal(allHotels.length, 0);
@@ -188,7 +181,7 @@ contract('WTIndex', (accounts) => {
       it('should throw if the hotel is not registered', async () => {
         try {
           // Mocking address with existing contract
-          await index.deleteHotel(nonOwnerAccount, { from: hotelAccount });
+          await hotelIndex.deleteHotel(nonOwnerAccount, { from: hotelAccount });
           assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -198,7 +191,7 @@ contract('WTIndex', (accounts) => {
       it('should throw if hotel has zero address', async () => {
         try {
           // Mocking address with existing contract
-          await index.deleteHotel(help.zeroAddress, { from: hotelAccount });
+          await hotelIndex.deleteHotel(help.zeroAddress, { from: hotelAccount });
           assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -206,12 +199,12 @@ contract('WTIndex', (accounts) => {
       });
 
       it('should throw if non-owner removes', async () => {
-        await index.registerHotel('name', { from: hotelAccount });
-        const hotelsByManager = await index.getHotelsByManager(hotelAccount);
+        await hotelIndex.registerHotel('name', { from: hotelAccount });
+        const hotelsByManager = await hotelIndex.getHotelsByManager(hotelAccount);
         const hotel = hotelsByManager[0];
 
         try {
-          await index.deleteHotel(hotel, { from: nonOwnerAccount });
+          await hotelIndex.deleteHotel(hotel, { from: nonOwnerAccount });
           assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -223,8 +216,8 @@ contract('WTIndex', (accounts) => {
       let wtHotel, hotelAddress;
 
       beforeEach(async () => {
-        await index.registerHotel('dataUri', { from: hotelAccount });
-        let address = await index.getHotelsByManager(hotelAccount);
+        await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
+        let address = await hotelIndex.getHotelsByManager(hotelAccount);
         hotelAddress = address[0];
         wtHotel = await WTHotel.at(address[0]);
         wtHotel.web3Instance = new web3.eth.Contract(wtHotel.abi, wtHotel.address);
@@ -232,14 +225,14 @@ contract('WTIndex', (accounts) => {
 
       it('should proceed when calling as an owner', async () => {
         const data = wtHotel.web3Instance.methods.editInfo('newDataUri').encodeABI();
-        await index.callHotel(hotelAddress, data, { from: hotelAccount });
+        await hotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
         assert.equal('newDataUri', await wtHotel.dataUri());
       });
 
       it('should throw if calling as a non-owner', async () => {
         const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
-          await index.callHotel(hotelAddress, data, { from: nonOwnerAccount });
+          await hotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
           throw new Error('should not have been called');
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -250,7 +243,7 @@ contract('WTIndex', (accounts) => {
         const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // Mocking address with existing contract
-          await index.callHotel(help.zeroAddress, data, { from: hotelAccount });
+          await hotelIndex.callHotel(help.zeroAddress, data, { from: hotelAccount });
           assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -261,7 +254,7 @@ contract('WTIndex', (accounts) => {
         const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           // mocking address with existing account
-          await index.callHotel(nonOwnerAccount, data, { from: hotelAccount });
+          await hotelIndex.callHotel(nonOwnerAccount, data, { from: hotelAccount });
           throw new Error('should not have been called');
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
@@ -274,14 +267,14 @@ contract('WTIndex', (accounts) => {
     let hotelAddress;
 
     beforeEach(async () => {
-      await index.registerHotel('dataUri', { from: hotelAccount });
-      let address = await index.getHotelsByManager(hotelAccount);
+      await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
+      let address = await hotelIndex.getHotelsByManager(hotelAccount);
       hotelAddress = address[0];
     });
 
     it('should throw if transferring to a zero address', async () => {
       try {
-        await index.transferHotel(hotelAddress, help.zeroAddress, { from: hotelAccount });
+        await hotelIndex.transferHotel(hotelAddress, help.zeroAddress, { from: hotelAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -290,7 +283,7 @@ contract('WTIndex', (accounts) => {
 
     it('should throw if transferring a non-existing hotel', async () => {
       try {
-        await index.transferHotel(index.address, nonOwnerAccount, { from: hotelAccount });
+        await hotelIndex.transferHotel(hotelIndex.address, nonOwnerAccount, { from: hotelAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -299,7 +292,7 @@ contract('WTIndex', (accounts) => {
 
     it('should throw if not executed from hotel owner address', async () => {
       try {
-        await index.transferHotel(hotelAddress, nonOwnerAccount, { from: nonOwnerAccount });
+        await hotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -307,19 +300,19 @@ contract('WTIndex', (accounts) => {
     });
 
     it('should change the hotel manager', async () => {
-      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(hotelAccount)).length, 1);
-      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(nonOwnerAccount)).length, 0);
-      const originalLength = (await index.getHotelsLength()).toNumber();
-      const originalHotels = await index.getHotels();
-      await index.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
-      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(hotelAccount)).length, 0);
-      assert.equal(help.filterZeroAddresses(await index.getHotelsByManager(nonOwnerAccount)).length, 1);
-      assert.equal((await index.getHotelsLength()).toNumber(), originalLength);
-      assert.deepEqual(await index.getHotels(), originalHotels);
+      assert.equal(help.filterZeroAddresses(await hotelIndex.getHotelsByManager(hotelAccount)).length, 1);
+      assert.equal(help.filterZeroAddresses(await hotelIndex.getHotelsByManager(nonOwnerAccount)).length, 0);
+      const originalLength = (await hotelIndex.getHotelsLength()).toNumber();
+      const originalHotels = await hotelIndex.getHotels();
+      await hotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      assert.equal(help.filterZeroAddresses(await hotelIndex.getHotelsByManager(hotelAccount)).length, 0);
+      assert.equal(help.filterZeroAddresses(await hotelIndex.getHotelsByManager(nonOwnerAccount)).length, 1);
+      assert.equal((await hotelIndex.getHotelsLength()).toNumber(), originalLength);
+      assert.deepEqual(await hotelIndex.getHotels(), originalHotels);
     });
 
     it('should fire an event', async () => {
-      const result = await index.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
+      const result = await hotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
       assert.equal(result.logs.length, 1);
       assert.equal(result.logs[0].event, 'HotelTransferred');
       assert.equal(result.logs[0].args.previousManager, hotelAccount);
@@ -331,19 +324,19 @@ contract('WTIndex', (accounts) => {
     describe('getHotelsLength', () => {
       it('should count hotels properly', async () => {
         // length is a bignumber
-        let length = await index.getHotelsLength();
-        // We start with empty address on the zero index
+        let length = await hotelIndex.getHotelsLength();
+        // We start with empty address on the zero hotelIndex
         assert.equal(length.toNumber(), 1);
-        await index.registerHotel('aaa', { from: hotelAccount });
-        length = await index.getHotelsLength();
+        await hotelIndex.registerHotel('aaa', { from: hotelAccount });
+        length = await hotelIndex.getHotelsLength();
         assert.equal(length.toNumber(), 2);
-        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
-        const expectedHotelAddress = help.determineAddress(index.address, indexNonce);
-        await index.registerHotel('bbb', { from: hotelAccount });
-        length = await index.getHotelsLength();
+        const hotelIndexNonce = await help.promisify(cb => web3.eth.getTransactionCount(hotelIndex.address, cb));
+        const expectedHotelAddress = help.determineAddress(hotelIndex.address, hotelIndexNonce);
+        await hotelIndex.registerHotel('bbb', { from: hotelAccount });
+        length = await hotelIndex.getHotelsLength();
         assert.equal(length.toNumber(), 3);
-        await index.deleteHotel(expectedHotelAddress, { from: hotelAccount });
-        length = await index.getHotelsLength();
+        await hotelIndex.deleteHotel(expectedHotelAddress, { from: hotelAccount });
+        length = await hotelIndex.getHotelsLength();
         // length counts zero addresses
         assert.equal(length.toNumber(), 3);
       });
@@ -351,36 +344,36 @@ contract('WTIndex', (accounts) => {
 
     describe('getHotels', () => {
       it('should return hotels properly', async () => {
-        let hotels = await index.getHotels();
+        let hotels = await hotelIndex.getHotels();
         assert.equal(help.filterZeroAddresses(hotels).length, 0);
-        await index.registerHotel('aaa', { from: hotelAccount });
-        hotels = await index.getHotels();
-        const indexNonce = await help.promisify(cb => web3.eth.getTransactionCount(index.address, cb));
-        const expectedHotelAddress = help.determineAddress(index.address, indexNonce);
+        await hotelIndex.registerHotel('aaa', { from: hotelAccount });
+        hotels = await hotelIndex.getHotels();
+        const hotelIndexNonce = await help.promisify(cb => web3.eth.getTransactionCount(hotelIndex.address, cb));
+        const expectedHotelAddress = help.determineAddress(hotelIndex.address, hotelIndexNonce);
         assert.equal(help.filterZeroAddresses(hotels).length, 1);
-        await index.registerHotel('bbb', { from: hotelAccount });
-        hotels = await index.getHotels();
+        await hotelIndex.registerHotel('bbb', { from: hotelAccount });
+        hotels = await hotelIndex.getHotels();
         assert.equal(help.filterZeroAddresses(hotels).length, 2);
-        await index.deleteHotel(expectedHotelAddress, { from: hotelAccount });
-        hotels = await index.getHotels();
+        await hotelIndex.deleteHotel(expectedHotelAddress, { from: hotelAccount });
+        hotels = await hotelIndex.getHotels();
         assert.equal(help.filterZeroAddresses(hotels).length, 1);
       });
     });
 
     describe('getHotelsByManager', () => {
       it('should return list of hotels for existing manager', async () => {
-        await index.registerHotel('bbb', { from: hotelAccount });
-        const hotelList = await index.getHotelsByManager(hotelAccount);
+        await hotelIndex.registerHotel('bbb', { from: hotelAccount });
+        const hotelList = await hotelIndex.getHotelsByManager(hotelAccount);
         assert.equal(hotelList.length, 1);
       });
 
       it('should return empty list for a manager without hotels', async () => {
-        const hotelList = await index.getHotelsByManager(hotelAccount);
+        const hotelList = await hotelIndex.getHotelsByManager(hotelAccount);
         assert.equal(hotelList.length, 0);
       });
 
       it('should return empty list for a non-existing manager', async () => {
-        const hotelList = await index.getHotelsByManager(nonOwnerAccount);
+        const hotelList = await hotelIndex.getHotelsByManager(nonOwnerAccount);
         assert.equal(hotelList.length, 0);
       });
     });
