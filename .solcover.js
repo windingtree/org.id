@@ -2,6 +2,7 @@ module.exports = {
   norpc: true,
   copyNodeModules: true,
   skipFiles: [
+    'Imports.sol',
     'lif/LifCrowdsale.sol',
     'lif/LifMarketValidationMechanism.sol',
     'lif/LifToken.sol',
