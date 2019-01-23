@@ -2,12 +2,10 @@
   * [index](#function-index)
   * [created](#function-created)
   * [manager](#function-manager)
-  * [version](#function-version)
   * [destroy](#function-destroy)
   * [dataUri](#function-datauri)
   * [editInfo](#function-editinfo)
   * [changeManager](#function-changemanager)
-  * [contractType](#function-contracttype)
 
 # Hotel
 
@@ -31,14 +29,6 @@ Hotel.created() `view` `325a19f1`
 ## *function* manager
 
 Hotel.manager() `view` `481c6a75`
-
-
-
-
-
-## *function* version
-
-Hotel.version() `view` `54fd4d50`
 
 
 
@@ -85,14 +75,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | _newManager | New manager's address |
-
-
-## *function* contractType
-
-Hotel.contractType() `view` `cb2ef6f7`
-
-
-
 
 
 

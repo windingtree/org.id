@@ -2,12 +2,10 @@
   * [index](#function-index)
   * [created](#function-created)
   * [manager](#function-manager)
-  * [version](#function-version)
   * [destroy](#function-destroy)
   * [dataUri](#function-datauri)
   * [editInfo](#function-editinfo)
   * [changeManager](#function-changemanager)
-  * [contractType](#function-contracttype)
 
 # Airline
 
@@ -36,19 +34,11 @@ Airline.manager() `view` `481c6a75`
 
 
 
-## *function* version
-
-Airline.version() `view` `54fd4d50`
-
-
-
-
-
 ## *function* destroy
 
 Airline.destroy() `nonpayable` `83197ef0`
 
-> `destroy` allows the owner to delete the Hotel
+> `destroy` allows the owner to delete the airline
 
 
 
@@ -65,7 +55,7 @@ Airline.dataUri() `view` `8a9b29eb`
 
 Airline.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
-> `editInfo` Allows owner to change hotel's dataUri.
+> `editInfo` Allows owner to change airline's dataUri.
 
 Inputs
 
@@ -78,21 +68,13 @@ Inputs
 
 Airline.changeManager(_newManager) `nonpayable` `a3fbbaae`
 
-> Allows owner to change hotel manager.
+> Allows owner to change airline manager.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | _newManager | New manager's address |
-
-
-## *function* contractType
-
-Airline.contractType() `view` `cb2ef6f7`
-
-
-
 
 
 

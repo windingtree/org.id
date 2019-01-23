@@ -62,5 +62,8 @@ if [ "$SOLIDITY_COVERAGE" = true ]; then
     cat coverage/lcov.info | node_modules/.bin/coveralls
   fi
 else
-  node_modules/.bin/truffle test "$@"
+  rm zos.dev-* -f
+  node_modules/.bin/zos session --network development --expires 10000
+  node_modules/.bin/zos push
+  NODE_ENV=test node_modules/.bin/truffle test "$@"
 fi

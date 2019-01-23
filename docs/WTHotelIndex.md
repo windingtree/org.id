@@ -3,15 +3,14 @@
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
   * [transferHotel](#function-transferhotel)
-  * [version](#function-version)
   * [LifToken](#function-liftoken)
   * [renounceOwnership](#function-renounceownership)
   * [hotelsByManager](#function-hotelsbymanager)
   * [owner](#function-owner)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
+  * [initialize](#function-initialize)
   * [getHotelsLength](#function-gethotelslength)
-  * [contractType](#function-contracttype)
   * [hotels](#function-hotels)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
@@ -79,14 +78,6 @@ Inputs
 |-|-|-|
 | *address* | hotel | Hotel's address |
 | *address* | newManager | Address to which the hotel will belong after transfer. |
-
-
-## *function* version
-
-WTHotelIndex.version() `view` `54fd4d50`
-
-
-
 
 
 ## *function* LifToken
@@ -159,6 +150,19 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
+## *function* initialize
+
+WTHotelIndex.initialize(_owner) `nonpayable` `c4d66de8`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _owner | The address of the contract owner |
+
+
 ## *function* getHotelsLength
 
 WTHotelIndex.getHotelsLength() `view` `ca63a55b`
@@ -172,14 +176,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* contractType
-
-WTHotelIndex.contractType() `view` `cb2ef6f7`
-
-
-
-
 
 ## *function* hotels
 
@@ -248,7 +244,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | Hotel's address |
-
 
 ## *event* HotelRegistered
 

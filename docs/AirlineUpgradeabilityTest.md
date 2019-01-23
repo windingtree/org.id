@@ -1,4 +1,5 @@
-* [AbstractAirline](#abstractairline)
+* [AirlineUpgradeabilityTest](#airlineupgradeabilitytest)
+  * [newFunction](#function-newfunction)
   * [index](#function-index)
   * [created](#function-created)
   * [manager](#function-manager)
@@ -7,12 +8,20 @@
   * [editInfo](#function-editinfo)
   * [changeManager](#function-changemanager)
 
-# AbstractAirline
+# AirlineUpgradeabilityTest
+
+
+## *function* newFunction
+
+AirlineUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
 
 
 ## *function* index
 
-AbstractAirline.index() `view` `2986c0e5`
+AirlineUpgradeabilityTest.index() `view` `2986c0e5`
 
 
 
@@ -20,7 +29,7 @@ AbstractAirline.index() `view` `2986c0e5`
 
 ## *function* created
 
-AbstractAirline.created() `view` `325a19f1`
+AirlineUpgradeabilityTest.created() `view` `325a19f1`
 
 
 
@@ -28,7 +37,7 @@ AbstractAirline.created() `view` `325a19f1`
 
 ## *function* manager
 
-AbstractAirline.manager() `view` `481c6a75`
+AirlineUpgradeabilityTest.manager() `view` `481c6a75`
 
 
 
@@ -36,7 +45,7 @@ AbstractAirline.manager() `view` `481c6a75`
 
 ## *function* destroy
 
-AbstractAirline.destroy() `nonpayable` `83197ef0`
+AirlineUpgradeabilityTest.destroy() `nonpayable` `83197ef0`
 
 > `destroy` allows the owner to delete the airline
 
@@ -45,7 +54,7 @@ AbstractAirline.destroy() `nonpayable` `83197ef0`
 
 ## *function* dataUri
 
-AbstractAirline.dataUri() `view` `8a9b29eb`
+AirlineUpgradeabilityTest.dataUri() `view` `8a9b29eb`
 
 
 
@@ -53,7 +62,7 @@ AbstractAirline.dataUri() `view` `8a9b29eb`
 
 ## *function* editInfo
 
-AbstractAirline.editInfo(_dataUri) `nonpayable` `9d9b5342`
+AirlineUpgradeabilityTest.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
 > `editInfo` Allows owner to change airline's dataUri.
 
@@ -66,7 +75,7 @@ Inputs
 
 ## *function* changeManager
 
-AbstractAirline.changeManager(_newManager) `nonpayable` `a3fbbaae`
+AirlineUpgradeabilityTest.changeManager(_newManager) `nonpayable` `a3fbbaae`
 
 > Allows owner to change airline manager.
 
@@ -75,6 +84,7 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | _newManager | New manager's address |
+
 
 
 ---

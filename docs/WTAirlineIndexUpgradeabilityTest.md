@@ -1,6 +1,7 @@
-* [WTAirlineIndex](#wtairlineindex)
+* [WTAirlineIndexUpgradeabilityTest](#wtairlineindexupgradeabilitytest)
   * [deleteAirline](#function-deleteairline)
   * [getAirlines](#function-getairlines)
+  * [newFunction](#function-newfunction)
   * [registerAirline](#function-registerairline)
   * [airlinesByManager](#function-airlinesbymanager)
   * [callAirline](#function-callairline)
@@ -23,12 +24,12 @@
   * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# WTAirlineIndex
+# WTAirlineIndexUpgradeabilityTest
 
 
 ## *function* deleteAirline
 
-WTAirlineIndex.deleteAirline(airline) `nonpayable` `0b5ba03a`
+WTAirlineIndexUpgradeabilityTest.deleteAirline(airline) `nonpayable` `0b5ba03a`
 
 > `deleteAirline` Allows a manager to delete a airline, i. e. call destroy on the target Airline contract. Emits `AirlineDeleted` on success.
 
@@ -41,7 +42,7 @@ Inputs
 
 ## *function* getAirlines
 
-WTAirlineIndex.getAirlines() `view` `0d5dc054`
+WTAirlineIndexUpgradeabilityTest.getAirlines() `view` `0d5dc054`
 
 > `getAirlines` get `airlines` array
 
@@ -53,27 +54,29 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
+## *function* newFunction
+
+WTAirlineIndexUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
+
+
 ## *function* registerAirline
 
-WTAirlineIndex.registerAirline(dataUri) `nonpayable` `25205210`
+WTAirlineIndexUpgradeabilityTest.registerAirline(dataUri) `nonpayable` `25205210`
 
-> `registerAirline` Register new airline in the index. Emits `AirlineRegistered` on success.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Airline's data pointer |
+| *string* | dataUri | undefined |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* airlinesByManager
 
-WTAirlineIndex.airlinesByManager(, ) `view` `2cc042b5`
+WTAirlineIndexUpgradeabilityTest.airlinesByManager(, ) `view` `2cc042b5`
 
 
 Inputs
@@ -86,7 +89,7 @@ Inputs
 
 ## *function* callAirline
 
-WTAirlineIndex.callAirline(airline, data) `nonpayable` `346ab715`
+WTAirlineIndexUpgradeabilityTest.callAirline(airline, data) `nonpayable` `346ab715`
 
 > `callAirline` Call airline in the index, the airline can only be called by its manager. Effectively proxies a airline call. Emits AirlineCalled on success.
 
@@ -100,7 +103,7 @@ Inputs
 
 ## *function* airlines
 
-WTAirlineIndex.airlines() `view` `3a9a77ca`
+WTAirlineIndexUpgradeabilityTest.airlines() `view` `3a9a77ca`
 
 
 Inputs
@@ -112,7 +115,7 @@ Inputs
 
 ## *function* LifToken
 
-WTAirlineIndex.LifToken() `view` `554d8b37`
+WTAirlineIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 
 
@@ -120,7 +123,7 @@ WTAirlineIndex.LifToken() `view` `554d8b37`
 
 ## *function* airlinesByManagerIndex
 
-WTAirlineIndex.airlinesByManagerIndex() `view` `6f76b348`
+WTAirlineIndexUpgradeabilityTest.airlinesByManagerIndex() `view` `6f76b348`
 
 
 Inputs
@@ -132,7 +135,7 @@ Inputs
 
 ## *function* renounceOwnership
 
-WTAirlineIndex.renounceOwnership() `nonpayable` `715018a6`
+WTAirlineIndexUpgradeabilityTest.renounceOwnership() `nonpayable` `715018a6`
 
 **Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
 
@@ -143,7 +146,7 @@ WTAirlineIndex.renounceOwnership() `nonpayable` `715018a6`
 
 ## *function* getAirlinesByManager
 
-WTAirlineIndex.getAirlinesByManager(manager) `view` `7ea6d3c1`
+WTAirlineIndexUpgradeabilityTest.getAirlinesByManager(manager) `view` `7ea6d3c1`
 
 > `getAirlinesByManager` get all the airlines belonging to one manager
 
@@ -161,7 +164,7 @@ Outputs
 
 ## *function* owner
 
-WTAirlineIndex.owner() `view` `8da5cb5b`
+WTAirlineIndexUpgradeabilityTest.owner() `view` `8da5cb5b`
 
 
 
@@ -169,7 +172,7 @@ WTAirlineIndex.owner() `view` `8da5cb5b`
 
 ## *function* getAirlinesLength
 
-WTAirlineIndex.getAirlinesLength() `view` `98696eb5`
+WTAirlineIndexUpgradeabilityTest.getAirlinesLength() `view` `98696eb5`
 
 > `getAirlinesLength` get the length of the `airlines` array
 
@@ -183,7 +186,7 @@ Outputs
 
 ## *function* initialize
 
-WTAirlineIndex.initialize(_owner) `nonpayable` `c4d66de8`
+WTAirlineIndexUpgradeabilityTest.initialize(_owner) `nonpayable` `c4d66de8`
 
 > Initializer for upgradeable contracts.
 
@@ -196,7 +199,7 @@ Inputs
 
 ## *function* airlinesIndex
 
-WTAirlineIndex.airlinesIndex() `view` `c73f2bfb`
+WTAirlineIndexUpgradeabilityTest.airlinesIndex() `view` `c73f2bfb`
 
 
 Inputs
@@ -208,7 +211,7 @@ Inputs
 
 ## *function* transferAirline
 
-WTAirlineIndex.transferAirline(airline, newManager) `nonpayable` `e6b999af`
+WTAirlineIndexUpgradeabilityTest.transferAirline(airline, newManager) `nonpayable` `e6b999af`
 
 > `transferAirline` Allows to change ownership of the airline contract. Emits AirlineTransferred on success.
 
@@ -222,7 +225,7 @@ Inputs
 
 ## *function* setLifToken
 
-WTAirlineIndex.setLifToken(_lifToken) `nonpayable` `f2f0967b`
+WTAirlineIndexUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract
 
@@ -235,7 +238,7 @@ Inputs
 
 ## *function* transferOwnership
 
-WTAirlineIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+WTAirlineIndexUpgradeabilityTest.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -247,7 +250,7 @@ Inputs
 
 ## *event* AirlineRegistered
 
-WTAirlineIndex.AirlineRegistered(airline, managerIndex, allIndex) `107b5845`
+WTAirlineIndexUpgradeabilityTest.AirlineRegistered(airline, managerIndex, allIndex) `107b5845`
 
 Arguments
 
@@ -259,7 +262,7 @@ Arguments
 
 ## *event* AirlineDeleted
 
-WTAirlineIndex.AirlineDeleted(airline, managerIndex, allIndex) `b0ea7807`
+WTAirlineIndexUpgradeabilityTest.AirlineDeleted(airline, managerIndex, allIndex) `b0ea7807`
 
 Arguments
 
@@ -271,7 +274,7 @@ Arguments
 
 ## *event* AirlineCalled
 
-WTAirlineIndex.AirlineCalled(airline) `11e711e5`
+WTAirlineIndexUpgradeabilityTest.AirlineCalled(airline) `11e711e5`
 
 Arguments
 
@@ -281,7 +284,7 @@ Arguments
 
 ## *event* AirlineTransferred
 
-WTAirlineIndex.AirlineTransferred(airline, previousManager, newManager) `aa7e2fed`
+WTAirlineIndexUpgradeabilityTest.AirlineTransferred(airline, previousManager, newManager) `aa7e2fed`
 
 Arguments
 
@@ -293,7 +296,7 @@ Arguments
 
 ## *event* OwnershipRenounced
 
-WTAirlineIndex.OwnershipRenounced(previousOwner) `f8df3114`
+WTAirlineIndexUpgradeabilityTest.OwnershipRenounced(previousOwner) `f8df3114`
 
 Arguments
 
@@ -303,7 +306,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-WTAirlineIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+WTAirlineIndexUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

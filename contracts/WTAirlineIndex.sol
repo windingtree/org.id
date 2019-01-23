@@ -1,5 +1,6 @@
 pragma solidity ^0.4.25;
 
+import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTAirlineIndex.sol";
 import "./airline/Airline.sol";
 
@@ -7,11 +8,9 @@ import "./airline/Airline.sol";
 /**
  * @title WTAirlineIndex, registry of all airlines registered on WT
  * @dev The airlines are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
+ * address.
  */
-contract WTAirlineIndex is AbstractWTAirlineIndex {
-
-    bytes32 public contractType = bytes32("WTAirlineIndex");
+contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
     // Array of addresses of `Airline` contracts
     address[] public airlines;
@@ -45,13 +44,6 @@ contract WTAirlineIndex is AbstractWTAirlineIndex {
      * @dev Event triggered every time a airline changes a manager.
      */
     event AirlineTransferred(address airline, address previousManager, address newManager);
-
-    /**
-     * @dev Constructor. Creates the `WTAirlineIndex` contract
-     */
-    constructor() public {
-        airlines.length++;
-    }
 
     /**
      * @dev `registerAirline` Register new airline in the index.
@@ -149,6 +141,15 @@ contract WTAirlineIndex is AbstractWTAirlineIndex {
         airlinesByManagerIndex[airline] = airlinesByManager[newManager].length;
         airlinesByManager[newManager].push(airline);
         emit AirlineTransferred(airline, msg.sender, newManager);
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param  _owner The address of the contract owner
+     */
+    function initialize(address _owner) public initializer {
+        airlines.length++;
+        owner = _owner;
     }
 
     /**
