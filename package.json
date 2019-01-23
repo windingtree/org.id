@@ -14,8 +14,8 @@
     "flattener": "scripts/flattener.sh",
     "clean": "rimraf build",
     "buildfornpm": "npm run clean && truffle compile",
-    "deploy-mainnet": "./node_modules/.bin/truffle migrate --network mainnet --reset",
-    "deploy-ropsten": "./node_modules/.bin/truffle migrate --network ropsten --reset"
+    "deploy-mainnet": "./node_modules/.bin/zos push --network mainnet",
+    "deploy-ropsten": "./node_modules/.bin/zos push --network ropsten"
   },
   "publishConfig": {
     "access": "public"
