@@ -65,5 +65,7 @@ else
   rm zos.dev-* -f
   node_modules/.bin/zos session --network development --expires 10000
   node_modules/.bin/zos push
-  NODE_ENV=test node_modules/.bin/truffle test "$@"
+  mkdir migrations
+  NODE_ENV=test node_modules/.bin/truffle test "$@" -f
+  rm -r migrations
 fi

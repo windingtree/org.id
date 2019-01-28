@@ -32,6 +32,10 @@ keys.json example:
 npm run deploy-NETWORK
 ```
 
+The deployment is done using zos, for more info: https://docs.zeppelinos.org/docs/deploying
+https://docs.zeppelinos.org/docs/publishing.
+https://docs.zeppelinos.org/docs/mainnet
+
 ## Test
 
 * To run all tests: `npm test`
