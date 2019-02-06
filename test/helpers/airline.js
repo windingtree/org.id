@@ -8,16 +8,16 @@ const {
 
 /**
  * Async method that creates a new empty Airline.
- * @param  {Instance} wTAirlineIndex            WTAirlineIndex contract instance
+ * @param  {Instance} wtAirlineIndex            WTAirlineIndex contract instance
  * @param  {Address} airlineAccount        address of the airline's account
  * @return {Instance} Airline
  * @example
  *   const wtAirline = await createAirline(accounts[2]);
  *   wtAirline.callAirline(..etc..)
  */
-async function createAirline (wTAirlineIndex, airlineAccount) {
-  await wTAirlineIndex.registerAirline('WT Airline', 'WT Test Airline', { from: airlineAccount });
-  let wtAirlineAddress = await wTAirlineIndex.getAirlinesByManager(airlineAccount);
+async function createAirline (wtAirlineIndex, airlineAccount) {
+  await wtAirlineIndex.registerAirline('WT Airline', 'WT Test Airline', { from: airlineAccount });
+  let wtAirlineAddress = await wtAirlineIndex.getAirlinesByManager(airlineAccount);
   let wtAirline = await WTAirlineInterface.at(wtAirlineAddress[0]);
 
   return wtAirline;
