@@ -2,9 +2,9 @@
   "zosversion": "2",
   "name": "wt-contracts",
   "version": "0.2.4",
-  "publish": false,
+  "publish": true,
   "contracts": {
-    "wtHotelIndex": "WTHotelIndex",
+    "WTHotelIndex": "WTHotelIndex",
     "WTAirlineIndex": "WTAirlineIndex"
   }
 }
