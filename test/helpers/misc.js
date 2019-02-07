@@ -1,6 +1,7 @@
 const web3utils = require('web3-utils');
 const _ = require('lodash');
 const ethJsUtil = require('ethereumjs-util');
+const web3 = new Web3('ws://localhost:8546');
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
