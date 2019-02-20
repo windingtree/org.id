@@ -1,15 +1,13 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractBaseContract.sol";
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
 
 /**
  * @title AbstractWTHotelIndex
- * @dev Interface of WTHotelIndex contract, inherits from OpenZeppelin's Ownable and
- * from WT's 'AbstractBaseContract'.
+ * @dev Interface of WTHotelIndex contract, inherits from OpenZeppelin's Ownable
  */
-contract AbstractWTHotelIndex is Ownable, AbstractBaseContract {
+contract AbstractWTHotelIndex is Ownable {
     address[] public hotels;
     mapping(address => uint) public hotelsIndex;
     mapping(address => address[]) public hotelsByManager;

@@ -1,4 +1,4 @@
-const web3 = require('web3');
+const web3utils = require('web3-utils');
 const _ = require('lodash');
 const ethJsUtil = require('ethereumjs-util');
 
@@ -32,16 +32,16 @@ module.exports = {
   },
 
   bytes32ToString: function (hex) {
-    return web3.utils.hexToUtf8(hex);
+    return web3utils.hexToUtf8(hex);
   },
 
   stringToBytes32: function (text) {
-    return web3.utils.utf8ToHex(text);
+    return web3utils.utf8ToHex(text);
   },
 
   // Sample implementation for later re-use
   determineAddress: function (sender, nonce) {
-    return web3.utils.toChecksumAddress(
+    return web3utils.toChecksumAddress(
       ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
         sender,
         nonce

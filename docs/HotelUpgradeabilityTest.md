@@ -1,4 +1,5 @@
-* [AbstractHotel](#abstracthotel)
+* [HotelUpgradeabilityTest](#hotelupgradeabilitytest)
+  * [newFunction](#function-newfunction)
   * [index](#function-index)
   * [created](#function-created)
   * [manager](#function-manager)
@@ -7,12 +8,20 @@
   * [editInfo](#function-editinfo)
   * [changeManager](#function-changemanager)
 
-# AbstractHotel
+# HotelUpgradeabilityTest
+
+
+## *function* newFunction
+
+HotelUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
 
 
 ## *function* index
 
-AbstractHotel.index() `view` `2986c0e5`
+HotelUpgradeabilityTest.index() `view` `2986c0e5`
 
 
 
@@ -20,7 +29,7 @@ AbstractHotel.index() `view` `2986c0e5`
 
 ## *function* created
 
-AbstractHotel.created() `view` `325a19f1`
+HotelUpgradeabilityTest.created() `view` `325a19f1`
 
 
 
@@ -28,7 +37,7 @@ AbstractHotel.created() `view` `325a19f1`
 
 ## *function* manager
 
-AbstractHotel.manager() `view` `481c6a75`
+HotelUpgradeabilityTest.manager() `view` `481c6a75`
 
 
 
@@ -36,7 +45,7 @@ AbstractHotel.manager() `view` `481c6a75`
 
 ## *function* destroy
 
-AbstractHotel.destroy() `nonpayable` `83197ef0`
+HotelUpgradeabilityTest.destroy() `nonpayable` `83197ef0`
 
 > `destroy` allows the owner to delete the Hotel
 
@@ -45,7 +54,7 @@ AbstractHotel.destroy() `nonpayable` `83197ef0`
 
 ## *function* dataUri
 
-AbstractHotel.dataUri() `view` `8a9b29eb`
+HotelUpgradeabilityTest.dataUri() `view` `8a9b29eb`
 
 
 
@@ -53,7 +62,7 @@ AbstractHotel.dataUri() `view` `8a9b29eb`
 
 ## *function* editInfo
 
-AbstractHotel.editInfo(_dataUri) `nonpayable` `9d9b5342`
+HotelUpgradeabilityTest.editInfo(_dataUri) `nonpayable` `9d9b5342`
 
 > `editInfo` Allows owner to change hotel's dataUri.
 
@@ -66,7 +75,7 @@ Inputs
 
 ## *function* changeManager
 
-AbstractHotel.changeManager(_newManager) `nonpayable` `a3fbbaae`
+HotelUpgradeabilityTest.changeManager(_newManager) `nonpayable` `a3fbbaae`
 
 > Allows owner to change hotel manager.
 
@@ -75,6 +84,7 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | _newManager | New manager's address |
+
 
 
 ---

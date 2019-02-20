@@ -1,7 +1,8 @@
-* [AbstractWTHotelIndex](#abstractwthotelindex)
+* [WTHotelIndexUpgradeabilityTest](#wthotelindexupgradeabilitytest)
   * [getHotels](#function-gethotels)
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
+  * [newFunction](#function-newfunction)
   * [transferHotel](#function-transferhotel)
   * [LifToken](#function-liftoken)
   * [renounceOwnership](#function-renounceownership)
@@ -9,8 +10,10 @@
   * [owner](#function-owner)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
+  * [initialize](#function-initialize)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
+  * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [registerHotel](#function-registerhotel)
   * [deleteHotel](#function-deletehotel)
@@ -21,33 +24,40 @@
   * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# AbstractWTHotelIndex
+# WTHotelIndexUpgradeabilityTest
 
 
 ## *function* getHotels
 
-AbstractWTHotelIndex.getHotels() `view` `0d2e677a`
+WTHotelIndexUpgradeabilityTest.getHotels() `view` `0d2e677a`
+
+> `getHotels` get `hotels` array
 
 
 
+Outputs
 
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
 
 ## *function* callHotel
 
-AbstractWTHotelIndex.callHotel(hotel, data) `nonpayable` `154d56db`
+WTHotelIndexUpgradeabilityTest.callHotel(hotel, data) `nonpayable` `154d56db`
 
+> `callHotel` Call hotel in the index, the hotel can only be called by its manager. Effectively proxies a hotel call. Emits HotelCalled on success.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
-| *bytes* | data | undefined |
+| *address* | hotel | Hotel's address |
+| *bytes* | data | Encoded method call to be done on Hotel contract. |
 
 
 ## *function* hotelsByManagerIndex
 
-AbstractWTHotelIndex.hotelsByManagerIndex() `view` `189f6aef`
+WTHotelIndexUpgradeabilityTest.hotelsByManagerIndex() `view` `189f6aef`
 
 
 Inputs
@@ -57,22 +67,31 @@ Inputs
 | *address* |  | undefined |
 
 
+## *function* newFunction
+
+WTHotelIndexUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
+
+
 ## *function* transferHotel
 
-AbstractWTHotelIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
+WTHotelIndexUpgradeabilityTest.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
 
+> `transferHotel` Allows to change ownership of the hotel contract. Emits HotelTransferred on success.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
-| *address* | newManager | undefined |
+| *address* | hotel | Hotel's address |
+| *address* | newManager | Address to which the hotel will belong after transfer. |
 
 
 ## *function* LifToken
 
-AbstractWTHotelIndex.LifToken() `view` `554d8b37`
+WTHotelIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 
 
@@ -80,7 +99,7 @@ AbstractWTHotelIndex.LifToken() `view` `554d8b37`
 
 ## *function* renounceOwnership
 
-AbstractWTHotelIndex.renounceOwnership() `nonpayable` `715018a6`
+WTHotelIndexUpgradeabilityTest.renounceOwnership() `nonpayable` `715018a6`
 
 **Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
 
@@ -91,7 +110,7 @@ AbstractWTHotelIndex.renounceOwnership() `nonpayable` `715018a6`
 
 ## *function* hotelsByManager
 
-AbstractWTHotelIndex.hotelsByManager(, ) `view` `7cf2dfae`
+WTHotelIndexUpgradeabilityTest.hotelsByManager(, ) `view` `7cf2dfae`
 
 
 Inputs
@@ -104,7 +123,7 @@ Inputs
 
 ## *function* owner
 
-AbstractWTHotelIndex.owner() `view` `8da5cb5b`
+WTHotelIndexUpgradeabilityTest.owner() `view` `8da5cb5b`
 
 
 
@@ -112,7 +131,7 @@ AbstractWTHotelIndex.owner() `view` `8da5cb5b`
 
 ## *function* hotelsIndex
 
-AbstractWTHotelIndex.hotelsIndex() `view` `9f9bfeb8`
+WTHotelIndexUpgradeabilityTest.hotelsIndex() `view` `9f9bfeb8`
 
 
 Inputs
@@ -124,27 +143,52 @@ Inputs
 
 ## *function* getHotelsByManager
 
-AbstractWTHotelIndex.getHotelsByManager(manager) `view` `bb979c3d`
+WTHotelIndexUpgradeabilityTest.getHotelsByManager(manager) `view` `bb979c3d`
 
+> `getHotelsByManager` get all the hotels belonging to one manager
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | manager | undefined |
+| *address* | manager | Manager address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
+## *function* initialize
+
+WTHotelIndexUpgradeabilityTest.initialize(_owner) `nonpayable` `c4d66de8`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _owner | The address of the contract owner |
 
 
 ## *function* getHotelsLength
 
-AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
+WTHotelIndexUpgradeabilityTest.getHotelsLength() `view` `ca63a55b`
+
+> `getHotelsLength` get the length of the `hotels` array
 
 
 
+Outputs
 
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
 
 ## *function* hotels
 
-AbstractWTHotelIndex.hotels() `view` `cd338265`
+WTHotelIndexUpgradeabilityTest.hotels() `view` `cd338265`
 
 
 Inputs
@@ -154,9 +198,22 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* setLifToken
+
+WTHotelIndexUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
+
+> `setLifToken` allows the owner of the contract to change the address of the LifToken contract
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _lifToken | The new contract address |
+
+
 ## *function* transferOwnership
 
-AbstractWTHotelIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+WTHotelIndexUpgradeabilityTest.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -169,7 +226,7 @@ Inputs
 
 ## *function* registerHotel
 
-AbstractWTHotelIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
+WTHotelIndexUpgradeabilityTest.registerHotel(dataUri) `nonpayable` `f88a067f`
 
 
 Inputs
@@ -181,18 +238,19 @@ Inputs
 
 ## *function* deleteHotel
 
-AbstractWTHotelIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
+WTHotelIndexUpgradeabilityTest.deleteHotel(hotel) `nonpayable` `fb6f6875`
 
+> `deleteHotel` Allows a manager to delete a hotel, i. e. call destroy on the target Hotel contract. Emits `HotelDeleted` on success.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
+| *address* | hotel | Hotel's address |
 
 ## *event* HotelRegistered
 
-AbstractWTHotelIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
+WTHotelIndexUpgradeabilityTest.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
 
 Arguments
 
@@ -204,7 +262,7 @@ Arguments
 
 ## *event* HotelDeleted
 
-AbstractWTHotelIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
+WTHotelIndexUpgradeabilityTest.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
 
 Arguments
 
@@ -216,7 +274,7 @@ Arguments
 
 ## *event* HotelCalled
 
-AbstractWTHotelIndex.HotelCalled(hotel) `e09d7761`
+WTHotelIndexUpgradeabilityTest.HotelCalled(hotel) `e09d7761`
 
 Arguments
 
@@ -226,7 +284,7 @@ Arguments
 
 ## *event* HotelTransferred
 
-AbstractWTHotelIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
+WTHotelIndexUpgradeabilityTest.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
 
 Arguments
 
@@ -238,7 +296,7 @@ Arguments
 
 ## *event* OwnershipRenounced
 
-AbstractWTHotelIndex.OwnershipRenounced(previousOwner) `f8df3114`
+WTHotelIndexUpgradeabilityTest.OwnershipRenounced(previousOwner) `f8df3114`
 
 Arguments
 
@@ -248,7 +306,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-AbstractWTHotelIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+WTHotelIndexUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

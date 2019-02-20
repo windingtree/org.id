@@ -1,5 +1,6 @@
 pragma solidity ^0.4.25;
 
+import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTHotelIndex.sol";
 import "./hotel/Hotel.sol";
 
@@ -7,11 +8,9 @@ import "./hotel/Hotel.sol";
 /**
  * @title WTHotelIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
+ * address.
  */
-contract WTHotelIndex is AbstractWTHotelIndex {
-
-    bytes32 public contractType = bytes32("WTHotelIndex");
+contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
 
     // Array of addresses of `Hotel` contracts
     address[] public hotels;
@@ -45,13 +44,6 @@ contract WTHotelIndex is AbstractWTHotelIndex {
      * @dev Event triggered every time a hotel changes a manager.
      */
     event HotelTransferred(address hotel, address previousManager, address newManager);
-
-    /**
-     * @dev Constructor. Creates the `WTHotelIndex` contract
-     */
-    constructor() public {
-        hotels.length++;
-    }
 
     /**
      * @dev `registerHotel` Register new hotel in the index.
@@ -149,6 +141,15 @@ contract WTHotelIndex is AbstractWTHotelIndex {
         hotelsByManagerIndex[hotel] = hotelsByManager[newManager].length;
         hotelsByManager[newManager].push(hotel);
         emit HotelTransferred(hotel, msg.sender, newManager);
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param  _owner The address of the contract owner
+     */
+    function initialize(address _owner) public initializer {
+        hotels.length++;
+        owner = _owner;
     }
 
     /**

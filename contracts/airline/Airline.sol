@@ -5,12 +5,9 @@ import "./AbstractAirline.sol";
 
 /**
  * @title Airline, contract for an Airline registered in the WT network
- * @dev A contract that represents an airline in the WT network. Inherits
- * from WT's 'AbstractAirline'.
+ * @dev A contract that represents an airline in the WT network.
  */
 contract Airline is AbstractAirline {
-
-    bytes32 public contractType = bytes32("airline");
 
     /**
      * @dev Constructor.

@@ -1,14 +1,11 @@
 pragma solidity ^0.4.25;
 
-import "../AbstractBaseContract.sol";
-
 
 /**
  * @title AbstractHotel
- * @dev Interface of Hotel contract, inherits from
- * WT's 'AbstractBaseContract'.
+ * @dev Interface of Hotel contract
  */
-contract AbstractHotel is AbstractBaseContract {
+contract AbstractHotel {
 
     // Who owns this Hotel and can manage it.
     address public manager;
