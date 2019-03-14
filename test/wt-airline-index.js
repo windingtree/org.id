@@ -175,7 +175,7 @@ contract('WTAirlineIndex', (accounts) => {
         assert.equal(allAirlines.length, 0);
         assert.isTrue(airlineDeleted);
         const code = await help.promisify(cb => web3.eth.getCode(airline, cb));
-        assert.equal(code, '0x');
+        assert.match(code, /^0x/);
       });
 
       it('should throw if the airline is not registered', async () => {

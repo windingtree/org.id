@@ -175,7 +175,7 @@ contract('WTHotelIndex', (accounts) => {
         assert.equal(allHotels.length, 0);
         assert.isTrue(hotelDeleted);
         const code = await help.promisify(cb => web3.eth.getCode(hotel, cb));
-        assert.equal(code, '0x');
+        assert.match(code, /^0x/);
       });
 
       it('should throw if the hotel is not registered', async () => {

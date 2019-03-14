@@ -56,7 +56,9 @@ else
 fi
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
+  mkdir -p migrations
   node_modules/.bin/solidity-coverage
+  rm -r migrations
 
   if [ "$CONTINUOUS_INTEGRATION" = true ]; then
     cat coverage/lcov.info | node_modules/.bin/coveralls
