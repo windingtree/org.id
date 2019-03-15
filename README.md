@@ -65,7 +65,7 @@ that does the heavy lifting for zos.
 ```json
 {
   "mnemonic": "<SEED_PHRASE>",
-  "infura_apikey": "<API_KEY>"
+  "infura_projectid": "<PROJECT_ID>"
 }
 ```
 
@@ -91,8 +91,8 @@ interacted with.
 attribute is intended as a reference to an actual instance of [Lif token](https://github.com/windingtree/lif-token),
 but you don't need for simple local testing for now.
     ```bash
-    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3
-    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3
+    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console.
