@@ -15,6 +15,7 @@
     "clean": "rimraf build",
     "build-index": "node scripts/build-index.js > index.js",
     "buildfornpm": "npm run clean && truffle compile",
+    "version": "node scripts/set-zos-version.js > zos2.json && mv zos2.json zos.json && git add zos.json",
     "deploy-mainnet": "./node_modules/.bin/zos push --network mainnet",
     "deploy-ropsten": "./node_modules/.bin/zos push --network ropsten"
   },
