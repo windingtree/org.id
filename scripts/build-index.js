@@ -8,13 +8,15 @@ const exceptions = [
   'Initializable.json',
   'UpgradeabilityProxy.json',
   'Proxy.json',
+  '.*UpgradeabilityTest.json',
 ]
 const files = fs.readdirSync(CONTRACTS_DIR)
+const exceptionsRegex = new RegExp(exceptions.join('|'));
 let importStatements = [];
 let exportStatements = [];
 
 files
-  .filter((f) => exceptions.indexOf(f) === -1)
+  .filter((f) => !f.match(exceptionsRegex))
   .map((f) => {
     const name = f.split('.')[0];
     importStatements.push(`const ${name}Contract = require('./${BASE_PATH}/${f}');`);

@@ -45,7 +45,7 @@ function getInfuraConfig (networkName, networkId) {
   return {
     network_id: networkId,
     provider: () => {
-      return new HDWalletProvider(keys.mnemonic, `https://${networkName}.infura.io/` + keys.infura_apikey)
+      return new HDWalletProvider(keys.mnemonic, `https://${networkName}.infura.io/v3/` + keys.infura_projectid)
     },
     gas: 4600000,
     gasPrice: 10000000000

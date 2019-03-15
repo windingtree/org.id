@@ -12,39 +12,6 @@ import "./airline/Airline.sol";
  */
 contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
-    // Array of addresses of `Airline` contracts
-    address[] public airlines;
-
-    // Mapping of airlines position in the general airline index
-    mapping(address => uint) public airlinesIndex;
-
-    // Mapping of the airlines indexed by manager's address
-    mapping(address => address[]) public airlinesByManager;
-    // Mapping of airlines position in the manager's indexed airline index
-    mapping(address => uint) public airlinesByManagerIndex;
-
-    // Address of the LifToken contract
-    // solhint-disable-next-line var-name-mixedcase
-    address public LifToken;
-
-    /**
-     * @dev Event triggered every time airline is registered
-     */
-    event AirlineRegistered(address airline, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time airline is deleted
-     */
-    event AirlineDeleted(address airline, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time airline is called
-     */
-    event AirlineCalled(address airline);
-
-    /**
-     * @dev Event triggered every time a airline changes a manager.
-     */
-    event AirlineTransferred(address airline, address previousManager, address newManager);
-
     /**
      * @dev `registerAirline` Register new airline in the index.
      * Emits `AirlineRegistered` on success.
