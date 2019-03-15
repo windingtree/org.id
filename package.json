@@ -8,16 +8,15 @@
   "scripts": {
     "test": "scripts/test.sh",
     "lint": "eslint test; solhint 'contracts/**/*.sol'",
-    "testrpc": "./node_modules/.bin/ganache-cli",
+    "testrpc": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
     "flattener": "scripts/flattener.sh",
     "clean": "rimraf build",
     "build-index": "node scripts/build-index.js > index.js",
+    "set-zos-version": "node scripts/set-zos-version.js > zos2.json && mv zos2.json zos.json",
     "buildfornpm": "npm run clean && truffle compile",
-    "version": "node scripts/set-zos-version.js > zos2.json && mv zos2.json zos.json && git add zos.json",
-    "deploy-mainnet": "./node_modules/.bin/zos push --network mainnet",
-    "deploy-ropsten": "./node_modules/.bin/zos push --network ropsten"
+    "version": "npm run set-zos-version && git add zos.json && npm run build-index && git add index.js"
   },
   "publishConfig": {
     "access": "public"

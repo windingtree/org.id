@@ -1,5 +1,5 @@
 {
-  "zosversion": "2.1",
+  "zosversion": "2",
   "name": "wt-contracts",
   "version": "0.3.0",
   "publish": true,

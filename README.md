@@ -1,57 +1,114 @@
+[![Build Status](https://travis-ci.org/windingtree/wt-contracts.svg?branch=master)](https://travis-ci.org/windingtree/wt-contracts)
+[![Coverage Status](https://coveralls.io/repos/github/windingtree/wt-contracts/badge.svg?branch=master)](https://coveralls.io/github/windingtree/wt-contracts?branch=master&v=2.0)
+
 # WT Smart Contracts
 
 Smart contracts of the Winding Tree platform.
 
-The smart contracts in the [hotel folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/hotel) and [airline folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/airline) are designed to upload inventory and interact with it in the WT platform.
+The smart contracts in the [hotel folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/hotel) and
+[airline folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/airline) are representing
+inventory registered in the Winding Tree platform. The registries themselves are `WTHotelIndex` and `WTAirlineIndex`
+smart contracts.
 
-[![Build Status](https://travis-ci.org/windingtree/wt-contracts.svg?branch=master)](https://travis-ci.org/windingtree/wt-contracts)
-[![Coverage Status](https://coveralls.io/repos/github/windingtree/wt-contracts/badge.svg?branch=master)](https://coveralls.io/github/windingtree/wt-contracts?branch=master&v=2.0)
+For interaction with those from your application, you can use the `Abstract*` smart contracts
+whose [JSON ABI](https://solidity.readthedocs.io/en/develop/abi-spec.html#json)s are significantly
+smaller (86 kB vs 500 kB in case of `WTHotelIndex`).
 
 ## Requirements
 
-LTS Node 10.3.0 is required for running the tests.
+Node 10 is required for running the tests and contract compilation.
 
-## Install
+## Installation
+
+```sh
+npm install @windingtree/wt-contracts
+```
+
+```js
+import HotelContractMetadata from '@windingtree/wt-contracts/build/contracts/AbstractHotel.json';
+// or
+import { AbstractHotelContract, AbstractWTHotelIndexContract } from '@windingtree/wt-contracts';
+```
+
+## Development
 
 ```sh
 git clone https://github.com/windingtree/wt-contracts
+nvm install
 npm install
+npm test
 ```
 
-## Deploy
+You can run a specific test with `npm test -- test/WTHotel.js`
+or you can generate a coverage report with `npm run coverage`.
 
-keys.json example:
-```
+### Flattener
+
+A flattener script is also available, and by running `npm run flattener`,
+you cancreate a flattened version of the contracts without imports in
+one single file for all contracts in the contracts folder.
+This is needed if you plan to use tools like [etherscan verifier](https://etherscan.io/verifyContract)
+or [securify.ch](https://securify.ch/).
+
+## Deployment
+
+We are using the upgradeability proxy from [zos](https://docs.zeppelinos.org/)
+and the deployment pipeline is using their system as well. You can read more
+about the [publishing process](https://docs.zeppelinos.org/docs/deploying) and
+[upgrading](https://docs.zeppelinos.org/docs/upgrading.html) in `zos`
+documentation.
+
+In order to interact with "real" networks such as `mainnet`, `ropsten` or others,
+you need to setup a `keys.json` file used by [truffle](https://truffleframework.com/)
+that does the heavy lifting for zos.
+
+```json
 {
-  "mnemonic": SEED_PHRASE,
-  "infura_apikey": API_KEY
+  "mnemonic": "<SEED_PHRASE>",
+  "infura_apikey": "<API_KEY>"
 }
 ```
 
-```sh
-npm run deploy-NETWORK
+### Local testing
+
+You don't need `keys.json` file for local testing of deployment and interaction
+with the contracts.
+
+1. Start a local Ethereum network.
+    ```bash
+    > npm run testrpc
+    ```
+2. Start a zos session.
+    ```bash
+    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4bb --expires 3600
+    ```
+3. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
+interacted with.
+    ```bash
+    > ./node_modules/.bin/zos push --network development
+    ```
+4. Create the proxy instances of deployed contracts you can interact with. The `args`
+attribute is intended as a reference to an actual instance of [Lif token](https://github.com/windingtree/lif-token),
+but you don't need for simple local testing for now.
+    ```bash
+    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3
+    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3
+    ```
+These commands will return a network address where you can actually interact with the contracts.
+For a quick test, you can use the truffle console.
+```bash
+> ./node_modules/.bin/truffle console --network development
+truffle(development)> contract = await WTHotelIndex.at('0x839c960087942a82636e191d9a7ed6145582cfac')
+undefined
+truffle(development)> contract.getHotels()
+[ '0x0000000000000000000000000000000000000000' ]
+truffle(development)> contract.registerHotel('http://windingtree.com')
+truffle(development)> contract.getHotels()
+[ '0x0000000000000000000000000000000000000000',
+  '0x4D377b0a8fa386FA118B09947eEE2B1f7f126C76' ]
 ```
-
-The deployment is done using zos, for more info: https://docs.zeppelinos.org/docs/deploying
-https://docs.zeppelinos.org/docs/publishing.
-https://docs.zeppelinos.org/docs/mainnet
-
-## Test
-
-* To run all tests: `npm test`
-
-* To run a specific test: `npm test -- test/WTHotel.js`
-
-* To generate coverage report: `npm run coverage`
-
-## Flattener
-
-A flattener script is available by running `npm run flattener`, this will create flattened version of the contracts without imports in one single file for all contracts in the contracts folder. This is needed if you plan to use tools like [etherscan verifier](https://etherscan.io/verifyContract) or [securify.ch](https://securify.ch/).
 
 ## Documentation
 
-[Here](https://github.com/windingtree/wt-contracts/tree/master/docs)
-
-## License
-
-Winding Tree contracts are open source and distributed under the GPL v3 license.
+Documentation is in the [`docs`](https://github.com/windingtree/wt-contracts/tree/master/docs)
+folder and can be generated by running `npm run soldoc`.
