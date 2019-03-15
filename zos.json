@@ -5,6 +5,10 @@
   "publish": true,
   "contracts": {
     "WTHotelIndex": "WTHotelIndex",
-    "WTAirlineIndex": "WTAirlineIndex"
+    "WTAirlineIndex": "WTAirlineIndex",
+    "WTAirlineIndexDemo": "WTAirlineIndex",
+    "WTHotelIndexDemo": "WTHotelIndex",
+    "WTAirlineIndexPlayground": "WTAirlineIndex",
+    "WTHotelIndexPlayground": "WTHotelIndex"
   }
 }
