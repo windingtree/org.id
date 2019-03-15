@@ -36,7 +36,6 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "babel-polyfill": "^6.23.0",
-    "chai": "^4.2.0",
     "ethereumjs-abi": "^0.6.6",
     "ethereumjs-util": "^5.1.5",
     "moment": "^2.24.0",
