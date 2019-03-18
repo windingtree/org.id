@@ -15,6 +15,7 @@ contract('Hotel', (accounts) => {
   const indexOwner = accounts[1];
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
+  const tokenAddress = accounts[5];
   let hotelAddress = help.zeroAddress;
   let wtHotelIndex;
   let wtHotel;
@@ -23,7 +24,7 @@ contract('Hotel', (accounts) => {
   beforeEach(async () => {
     const indexDeployed = await WTHotelIndex.new({ from: indexOwner });
     indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
-    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
+    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner, tokenAddress).encodeABI();
     const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: indexOwner });
     wtHotelIndex = await WTHotelIndex.at(indexProxy.address);
 

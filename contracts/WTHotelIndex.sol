@@ -113,10 +113,12 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
     /**
      * @dev Initializer for upgradeable contracts.
      * @param  _owner The address of the contract owner
+     * @param _lifToken The new contract address
      */
-    function initialize(address _owner) public initializer {
+    function initialize(address _owner, address _lifToken) public initializer {
         hotels.length++;
         owner = _owner;
+        LifToken = _lifToken;
     }
 
     /**

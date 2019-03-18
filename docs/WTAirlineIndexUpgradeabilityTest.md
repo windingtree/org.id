@@ -6,13 +6,13 @@
   * [airlinesByManager](#function-airlinesbymanager)
   * [callAirline](#function-callairline)
   * [airlines](#function-airlines)
+  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
   * [renounceOwnership](#function-renounceownership)
   * [getAirlinesByManager](#function-getairlinesbymanager)
   * [owner](#function-owner)
   * [getAirlinesLength](#function-getairlineslength)
-  * [initialize](#function-initialize)
   * [airlinesIndex](#function-airlinesindex)
   * [transferAirline](#function-transferairline)
   * [setLifToken](#function-setliftoken)
@@ -113,6 +113,20 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* initialize
+
+WTAirlineIndexUpgradeabilityTest.initialize(_owner, _lifToken) `nonpayable` `485cc955`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+
+
 ## *function* LifToken
 
 WTAirlineIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
@@ -183,19 +197,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* initialize
-
-WTAirlineIndexUpgradeabilityTest.initialize(_owner) `nonpayable` `c4d66de8`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _owner | The address of the contract owner |
-
 
 ## *function* airlinesIndex
 
