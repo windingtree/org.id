@@ -1,11 +1,11 @@
 {
   "contracts": {
     "WTHotelIndexDemo": {
-      "address": "0x21b6a6a804faa50c1ddd36238cf11615cd8942e6",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "d8d2587e8cd011f48dc9bddb7e0bbe14087ca1539fd3e318212c6882f889205b",
-      "localBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
-      "deployedBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
+      "address": "0x0212f2abac837882348ae958c6d353fb190166d0",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "baa7394f0a09027e41afb78f3ab431c935bd2523b32e1069e6534bd85b19199f",
+      "localBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
+      "deployedBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -54,7 +54,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1837,
+          "astId": 1849,
           "type": "t_bool",
           "src": "757:24:15"
         },
@@ -62,7 +62,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1839,
+          "astId": 1851,
           "type": "t_bool",
           "src": "876:25:15"
         },
@@ -70,7 +70,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 1888,
+          "astId": 1900,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:15"
         },
@@ -78,7 +78,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
           "label": "owner",
-          "astId": 1751,
+          "astId": 1763,
           "type": "t_address",
           "src": "238:20:14"
         },
@@ -128,416 +128,15 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
-      }
-    },
-    "WTHotelIndex": {
-      "address": "0xe8a23ac5dea4aa68b4b0920de1e54f35bf98a121",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "d8d2587e8cd011f48dc9bddb7e0bbe14087ca1539fd3e318212c6882f889205b",
-      "localBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
-      "deployedBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_array:dyn<t_address>": {
-          "id": "t_array:dyn<t_address>",
-          "valueType": "t_address",
-          "length": "dyn",
-          "kind": "array",
-          "label": "address[]"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        },
-        "t_mapping<t_array:dyn<t_address>>": {
-          "id": "t_mapping<t_array:dyn<t_address>>",
-          "valueType": "t_array:dyn<t_address>",
-          "label": "mapping(key => address[])",
-          "kind": "mapping"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1837,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1839,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1888,
-          "type": "t_array:50<t_uint256>",
-          "src": "1891:29:15"
-        },
-        {
-          "contract": "Ownable",
-          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
-          "label": "owner",
-          "astId": 1751,
-          "type": "t_address",
-          "src": "238:20:14"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotels",
-          "astId": 104,
-          "type": "t_array:dyn<t_address>",
-          "src": "311:23:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsIndex",
-          "astId": 108,
-          "type": "t_mapping<t_uint256>",
-          "src": "402:43:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsByManager",
-          "astId": 113,
-          "type": "t_mapping<t_array:dyn<t_address>>",
-          "src": "510:52:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsByManagerIndex",
-          "astId": 117,
-          "type": "t_mapping<t_uint256>",
-          "src": "639:52:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "LifToken",
-          "astId": 119,
-          "type": "t_address",
-          "src": "790:23:1"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
-      }
-    },
-    "WTAirlineIndex": {
-      "address": "0xdeb23126e03f15500e6a5a7328980d145dadf52f",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "3d69e799d659a2cf0ada41362bbc707c0112bf60544e40cb925a1662065745bf",
-      "localBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
-      "deployedBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_array:dyn<t_address>": {
-          "id": "t_array:dyn<t_address>",
-          "valueType": "t_address",
-          "length": "dyn",
-          "kind": "array",
-          "label": "address[]"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        },
-        "t_mapping<t_array:dyn<t_address>>": {
-          "id": "t_mapping<t_array:dyn<t_address>>",
-          "valueType": "t_array:dyn<t_address>",
-          "label": "mapping(key => address[])",
-          "kind": "mapping"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1837,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1839,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1888,
-          "type": "t_array:50<t_uint256>",
-          "src": "1891:29:15"
-        },
-        {
-          "contract": "Ownable",
-          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
-          "label": "owner",
-          "astId": 1751,
-          "type": "t_address",
-          "src": "238:20:14"
-        },
-        {
-          "contract": "AbstractWTAirlineIndex",
-          "path": "contracts/AbstractWTAirlineIndex.sol",
-          "label": "airlines",
-          "astId": 7,
-          "type": "t_array:dyn<t_address>",
-          "src": "314:25:0"
-        },
-        {
-          "contract": "AbstractWTAirlineIndex",
-          "path": "contracts/AbstractWTAirlineIndex.sol",
-          "label": "airlinesIndex",
-          "astId": 11,
-          "type": "t_mapping<t_uint256>",
-          "src": "411:45:0"
-        },
-        {
-          "contract": "AbstractWTAirlineIndex",
-          "path": "contracts/AbstractWTAirlineIndex.sol",
-          "label": "airlinesByManager",
-          "astId": 16,
-          "type": "t_mapping<t_array:dyn<t_address>>",
-          "src": "523:54:0"
-        },
-        {
-          "contract": "AbstractWTAirlineIndex",
-          "path": "contracts/AbstractWTAirlineIndex.sol",
-          "label": "airlinesByManagerIndex",
-          "astId": 20,
-          "type": "t_mapping<t_uint256>",
-          "src": "658:54:0"
-        },
-        {
-          "contract": "AbstractWTAirlineIndex",
-          "path": "contracts/AbstractWTAirlineIndex.sol",
-          "label": "LifToken",
-          "astId": 22,
-          "type": "t_address",
-          "src": "811:23:0"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
-      }
-    },
-    "WTHotelIndexPlayground": {
-      "address": "0xf48811058be8abc98db9fd82f76554de92e761fb",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "d8d2587e8cd011f48dc9bddb7e0bbe14087ca1539fd3e318212c6882f889205b",
-      "localBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
-      "deployedBytecodeHash": "a99147d2fd07403ca7a28bc5e21937ee5c21df541e35dace863f4768d00a3944",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_array:dyn<t_address>": {
-          "id": "t_array:dyn<t_address>",
-          "valueType": "t_address",
-          "length": "dyn",
-          "kind": "array",
-          "label": "address[]"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        },
-        "t_mapping<t_array:dyn<t_address>>": {
-          "id": "t_mapping<t_array:dyn<t_address>>",
-          "valueType": "t_array:dyn<t_address>",
-          "label": "mapping(key => address[])",
-          "kind": "mapping"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1837,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1839,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1888,
-          "type": "t_array:50<t_uint256>",
-          "src": "1891:29:15"
-        },
-        {
-          "contract": "Ownable",
-          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
-          "label": "owner",
-          "astId": 1751,
-          "type": "t_address",
-          "src": "238:20:14"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotels",
-          "astId": 104,
-          "type": "t_array:dyn<t_address>",
-          "src": "311:23:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsIndex",
-          "astId": 108,
-          "type": "t_mapping<t_uint256>",
-          "src": "402:43:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsByManager",
-          "astId": 113,
-          "type": "t_mapping<t_array:dyn<t_address>>",
-          "src": "510:52:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "hotelsByManagerIndex",
-          "astId": 117,
-          "type": "t_mapping<t_uint256>",
-          "src": "639:52:1"
-        },
-        {
-          "contract": "AbstractWTHotelIndex",
-          "path": "contracts/AbstractWTHotelIndex.sol",
-          "label": "LifToken",
-          "astId": 119,
-          "type": "t_address",
-          "src": "790:23:1"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
+        "uninitializedBaseContracts": []
       }
     },
     "WTAirlineIndexDemo": {
-      "address": "0x4eda5e852f989fa0bc8b3fd965c49f91e9ddb04b",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "3d69e799d659a2cf0ada41362bbc707c0112bf60544e40cb925a1662065745bf",
-      "localBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
-      "deployedBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
+      "address": "0x5166980c0a4a73507c6bee87aa554fa93c4c532a",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "ef9059301c6683c2883144cdc4d9b03e567ba0bd53ee841deb21432b4937142d",
+      "localBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
+      "deployedBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -586,7 +185,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1837,
+          "astId": 1849,
           "type": "t_bool",
           "src": "757:24:15"
         },
@@ -594,7 +193,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1839,
+          "astId": 1851,
           "type": "t_bool",
           "src": "876:25:15"
         },
@@ -602,7 +201,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 1888,
+          "astId": 1900,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:15"
         },
@@ -610,7 +209,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
           "label": "owner",
-          "astId": 1751,
+          "astId": 1763,
           "type": "t_address",
           "src": "238:20:14"
         },
@@ -660,17 +259,15 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
+        "uninitializedBaseContracts": []
       }
     },
     "WTAirlineIndexPlayground": {
-      "address": "0xe30fa26f607047c5355a35f2568414df8eba3cb6",
-      "constructorCode": "608060405260338054600160a060020a03191633179055611547806100256000396000f300",
-      "bodyBytecodeHash": "3d69e799d659a2cf0ada41362bbc707c0112bf60544e40cb925a1662065745bf",
-      "localBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
-      "deployedBytecodeHash": "80d08dd232c5c75ee74eb2fa620b8b874d04f0cd528834c449d05d9124ff16f5",
+      "address": "0x2e123cf3d4a6e8031ceb53434e9c8a6dd5925167",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "ef9059301c6683c2883144cdc4d9b03e567ba0bd53ee841deb21432b4937142d",
+      "localBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
+      "deployedBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
       "types": {
         "t_bool": {
           "id": "t_bool",
@@ -719,7 +316,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initialized",
-          "astId": 1837,
+          "astId": 1849,
           "type": "t_bool",
           "src": "757:24:15"
         },
@@ -727,7 +324,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "initializing",
-          "astId": 1839,
+          "astId": 1851,
           "type": "t_bool",
           "src": "876:25:15"
         },
@@ -735,7 +332,7 @@
           "contract": "Initializable",
           "path": "zos-lib/contracts/Initializable.sol",
           "label": "______gap",
-          "astId": 1888,
+          "astId": 1900,
           "type": "t_array:50<t_uint256>",
           "src": "1891:29:15"
         },
@@ -743,7 +340,7 @@
           "contract": "Ownable",
           "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
           "label": "owner",
-          "astId": 1751,
+          "astId": 1763,
           "type": "t_address",
           "src": "238:20:14"
         },
@@ -793,43 +390,434 @@
         "hasSelfDestruct": false,
         "hasDelegateCall": false,
         "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": [],
-        "storageUncheckedVars": [],
-        "storageDiff": []
+        "uninitializedBaseContracts": []
+      }
+    },
+    "WTAirlineIndex": {
+      "address": "0x98443d48155db01e0b5b0ab31d25d57a3d4ec4ce",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "ef9059301c6683c2883144cdc4d9b03e567ba0bd53ee841deb21432b4937142d",
+      "localBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
+      "deployedBytecodeHash": "a2b5c4fe73f5f4778c8866cf749be34403f6be639c31f81cecee435ed30c33a1",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_array:dyn<t_address>>": {
+          "id": "t_mapping<t_array:dyn<t_address>>",
+          "valueType": "t_array:dyn<t_address>",
+          "label": "mapping(key => address[])",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1849,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1851,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1900,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:15"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+          "label": "owner",
+          "astId": 1763,
+          "type": "t_address",
+          "src": "238:20:14"
+        },
+        {
+          "contract": "AbstractWTAirlineIndex",
+          "path": "contracts/AbstractWTAirlineIndex.sol",
+          "label": "airlines",
+          "astId": 7,
+          "type": "t_array:dyn<t_address>",
+          "src": "314:25:0"
+        },
+        {
+          "contract": "AbstractWTAirlineIndex",
+          "path": "contracts/AbstractWTAirlineIndex.sol",
+          "label": "airlinesIndex",
+          "astId": 11,
+          "type": "t_mapping<t_uint256>",
+          "src": "411:45:0"
+        },
+        {
+          "contract": "AbstractWTAirlineIndex",
+          "path": "contracts/AbstractWTAirlineIndex.sol",
+          "label": "airlinesByManager",
+          "astId": 16,
+          "type": "t_mapping<t_array:dyn<t_address>>",
+          "src": "523:54:0"
+        },
+        {
+          "contract": "AbstractWTAirlineIndex",
+          "path": "contracts/AbstractWTAirlineIndex.sol",
+          "label": "airlinesByManagerIndex",
+          "astId": 20,
+          "type": "t_mapping<t_uint256>",
+          "src": "658:54:0"
+        },
+        {
+          "contract": "AbstractWTAirlineIndex",
+          "path": "contracts/AbstractWTAirlineIndex.sol",
+          "label": "LifToken",
+          "astId": 22,
+          "type": "t_address",
+          "src": "811:23:0"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "WTHotelIndexPlayground": {
+      "address": "0xd1a3828487442e574be96b33d5d9872d8a119063",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "baa7394f0a09027e41afb78f3ab431c935bd2523b32e1069e6534bd85b19199f",
+      "localBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
+      "deployedBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_array:dyn<t_address>>": {
+          "id": "t_mapping<t_array:dyn<t_address>>",
+          "valueType": "t_array:dyn<t_address>",
+          "label": "mapping(key => address[])",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1849,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1851,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1900,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:15"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+          "label": "owner",
+          "astId": 1763,
+          "type": "t_address",
+          "src": "238:20:14"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotels",
+          "astId": 104,
+          "type": "t_array:dyn<t_address>",
+          "src": "311:23:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsIndex",
+          "astId": 108,
+          "type": "t_mapping<t_uint256>",
+          "src": "402:43:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsByManager",
+          "astId": 113,
+          "type": "t_mapping<t_array:dyn<t_address>>",
+          "src": "510:52:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsByManagerIndex",
+          "astId": 117,
+          "type": "t_mapping<t_uint256>",
+          "src": "639:52:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "LifToken",
+          "astId": 119,
+          "type": "t_address",
+          "src": "790:23:1"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "WTHotelIndex": {
+      "address": "0xbcfcec0d71f952c7d146f973887ec6fb4d35aee3",
+      "constructorCode": "608060405260338054600160a060020a0319163317905561155b806100256000396000f300",
+      "bodyBytecodeHash": "baa7394f0a09027e41afb78f3ab431c935bd2523b32e1069e6534bd85b19199f",
+      "localBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
+      "deployedBytecodeHash": "fc421a5fd65654320b9c8c03c0cced2b390f50de0fa2e3d31f8f14a173ce5d72",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_array:dyn<t_address>>": {
+          "id": "t_mapping<t_array:dyn<t_address>>",
+          "valueType": "t_array:dyn<t_address>",
+          "label": "mapping(key => address[])",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1849,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1851,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1900,
+          "type": "t_array:50<t_uint256>",
+          "src": "1891:29:15"
+        },
+        {
+          "contract": "Ownable",
+          "path": "openzeppelin-solidity/contracts/ownership/Ownable.sol",
+          "label": "owner",
+          "astId": 1763,
+          "type": "t_address",
+          "src": "238:20:14"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotels",
+          "astId": 104,
+          "type": "t_array:dyn<t_address>",
+          "src": "311:23:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsIndex",
+          "astId": 108,
+          "type": "t_mapping<t_uint256>",
+          "src": "402:43:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsByManager",
+          "astId": 113,
+          "type": "t_mapping<t_array:dyn<t_address>>",
+          "src": "510:52:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "hotelsByManagerIndex",
+          "astId": 117,
+          "type": "t_mapping<t_uint256>",
+          "src": "639:52:1"
+        },
+        {
+          "contract": "AbstractWTHotelIndex",
+          "path": "contracts/AbstractWTHotelIndex.sol",
+          "label": "LifToken",
+          "astId": 119,
+          "type": "t_address",
+          "src": "790:23:1"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
       }
     }
   },
   "solidityLibs": {},
   "proxies": {
-    "wt-contracts/WTHotelIndexDemo": [
-      {
-        "address": "0x5ed516b7fa6de096849e8735ea1dfac0ab02483b",
-        "version": "0.4.0",
-        "implementation": "0xc2b381632c6521b1460754bfd1f55565fd50afcf",
-        "admin": "0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3"
-      }
-    ],
     "wt-contracts/WTHotelIndexPlayground": [
       {
-        "address": "0x3f2cfa173e15584301b3f54f0c770380adc20da7",
-        "version": "0.4.0",
-        "implementation": "0xf48811058be8abc98db9fd82f76554de92e761fb",
+        "address": "0xe0cf4590e36befdfe9d0008b335fbfef592d1882",
+        "version": "0.5.0",
+        "implementation": "0xd1a3828487442e574be96b33d5d9872d8a119063",
         "admin": "0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3"
       }
     ],
-    "wt-contracts/WTAirlineIndexDemo": [
+    "wt-contracts/WTHotelIndexDemo": [
       {
-        "address": "0x7023d12af657740278569915d7c205ed9b2a0146",
-        "version": "0.4.0",
-        "implementation": "0x7f7db57f414d6af3e7e72e9623377103e431000d",
+        "address": "0x58215db2cc9644eafc06b60d76b2e4575f109421",
+        "version": "0.5.0",
+        "implementation": "0x0212f2abac837882348ae958c6d353fb190166d0",
         "admin": "0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3"
       }
     ],
     "wt-contracts/WTAirlineIndexPlayground": [
       {
-        "address": "0x8faa9de4848c160a0fc399b9c0ba78ba92d685f6",
-        "version": "0.4.0",
-        "implementation": "0xe1a0712e4b2dea693dca3245921bc2d4b54019b3",
+        "address": "0xa8892beead04672a8978528aa730bf62a0520e6f",
+        "version": "0.5.0",
+        "implementation": "0x2e123cf3d4a6e8031ceb53434e9c8a6dd5925167",
+        "admin": "0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3"
+      }
+    ],
+    "wt-contracts/WTAirlineIndexDemo": [
+      {
+        "address": "0x32c6db4f9d4f74dabb7b0879e39e087ee12611f8",
+        "version": "0.5.0",
+        "implementation": "0x5166980c0a4a73507c6bee87aa554fa93c4c532a",
         "admin": "0xfBc580bb54172F4F76E74Bc86E505c5acDa871c3"
       }
     ]
@@ -837,13 +825,13 @@
   "zosversion": "2",
   "frozen": false,
   "app": {
-    "address": "0x93c0fd198235839190e21bf2374810bff3ba658e"
+    "address": "0xc82b12179dd79b120baf20173117bba60dfd9bad"
   },
   "package": {
-    "address": "0x8af6fc3f147c462a8a006850d169580caaf60df3"
+    "address": "0x9fa31e5bbd4a76c527ddb761d650b881d1e72a37"
   },
   "provider": {
-    "address": "0x219962c79406eadeedaa003f4925e15a9d0586bc"
+    "address": "0xb6de80771ff88507048c81f27c8fea00e652bdfc"
   },
-  "version": "0.4.0"
+  "version": "0.5.0"
 }
