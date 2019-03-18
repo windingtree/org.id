@@ -13,6 +13,7 @@ contract('WTHotelIndex', (accounts) => {
   const proxyOwner = accounts[2];
   const hotelAccount = accounts[3];
   const nonOwnerAccount = accounts[4];
+  const tokenAddress = accounts[5];
 
   let hotelIndex;
 
@@ -20,9 +21,14 @@ contract('WTHotelIndex', (accounts) => {
   beforeEach(async () => {
     const hotelIndexDeployed = await WTHotelIndex.new({ from: hotelIndexOwner });
     hotelIndexDeployed.web3Instance = new web3.eth.Contract(hotelIndexDeployed.abi, hotelIndexDeployed.address);
-    const initializeData = hotelIndexDeployed.web3Instance.methods.initialize(hotelIndexOwner).encodeABI();
+    const initializeData = hotelIndexDeployed.web3Instance.methods.initialize(hotelIndexOwner, tokenAddress).encodeABI();
     const hotelIndexProxy = await AdminUpgradeabilityProxy.new(hotelIndexDeployed.address, initializeData, { from: proxyOwner });
     hotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
+  });
+
+  it('should set owner and liftoken', async () => {
+    assert.equal(await hotelIndex.owner(), hotelIndexOwner);
+    assert.equal(await hotelIndex.LifToken(), tokenAddress);
   });
 
   describe('upgradeability', () => {
@@ -66,8 +72,6 @@ contract('WTHotelIndex', (accounts) => {
   });
 
   describe('setLifToken', () => {
-    const tokenAddress = accounts[5];
-
     it('should set the LifToken address', async () => {
       const wtHotelIndex = await WTHotelIndex.at(hotelIndex.address);
       await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });

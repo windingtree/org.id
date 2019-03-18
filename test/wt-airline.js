@@ -15,6 +15,7 @@ contract('Airline', (accounts) => {
   const indexOwner = accounts[1];
   const airlineAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
+  const tokenAddress = accounts[5];
   let airlineAddress = help.zeroAddress;
   let wtAirlineIndex;
   let wtAirline;
@@ -23,7 +24,7 @@ contract('Airline', (accounts) => {
   beforeEach(async () => {
     const indexDeployed = await WTAirlineIndex.new({ from: indexOwner });
     indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
-    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner).encodeABI();
+    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner, tokenAddress).encodeABI();
     const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: indexOwner });
     wtAirlineIndex = await WTAirlineIndex.at(indexProxy.address);
 

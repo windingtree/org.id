@@ -13,6 +13,7 @@ contract('WTAirlineIndex', (accounts) => {
   const proxyOwner = accounts[2];
   const airlineAccount = accounts[3];
   const nonOwnerAccount = accounts[4];
+  const tokenAddress = accounts[5];
 
   let airlineIndex;
 
@@ -20,9 +21,14 @@ contract('WTAirlineIndex', (accounts) => {
   beforeEach(async () => {
     const airlineIndexDeployed = await WTAirlineIndex.new({ from: airlineIndexOwner });
     airlineIndexDeployed.web3Instance = new web3.eth.Contract(airlineIndexDeployed.abi, airlineIndexDeployed.address);
-    const initializeData = airlineIndexDeployed.web3Instance.methods.initialize(airlineIndexOwner).encodeABI();
+    const initializeData = airlineIndexDeployed.web3Instance.methods.initialize(airlineIndexOwner, tokenAddress).encodeABI();
     const airlineIndexProxy = await AdminUpgradeabilityProxy.new(airlineIndexDeployed.address, initializeData, { from: proxyOwner });
     airlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
+  });
+
+  it('should set owner and liftoken', async () => {
+    assert.equal(await airlineIndex.owner(), airlineIndexOwner);
+    assert.equal(await airlineIndex.LifToken(), tokenAddress);
   });
 
   describe('upgradeability', () => {
@@ -66,8 +72,6 @@ contract('WTAirlineIndex', (accounts) => {
   });
 
   describe('setLifToken', () => {
-    const tokenAddress = accounts[5];
-
     it('should set the LifToken address', async () => {
       const wtAirlineIndex = await WTAirlineIndex.at(airlineIndex.address);
       await wtAirlineIndex.setLifToken(tokenAddress, { from: airlineIndexOwner });

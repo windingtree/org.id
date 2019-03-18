@@ -3,13 +3,13 @@
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
   * [transferHotel](#function-transferhotel)
+  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [renounceOwnership](#function-renounceownership)
   * [hotelsByManager](#function-hotelsbymanager)
   * [owner](#function-owner)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
-  * [initialize](#function-initialize)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
   * [setLifToken](#function-setliftoken)
@@ -78,6 +78,20 @@ Inputs
 |-|-|-|
 | *address* | hotel | Hotel's address |
 | *address* | newManager | Address to which the hotel will belong after transfer. |
+
+
+## *function* initialize
+
+WTHotelIndex.initialize(_owner, _lifToken) `nonpayable` `485cc955`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
 
 
 ## *function* LifToken
@@ -149,19 +163,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address[]* |  | undefined |
-
-## *function* initialize
-
-WTHotelIndex.initialize(_owner) `nonpayable` `c4d66de8`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _owner | The address of the contract owner |
-
 
 ## *function* getHotelsLength
 
