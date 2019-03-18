@@ -22,3 +22,4 @@ truffle-config.js
 truffle.js
 zos.dev*
 *UpgradeabilityTest*
+.flattened
