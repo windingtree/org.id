@@ -64,10 +64,8 @@ if [ "$SOLIDITY_COVERAGE" = true ]; then
     cat coverage/lcov.info | node_modules/.bin/coveralls
   fi
 else
-  rm zos.dev-* -f
-  node_modules/.bin/zos session --network development --expires 10000
-  node_modules/.bin/zos push
-  mkdir -p migrations
+  NODE_ENV=test node_modules/.bin/truffle compile
+  # hack before https://github.com/trufflesuite/truffle/pull/1511 is released
+  cp node_modules/zos-lib/build/contracts/AdminUpgradeabilityProxy.json build/contracts
   NODE_ENV=test node_modules/.bin/truffle test "$@" -f
-  rm -r migrations
 fi
