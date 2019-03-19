@@ -65,7 +65,5 @@ if [ "$SOLIDITY_COVERAGE" = true ]; then
   fi
 else
   NODE_ENV=test node_modules/.bin/truffle compile
-  # hack before https://github.com/trufflesuite/truffle/pull/1511 is released
-  cp node_modules/zos-lib/build/contracts/AdminUpgradeabilityProxy.json build/contracts
   NODE_ENV=test node_modules/.bin/truffle test "$@" -f
 fi
