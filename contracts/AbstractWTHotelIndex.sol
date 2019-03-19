@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
@@ -42,11 +42,11 @@ contract AbstractWTHotelIndex is Ownable {
      */
     event HotelTransferred(address hotel, address previousManager, address newManager);
 
-    function registerHotel(string dataUri) external returns (address);
+    function registerHotel(string calldata dataUri) external returns (address);
     function deleteHotel(address hotel) external;
-    function callHotel(address hotel, bytes data) external;
-    function transferHotel(address hotel, address newManager) external;
+    function callHotel(address hotel, bytes calldata data) external;
+    function transferHotel(address hotel, address payable newManager) external;
     function getHotelsLength() public view returns (uint);
-    function getHotels() public view returns (address[]);
-    function getHotelsByManager(address manager) public view returns (address[]);
+    function getHotels() public view returns (address[] memory);
+    function getHotelsByManager(address manager) public view returns (address[] memory);
 }

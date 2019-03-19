@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "./AbstractAirline.sol";
 
@@ -15,7 +15,7 @@ contract Airline is AbstractAirline {
      * @param _dataUri pointer to airline data
      * @param _index originating WTAirlineIndex address
      */
-    constructor(address _manager, string _dataUri, address _index) public {
+    constructor(address payable _manager, string memory _dataUri, address _index) public {
         require(_manager != address(0));
         require(_index != address(0));
         require(bytes(_dataUri).length != 0);
@@ -25,7 +25,7 @@ contract Airline is AbstractAirline {
         created = block.number;
     }
 
-    function _editInfoImpl(string _dataUri) internal {
+    function _editInfoImpl(string memory _dataUri) internal {
         require(bytes(_dataUri).length != 0);
         dataUri = _dataUri;
     }
@@ -34,7 +34,7 @@ contract Airline is AbstractAirline {
         selfdestruct(manager);
     }
 
-    function _changeManagerImpl(address _newManager) internal {
+    function _changeManagerImpl(address payable _newManager) internal {
         require(_newManager != address(0));
         manager = _newManager;
     }

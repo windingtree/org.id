@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTHotelIndex.sol";
@@ -18,14 +18,19 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @param  dataUri Hotel's data pointer
      * @return {" ": "Address of the new hotel."}
      */
-    function registerHotel(string dataUri) external returns (address) {
-        Hotel newHotel = new Hotel(msg.sender, dataUri, this);
-        hotelsIndex[newHotel] = hotels.length;
-        hotels.push(newHotel);
-        hotelsByManagerIndex[newHotel] = hotelsByManager[msg.sender].length;
-        hotelsByManager[msg.sender].push(newHotel);
-        emit HotelRegistered(newHotel, hotelsByManagerIndex[newHotel], hotelsIndex[newHotel]);
-        return newHotel;
+    function registerHotel(string calldata dataUri) external returns (address) {
+        Hotel newHotel = new Hotel(msg.sender, dataUri, address(this));
+        address newHotelAddress = address(newHotel);
+        hotelsIndex[newHotelAddress] = hotels.length;
+        hotels.push(newHotelAddress);
+        hotelsByManagerIndex[newHotelAddress] = hotelsByManager[msg.sender].length;
+        hotelsByManager[msg.sender].push(newHotelAddress);
+        emit HotelRegistered(
+            newHotelAddress,
+            hotelsByManagerIndex[newHotelAddress],
+            hotelsIndex[newHotelAddress]
+        );
+        return newHotelAddress;
     }
 
     /**
@@ -63,7 +68,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @param  hotel Hotel's address
      * @param  data Encoded method call to be done on Hotel contract.
      */
-    function callHotel(address hotel, bytes data) external {
+    function callHotel(address hotel, bytes calldata data) external {
         // Ensure hotel address is valid
         require(hotel != address(0));
         // Ensure we know about the hotel at all
@@ -74,7 +79,8 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
         // Ensure we are calling only our own hotels
         require(hotelInstance.index() == address(this));
         // solhint-disable-next-line avoid-low-level-calls
-        require(hotel.call(data));
+        (bool success,) = hotel.call(data);
+        require(success);
         emit HotelCalled(hotel);
     }
 
@@ -84,7 +90,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @param hotel Hotel's address
      * @param newManager Address to which the hotel will belong after transfer.
      */
-    function transferHotel(address hotel, address newManager) external {
+    function transferHotel(address hotel, address payable newManager) external {
         // Ensure hotel address is valid
         require(hotel != address(0));
         // Ensure new manager is valid
@@ -116,9 +122,9 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @param _lifToken The new contract address
      */
     function initialize(address _owner, address _lifToken) public initializer {
-        hotels.length++;
-        owner = _owner;
+        transferOwnership(_owner); // we need to explicitly call this as otherwise owner is set to msg.sender
         LifToken = _lifToken;
+        hotels.length++;
     }
 
     /**
@@ -142,7 +148,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @dev `getHotels` get `hotels` array
      * @return {" ": "Array of hotel addresses. Might contain zero addresses."}
      */
-    function getHotels() public view returns (address[]) {
+    function getHotels() public view returns (address[] memory) {
         return hotels;
     }
 
@@ -151,7 +157,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @param  manager Manager address
      * @return {" ": "Array of hotels belonging to one manager. Might contain zero addresses."}
      */
-    function getHotelsByManager(address manager) public view returns (address[]) {
+    function getHotelsByManager(address manager) public view returns (address[] memory) {
         return hotelsByManager[manager];
     }
 }
