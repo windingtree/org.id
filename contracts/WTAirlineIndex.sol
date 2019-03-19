@@ -12,8 +12,6 @@ import "./airline/Airline.sol";
  */
 contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
-
-
     /**
      * @dev `registerAirline` Register new airline in the index.
      * Emits `AirlineRegistered` on success.
@@ -120,11 +118,11 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
     /**
      * @dev Initializer for upgradeable contracts.
-     * @param  _owner The address of the contract owner
+     * @param __owner The address of the contract owner
      * @param _lifToken The new contract address
      */
-    function initialize(address payable _owner, address _lifToken) public initializer {
-        transferOwnership(_owner); // we need to explicitly call this as otherwise owner is set to msg.sender
+    function initialize(address __owner, address _lifToken) public initializer {
+        _owner = __owner;
         LifToken = _lifToken;
         airlines.length++;
     }
