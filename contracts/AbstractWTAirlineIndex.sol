@@ -26,20 +26,20 @@ contract AbstractWTAirlineIndex {
     /**
      * @dev Event triggered every time airline is registered
      */
-    event AirlineRegistered(address airline, uint managerIndex, uint allIndex);
+    event AirlineRegistered(address indexed airline, uint managerIndex, uint allIndex);
     /**
      * @dev Event triggered every time airline is deleted
      */
-    event AirlineDeleted(address airline, uint managerIndex, uint allIndex);
+    event AirlineDeleted(address indexed airline, uint managerIndex, uint allIndex);
     /**
      * @dev Event triggered every time airline is called
      */
-    event AirlineCalled(address airline);
+    event AirlineCalled(address indexed airline);
 
     /**
      * @dev Event triggered every time a airline changes a manager.
      */
-    event AirlineTransferred(address airline, address previousManager, address newManager);
+    event AirlineTransferred(address indexed airline, address previousManager, address newManager);
 
     /**
      * @dev Event triggered when owner of the index is changed.

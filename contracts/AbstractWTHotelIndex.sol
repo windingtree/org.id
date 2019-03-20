@@ -27,20 +27,20 @@ contract AbstractWTHotelIndex {
     /**
      * @dev Event triggered every time hotel is registered
      */
-    event HotelRegistered(address hotel, uint managerIndex, uint allIndex);
+    event HotelRegistered(address indexed hotel, uint managerIndex, uint allIndex);
     /**
      * @dev Event triggered every time hotel is deleted
      */
-    event HotelDeleted(address hotel, uint managerIndex, uint allIndex);
+    event HotelDeleted(address indexed hotel, uint managerIndex, uint allIndex);
     /**
      * @dev Event triggered every time hotel is called
      */
-    event HotelCalled(address hotel);
+    event HotelCalled(address indexed hotel);
 
     /**
      * @dev Event triggered every time a hotel changes a manager.
      */
-    event HotelTransferred(address hotel, address previousManager, address newManager);
+    event HotelTransferred(address indexed hotel, address previousManager, address newManager);
 
     /**
      * @dev Event triggered when owner of the index is changed.
