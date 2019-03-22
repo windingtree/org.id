@@ -45,6 +45,29 @@ contract('WTAirlineIndex', (accounts) => {
     assert.equal(await airlineIndex.LifToken(), tokenAddress);
   });
 
+  describe('transferOwnership', async () => {
+    it('should transfer ownership', async () => {
+      const wtAirlineIndex = await TruffleWTAirlineIndex.at(airlineIndex.address);
+      await wtAirlineIndex.transferOwnership(proxyOwner, { from: airlineIndexOwner });
+      // We cannot access _owner directly, it is not public
+      try {
+        await wtAirlineIndex.setLifToken(tokenAddress, { from: airlineIndexOwner });
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+      await wtAirlineIndex.transferOwnership(airlineIndexOwner, { from: proxyOwner });
+    });
+
+    it('should not transfer ownership when initiated from a non-owner', async () => {
+      try {
+        await (await TruffleWTAirlineIndex.at(airlineIndex.address)).transferOwnership(tokenAddress, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
   describe('upgradeability', () => {
     it('should upgrade WTAirlineIndex and have new functions in Index and Airline contracts', async () => {
       await airlineIndex.registerAirline('dataUri', { from: airlineAccount });

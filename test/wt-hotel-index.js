@@ -45,6 +45,29 @@ contract('WTHotelIndex', (accounts) => {
     assert.equal(await hotelIndex.LifToken(), tokenAddress);
   });
 
+  describe('transferOwnership', async () => {
+    it('should transfer ownership', async () => {
+      const wtHotelIndex = await TruffleWTHotelIndex.at(hotelIndex.address);
+      await wtHotelIndex.transferOwnership(proxyOwner, { from: hotelIndexOwner });
+      // We cannot access _owner directly, it is not public
+      try {
+        await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+      await wtHotelIndex.transferOwnership(hotelIndexOwner, { from: proxyOwner });
+    });
+
+    it('should not transfer ownership when initiated from a non-owner', async () => {
+      try {
+        await (await TruffleWTHotelIndex.at(hotelIndex.address)).transferOwnership(tokenAddress, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
   describe('upgradeability', () => {
     it('should upgrade WTHotelIndex and have new functions in Index and Hotel contracts', async () => {
       await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
@@ -86,7 +109,6 @@ contract('WTHotelIndex', (accounts) => {
       const wtHotelIndex = await TruffleWTHotelIndex.at(hotelIndex.address);
       await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });
       const setValue = await wtHotelIndex.LifToken();
-
       assert.equal(setValue, tokenAddress);
     });
 
