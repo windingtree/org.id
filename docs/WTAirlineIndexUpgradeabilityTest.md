@@ -235,7 +235,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -247,7 +247,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -259,7 +259,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 
 ## *event* AirlineTransferred
 
@@ -269,7 +269,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *address* | previousManager | not indexed |
 | *address* | newManager | not indexed |
 

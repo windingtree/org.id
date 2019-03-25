@@ -232,7 +232,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -244,7 +244,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -256,7 +256,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 
 ## *event* HotelTransferred
 
@@ -266,7 +266,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *address* | previousManager | not indexed |
 | *address* | newManager | not indexed |
 
