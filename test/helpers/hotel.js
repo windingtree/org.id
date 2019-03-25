@@ -1,27 +1,8 @@
-const WTHotelInterface = artifacts.require('AbstractHotel.sol');
-
 const {
   isZeroAddress,
   isZeroUint,
   isZeroString,
 } = require('./misc');
-
-/**
- * Async method that creates a new empty Hotel.
- * @param  {Instance} wtHotelIndex            WTHotelIndex contract instance
- * @param  {Address} hotelAccount        address of the hotel's account
- * @return {Instance} Hotel
- * @example
- *   const wtHotel = await createHotel(accounts[2]);
- *   wtHotel.callHotel(..etc..)
- */
-async function createHotel (wtHotelIndex, hotelAccount) {
-  await wtHotelIndex.registerHotel('WT Hotel', 'WT Test Hotel', { from: hotelAccount });
-  let wtHotelAddress = await wtHotelIndex.getHotelsByManager(hotelAccount);
-  let wtHotel = await WTHotelInterface.at(wtHotelAddress[0]);
-
-  return wtHotel;
-}
 
 /**
  * Async function which gets all info associated with hotel, its unit types and units. Zero
@@ -46,6 +27,5 @@ async function getHotelInfo (wtHotel) {
 }
 
 module.exports = {
-  createHotel: createHotel,
   getHotelInfo: getHotelInfo,
 };

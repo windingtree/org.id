@@ -8,9 +8,7 @@
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
-  * [renounceOwnership](#function-renounceownership)
   * [getAirlinesByManager](#function-getairlinesbymanager)
-  * [owner](#function-owner)
   * [getAirlinesLength](#function-getairlineslength)
   * [airlinesIndex](#function-airlinesindex)
   * [transferAirline](#function-transferairline)
@@ -20,7 +18,6 @@
   * [AirlineDeleted](#event-airlinedeleted)
   * [AirlineCalled](#event-airlinecalled)
   * [AirlineTransferred](#event-airlinetransferred)
-  * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # WTAirlineIndex
@@ -112,7 +109,7 @@ Inputs
 
 ## *function* initialize
 
-WTAirlineIndex.initialize(_owner, _lifToken) `nonpayable` `485cc955`
+WTAirlineIndex.initialize(__owner, _lifToken) `nonpayable` `485cc955`
 
 > Initializer for upgradeable contracts.
 
@@ -120,7 +117,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _owner | The address of the contract owner |
+| *address* | __owner | The address of the contract owner |
 | *address* | _lifToken | The new contract address |
 
 
@@ -144,17 +141,6 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* renounceOwnership
-
-WTAirlineIndex.renounceOwnership() `nonpayable` `715018a6`
-
-**Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
-
-> Allows the current owner to relinquish control of the contract.
-
-
-
-
 ## *function* getAirlinesByManager
 
 WTAirlineIndex.getAirlinesByManager(manager) `view` `7ea6d3c1`
@@ -172,14 +158,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address[]* |  | undefined |
-
-## *function* owner
-
-WTAirlineIndex.owner() `view` `8da5cb5b`
-
-
-
-
 
 ## *function* getAirlinesLength
 
@@ -236,7 +214,7 @@ Inputs
 
 ## *function* transferOwnership
 
-WTAirlineIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+WTAirlineIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -244,7 +222,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _newOwner | The address to transfer ownership to. |
+| *address* | newOwner | The address to transfer ownership to. |
 
 ## *event* AirlineRegistered
 
@@ -254,7 +232,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -266,7 +244,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -278,7 +256,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 
 ## *event* AirlineTransferred
 
@@ -288,19 +266,9 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *address* | previousManager | not indexed |
 | *address* | newManager | not indexed |
-
-## *event* OwnershipRenounced
-
-WTAirlineIndex.OwnershipRenounced(previousOwner) `f8df3114`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousOwner | indexed |
 
 ## *event* OwnershipTransferred
 

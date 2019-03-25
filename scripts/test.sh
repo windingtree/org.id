@@ -40,7 +40,7 @@ start_testrpc() {
   )
 
   if [ "$SOLIDITY_COVERAGE" = true ]; then
-    node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port "$testrpc_port" "${accounts[@]}" > /dev/null &
+    node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port "$testrpc_port" "${accounts[@]}" --allowUnlimitedContractSize > /dev/null &
   else
     node_modules/.bin/ganache-cli  --gasLimit 0xfffffffffff "${accounts[@]}" > /dev/null &
   fi
@@ -56,18 +56,12 @@ else
 fi
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
-  mkdir -p migrations
   node_modules/.bin/solidity-coverage
-  rm -r migrations
 
   if [ "$CONTINUOUS_INTEGRATION" = true ]; then
     cat coverage/lcov.info | node_modules/.bin/coveralls
   fi
 else
-  rm zos.dev-* -f
-  node_modules/.bin/zos session --network development --expires 10000
-  node_modules/.bin/zos push
-  mkdir -p migrations
+  NODE_ENV=test node_modules/.bin/truffle compile
   NODE_ENV=test node_modules/.bin/truffle test "$@" -f
-  rm -r migrations
 fi

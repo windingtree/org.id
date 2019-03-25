@@ -7,9 +7,7 @@
   * [airlines](#function-airlines)
   * [LifToken](#function-liftoken)
   * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
-  * [renounceOwnership](#function-renounceownership)
   * [getAirlinesByManager](#function-getairlinesbymanager)
-  * [owner](#function-owner)
   * [getAirlinesLength](#function-getairlineslength)
   * [airlinesIndex](#function-airlinesindex)
   * [transferAirline](#function-transferairline)
@@ -18,7 +16,6 @@
   * [AirlineDeleted](#event-airlinedeleted)
   * [AirlineCalled](#event-airlinecalled)
   * [AirlineTransferred](#event-airlinetransferred)
-  * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AbstractWTAirlineIndex
@@ -114,17 +111,6 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* renounceOwnership
-
-AbstractWTAirlineIndex.renounceOwnership() `nonpayable` `715018a6`
-
-**Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
-
-> Allows the current owner to relinquish control of the contract.
-
-
-
-
 ## *function* getAirlinesByManager
 
 AbstractWTAirlineIndex.getAirlinesByManager(manager) `view` `7ea6d3c1`
@@ -135,14 +121,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | manager | undefined |
-
-
-## *function* owner
-
-AbstractWTAirlineIndex.owner() `view` `8da5cb5b`
-
-
-
 
 
 ## *function* getAirlinesLength
@@ -180,7 +158,7 @@ Inputs
 
 ## *function* transferOwnership
 
-AbstractWTAirlineIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+AbstractWTAirlineIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -188,7 +166,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _newOwner | The address to transfer ownership to. |
+| *address* | newOwner | The address to transfer ownership to. |
 
 ## *event* AirlineRegistered
 
@@ -198,7 +176,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -210,7 +188,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -222,7 +200,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 
 ## *event* AirlineTransferred
 
@@ -232,19 +210,9 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | not indexed |
+| *address* | airline | indexed |
 | *address* | previousManager | not indexed |
 | *address* | newManager | not indexed |
-
-## *event* OwnershipRenounced
-
-AbstractWTAirlineIndex.OwnershipRenounced(previousOwner) `f8df3114`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousOwner | indexed |
 
 ## *event* OwnershipTransferred
 

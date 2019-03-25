@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "../WTAirlineIndex.sol";
 import "./AirlineUpgradeabilityTest.sol";
@@ -6,14 +6,18 @@ import "./AirlineUpgradeabilityTest.sol";
 
 contract WTAirlineIndexUpgradeabilityTest is WTAirlineIndex {
 
-    function registerAirline(string dataUri) external returns (address) {
-        AirlineUpgradeabilityTest newAirline = new AirlineUpgradeabilityTest(msg.sender, dataUri, this);
-        airlinesIndex[newAirline] = airlines.length;
-        airlines.push(newAirline);
-        airlinesByManagerIndex[newAirline] = airlinesByManager[msg.sender].length;
-        airlinesByManager[msg.sender].push(newAirline);
-        emit AirlineRegistered(newAirline, airlinesByManagerIndex[newAirline], airlinesIndex[newAirline]);
-        return newAirline;
+    function registerAirline(string calldata dataUri) external returns (address) {
+        AirlineUpgradeabilityTest newAirline = new AirlineUpgradeabilityTest(msg.sender, dataUri, address(this));
+        airlinesIndex[address(newAirline)] = airlines.length;
+        airlines.push(address(newAirline));
+        airlinesByManagerIndex[address(newAirline)] = airlinesByManager[msg.sender].length;
+        airlinesByManager[msg.sender].push(address(newAirline));
+        emit AirlineRegistered(
+            address(newAirline),
+            airlinesByManagerIndex[address(newAirline)],
+            airlinesIndex[address(newAirline)]
+        );
+        return address(newAirline);
     }
 
     function newFunction() public pure returns(uint) {

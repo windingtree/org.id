@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 
 /**
@@ -8,7 +8,7 @@ pragma solidity ^0.4.25;
 contract AbstractAirline {
 
     // Who owns this Airline and can manage it.
-    address public manager;
+    address payable public manager;
 
     // Arbitrary locator of the off-chain stored airline data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -34,7 +34,7 @@ contract AbstractAirline {
      * @dev `editInfo` Allows owner to change airline's dataUri.
      * @param  _dataUri New dataUri pointer of this hotel
      */
-    function editInfo(string _dataUri) public onlyFromIndex {
+    function editInfo(string memory _dataUri) public onlyFromIndex {
         _editInfoImpl(_dataUri);
     }
 
@@ -49,11 +49,11 @@ contract AbstractAirline {
      * @dev Allows owner to change airline manager.
      * @param _newManager New manager's address
      */
-    function changeManager(address _newManager) public onlyFromIndex {
+    function changeManager(address payable _newManager) public onlyFromIndex {
         _changeManagerImpl(_newManager);
     }
 
-    function _editInfoImpl(string _dataUri) internal;
+    function _editInfoImpl(string memory _dataUri) internal;
     function _destroyImpl() internal;
-    function _changeManagerImpl(address _newManager) internal;
+    function _changeManagerImpl(address payable _newManager) internal;
 }
