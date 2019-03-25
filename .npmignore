@@ -13,3 +13,12 @@ test
 .eslintrc.js
 .travis.yml
 truffle-config.js
+.gitattributes
+.gitignore
+.nvmrc
+.solhint.json
+.solhintignore
+.zos.*
+truffle.js
+zos.dev*
+*UpgradeabilityTest*

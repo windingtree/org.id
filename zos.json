@@ -1,0 +1,14 @@
+{
+  "zosversion": "2",
+  "name": "wt-contracts",
+  "version": "0.5.0",
+  "publish": true,
+  "contracts": {
+    "WTHotelIndex": "WTHotelIndex",
+    "WTAirlineIndex": "WTAirlineIndex",
+    "WTAirlineIndexDemo": "WTAirlineIndex",
+    "WTHotelIndexDemo": "WTHotelIndex",
+    "WTAirlineIndexPlayground": "WTAirlineIndex",
+    "WTHotelIndexPlayground": "WTHotelIndex"
+  }
+}

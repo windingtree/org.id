@@ -1,12 +1,10 @@
 module.exports = {
   norpc: true,
-  copyNodeModules: true,
+  copyPackages: [
+    'openzeppelin-solidity',
+    'zos-lib'
+  ],
   skipFiles: [
-    'lif/LifCrowdsale.sol',
-    'lif/LifMarketValidationMechanism.sol',
-    'lif/LifToken.sol',
-    'lif/Migrations.sol',
-    'lif/SmartToken.sol',
-    'lif/VestedPayment.sol'
+    'Imports.sol',
   ]
 }

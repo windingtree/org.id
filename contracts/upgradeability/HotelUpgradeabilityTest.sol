@@ -1,20 +1,10 @@
 pragma solidity ^0.4.25;
 
-import "./AbstractHotel.sol";
+import "../hotel/AbstractHotel.sol";
 
 
-/**
- * @title Hotel, contract for a Hotel registered in the WT network
- * @dev A contract that represents a hotel in the WT network.
- */
-contract Hotel is AbstractHotel {
+contract HotelUpgradeabilityTest is AbstractHotel {
 
-    /**
-     * @dev Constructor.
-     * @param _manager address of hotel owner
-     * @param _dataUri pointer to hotel data
-     * @param _index originating WTHotelIndex address
-     */
     constructor(address _manager, string _dataUri, address _index) public {
         require(_manager != address(0));
         require(_index != address(0));
@@ -23,6 +13,10 @@ contract Hotel is AbstractHotel {
         index = _index;
         dataUri = _dataUri;
         created = block.number;
+    }
+
+    function newFunction() public pure returns(uint) {
+        return 100;
     }
 
     function _editInfoImpl(string _dataUri) internal {

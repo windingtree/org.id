@@ -1,14 +1,11 @@
 pragma solidity ^0.4.25;
 
-import "../AbstractBaseContract.sol";
-
 
 /**
  * @title AbstractAirline
- * @dev Interface of Airline contract, inherits from
- * WT's 'AbstractBaseContract'.
+ * @dev Interface of Airline contract
  */
-contract AbstractAirline is AbstractBaseContract {
+contract AbstractAirline {
 
     // Who owns this Airline and can manage it.
     address public manager;

@@ -3,7 +3,6 @@
   * [callHotel](#function-callhotel)
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
   * [transferHotel](#function-transferhotel)
-  * [version](#function-version)
   * [LifToken](#function-liftoken)
   * [renounceOwnership](#function-renounceownership)
   * [hotelsByManager](#function-hotelsbymanager)
@@ -11,7 +10,6 @@
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
-  * [contractType](#function-contracttype)
   * [hotels](#function-hotels)
   * [transferOwnership](#function-transferownership)
   * [registerHotel](#function-registerhotel)
@@ -70,14 +68,6 @@ Inputs
 |-|-|-|
 | *address* | hotel | undefined |
 | *address* | newManager | undefined |
-
-
-## *function* version
-
-AbstractWTHotelIndex.version() `view` `54fd4d50`
-
-
-
 
 
 ## *function* LifToken
@@ -147,14 +137,6 @@ Inputs
 ## *function* getHotelsLength
 
 AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
-
-
-
-
-
-## *function* contractType
-
-AbstractWTHotelIndex.contractType() `view` `cb2ef6f7`
 
 
 

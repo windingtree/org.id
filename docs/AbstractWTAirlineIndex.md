@@ -5,7 +5,6 @@
   * [airlinesByManager](#function-airlinesbymanager)
   * [callAirline](#function-callairline)
   * [airlines](#function-airlines)
-  * [version](#function-version)
   * [LifToken](#function-liftoken)
   * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
   * [renounceOwnership](#function-renounceownership)
@@ -13,7 +12,6 @@
   * [owner](#function-owner)
   * [getAirlinesLength](#function-getairlineslength)
   * [airlinesIndex](#function-airlinesindex)
-  * [contractType](#function-contracttype)
   * [transferAirline](#function-transferairline)
   * [transferOwnership](#function-transferownership)
   * [AirlineRegistered](#event-airlineregistered)
@@ -96,14 +94,6 @@ Inputs
 | *uint256* |  | undefined |
 
 
-## *function* version
-
-AbstractWTAirlineIndex.version() `view` `54fd4d50`
-
-
-
-
-
 ## *function* LifToken
 
 AbstractWTAirlineIndex.LifToken() `view` `554d8b37`
@@ -173,14 +163,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-
-
-## *function* contractType
-
-AbstractWTAirlineIndex.contractType() `view` `cb2ef6f7`
-
-
-
 
 
 ## *function* transferAirline

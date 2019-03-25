@@ -3,13 +3,13 @@ sudo: required
 group: beta
 language: node_js
 node_js:
-- 10.3.0
+- 10
 env:
   matrix:
   - 
   - SOLIDITY_COVERAGE=true
   global:
-    secure: ID5vaVncWZkzlEy/4dlSteISOeHpt8+VZTSmEHzaTPiCX2TUGQH7zdyXcJB1N9xXvmTJrYhDN/D9LzzDajIJMPeooqWBdgSLSfLOMO9ERNC6Pj8lVWzH7yrUcendqAjFZc1VLuj0kWS2glMhfuxCteYVMSGqeOOb/vgk31nJ0uy7htaCiXB7+32o9oO/5ANMb4rgIeDbA+FZJCoIxn3oFRuQj515cRVakOZL2BgYEcozgr+Nbg3EgsySnbNScpl4X02j9m8LzfCBhBvNIvsqi+YiPClzedBEaiXXDMV4F8RLhcEwMQSkMSvHSv/lNyCyLPPm2FbyIpb3xnx5KAQCnl8noeduhwFjFH2rn6TRp40GoOCEICB2tBOXH4xmSiY5wKgT3RBLcMdvIZThjcfceDa4mXlVfFfIBtk6UTRTZu8rLBfWT3tsZLTuJumLuAd0XZ0qtaMZqavj+NLq2G65pkvJ2aAxyIe9VY/7DXojApxZnvfmooBqEykL8FMnoPp2Oo4swhBVZMGoQX1x2MJ/WDjTLN7RSoSqyZYikjVyKFb/6DbIIJmtm6j3jyR7q/fdXU0cVxrff1FbhSwJrgLYYBl8NZxuD+xm0jhzXknw1sfnWquz8Uh5wA2bJVunME52bHJfxYvMD5RgmB2cJ6jYUQopRDiapKf5Y++ppdojfSU=
+    secure: kCYoCJpn71dBISD2qctMYZtpPcn/mf9Yxm+Gm8G4Y0mYIP/CD0A8QCPQsrw7rO4F2Bt3Yh13/rgIwYcsX6cylE7xpVVOuUQD+MsMxrUQR2tJo9FDnbhBCehy8yEPoKhXgcI/gv8cw2hb4SasU3VTbtgeHPjxz6+EX5hw2ZAOiLZQ2LpRgV59A2ygHioT/s8WZgjrXyog+7xsv0elrklMTlmk1lLYQ1VKyu6AjzCTFPnk6HtK5g6rTZQkqRZfD4xDufwttBoMGRa6h5me+9kNBDpSVSwv85zetqdAR9o+71ITYKQuazZ58+bK6gimXbAmWy28pRKEB5KszbtSKsPOYbEA3Q4NT3QNiOPKrL4n4d+watPVfXfCLTdjuKyRXONzULQoPxvzzxleFsym+HL9c0ZPsPfN2SPmrN1MJlh+B1G8YMfVX3WKaNX2GqRBM+GQfo8r3FYKVBTNuEtpmBIKrVGMPSnEQAGhUQBPYY85UAPMy813d+SPMdDjSGYBvdz4liVmcUIX9v0IWUqTl9RhpKnGSlBU45AH4NqWtG1LPwnDPDoeLtCS0E2zwkzgjBGc556Qkfw87wJlI5lr3fNLm+OeVdH4krLldeP0E2yq7XjlxlLYfVJrXSwgHgC5p5dsTyHut3e8u/I+KhpDIxYn0lRrucFFUBA79PfbbQD0UeE=
 matrix:
   fast_finish: true
   allow_failures:
@@ -21,9 +21,10 @@ script:
 before_deploy: npm run buildfornpm
 deploy:
   provider: npm
-  email: chadima.jiri@gmail.com
+  email: devops@windingtree.com
   skip_cleanup: true
   api_key: "$NPM_TOKEN"
   on:
     repo: windingtree/wt-contracts
     tags: true
+    condition: $SOLIDITY_COVERAGE != true

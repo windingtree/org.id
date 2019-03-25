@@ -1,5 +1,6 @@
 pragma solidity ^0.4.25;
 
+import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTAirlineIndex.sol";
 import "./airline/Airline.sol";
 
@@ -7,51 +8,11 @@ import "./airline/Airline.sol";
 /**
  * @title WTAirlineIndex, registry of all airlines registered on WT
  * @dev The airlines are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
+ * address.
  */
-contract WTAirlineIndex is AbstractWTAirlineIndex {
+contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
-    bytes32 public contractType = bytes32("WTAirlineIndex");
 
-    // Array of addresses of `Airline` contracts
-    address[] public airlines;
-
-    // Mapping of airlines position in the general airline index
-    mapping(address => uint) public airlinesIndex;
-
-    // Mapping of the airlines indexed by manager's address
-    mapping(address => address[]) public airlinesByManager;
-    // Mapping of airlines position in the manager's indexed airline index
-    mapping(address => uint) public airlinesByManagerIndex;
-
-    // Address of the LifToken contract
-    // solhint-disable-next-line var-name-mixedcase
-    address public LifToken;
-
-    /**
-     * @dev Event triggered every time airline is registered
-     */
-    event AirlineRegistered(address airline, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time airline is deleted
-     */
-    event AirlineDeleted(address airline, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time airline is called
-     */
-    event AirlineCalled(address airline);
-
-    /**
-     * @dev Event triggered every time a airline changes a manager.
-     */
-    event AirlineTransferred(address airline, address previousManager, address newManager);
-
-    /**
-     * @dev Constructor. Creates the `WTAirlineIndex` contract
-     */
-    constructor() public {
-        airlines.length++;
-    }
 
     /**
      * @dev `registerAirline` Register new airline in the index.
@@ -149,6 +110,17 @@ contract WTAirlineIndex is AbstractWTAirlineIndex {
         airlinesByManagerIndex[airline] = airlinesByManager[newManager].length;
         airlinesByManager[newManager].push(airline);
         emit AirlineTransferred(airline, msg.sender, newManager);
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param  _owner The address of the contract owner
+     * @param _lifToken The new contract address
+     */
+    function initialize(address _owner, address _lifToken) public initializer {
+        airlines.length++;
+        owner = _owner;
+        LifToken = _lifToken;
     }
 
     /**

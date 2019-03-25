@@ -1,5 +1,6 @@
 pragma solidity ^0.4.25;
 
+import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTHotelIndex.sol";
 import "./hotel/Hotel.sol";
 
@@ -7,51 +8,9 @@ import "./hotel/Hotel.sol";
 /**
  * @title WTHotelIndex, registry of all hotels registered on WT
  * @dev The hotels are stored in an array and can be filtered by the owner
- * address. Inherits from OpenZeppelin's `Ownable` and `AbstractBaseContract`.
+ * address.
  */
-contract WTHotelIndex is AbstractWTHotelIndex {
-
-    bytes32 public contractType = bytes32("WTHotelIndex");
-
-    // Array of addresses of `Hotel` contracts
-    address[] public hotels;
-
-    // Mapping of hotels position in the general hotel index
-    mapping(address => uint) public hotelsIndex;
-
-    // Mapping of the hotels indexed by manager's address
-    mapping(address => address[]) public hotelsByManager;
-    // Mapping of hotels position in the manager's indexed hotel index
-    mapping(address => uint) public hotelsByManagerIndex;
-
-    // Address of the LifToken contract
-    // solhint-disable-next-line var-name-mixedcase
-    address public LifToken;
-
-    /**
-     * @dev Event triggered every time hotel is registered
-     */
-    event HotelRegistered(address hotel, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time hotel is deleted
-     */
-    event HotelDeleted(address hotel, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time hotel is called
-     */
-    event HotelCalled(address hotel);
-
-    /**
-     * @dev Event triggered every time a hotel changes a manager.
-     */
-    event HotelTransferred(address hotel, address previousManager, address newManager);
-
-    /**
-     * @dev Constructor. Creates the `WTHotelIndex` contract
-     */
-    constructor() public {
-        hotels.length++;
-    }
+contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
 
     /**
      * @dev `registerHotel` Register new hotel in the index.
@@ -149,6 +108,17 @@ contract WTHotelIndex is AbstractWTHotelIndex {
         hotelsByManagerIndex[hotel] = hotelsByManager[newManager].length;
         hotelsByManager[newManager].push(hotel);
         emit HotelTransferred(hotel, msg.sender, newManager);
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param  _owner The address of the contract owner
+     * @param _lifToken The new contract address
+     */
+    function initialize(address _owner, address _lifToken) public initializer {
+        hotels.length++;
+        owner = _owner;
+        LifToken = _lifToken;
     }
 
     /**
