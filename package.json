@@ -34,6 +34,9 @@
   "main": "index.js",
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
+  "dependencies": {
+    "zos-lib": "^2.2.2"
+  },
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
     "chai": "^4.2.0",
@@ -58,8 +61,7 @@
     "truffle-hdwallet-provider": "^1.0.5",
     "web3": "^1.0.0-beta.48",
     "web3-utils": "^1.0.0-beta.48",
-    "zos": "^2.2.2",
-    "zos-lib": "^2.2.2"
+    "zos": "^2.2.2"
   },
   "engines": {
     "node": ">=10.3.0"
