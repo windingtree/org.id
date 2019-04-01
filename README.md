@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/windingtree/wt-contracts.svg?branch=master)](https://travis-ci.org/windingtree/wt-contracts)
-[![Coverage Status](https://coveralls.io/repos/github/windingtree/wt-contracts/badge.svg?branch=master)](https://coveralls.io/github/windingtree/wt-contracts?branch=master&v=2.0)
+[![Coverage Status](https://coveralls.io/repos/github/windingtree/wt-contracts/badge.svg?branch=master)](https://coveralls.io/github/windingtree/wt-contracts?branch=master&v=2.0) [![Greenkeeper badge](https://badges.greenkeeper.io/windingtree/wt-contracts.svg)](https://greenkeeper.io/)
 
 # WT Smart Contracts
 
