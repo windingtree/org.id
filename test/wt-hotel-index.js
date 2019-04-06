@@ -1,11 +1,21 @@
+const { TestHelper } = require('zos');
+const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const WTHotelIndex = artifacts.require('WTHotelIndex');
-const WTHotel = artifacts.require('Hotel');
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
+
+const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
+const WTHotelIndexUpgradeabilityTest = Contracts.getFromLocal('WTHotelIndexUpgradeabilityTest');
+// eaiser interaction with truffle-contract
 const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
-const WTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
+const WTHotel = artifacts.require('Hotel');
+const TruffleWTHotelIndex = artifacts.require('WTHotelIndex');
+const TruffleWTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
 const HotelUpgradeabilityTest = artifacts.require('HotelUpgradeabilityTest');
 
 contract('WTHotelIndex', (accounts) => {
@@ -15,36 +25,59 @@ contract('WTHotelIndex', (accounts) => {
   const nonOwnerAccount = accounts[4];
   const tokenAddress = accounts[5];
 
+  let hotelIndexProxy;
   let hotelIndex;
+  let project;
 
   // Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
-    const hotelIndexDeployed = await WTHotelIndex.new({ from: hotelIndexOwner });
-    hotelIndexDeployed.web3Instance = new web3.eth.Contract(hotelIndexDeployed.abi, hotelIndexDeployed.address);
-    const initializeData = hotelIndexDeployed.web3Instance.methods.initialize(hotelIndexOwner, tokenAddress).encodeABI();
-    const hotelIndexProxy = await AdminUpgradeabilityProxy.new(hotelIndexDeployed.address, initializeData, { from: proxyOwner });
+    project = await TestHelper();
+    hotelIndexProxy = await project.createProxy(WTHotelIndex, {
+      from: proxyOwner,
+      initFunction: 'initialize',
+      initArgs: [hotelIndexOwner, tokenAddress],
+    });
     hotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
   });
 
-  it('should set owner and liftoken', async () => {
-    assert.equal(await hotelIndex.owner(), hotelIndexOwner);
+  it('should set liftoken', async () => {
+    // ownership setup is verified in setLifToken tests
     assert.equal(await hotelIndex.LifToken(), tokenAddress);
+  });
+
+  describe('transferOwnership', async () => {
+    it('should transfer ownership', async () => {
+      const wtHotelIndex = await TruffleWTHotelIndex.at(hotelIndex.address);
+      await wtHotelIndex.transferOwnership(proxyOwner, { from: hotelIndexOwner });
+      // We cannot access _owner directly, it is not public
+      try {
+        await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+      await wtHotelIndex.transferOwnership(hotelIndexOwner, { from: proxyOwner });
+    });
+
+    it('should not transfer ownership when initiated from a non-owner', async () => {
+      try {
+        await (await TruffleWTHotelIndex.at(hotelIndex.address)).transferOwnership(tokenAddress, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
   });
 
   describe('upgradeability', () => {
     it('should upgrade WTHotelIndex and have new functions in Index and Hotel contracts', async () => {
       await hotelIndex.registerHotel('dataUri', { from: hotelAccount });
-
-      // Deploy new Index
+      // Upgrade proxy with new implementation
       const newIndex = await WTHotelIndexUpgradeabilityTest.new({ from: hotelIndexOwner });
-      const hotelIndexProxy = await AdminUpgradeabilityProxy.at(hotelIndex.address);
-      await hotelIndexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
-      hotelIndex = await WTHotelIndexUpgradeabilityTest.at(hotelIndexProxy.address);
+      await project.proxyAdmin.upgradeProxy(hotelIndexProxy.address, newIndex.address, WTHotelIndexUpgradeabilityTest);
+      hotelIndex = await TruffleWTHotelIndexUpgradeabilityTest.at(hotelIndexProxy.address);
 
       await hotelIndex.registerHotel('dataUri2', { from: hotelAccount });
-
       const length = await hotelIndex.getHotelsLength();
-
       const allHotels = await help.jsArrayFromSolidityArray(
         hotelIndex.hotels,
         length,
@@ -73,16 +106,15 @@ contract('WTHotelIndex', (accounts) => {
 
   describe('setLifToken', () => {
     it('should set the LifToken address', async () => {
-      const wtHotelIndex = await WTHotelIndex.at(hotelIndex.address);
+      const wtHotelIndex = await TruffleWTHotelIndex.at(hotelIndex.address);
       await wtHotelIndex.setLifToken(tokenAddress, { from: hotelIndexOwner });
       const setValue = await wtHotelIndex.LifToken();
-
       assert.equal(setValue, tokenAddress);
     });
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await (await WTHotelIndex.at(hotelIndex.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await TruffleWTHotelIndex.at(hotelIndex.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

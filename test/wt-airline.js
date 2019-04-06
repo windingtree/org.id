@@ -1,14 +1,19 @@
+const { TestHelper } = require('zos');
+const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
-const abiDecoder = require('abi-decoder');
 
-const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const WTAirlineIndex = artifacts.require('WTAirlineIndex.sol');
-const WTAirline = artifacts.require('Airline.sol');
-const AbstractWTAirline = artifacts.require('AbstractAirline.sol');
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
 
-abiDecoder.addABI(AbstractWTAirline._json.abi);
-abiDecoder.addABI(WTAirlineIndex._json.abi);
+const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
+const WTAirline = Contracts.getFromLocal('Airline');
+// eaiser interaction with truffle-contract
+const AbstractWTAirline = artifacts.require('AbstractAirline');
+const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
 
 contract('Airline', (accounts) => {
   const airlineUri = 'bzz://something';
@@ -16,23 +21,23 @@ contract('Airline', (accounts) => {
   const airlineAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   const tokenAddress = accounts[5];
+  let project;
   let airlineAddress = help.zeroAddress;
   let wtAirlineIndex;
   let wtAirline;
 
   // Create and register a airline
   beforeEach(async () => {
-    const indexDeployed = await WTAirlineIndex.new({ from: indexOwner });
-    indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
-    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner, tokenAddress).encodeABI();
-    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: indexOwner });
-    wtAirlineIndex = await WTAirlineIndex.at(indexProxy.address);
-
+    project = await TestHelper();
+    const airlineIndexProxy = await project.createProxy(WTAirlineIndex, {
+      initFunction: 'initialize',
+      initArgs: [indexOwner, tokenAddress],
+    });
+    wtAirlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
     await wtAirlineIndex.registerAirline(airlineUri, { from: airlineAccount });
     let address = await wtAirlineIndex.getAirlinesByManager(airlineAccount);
     airlineAddress = address[0];
-    wtAirline = await WTAirline.at(address[0]);
-    wtAirline.web3Instance = new web3.eth.Contract(wtAirline.abi, wtAirline.address);
+    wtAirline = await AbstractWTAirline.at(address[0]);
   });
 
   describe('Constructor', () => {
@@ -55,7 +60,7 @@ contract('Airline', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTAirline.new(help.zeroAddress, 'goo.gl', wtAirlineIndex.address);
+        await WTAirline.new([help.zeroAddress, 'goo.gl', wtAirlineIndex.address]);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -64,7 +69,7 @@ contract('Airline', (accounts) => {
 
     it('should not be created with zero address for an index', async () => {
       try {
-        await WTAirline.new(airlineAccount, 'goo.gl', help.zeroAddress);
+        await WTAirline.new([airlineAccount, 'goo.gl', help.zeroAddress]);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -77,7 +82,8 @@ contract('Airline', (accounts) => {
 
     it('should not update airline to an empty dataUri', async () => {
       try {
-        const data = await wtAirline.web3Instance.methods.editInfo('').encodeABI();
+        const airline = await WTAirline.at(wtAirline.address);
+        const data = await airline.methods.editInfo('').encodeABI();
         await wtAirlineIndex.callAirline(airlineAddress, data, { from: airlineAccount });
         throw new Error('should not have been called');
       } catch (e) {
@@ -86,7 +92,8 @@ contract('Airline', (accounts) => {
     });
 
     it('should update airline\'s dataUri', async () => {
-      const data = wtAirline.web3Instance.methods.editInfo(newDataUri).encodeABI();
+      const airline = await WTAirline.at(wtAirline.address);
+      const data = airline.methods.editInfo(newDataUri).encodeABI();
       await wtAirlineIndex.callAirline(airlineAddress, data, { from: airlineAccount });
       const info = await help.getAirlineInfo(wtAirline);
       assert.equal(info.dataUri, newDataUri);
@@ -94,7 +101,8 @@ contract('Airline', (accounts) => {
 
     it('should throw if not executed by airline owner', async () => {
       try {
-        const data = wtAirline.web3Instance.methods.editInfo(newDataUri).encodeABI();
+        const airline = await WTAirline.at(wtAirline.address);
+        const data = airline.methods.editInfo(newDataUri).encodeABI();
         await wtAirlineIndex.callAirline(airlineAddress, data, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {

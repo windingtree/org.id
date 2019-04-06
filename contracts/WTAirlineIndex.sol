@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTAirlineIndex.sol";
@@ -12,22 +12,25 @@ import "./airline/Airline.sol";
  */
 contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
-
-
     /**
      * @dev `registerAirline` Register new airline in the index.
      * Emits `AirlineRegistered` on success.
      * @param  dataUri Airline's data pointer
      * @return {" ": "Address of the new airline."}
      */
-    function registerAirline(string dataUri) external returns (address) {
-        Airline newAirline = new Airline(msg.sender, dataUri, this);
-        airlinesIndex[newAirline] = airlines.length;
-        airlines.push(newAirline);
-        airlinesByManagerIndex[newAirline] = airlinesByManager[msg.sender].length;
-        airlinesByManager[msg.sender].push(newAirline);
-        emit AirlineRegistered(newAirline, airlinesByManagerIndex[newAirline], airlinesIndex[newAirline]);
-        return newAirline;
+    function registerAirline(string calldata dataUri) external returns (address) {
+        Airline newAirline = new Airline(msg.sender, dataUri, address(this));
+        address newAirlineAddress = address(newAirline);
+        airlinesIndex[newAirlineAddress] = airlines.length;
+        airlines.push(newAirlineAddress);
+        airlinesByManagerIndex[newAirlineAddress] = airlinesByManager[msg.sender].length;
+        airlinesByManager[msg.sender].push(newAirlineAddress);
+        emit AirlineRegistered(
+            newAirlineAddress,
+            airlinesByManagerIndex[newAirlineAddress],
+            airlinesIndex[newAirlineAddress]
+        );
+        return newAirlineAddress;
     }
 
     /**
@@ -65,7 +68,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
      * @param  airline Airline's address
      * @param  data Encoded method call to be done on Airline contract.
      */
-    function callAirline(address airline, bytes data) external {
+    function callAirline(address airline, bytes calldata data) external {
         // Ensure airline address is valid
         require(airline != address(0));
         // Ensure we know about the airline at all
@@ -76,7 +79,8 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
         // Ensure we are calling only our own airlines
         require(airlineInstance.index() == address(this));
         // solhint-disable-next-line avoid-low-level-calls
-        require(airline.call(data));
+        (bool success,) = airline.call(data);
+        require(success);
         emit AirlineCalled(airline);
     }
 
@@ -86,7 +90,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
      * @param airline Airline's address
      * @param newManager Address to which the airline will belong after transfer.
      */
-    function transferAirline(address airline, address newManager) external {
+    function transferAirline(address airline, address payable newManager) external {
         // Ensure airline address is valid
         require(airline != address(0));
         // Ensure new manager is valid
@@ -114,13 +118,13 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
 
     /**
      * @dev Initializer for upgradeable contracts.
-     * @param  _owner The address of the contract owner
+     * @param __owner The address of the contract owner
      * @param _lifToken The new contract address
      */
-    function initialize(address _owner, address _lifToken) public initializer {
-        airlines.length++;
-        owner = _owner;
+    function initialize(address __owner, address _lifToken) public initializer {
+        _owner = __owner;
         LifToken = _lifToken;
+        airlines.length++;
     }
 
     /**
@@ -144,7 +148,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
      * @dev `getAirlines` get `airlines` array
      * @return {" ": "Array of airline addresses. Might contain zero addresses."}
      */
-    function getAirlines() public view returns (address[]) {
+    function getAirlines() public view returns (address[] memory) {
         return airlines;
     }
 
@@ -153,7 +157,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
      * @param  manager Manager address
      * @return {" ": "Array of airlines belonging to one manager. Might contain zero addresses."}
      */
-    function getAirlinesByManager(address manager) public view returns (address[]) {
+    function getAirlinesByManager(address manager) public view returns (address[] memory) {
         return airlinesByManager[manager];
     }
 }

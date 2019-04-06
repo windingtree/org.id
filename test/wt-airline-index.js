@@ -1,11 +1,21 @@
+const { TestHelper } = require('zos');
+const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const WTAirlineIndex = artifacts.require('WTAirlineIndex');
-const WTAirline = artifacts.require('Airline');
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
+
+const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
+const WTAirlineIndexUpgradeabilityTest = Contracts.getFromLocal('WTAirlineIndexUpgradeabilityTest');
+// eaiser interaction with truffle-contract
 const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
-const WTAirlineIndexUpgradeabilityTest = artifacts.require('WTAirlineIndexUpgradeabilityTest');
+const WTAirline = artifacts.require('Airline');
+const TruffleWTAirlineIndex = artifacts.require('WTAirlineIndex');
+const TruffleWTAirlineIndexUpgradeabilityTest = artifacts.require('WTAirlineIndexUpgradeabilityTest');
 const AirlineUpgradeabilityTest = artifacts.require('AirlineUpgradeabilityTest');
 
 contract('WTAirlineIndex', (accounts) => {
@@ -15,42 +25,64 @@ contract('WTAirlineIndex', (accounts) => {
   const nonOwnerAccount = accounts[4];
   const tokenAddress = accounts[5];
 
+  let airlineIndexProxy;
   let airlineIndex;
+  let project;
 
   // Deploy new airlineIndex but use AbstractWTAirlineIndex for contract interaction
   beforeEach(async () => {
-    const airlineIndexDeployed = await WTAirlineIndex.new({ from: airlineIndexOwner });
-    airlineIndexDeployed.web3Instance = new web3.eth.Contract(airlineIndexDeployed.abi, airlineIndexDeployed.address);
-    const initializeData = airlineIndexDeployed.web3Instance.methods.initialize(airlineIndexOwner, tokenAddress).encodeABI();
-    const airlineIndexProxy = await AdminUpgradeabilityProxy.new(airlineIndexDeployed.address, initializeData, { from: proxyOwner });
+    project = await TestHelper();
+    airlineIndexProxy = await project.createProxy(WTAirlineIndex, {
+      from: proxyOwner,
+      initFunction: 'initialize',
+      initArgs: [airlineIndexOwner, tokenAddress],
+    });
     airlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
   });
 
-  it('should set owner and liftoken', async () => {
-    assert.equal(await airlineIndex.owner(), airlineIndexOwner);
+  it('should set liftoken', async () => {
+    // ownership setup is verified in setLifToken tests
     assert.equal(await airlineIndex.LifToken(), tokenAddress);
+  });
+
+  describe('transferOwnership', async () => {
+    it('should transfer ownership', async () => {
+      const wtAirlineIndex = await TruffleWTAirlineIndex.at(airlineIndex.address);
+      await wtAirlineIndex.transferOwnership(proxyOwner, { from: airlineIndexOwner });
+      // We cannot access _owner directly, it is not public
+      try {
+        await wtAirlineIndex.setLifToken(tokenAddress, { from: airlineIndexOwner });
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+      await wtAirlineIndex.transferOwnership(airlineIndexOwner, { from: proxyOwner });
+    });
+
+    it('should not transfer ownership when initiated from a non-owner', async () => {
+      try {
+        await (await TruffleWTAirlineIndex.at(airlineIndex.address)).transferOwnership(tokenAddress, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
   });
 
   describe('upgradeability', () => {
     it('should upgrade WTAirlineIndex and have new functions in Index and Airline contracts', async () => {
       await airlineIndex.registerAirline('dataUri', { from: airlineAccount });
-
-      // Deploy new Index
+      // Upgrade proxy with new implementation
       const newIndex = await WTAirlineIndexUpgradeabilityTest.new({ from: airlineIndexOwner });
-      const airlineIndexProxy = await AdminUpgradeabilityProxy.at(airlineIndex.address);
-      await airlineIndexProxy.upgradeTo(newIndex.address, { from: proxyOwner });
-      airlineIndex = await WTAirlineIndexUpgradeabilityTest.at(airlineIndexProxy.address);
+      await project.proxyAdmin.upgradeProxy(airlineIndexProxy.address, newIndex.address, WTAirlineIndexUpgradeabilityTest);
+      airlineIndex = await TruffleWTAirlineIndexUpgradeabilityTest.at(airlineIndexProxy.address);
 
       await airlineIndex.registerAirline('dataUri2', { from: airlineAccount });
-
       const length = await airlineIndex.getAirlinesLength();
-
       const allAirlines = await help.jsArrayFromSolidityArray(
         airlineIndex.airlines,
         length,
         help.isZeroAddress
       );
-
       const airlinesByManager = await airlineIndex.getAirlinesByManager(airlineAccount);
 
       assert.isDefined(allAirlines[0]);
@@ -73,16 +105,15 @@ contract('WTAirlineIndex', (accounts) => {
 
   describe('setLifToken', () => {
     it('should set the LifToken address', async () => {
-      const wtAirlineIndex = await WTAirlineIndex.at(airlineIndex.address);
+      const wtAirlineIndex = await TruffleWTAirlineIndex.at(airlineIndex.address);
       await wtAirlineIndex.setLifToken(tokenAddress, { from: airlineIndexOwner });
       const setValue = await wtAirlineIndex.LifToken();
-
       assert.equal(setValue, tokenAddress);
     });
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
-        await (await WTAirlineIndex.at(airlineIndex.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
+        await (await TruffleWTAirlineIndex.at(airlineIndex.address)).setLifToken(tokenAddress, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

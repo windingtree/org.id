@@ -1,4 +1,4 @@
-pragma solidity ^0.4.25;
+pragma solidity ^0.5.6;
 
 import "./AbstractHotel.sol";
 
@@ -15,7 +15,7 @@ contract Hotel is AbstractHotel {
      * @param _dataUri pointer to hotel data
      * @param _index originating WTHotelIndex address
      */
-    constructor(address _manager, string _dataUri, address _index) public {
+    constructor(address payable _manager, string memory _dataUri, address _index) public {
         require(_manager != address(0));
         require(_index != address(0));
         require(bytes(_dataUri).length != 0);
@@ -25,7 +25,7 @@ contract Hotel is AbstractHotel {
         created = block.number;
     }
 
-    function _editInfoImpl(string _dataUri) internal {
+    function _editInfoImpl(string memory _dataUri) internal {
         require(bytes(_dataUri).length != 0);
         dataUri = _dataUri;
     }
@@ -34,7 +34,7 @@ contract Hotel is AbstractHotel {
         selfdestruct(manager);
     }
 
-    function _changeManagerImpl(address _newManager) internal {
+    function _changeManagerImpl(address payable _newManager) internal {
         require(_newManager != address(0));
         manager = _newManager;
     }

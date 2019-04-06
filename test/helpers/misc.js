@@ -31,14 +31,6 @@ module.exports = {
     }
   },
 
-  bytes32ToString: function (hex) {
-    return web3utils.hexToUtf8(hex);
-  },
-
-  stringToBytes32: function (text) {
-    return web3utils.utf8ToHex(text);
-  },
-
   // Sample implementation for later re-use
   determineAddress: function (sender, nonce) {
     return web3utils.toChecksumAddress(

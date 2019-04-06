@@ -1,14 +1,19 @@
+const { TestHelper } = require('zos');
+const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
-const abiDecoder = require('abi-decoder');
 
-const AdminUpgradeabilityProxy = artifacts.require('AdminUpgradeabilityProxy');
-const WTHotelIndex = artifacts.require('WTHotelIndex');
-const WTHotel = artifacts.require('Hotel');
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
+
+const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
+const WTHotel = Contracts.getFromLocal('Hotel');
+// eaiser interaction with truffle-contract
 const AbstractWTHotel = artifacts.require('AbstractHotel');
-
-abiDecoder.addABI(AbstractWTHotel._json.abi);
-abiDecoder.addABI(WTHotelIndex._json.abi);
+const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
 
 contract('Hotel', (accounts) => {
   const hotelUri = 'bzz://something';
@@ -16,23 +21,23 @@ contract('Hotel', (accounts) => {
   const hotelAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
   const tokenAddress = accounts[5];
+  let project;
   let hotelAddress = help.zeroAddress;
   let wtHotelIndex;
   let wtHotel;
 
   // Create and register a hotel
   beforeEach(async () => {
-    const indexDeployed = await WTHotelIndex.new({ from: indexOwner });
-    indexDeployed.web3Instance = new web3.eth.Contract(indexDeployed.abi, indexDeployed.address);
-    const initializeData = indexDeployed.web3Instance.methods.initialize(indexOwner, tokenAddress).encodeABI();
-    const indexProxy = await AdminUpgradeabilityProxy.new(indexDeployed.address, initializeData, { from: indexOwner });
-    wtHotelIndex = await WTHotelIndex.at(indexProxy.address);
-
+    project = await TestHelper();
+    const hotelIndexProxy = await project.createProxy(WTHotelIndex, {
+      initFunction: 'initialize',
+      initArgs: [indexOwner, tokenAddress],
+    });
+    wtHotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
     await wtHotelIndex.registerHotel(hotelUri, { from: hotelAccount });
     let address = await wtHotelIndex.getHotelsByManager(hotelAccount);
     hotelAddress = address[0];
-    wtHotel = await WTHotel.at(address[0]);
-    wtHotel.web3Instance = new web3.eth.Contract(wtHotel.abi, wtHotel.address);
+    wtHotel = await AbstractWTHotel.at(address[0]);
   });
 
   describe('Constructor', () => {
@@ -55,7 +60,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTHotel.new(help.zeroAddress, 'goo.gl', wtHotelIndex.address);
+        await WTHotel.new([help.zeroAddress, 'goo.gl', wtHotelIndex.address]);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -64,7 +69,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for an index', async () => {
       try {
-        await WTHotel.new(hotelAccount, 'goo.gl', help.zeroAddress);
+        await WTHotel.new([hotelAccount, 'goo.gl', help.zeroAddress]);
         throw new Error('should not have been called');
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -77,7 +82,8 @@ contract('Hotel', (accounts) => {
 
     it('should not update hotel to an empty dataUri', async () => {
       try {
-        const data = await wtHotel.web3Instance.methods.editInfo('').encodeABI();
+        const hotel = await WTHotel.at(wtHotel.address);
+        const data = await hotel.methods.editInfo('').encodeABI();
         await wtHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
         throw new Error('should not have been called');
       } catch (e) {
@@ -86,7 +92,8 @@ contract('Hotel', (accounts) => {
     });
 
     it('should update hotel\'s dataUri', async () => {
-      const data = wtHotel.web3Instance.methods.editInfo(newDataUri).encodeABI();
+      const hotel = await WTHotel.at(wtHotel.address);
+      const data = hotel.methods.editInfo(newDataUri).encodeABI();
       await wtHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
       const info = await help.getHotelInfo(wtHotel);
       assert.equal(info.dataUri, newDataUri);
@@ -94,7 +101,8 @@ contract('Hotel', (accounts) => {
 
     it('should throw if not executed by hotel owner', async () => {
       try {
-        const data = wtHotel.web3Instance.methods.editInfo(newDataUri).encodeABI();
+        const hotel = await WTHotel.at(wtHotel.address);
+        const data = hotel.methods.editInfo(newDataUri).encodeABI();
         await wtHotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
         throw new Error('should not have been called');
       } catch (e) {

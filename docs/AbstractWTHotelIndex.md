@@ -4,9 +4,7 @@
   * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
   * [transferHotel](#function-transferhotel)
   * [LifToken](#function-liftoken)
-  * [renounceOwnership](#function-renounceownership)
   * [hotelsByManager](#function-hotelsbymanager)
-  * [owner](#function-owner)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
@@ -18,7 +16,6 @@
   * [HotelDeleted](#event-hoteldeleted)
   * [HotelCalled](#event-hotelcalled)
   * [HotelTransferred](#event-hoteltransferred)
-  * [OwnershipRenounced](#event-ownershiprenounced)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AbstractWTHotelIndex
@@ -78,17 +75,6 @@ AbstractWTHotelIndex.LifToken() `view` `554d8b37`
 
 
 
-## *function* renounceOwnership
-
-AbstractWTHotelIndex.renounceOwnership() `nonpayable` `715018a6`
-
-**Renouncing to ownership will leave the contract without an owner. It will not be possible to call the functions with the `onlyOwner` modifier anymore.**
-
-> Allows the current owner to relinquish control of the contract.
-
-
-
-
 ## *function* hotelsByManager
 
 AbstractWTHotelIndex.hotelsByManager(, ) `view` `7cf2dfae`
@@ -100,14 +86,6 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
-
-
-## *function* owner
-
-AbstractWTHotelIndex.owner() `view` `8da5cb5b`
-
-
-
 
 
 ## *function* hotelsIndex
@@ -156,7 +134,7 @@ Inputs
 
 ## *function* transferOwnership
 
-AbstractWTHotelIndex.transferOwnership(_newOwner) `nonpayable` `f2fde38b`
+AbstractWTHotelIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -164,7 +142,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _newOwner | The address to transfer ownership to. |
+| *address* | newOwner | The address to transfer ownership to. |
 
 
 ## *function* registerHotel
@@ -198,7 +176,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -210,7 +188,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
@@ -222,7 +200,7 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 
 ## *event* HotelTransferred
 
@@ -232,19 +210,9 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | not indexed |
+| *address* | hotel | indexed |
 | *address* | previousManager | not indexed |
 | *address* | newManager | not indexed |
-
-## *event* OwnershipRenounced
-
-AbstractWTHotelIndex.OwnershipRenounced(previousOwner) `f8df3114`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousOwner | indexed |
 
 ## *event* OwnershipTransferred
 
