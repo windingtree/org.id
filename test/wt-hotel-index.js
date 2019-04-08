@@ -129,7 +129,7 @@ contract('WTHotelIndex', (accounts) => {
       it('should not register hotel with empty dataUri', async () => {
         try {
           await hotelIndex.registerHotel('', { from: hotelAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -269,7 +269,7 @@ contract('WTHotelIndex', (accounts) => {
         const data = wtHotel.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           await hotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -291,7 +291,7 @@ contract('WTHotelIndex', (accounts) => {
         try {
           // mocking address with existing account
           await hotelIndex.callHotel(nonOwnerAccount, data, { from: hotelAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -311,7 +311,7 @@ contract('WTHotelIndex', (accounts) => {
     it('should throw if transferring to a zero address', async () => {
       try {
         await hotelIndex.transferHotel(hotelAddress, help.zeroAddress, { from: hotelAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -320,7 +320,7 @@ contract('WTHotelIndex', (accounts) => {
     it('should throw if transferring a non-existing hotel', async () => {
       try {
         await hotelIndex.transferHotel(hotelIndex.address, nonOwnerAccount, { from: hotelAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -329,7 +329,7 @@ contract('WTHotelIndex', (accounts) => {
     it('should throw if not executed from hotel owner address', async () => {
       try {
         await hotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }

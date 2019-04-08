@@ -61,7 +61,7 @@ contract('Airline', (accounts) => {
     it('should not be created with zero address for a manager', async () => {
       try {
         await WTAirline.new([help.zeroAddress, 'goo.gl', wtAirlineIndex.address]);
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -70,7 +70,7 @@ contract('Airline', (accounts) => {
     it('should not be created with zero address for an index', async () => {
       try {
         await WTAirline.new([airlineAccount, 'goo.gl', help.zeroAddress]);
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -85,7 +85,7 @@ contract('Airline', (accounts) => {
         const airline = await WTAirline.at(wtAirline.address);
         const data = await airline.methods.editInfo('').encodeABI();
         await wtAirlineIndex.callAirline(airlineAddress, data, { from: airlineAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -104,7 +104,7 @@ contract('Airline', (accounts) => {
         const airline = await WTAirline.at(wtAirline.address);
         const data = airline.methods.editInfo(newDataUri).encodeABI();
         await wtAirlineIndex.callAirline(airlineAddress, data, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -113,7 +113,7 @@ contract('Airline', (accounts) => {
     it('should throw if not executed from index address', async () => {
       try {
         await wtAirline.editInfo(newDataUri, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -124,7 +124,7 @@ contract('Airline', (accounts) => {
     it('should throw if not executed from index address', async () => {
       try {
         await wtAirline.changeManager(nonOwnerAccount, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }

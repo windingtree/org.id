@@ -52,6 +52,7 @@ contract('WTAirlineIndex', (accounts) => {
       // We cannot access _owner directly, it is not public
       try {
         await wtAirlineIndex.setLifToken(tokenAddress, { from: airlineIndexOwner });
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -128,7 +129,7 @@ contract('WTAirlineIndex', (accounts) => {
       it('should not register airline with empty dataUri', async () => {
         try {
           await airlineIndex.registerAirline('', { from: airlineAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -268,7 +269,7 @@ contract('WTAirlineIndex', (accounts) => {
         const data = wtAirline.web3Instance.methods.editInfo('newUri').encodeABI();
         try {
           await airlineIndex.callAirline(airlineAddress, data, { from: nonOwnerAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -290,7 +291,7 @@ contract('WTAirlineIndex', (accounts) => {
         try {
           // mocking address with existing account
           await airlineIndex.callAirline(nonOwnerAccount, data, { from: airlineAccount });
-          throw new Error('should not have been called');
+          assert(false);
         } catch (e) {
           assert(help.isInvalidOpcodeEx(e));
         }
@@ -310,7 +311,7 @@ contract('WTAirlineIndex', (accounts) => {
     it('should throw if transferring to a zero address', async () => {
       try {
         await airlineIndex.transferAirline(airlineAddress, help.zeroAddress, { from: airlineAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -319,7 +320,7 @@ contract('WTAirlineIndex', (accounts) => {
     it('should throw if transferring a non-existing airline', async () => {
       try {
         await airlineIndex.transferAirline(airlineIndex.address, nonOwnerAccount, { from: airlineAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -328,7 +329,7 @@ contract('WTAirlineIndex', (accounts) => {
     it('should throw if not executed from airline owner address', async () => {
       try {
         await airlineIndex.transferAirline(airlineAddress, nonOwnerAccount, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }

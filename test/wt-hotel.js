@@ -61,7 +61,7 @@ contract('Hotel', (accounts) => {
     it('should not be created with zero address for a manager', async () => {
       try {
         await WTHotel.new([help.zeroAddress, 'goo.gl', wtHotelIndex.address]);
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -70,7 +70,7 @@ contract('Hotel', (accounts) => {
     it('should not be created with zero address for an index', async () => {
       try {
         await WTHotel.new([hotelAccount, 'goo.gl', help.zeroAddress]);
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -85,7 +85,7 @@ contract('Hotel', (accounts) => {
         const hotel = await WTHotel.at(wtHotel.address);
         const data = await hotel.methods.editInfo('').encodeABI();
         await wtHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -104,7 +104,7 @@ contract('Hotel', (accounts) => {
         const hotel = await WTHotel.at(wtHotel.address);
         const data = hotel.methods.editInfo(newDataUri).encodeABI();
         await wtHotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -113,7 +113,7 @@ contract('Hotel', (accounts) => {
     it('should throw if not executed from index address', async () => {
       try {
         await wtHotel.editInfo(newDataUri, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
@@ -124,7 +124,7 @@ contract('Hotel', (accounts) => {
     it('should throw if not executed from index address', async () => {
       try {
         await wtHotel.changeManager(nonOwnerAccount, { from: nonOwnerAccount });
-        throw new Error('should not have been called');
+        assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
