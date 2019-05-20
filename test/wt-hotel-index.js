@@ -13,6 +13,7 @@ const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
 const WTHotelIndexUpgradeabilityTest = Contracts.getFromLocal('WTHotelIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
 const WTHotel = artifacts.require('Organization');
+const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
 const TruffleWTHotelIndex = artifacts.require('WTHotelIndex');
 const TruffleWTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
 const HotelUpgradeabilityTest = artifacts.require('HotelUpgradeabilityTest');
@@ -28,7 +29,7 @@ contract('WTHotelIndex', (accounts) => {
   let hotelIndex;
   let project;
 
-  // TODO Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
+  // Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
     project = await TestHelper();
     hotelIndexProxy = await project.createProxy(WTHotelIndex, {
@@ -36,12 +37,13 @@ contract('WTHotelIndex', (accounts) => {
       initFunction: 'initialize',
       initArgs: [hotelIndexOwner, tokenAddress],
     });
-    hotelIndex = await TruffleWTHotelIndex.at(hotelIndexProxy.address);
+    hotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
   });
 
   it('should set liftoken', async () => {
     // ownership setup is verified in setLifToken tests
-    assert.equal(await hotelIndex.LifToken(), tokenAddress);
+    const wtHotelIndex = await TruffleWTHotelIndex.at(hotelIndex.address);
+    assert.equal(await wtHotelIndex.LifToken(), tokenAddress);
   });
 
   describe('transferOwnership', async () => {

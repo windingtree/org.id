@@ -2,8 +2,9 @@ pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "./Organization.sol";
+import "./SegmentDirectoryEvents.sol";
 
-contract SegmentDirectory is Initializable {
+contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 
     // Array of addresses of `Organization` contracts
     address[] public organizations;
@@ -22,31 +23,6 @@ contract SegmentDirectory is Initializable {
 
     // Address of the contract owner
     address _owner;
-
-
-    /**
-     * @dev Event triggered every time organization is registered
-     */
-    event OrganizationRegistered(address indexed organization, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time organization is deleted
-     */
-    event OrganizationDeleted(address indexed organization, uint managerIndex, uint allIndex);
-    /**
-     * @dev Event triggered every time organization is called
-     */
-    event OrganizationCalled(address indexed organization);
-
-    /**
-     * @dev Event triggered every time a organization changes a manager.
-     */
-    event OrganizationTransferred(address indexed organization, address previousManager, address newManager);
-
-    /**
-     * @dev Event triggered when owner of the index is changed.
-     */
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
 
     /**
      * @dev `registerOrganization` Register new organization in the index.

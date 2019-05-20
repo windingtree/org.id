@@ -13,6 +13,7 @@ const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
 const WTAirlineIndexUpgradeabilityTest = Contracts.getFromLocal('WTAirlineIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
 const WTAirline = artifacts.require('Organization');
+const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
 const TruffleWTAirlineIndex = artifacts.require('WTAirlineIndex');
 const TruffleWTAirlineIndexUpgradeabilityTest = artifacts.require('WTAirlineIndexUpgradeabilityTest');
 const AirlineUpgradeabilityTest = artifacts.require('AirlineUpgradeabilityTest');
@@ -28,7 +29,7 @@ contract('WTAirlineIndex', (accounts) => {
   let airlineIndex;
   let project;
 
-  // TODO Deploy new airlineIndex but use AbstractWTAirlineIndex for contract interaction
+  // Deploy new airlineIndex but use AbstractWTAirlineIndex for contract interaction
   beforeEach(async () => {
     project = await TestHelper();
     airlineIndexProxy = await project.createProxy(WTAirlineIndex, {
@@ -36,12 +37,13 @@ contract('WTAirlineIndex', (accounts) => {
       initFunction: 'initialize',
       initArgs: [airlineIndexOwner, tokenAddress],
     });
-    airlineIndex = await TruffleWTAirlineIndex.at(airlineIndexProxy.address);
+    airlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
   });
 
   it('should set liftoken', async () => {
     // ownership setup is verified in setLifToken tests
-    assert.equal(await airlineIndex.LifToken(), tokenAddress);
+    const wtAirlineIndex = await TruffleWTAirlineIndex.at(airlineIndex.address);
+    assert.equal(await wtAirlineIndex.LifToken(), tokenAddress);
   });
 
   describe('transferOwnership', async () => {
@@ -148,7 +150,7 @@ contract('WTAirlineIndex', (accounts) => {
         assert.equal(result, airlineAddress);
       });
 
-      it('should add a airline to the registry', async () => {
+      it('should add an airline to the registry', async () => {
         await airlineIndex.registerAirline('dataUri', { from: airlineAccount });
         const length = await airlineIndex.getAirlinesLength();
 
