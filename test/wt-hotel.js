@@ -10,9 +10,9 @@ Contracts.setArtifactsDefaults({
 });
 
 const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
-const WTHotel = Contracts.getFromLocal('Hotel');
+const WTHotel = Contracts.getFromLocal('Organization');
 // eaiser interaction with truffle-contract
-const AbstractWTHotel = artifacts.require('AbstractHotel');
+const TruffleWTHotel = artifacts.require('Organization');
 const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
 
 contract('Hotel', (accounts) => {
@@ -37,7 +37,7 @@ contract('Hotel', (accounts) => {
     await wtHotelIndex.registerHotel(hotelUri, { from: hotelAccount });
     let address = await wtHotelIndex.getHotelsByManager(hotelAccount);
     hotelAddress = address[0];
-    wtHotel = await AbstractWTHotel.at(address[0]);
+    wtHotel = await TruffleWTHotel.at(address[0]);
   });
 
   describe('Constructor', () => {

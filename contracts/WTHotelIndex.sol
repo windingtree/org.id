@@ -2,7 +2,7 @@ pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTHotelIndex.sol";
-import "./hotel/Hotel.sol";
+import "./Organization.sol";
 
 
 /**
@@ -19,7 +19,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
      * @return {" ": "Address of the new hotel."}
      */
     function registerHotel(string calldata dataUri) external returns (address) {
-        Hotel newHotel = new Hotel(msg.sender, dataUri, address(this));
+        Organization newHotel = new Organization(msg.sender, dataUri, address(this));
         address newHotelAddress = address(newHotel);
         hotelsIndex[newHotelAddress] = hotels.length;
         hotels.push(newHotelAddress);
@@ -47,7 +47,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
         // There may actually be a hotel on index zero, that's why we use a double check
         require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
 
-        Hotel hotelInstance = Hotel(hotel);
+        Organization hotelInstance = Organization(hotel);
         // Ensure we are calling only our own hotels
         require(hotelInstance.index() == address(this));
         hotelInstance.destroy();
@@ -75,7 +75,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
         require(hotelsIndex[hotel] != uint(0));
         // Ensure that the caller is the hotel's rightful owner
         require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
-        Hotel hotelInstance = Hotel(hotel);
+        Organization hotelInstance = Organization(hotel);
         // Ensure we are calling only our own hotels
         require(hotelInstance.index() == address(this));
         // solhint-disable-next-line avoid-low-level-calls
@@ -101,7 +101,7 @@ contract WTHotelIndex is Initializable, AbstractWTHotelIndex {
         // There may actually be a hotel on index zero, that's why we use a double check
         require(hotelsByManager[msg.sender][hotelsByManagerIndex[hotel]] != address(0));
 
-        Hotel hotelInstance = Hotel(hotel);
+        Organization hotelInstance = Organization(hotel);
         // Ensure we are calling only our own hotels
         require(hotelInstance.index() == address(this));
         // Change ownership in the Hotel contract

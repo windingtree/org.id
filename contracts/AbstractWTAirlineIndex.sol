@@ -5,6 +5,7 @@ pragma solidity ^0.5.6;
  * @dev Interface of WTAirlineIndex contract
  */
 contract AbstractWTAirlineIndex {
+
     // Array of addresses of `Airline` contracts
     address[] public airlines;
 

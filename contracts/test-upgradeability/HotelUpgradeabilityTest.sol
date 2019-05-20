@@ -1,19 +1,15 @@
 pragma solidity ^0.5.6;
 
-import "../hotel/AbstractHotel.sol";
+import "../Organization.sol";
 
 
-contract HotelUpgradeabilityTest is AbstractHotel {
+contract HotelUpgradeabilityTest is Organization {
 
-    constructor(address payable _manager, string memory _dataUri, address _index) public {
-        require(_manager != address(0));
-        require(_index != address(0));
-        require(bytes(_dataUri).length != 0);
-        manager = _manager;
-        index = _index;
-        dataUri = _dataUri;
-        created = block.number;
-    }
+    constructor(
+        address payable _manager,
+        string memory _dataUri,
+        address _index
+    ) Organization(_manager, _dataUri, _index) public {}
 
     function newFunction() public pure returns(uint) {
         return 100;

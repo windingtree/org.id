@@ -13,7 +13,7 @@ const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
 const WTAirlineIndexUpgradeabilityTest = Contracts.getFromLocal('WTAirlineIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
 const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
-const WTAirline = artifacts.require('Airline');
+const WTAirline = artifacts.require('Organization');
 const TruffleWTAirlineIndex = artifacts.require('WTAirlineIndex');
 const TruffleWTAirlineIndexUpgradeabilityTest = artifacts.require('WTAirlineIndexUpgradeabilityTest');
 const AirlineUpgradeabilityTest = artifacts.require('AirlineUpgradeabilityTest');

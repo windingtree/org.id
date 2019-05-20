@@ -2,7 +2,7 @@ pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "./AbstractWTAirlineIndex.sol";
-import "./airline/Airline.sol";
+import "./Organization.sol";
 
 
 /**
@@ -19,7 +19,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
      * @return {" ": "Address of the new airline."}
      */
     function registerAirline(string calldata dataUri) external returns (address) {
-        Airline newAirline = new Airline(msg.sender, dataUri, address(this));
+        Organization newAirline = new Organization(msg.sender, dataUri, address(this));
         address newAirlineAddress = address(newAirline);
         airlinesIndex[newAirlineAddress] = airlines.length;
         airlines.push(newAirlineAddress);
@@ -47,7 +47,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
         // There may actually be a airline on index zero, that's why we use a double check
         require(airlinesByManager[msg.sender][airlinesByManagerIndex[airline]] != address(0));
 
-        Airline airlineInstance = Airline(airline);
+        Organization airlineInstance = Organization(airline);
         // Ensure we are calling only our own airlines
         require(airlineInstance.index() == address(this));
         airlineInstance.destroy();
@@ -75,7 +75,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
         require(airlinesIndex[airline] != uint(0));
         // Ensure that the caller is the airline's rightful owner
         require(airlinesByManager[msg.sender][airlinesByManagerIndex[airline]] != address(0));
-        Airline airlineInstance = Airline(airline);
+        Organization airlineInstance = Organization(airline);
         // Ensure we are calling only our own airlines
         require(airlineInstance.index() == address(this));
         // solhint-disable-next-line avoid-low-level-calls
@@ -101,7 +101,7 @@ contract WTAirlineIndex is Initializable, AbstractWTAirlineIndex {
         // There may actually be a airline on index zero, that's why we use a double check
         require(airlinesByManager[msg.sender][airlinesByManagerIndex[airline]] != address(0));
 
-        Airline airlineInstance = Airline(airline);
+        Organization airlineInstance = Organization(airline);
         // Ensure we are calling only our own airlines
         require(airlineInstance.index() == address(this));
         // Change ownership in the Airline contract

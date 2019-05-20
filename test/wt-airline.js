@@ -10,9 +10,9 @@ Contracts.setArtifactsDefaults({
 });
 
 const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
-const WTAirline = Contracts.getFromLocal('Airline');
+const WTAirline = Contracts.getFromLocal('Organization');
 // eaiser interaction with truffle-contract
-const AbstractWTAirline = artifacts.require('AbstractAirline');
+const TruffleWTAirline = artifacts.require('Organization');
 const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
 
 contract('Airline', (accounts) => {
@@ -37,7 +37,7 @@ contract('Airline', (accounts) => {
     await wtAirlineIndex.registerAirline(airlineUri, { from: airlineAccount });
     let address = await wtAirlineIndex.getAirlinesByManager(airlineAccount);
     airlineAddress = address[0];
-    wtAirline = await AbstractWTAirline.at(address[0]);
+    wtAirline = await TruffleWTAirline.at(address[0]);
   });
 
   describe('Constructor', () => {

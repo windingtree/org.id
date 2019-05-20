@@ -13,7 +13,7 @@ const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
 const WTHotelIndexUpgradeabilityTest = Contracts.getFromLocal('WTHotelIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
 const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
-const WTHotel = artifacts.require('Hotel');
+const WTHotel = artifacts.require('Organization');
 const TruffleWTHotelIndex = artifacts.require('WTHotelIndex');
 const TruffleWTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
 const HotelUpgradeabilityTest = artifacts.require('HotelUpgradeabilityTest');
