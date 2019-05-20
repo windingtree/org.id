@@ -7,17 +7,18 @@ import "./HotelUpgradeabilityTest.sol";
 contract WTHotelIndexUpgradeabilityTest is WTHotelIndex {
 
     function registerHotel(string calldata dataUri) external returns (address) {
-        HotelUpgradeabilityTest newHotel = new HotelUpgradeabilityTest(msg.sender, dataUri, address(this));
-        hotelsIndex[address(newHotel)] = hotels.length;
-        hotels.push(address(newHotel));
-        hotelsByManagerIndex[address(newHotel)] = hotelsByManager[msg.sender].length;
-        hotelsByManager[msg.sender].push(address(newHotel));
-        emit HotelRegistered(
-            address(newHotel),
-            hotelsByManagerIndex[address(newHotel)],
-            hotelsIndex[address(newHotel)]
+        HotelUpgradeabilityTest newOrganization = new HotelUpgradeabilityTest(msg.sender, dataUri, address(this));
+        address newOrganizationAddress = address(newOrganization);
+        organizationsIndex[newOrganizationAddress] = organizations.length;
+        organizations.push(newOrganizationAddress);
+        organizationsByManagerIndex[newOrganizationAddress] = organizationsByManager[msg.sender].length;
+        organizationsByManager[msg.sender].push(newOrganizationAddress);
+        emit OrganizationRegistered(
+            newOrganizationAddress,
+            organizationsByManagerIndex[newOrganizationAddress],
+            organizationsIndex[newOrganizationAddress]
         );
-        return address(newHotel);
+        return newOrganizationAddress;
     }
 
     function newFunction() public pure returns(uint) {

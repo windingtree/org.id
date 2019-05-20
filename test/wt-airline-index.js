@@ -12,7 +12,6 @@ Contracts.setArtifactsDefaults({
 const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
 const WTAirlineIndexUpgradeabilityTest = Contracts.getFromLocal('WTAirlineIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
-const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
 const WTAirline = artifacts.require('Organization');
 const TruffleWTAirlineIndex = artifacts.require('WTAirlineIndex');
 const TruffleWTAirlineIndexUpgradeabilityTest = artifacts.require('WTAirlineIndexUpgradeabilityTest');
@@ -29,7 +28,7 @@ contract('WTAirlineIndex', (accounts) => {
   let airlineIndex;
   let project;
 
-  // Deploy new airlineIndex but use AbstractWTAirlineIndex for contract interaction
+  // TODO Deploy new airlineIndex but use AbstractWTAirlineIndex for contract interaction
   beforeEach(async () => {
     project = await TestHelper();
     airlineIndexProxy = await project.createProxy(WTAirlineIndex, {
@@ -37,7 +36,7 @@ contract('WTAirlineIndex', (accounts) => {
       initFunction: 'initialize',
       initArgs: [airlineIndexOwner, tokenAddress],
     });
-    airlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
+    airlineIndex = await TruffleWTAirlineIndex.at(airlineIndexProxy.address);
   });
 
   it('should set liftoken', async () => {
@@ -76,7 +75,6 @@ contract('WTAirlineIndex', (accounts) => {
       const newIndex = await WTAirlineIndexUpgradeabilityTest.new({ from: airlineIndexOwner });
       await project.proxyAdmin.upgradeProxy(airlineIndexProxy.address, newIndex.address, WTAirlineIndexUpgradeabilityTest);
       airlineIndex = await TruffleWTAirlineIndexUpgradeabilityTest.at(airlineIndexProxy.address);
-
       await airlineIndex.registerAirline('dataUri2', { from: airlineAccount });
       const length = await airlineIndex.getAirlinesLength();
       const allAirlines = await help.jsArrayFromSolidityArray(
@@ -90,7 +88,6 @@ contract('WTAirlineIndex', (accounts) => {
       assert.isDefined(airlinesByManager[0]);
       assert.isFalse(help.isZeroAddress(allAirlines[0]));
       assert.isFalse(help.isZeroAddress(airlinesByManager[0]));
-
       assert.equal(await airlineIndex.airlinesIndex(allAirlines[0]), 1);
       assert.equal(await airlineIndex.airlinesIndex(allAirlines[1]), 2);
       assert.equal(allAirlines[0], airlinesByManager[0]);
@@ -350,7 +347,7 @@ contract('WTAirlineIndex', (accounts) => {
     it('should fire an event', async () => {
       const result = await airlineIndex.transferAirline(airlineAddress, nonOwnerAccount, { from: airlineAccount });
       assert.equal(result.logs.length, 1);
-      assert.equal(result.logs[0].event, 'AirlineTransferred');
+      assert.equal(result.logs[0].event, 'OrganizationTransferred');
       assert.equal(result.logs[0].args.previousManager, airlineAccount);
       assert.equal(result.logs[0].args.newManager, nonOwnerAccount);
     });

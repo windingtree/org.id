@@ -7,17 +7,18 @@ import "./AirlineUpgradeabilityTest.sol";
 contract WTAirlineIndexUpgradeabilityTest is WTAirlineIndex {
 
     function registerAirline(string calldata dataUri) external returns (address) {
-        AirlineUpgradeabilityTest newAirline = new AirlineUpgradeabilityTest(msg.sender, dataUri, address(this));
-        airlinesIndex[address(newAirline)] = airlines.length;
-        airlines.push(address(newAirline));
-        airlinesByManagerIndex[address(newAirline)] = airlinesByManager[msg.sender].length;
-        airlinesByManager[msg.sender].push(address(newAirline));
-        emit AirlineRegistered(
-            address(newAirline),
-            airlinesByManagerIndex[address(newAirline)],
-            airlinesIndex[address(newAirline)]
+        AirlineUpgradeabilityTest newOrganization = new AirlineUpgradeabilityTest(msg.sender, dataUri, address(this));
+        address newOrganizationAddress = address(newOrganization);
+        organizationsIndex[newOrganizationAddress] = organizations.length;
+        organizations.push(newOrganizationAddress);
+        organizationsByManagerIndex[newOrganizationAddress] = organizationsByManager[msg.sender].length;
+        organizationsByManager[msg.sender].push(newOrganizationAddress);
+        emit OrganizationRegistered(
+            newOrganizationAddress,
+            organizationsByManagerIndex[newOrganizationAddress],
+            organizationsIndex[newOrganizationAddress]
         );
-        return address(newAirline);
+        return newOrganizationAddress;
     }
 
     function newFunction() public pure returns(uint) {

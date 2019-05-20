@@ -15,18 +15,4 @@ contract HotelUpgradeabilityTest is Organization {
         return 100;
     }
 
-    function _editInfoImpl(string memory _dataUri) internal {
-        require(bytes(_dataUri).length != 0);
-        dataUri = _dataUri;
-    }
-
-    function _destroyImpl() internal {
-        selfdestruct(manager);
-    }
-
-    function _changeManagerImpl(address payable _newManager) internal {
-        require(_newManager != address(0));
-        manager = _newManager;
-    }
-
 }

@@ -12,7 +12,6 @@ Contracts.setArtifactsDefaults({
 const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
 const WTHotelIndexUpgradeabilityTest = Contracts.getFromLocal('WTHotelIndexUpgradeabilityTest');
 // eaiser interaction with truffle-contract
-const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
 const WTHotel = artifacts.require('Organization');
 const TruffleWTHotelIndex = artifacts.require('WTHotelIndex');
 const TruffleWTHotelIndexUpgradeabilityTest = artifacts.require('WTHotelIndexUpgradeabilityTest');
@@ -29,7 +28,7 @@ contract('WTHotelIndex', (accounts) => {
   let hotelIndex;
   let project;
 
-  // Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
+  // TODO Deploy new hotelIndex but use AbstractWTHotelIndex for contract interaction
   beforeEach(async () => {
     project = await TestHelper();
     hotelIndexProxy = await project.createProxy(WTHotelIndex, {
@@ -37,7 +36,7 @@ contract('WTHotelIndex', (accounts) => {
       initFunction: 'initialize',
       initArgs: [hotelIndexOwner, tokenAddress],
     });
-    hotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
+    hotelIndex = await TruffleWTHotelIndex.at(hotelIndexProxy.address);
   });
 
   it('should set liftoken', async () => {
@@ -350,7 +349,7 @@ contract('WTHotelIndex', (accounts) => {
     it('should fire an event', async () => {
       const result = await hotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
       assert.equal(result.logs.length, 1);
-      assert.equal(result.logs[0].event, 'HotelTransferred');
+      assert.equal(result.logs[0].event, 'OrganizationTransferred');
       assert.equal(result.logs[0].args.previousManager, hotelAccount);
       assert.equal(result.logs[0].args.newManager, nonOwnerAccount);
     });
