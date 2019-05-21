@@ -97,7 +97,7 @@ contract('Organization', (accounts) => {
     it('should destroy the contract', async () => {
       await organization.destroy({ from: organizationOwner });
       const code = await help.promisify(cb => web3.eth.getCode(organization.address, cb));
-      assert.match(code, /^0x/);
+      assert.isAtMost(code.length, 3);
     });
 
     it('should throw if not executed from owner address', async () => {
