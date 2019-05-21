@@ -45,32 +45,12 @@ contract('Airline', (accounts) => {
       assert.isAtMost(info.created, blockNumber);
       assert.equal(info.manager, airlineAccount);
       assert.equal(info.dataUri, airlineUri);
-      assert.equal(info.index, wtAirlineIndex.address);
       // There's an empty address as an initial value, that's why we compare
       assert.equal((await wtAirlineIndex.getAirlines()).length, 2);
     });
 
-    it('should properly setup manager and index references', async () => {
-      assert.equal(wtAirlineIndex.address, await wtAirline.index());
+    it('should properly setup manager reference', async () => {
       assert.equal(airlineAccount, await wtAirline.manager());
-    });
-
-    it('should not be created with zero address for a manager', async () => {
-      try {
-        await TruffleWTAirline.new(help.zeroAddress, 'goo.gl', wtAirlineIndex.address);
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should not be created with zero address for an index', async () => {
-      try {
-        await TruffleWTAirline.new(airlineAccount, 'goo.gl', help.zeroAddress);
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
     });
   });
 

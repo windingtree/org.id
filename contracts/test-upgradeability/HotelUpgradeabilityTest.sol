@@ -7,9 +7,10 @@ contract HotelUpgradeabilityTest is Organization {
 
     constructor(
         address payable _manager,
-        string memory _dataUri,
-        address _index
-    ) Organization(_manager, _dataUri, _index) public {}
+        string memory _dataUri
+    ) Organization(_dataUri) public {
+        manager = _manager;
+    }
 
     function newFunction() public pure returns(uint) {
         return 100;

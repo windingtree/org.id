@@ -2,9 +2,9 @@ pragma solidity ^0.5.6;
 
 /**
  * @title Organization, contract for a Organization registered in the WT network
- * @dev A contract that represents a Organization in the WT network.
+ * @dev A contract that represents a Organization in the WT network. We cannot use
+ * zeppelin's Ownable, because we need the owner field to be public.
  */
-// TODO try to switch to Ownable
 contract Organization {
 
     // Who owns this Organization and can manage it.
@@ -18,9 +18,6 @@ contract Organization {
     // Number of block when the Organization was created
     uint public created;
 
-    // WTOrganizationIndex address
-    address public index;
-
     /**
      * @dev Event triggered when manager of the organization is changed.
      */
@@ -30,18 +27,14 @@ contract Organization {
 
     /**
      * @dev Constructor.
-     * @param _manager address of Organization owner
      * @param _dataUri pointer to Organization data
-     * @param _index originating WTOrganizationIndex address
      */
-    constructor(address payable _manager, string memory _dataUri, address _index) public {
-        require(_manager != address(0));
-        require(_index != address(0));
+    constructor(string memory _dataUri) public {
         require(bytes(_dataUri).length != 0);
-        manager = _manager;
-        index = _index;
+        manager = msg.sender;
         dataUri = _dataUri;
         created = block.number;
+        emit OwnershipTransferred(address(0), manager);
     }
 
     /**

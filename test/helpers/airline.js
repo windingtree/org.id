@@ -16,12 +16,10 @@ async function getAirlineInfo (wtAirline) {
   const dataUri = await wtAirline.dataUri();
   const manager = await wtAirline.manager();
   const created = await wtAirline.created();
-  const index = await wtAirline.index();
 
   return {
     dataUri: isZeroString(dataUri) ? null : dataUri,
     manager: isZeroAddress(manager) ? null : manager,
-    index: isZeroAddress(index) ? null : index,
     created: isZeroUint(created) ? null : parseInt(created),
   };
 }

@@ -31,7 +31,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Address of the new organization."}
      */
     function createOrganization(string memory dataUri) internal returns (address) {
-        Organization newOrganization = new Organization(msg.sender, dataUri, address(this));
+        Organization newOrganization = new Organization(dataUri);
+        newOrganization.transferOwnership(msg.sender);
         address newOrganizationAddress = address(newOrganization);
         emit OrganizationCreated(newOrganizationAddress);
         return newOrganizationAddress;
