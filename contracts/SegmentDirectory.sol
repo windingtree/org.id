@@ -97,15 +97,6 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     }
 
     /**
-     * @dev `setLifToken` allows the owner of the contract to change the
-     * address of the LifToken contract
-     * @param _lifToken The new contract address
-     */
-    function setLifToken(address _lifToken) public onlyOwner {
-        LifToken = _lifToken;
-    }
-
-    /**
      * @dev `getOrganizationsLength` get the length of the `organizations` array
      * @return {" ": "Length of the organizations array. Might contain zero addresses."}
      */
@@ -136,6 +127,15 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     modifier onlyOwner() {
         require(msg.sender == _owner);
         _;
+    }
+
+    /**
+     * @dev `setLifToken` allows the owner of the contract to change the
+     * address of the LifToken contract
+     * @param _lifToken The new contract address
+     */
+    function setLifToken(address _lifToken) public onlyOwner {
+        LifToken = _lifToken;
     }
 
     /**
