@@ -25,32 +25,48 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     address _owner;
 
     /**
-     * @dev `registerOrganization` Register new organization in the index.
-     * Emits `OrganizationRegistered` on success.
+     * @dev `createOrganization` Register new organization in the index.
+     * Emits `OrganizationCreated` on success.
      * @param  dataUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
      */
-    function registerOrganization(string memory dataUri) internal returns (address) {
+    function createOrganization(string memory dataUri) internal returns (address) {
         Organization newOrganization = new Organization(msg.sender, dataUri, address(this));
         address newOrganizationAddress = address(newOrganization);
-        organizationsIndex[newOrganizationAddress] = organizations.length;
-        organizations.push(newOrganizationAddress);
-        organizationsByManagerIndex[newOrganizationAddress] = organizationsByManager[msg.sender].length;
-        organizationsByManager[msg.sender].push(newOrganizationAddress);
-        emit OrganizationRegistered(
-            newOrganizationAddress,
-            organizationsByManagerIndex[newOrganizationAddress],
-            organizationsIndex[newOrganizationAddress]
-        );
+        emit OrganizationCreated(newOrganizationAddress);
         return newOrganizationAddress;
     }
 
     /**
+     * @dev `registerOrganization` Register new organization in the index.
+     * Emits `OrganizationRegistered` on success.
+     * @param  organization Organization's address
+     * @return {" ": "Address of the organization."}
+     */
+    function registerOrganization(address organization) internal returns (address) {
+        organizationsIndex[organization] = organizations.length;
+        organizations.push(organization);
+        organizationsByManagerIndex[organization] = organizationsByManager[msg.sender].length;
+        organizationsByManager[msg.sender].push(organization);
+        emit OrganizationRegistered(
+            organization,
+            organizationsByManagerIndex[organization],
+            organizationsIndex[organization]
+        );
+        return organization;
+    }
+
+    function createAndRegisterOrganization(string memory dataUri) internal returns (address) {
+        address newOrganizationAddress = createOrganization(dataUri);
+        return registerOrganization(newOrganizationAddress);
+    }
+
+    /**
      * @dev `deleteOrganization` Allows a manager to delete a organization, i. e. call destroy
-     * on the target Organization contract. Emits `OrganizationDeleted` on success.
+     * on the target Organization contract. Emits `OrganizationDeregistered` on success.
      * @param  organization  Organization's address
      */
-    function deleteOrganization(address organization) internal {
+    function deregisterOrganization(address organization) internal {
         // Ensure organization address is valid
         require(organization != address(0));
         // Ensure we know about the organization at all
@@ -58,74 +74,13 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Ensure that the caller is the organization's rightful owner
         // There may actually be a organization on index zero, that's why we use a double check
         require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
-
-        Organization organizationInstance = Organization(organization);
-        // Ensure we are calling only our own organizations
-        require(organizationInstance.index() == address(this));
-        organizationInstance.destroy();
-
         uint index = organizationsByManagerIndex[organization];
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
         delete organizationsIndex[organization];
         delete organizationsByManager[msg.sender][index];
         delete organizationsByManagerIndex[organization];
-        emit OrganizationDeleted(organization, index, allIndex);
-    }
-
-    /**
-     * @dev `callOrganization` Call organization in the index, the organization can only
-     * be called by its manager. Effectively proxies a organization call.
-     * Emits OrganizationCalled on success.
-     * @param  organization Organization's address
-     * @param  data Encoded method call to be done on Organization contract.
-     */
-    function callOrganization(address organization, bytes memory data) internal {
-        // Ensure organization address is valid
-        require(organization != address(0));
-        // Ensure we know about the organization at all
-        require(organizationsIndex[organization] != uint(0));
-        // Ensure that the caller is the organization's rightful owner
-        require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
-        Organization organizationInstance = Organization(organization);
-        // Ensure we are calling only our own organizations
-        require(organizationInstance.index() == address(this));
-        // solhint-disable-next-line avoid-low-level-calls
-        (bool success,) = organization.call(data);
-        require(success);
-        emit OrganizationCalled(organization);
-    }
-
-    /**
-     * @dev `transferOrganization` Allows to change ownership of
-     * the organization contract. Emits OrganizationTransferred on success.
-     * @param organization Organization's address
-     * @param newManager Address to which the organization will belong after transfer.
-     */
-    function transferOrganization(address organization, address payable newManager) internal {
-        // Ensure organization address is valid
-        require(organization != address(0));
-        // Ensure new manager is valid
-        require(newManager != address(0));
-        // Ensure we know about the organization at all
-        require(organizationsIndex[organization] != uint(0));
-        // Ensure that the caller is the organization's rightful owner
-        // There may actually be a organization on index zero, that's why we use a double check
-        require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
-
-        Organization organizationInstance = Organization(organization);
-        // Ensure we are calling only our own organizations
-        require(organizationInstance.index() == address(this));
-        // Change ownership in the Organization contract
-        organizationInstance.changeManager(newManager);
-
-        // Detach from the old manager ...
-        uint index = organizationsByManagerIndex[organization];
-        delete organizationsByManager[msg.sender][index];
-        // ... and attach to new manager
-        organizationsByManagerIndex[organization] = organizationsByManager[newManager].length;
-        organizationsByManager[newManager].push(organization);
-        emit OrganizationTransferred(organization, msg.sender, newManager);
+        emit OrganizationDeregistered(organization, index, allIndex);
     }
 
     /**
@@ -185,7 +140,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @dev Allows the current owner to transfer control of the contract to a newOwner.
      * @param newOwner The address to transfer ownership to.
      */
-    function transferOwnership(address newOwner) public onlyOwner {
+    function transferOwnership(address payable newOwner) public onlyOwner {
         _transferOwnership(newOwner);
     }
 

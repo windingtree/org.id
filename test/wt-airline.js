@@ -10,7 +10,6 @@ Contracts.setArtifactsDefaults({
 });
 
 const WTAirlineIndex = Contracts.getFromLocal('WTAirlineIndex');
-const WTAirline = Contracts.getFromLocal('Organization');
 // eaiser interaction with truffle-contract
 const TruffleWTAirline = artifacts.require('Organization');
 const AbstractWTAirlineIndex = artifacts.require('AbstractWTAirlineIndex');
@@ -22,7 +21,6 @@ contract('Airline', (accounts) => {
   const nonOwnerAccount = accounts[3];
   const tokenAddress = accounts[5];
   let project;
-  let airlineAddress = help.zeroAddress;
   let wtAirlineIndex;
   let wtAirline;
 
@@ -34,9 +32,8 @@ contract('Airline', (accounts) => {
       initArgs: [indexOwner, tokenAddress],
     });
     wtAirlineIndex = await AbstractWTAirlineIndex.at(airlineIndexProxy.address);
-    await wtAirlineIndex.registerAirline(airlineUri, { from: airlineAccount });
+    await wtAirlineIndex.createAndRegisterAirline(airlineUri, { from: airlineAccount });
     let address = await wtAirlineIndex.getAirlinesByManager(airlineAccount);
-    airlineAddress = address[0];
     wtAirline = await TruffleWTAirline.at(address[0]);
   });
 
@@ -60,7 +57,7 @@ contract('Airline', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTAirline.new([help.zeroAddress, 'goo.gl', wtAirlineIndex.address]);
+        await TruffleWTAirline.new(help.zeroAddress, 'goo.gl', wtAirlineIndex.address);
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -69,7 +66,7 @@ contract('Airline', (accounts) => {
 
     it('should not be created with zero address for an index', async () => {
       try {
-        await WTAirline.new([airlineAccount, 'goo.gl', help.zeroAddress]);
+        await TruffleWTAirline.new(airlineAccount, 'goo.gl', help.zeroAddress);
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -77,14 +74,12 @@ contract('Airline', (accounts) => {
     });
   });
 
-  describe('editInfo', () => {
+  describe('changeDataUri', () => {
     const newDataUri = 'goo.gl/12345';
 
     it('should not update airline to an empty dataUri', async () => {
       try {
-        const airline = await WTAirline.at(wtAirline.address);
-        const data = await airline.methods.editInfo('').encodeABI();
-        await wtAirlineIndex.callAirline(airlineAddress, data, { from: airlineAccount });
+        await wtAirline.changeDataUri('', { from: airlineAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -92,27 +87,14 @@ contract('Airline', (accounts) => {
     });
 
     it('should update airline\'s dataUri', async () => {
-      const airline = await WTAirline.at(wtAirline.address);
-      const data = airline.methods.editInfo(newDataUri).encodeABI();
-      await wtAirlineIndex.callAirline(airlineAddress, data, { from: airlineAccount });
+      await wtAirline.changeDataUri(newDataUri, { from: airlineAccount });
       const info = await help.getAirlineInfo(wtAirline);
       assert.equal(info.dataUri, newDataUri);
     });
 
     it('should throw if not executed by airline owner', async () => {
       try {
-        const airline = await WTAirline.at(wtAirline.address);
-        const data = airline.methods.editInfo(newDataUri).encodeABI();
-        await wtAirlineIndex.callAirline(airlineAddress, data, { from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw if not executed from index address', async () => {
-      try {
-        await wtAirline.editInfo(newDataUri, { from: nonOwnerAccount });
+        await wtAirline.changeDataUri(newDataUri, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -120,20 +102,14 @@ contract('Airline', (accounts) => {
     });
   });
 
-  describe('changeManager', () => {
-    it('should throw if not executed from index address', async () => {
+  describe('transferOwnership', () => {
+    it('should throw if not executed from owner address', async () => {
       try {
-        await wtAirline.changeManager(nonOwnerAccount, { from: nonOwnerAccount });
+        await wtAirline.transferOwnership(nonOwnerAccount, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
-    });
-
-    it('should change the airline manager', async () => {
-      assert(await wtAirline.manager(), airlineAccount);
-      await wtAirlineIndex.transferAirline(airlineAddress, nonOwnerAccount, { from: airlineAccount });
-      assert(await wtAirline.manager(), nonOwnerAccount);
     });
   });
 });

@@ -10,14 +10,16 @@ import "./SegmentDirectory.sol";
  */
 contract WTHotelIndex is SegmentDirectory, AbstractWTHotelIndex {
 
-    /**
-     * @dev `registerHotel` Register new hotel in the index.
-     * Emits `HotelRegistered` on success.
-     * @param  dataUri Hotel's data pointer
-     * @return {" ": "Address of the new hotel."}
-     */
-    function registerHotel(string calldata dataUri) external returns (address) {
-        return registerOrganization(dataUri);
+    function createHotel(string calldata dataUri) external returns (address) {
+        return createOrganization(dataUri);
+    }
+
+    function registerHotel(address hotel) external returns (address) {
+        return registerOrganization(hotel);
+    }
+
+    function createAndRegisterHotel(string calldata dataUri) external returns (address) {
+        return createAndRegisterOrganization(dataUri);
     }
 
     /**
@@ -25,29 +27,8 @@ contract WTHotelIndex is SegmentDirectory, AbstractWTHotelIndex {
      * on the target Hotel contract. Emits `HotelDeleted` on success.
      * @param  hotel  Hotel's address
      */
-    function deleteHotel(address hotel) external {
-        return deleteOrganization(hotel);
-    }
-
-    /**
-     * @dev `callHotel` Call hotel in the index, the hotel can only
-     * be called by its manager. Effectively proxies a hotel call.
-     * Emits HotelCalled on success.
-     * @param  hotel Hotel's address
-     * @param  data Encoded method call to be done on Hotel contract.
-     */
-    function callHotel(address hotel, bytes calldata data) external {
-        return callOrganization(hotel, data);
-    }
-
-    /**
-     * @dev `transferHotel` Allows to change ownership of
-     * the hotel contract. Emits HotelTransferred on success.
-     * @param hotel Hotel's address
-     * @param newManager Address to which the hotel will belong after transfer.
-     */
-    function transferHotel(address hotel, address payable newManager) external {
-        return transferOrganization(hotel, newManager);
+    function deregisterHotel(address hotel) external {
+        return deregisterOrganization(hotel);
     }
 
     /**

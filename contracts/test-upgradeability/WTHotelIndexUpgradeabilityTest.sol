@@ -6,7 +6,7 @@ import "./HotelUpgradeabilityTest.sol";
 
 contract WTHotelIndexUpgradeabilityTest is WTHotelIndex {
 
-    function registerHotel(string calldata dataUri) external returns (address) {
+    function createAndRegisterHotel(string calldata dataUri) external returns (address) {
         HotelUpgradeabilityTest newOrganization = new HotelUpgradeabilityTest(msg.sender, dataUri, address(this));
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;

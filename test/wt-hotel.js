@@ -10,7 +10,6 @@ Contracts.setArtifactsDefaults({
 });
 
 const WTHotelIndex = Contracts.getFromLocal('WTHotelIndex');
-const WTHotel = Contracts.getFromLocal('Organization');
 // eaiser interaction with truffle-contract
 const TruffleWTHotel = artifacts.require('Organization');
 const AbstractWTHotelIndex = artifacts.require('AbstractWTHotelIndex');
@@ -22,7 +21,6 @@ contract('Hotel', (accounts) => {
   const nonOwnerAccount = accounts[3];
   const tokenAddress = accounts[5];
   let project;
-  let hotelAddress = help.zeroAddress;
   let wtHotelIndex;
   let wtHotel;
 
@@ -34,9 +32,8 @@ contract('Hotel', (accounts) => {
       initArgs: [indexOwner, tokenAddress],
     });
     wtHotelIndex = await AbstractWTHotelIndex.at(hotelIndexProxy.address);
-    await wtHotelIndex.registerHotel(hotelUri, { from: hotelAccount });
+    await wtHotelIndex.createAndRegisterHotel(hotelUri, { from: hotelAccount });
     let address = await wtHotelIndex.getHotelsByManager(hotelAccount);
-    hotelAddress = address[0];
     wtHotel = await TruffleWTHotel.at(address[0]);
   });
 
@@ -60,7 +57,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for a manager', async () => {
       try {
-        await WTHotel.new([help.zeroAddress, 'goo.gl', wtHotelIndex.address]);
+        await TruffleWTHotel.new(help.zeroAddress, 'goo.gl', wtHotelIndex.address);
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -69,7 +66,7 @@ contract('Hotel', (accounts) => {
 
     it('should not be created with zero address for an index', async () => {
       try {
-        await WTHotel.new([hotelAccount, 'goo.gl', help.zeroAddress]);
+        await TruffleWTHotel.new(hotelAccount, 'goo.gl', help.zeroAddress);
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -77,14 +74,12 @@ contract('Hotel', (accounts) => {
     });
   });
 
-  describe('editInfo', () => {
+  describe('changeDataUri', () => {
     const newDataUri = 'goo.gl/12345';
 
     it('should not update hotel to an empty dataUri', async () => {
       try {
-        const hotel = await WTHotel.at(wtHotel.address);
-        const data = await hotel.methods.editInfo('').encodeABI();
-        await wtHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
+        await wtHotel.changeDataUri('', { from: hotelAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -92,27 +87,14 @@ contract('Hotel', (accounts) => {
     });
 
     it('should update hotel\'s dataUri', async () => {
-      const hotel = await WTHotel.at(wtHotel.address);
-      const data = hotel.methods.editInfo(newDataUri).encodeABI();
-      await wtHotelIndex.callHotel(hotelAddress, data, { from: hotelAccount });
+      await wtHotel.changeDataUri(newDataUri, { from: hotelAccount });
       const info = await help.getHotelInfo(wtHotel);
       assert.equal(info.dataUri, newDataUri);
     });
 
     it('should throw if not executed by hotel owner', async () => {
       try {
-        const hotel = await WTHotel.at(wtHotel.address);
-        const data = hotel.methods.editInfo(newDataUri).encodeABI();
-        await wtHotelIndex.callHotel(hotelAddress, data, { from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw if not executed from index address', async () => {
-      try {
-        await wtHotel.editInfo(newDataUri, { from: nonOwnerAccount });
+        await wtHotel.changeDataUri(newDataUri, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -120,20 +102,14 @@ contract('Hotel', (accounts) => {
     });
   });
 
-  describe('changeManager', () => {
+  describe('transferOwnership', () => {
     it('should throw if not executed from index address', async () => {
       try {
-        await wtHotel.changeManager(nonOwnerAccount, { from: nonOwnerAccount });
+        await wtHotel.transferOwnership(nonOwnerAccount, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
-    });
-
-    it('should change the hotel manager', async () => {
-      assert(await wtHotel.manager(), hotelAccount);
-      await wtHotelIndex.transferHotel(hotelAddress, nonOwnerAccount, { from: hotelAccount });
-      assert(await wtHotel.manager(), nonOwnerAccount);
     });
   });
 });

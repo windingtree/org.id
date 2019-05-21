@@ -10,44 +10,25 @@ import "./SegmentDirectory.sol";
  */
 contract WTAirlineIndex is SegmentDirectory, AbstractWTAirlineIndex {
 
-    /**
-     * @dev `registerAirline` Register new airline in the index.
-     * Emits `AirlineRegistered` on success.
-     * @param  dataUri Airline's data pointer
-     * @return {" ": "Address of the new airline."}
-     */
-    function registerAirline(string calldata dataUri) external returns (address) {
-        return registerOrganization(dataUri);
+    function createAirline(string calldata dataUri) external returns (address) {
+        return createOrganization(dataUri);
+    }
+
+    function registerAirline(address airline) external returns (address) {
+        return registerOrganization(airline);
+    }
+
+    function createAndRegisterAirline(string calldata dataUri) external returns (address) {
+        return createAndRegisterOrganization(dataUri);
     }
 
     /**
-     * @dev `deleteAirline` Allows a manager to delete a airline, i. e. call destroy
+     * @dev `deregisterAirline` Allows a manager to delete a airline, i. e. call destroy
      * on the target Airline contract. Emits `AirlineDeleted` on success.
      * @param  airline  Airline's address
      */
-    function deleteAirline(address airline) external {
-        return deleteOrganization(airline);
-    }
-
-    /**
-     * @dev `callAirline` Call airline in the index, the airline can only
-     * be called by its manager. Effectively proxies a airline call.
-     * Emits AirlineCalled on success.
-     * @param  airline Airline's address
-     * @param  data Encoded method call to be done on Airline contract.
-     */
-    function callAirline(address airline, bytes calldata data) external {
-        return callOrganization(airline, data);
-    }
-
-    /**
-     * @dev `transferAirline` Allows to change ownership of
-     * the airline contract. Emits AirlineTransferred on success.
-     * @param airline Airline's address
-     * @param newManager Address to which the airline will belong after transfer.
-     */
-    function transferAirline(address airline, address payable newManager) external {
-        return transferOrganization(airline, newManager);
+    function deregisterAirline(address airline) external {
+        return deregisterOrganization(airline);
     }
 
     /**

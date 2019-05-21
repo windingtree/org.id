@@ -4,6 +4,7 @@ pragma solidity ^0.5.6;
  * @title Organization, contract for a Organization registered in the WT network
  * @dev A contract that represents a Organization in the WT network.
  */
+// TODO try to switch to Ownable
 contract Organization {
 
     // Who owns this Organization and can manage it.
@@ -19,6 +20,13 @@ contract Organization {
 
     // WTOrganizationIndex address
     address public index;
+
+    /**
+     * @dev Event triggered when manager of the organization is changed.
+     */
+    event OwnershipTransferred(address indexed previousManager, address indexed newManager);
+
+    event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
 
     /**
      * @dev Constructor.
@@ -40,33 +48,36 @@ contract Organization {
      * Allows calling such methods only when msg.sender is equal
      * to previously set index propert.y
      */
-    modifier onlyFromIndex() {
-        require(msg.sender == index);
+    modifier onlyManager() {
+        require(msg.sender == manager);
         _;
     }
 
     /**
-     * @dev `editInfo` Allows owner to change Organization's dataUri.
+     * @dev `changeDataUri` Allows owner to change Organization's dataUri.
      * @param  _dataUri New dataUri pointer of this Organization
      */
-    function editInfo(string memory _dataUri) public onlyFromIndex {
-        require(bytes(_dataUri).length != 0);
+    function changeDataUri(string memory _dataUri) public onlyManager {
+        bytes memory tempStringRepr = bytes(_dataUri);
+        require(tempStringRepr.length != 0);
+        emit DataUriChanged(dataUri, _dataUri);
         dataUri = _dataUri;
     }
 
     /**
      * @dev `destroy` allows the owner to delete the Organization
      */
-    function destroy() public onlyFromIndex {
+    function destroy() public onlyManager {
         selfdestruct(manager);
     }
 
     /**
      * @dev Allows owner to change Organization manager.
-     * @param _newManager New manager's address
+     * @param newManager New manager's address
      */
-    function changeManager(address payable _newManager) public onlyFromIndex {
-        require(_newManager != address(0));
-        manager = _newManager;
+    function transferOwnership(address payable newManager) public onlyManager {
+        require(newManager != address(0));
+        emit OwnershipTransferred(manager, newManager);
+        manager = newManager;
     }
 }

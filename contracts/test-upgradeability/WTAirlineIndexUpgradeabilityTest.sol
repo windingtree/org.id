@@ -6,7 +6,7 @@ import "./AirlineUpgradeabilityTest.sol";
 
 contract WTAirlineIndexUpgradeabilityTest is WTAirlineIndex {
 
-    function registerAirline(string calldata dataUri) external returns (address) {
+    function createAndRegisterAirline(string calldata dataUri) external returns (address) {
         AirlineUpgradeabilityTest newOrganization = new AirlineUpgradeabilityTest(msg.sender, dataUri, address(this));
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;
