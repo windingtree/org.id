@@ -14,6 +14,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 
     // Mapping of the organizations indexed by manager's address
     mapping(address => address[]) public organizationsByManager;
+
     // Mapping of organizations position in the manager's indexed organization index
     mapping(address => uint) public organizationsByManagerIndex;
 

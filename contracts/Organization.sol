@@ -21,7 +21,7 @@ contract Organization {
     /**
      * @dev Event triggered when manager of the organization is changed.
      */
-    event OwnershipTransferred(address indexed previousManager, address indexed newManager);
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
 
