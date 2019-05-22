@@ -14,7 +14,6 @@ const HotelDirectoryUpgradeabilityTest = Contracts.getFromLocal('HotelDirectoryU
 // eaiser interaction with truffle-contract
 const Organization = artifacts.require('Organization');
 const HotelDirectoryInterface = artifacts.require('HotelDirectoryInterface');
-const TruffleHotelDirectoryUpgradeabilityTest = artifacts.require('HotelDirectoryUpgradeabilityTest');
 const OrganizationUpgradeabilityTest = artifacts.require('OrganizationUpgradeabilityTest');
 
 contract('HotelDirectory', (accounts) => {
@@ -40,28 +39,26 @@ contract('HotelDirectory', (accounts) => {
 
   describe('upgradeability', () => {
     it('should upgrade HotelDirectory and have new functions in Index and Hotel contracts', async () => {
+      // register old organization
       await hotelDirectory.createAndRegisterHotel('dataUri', { from: hotelAccount });
-      // Upgrade proxy with new implementation
-      const newIndex = await HotelDirectoryUpgradeabilityTest.new({ from: hotelDirectoryOwner });
-      await project.proxyAdmin.upgradeProxy(hotelDirectoryProxy.address, newIndex.address, HotelDirectoryUpgradeabilityTest);
-      hotelDirectory = await TruffleHotelDirectoryUpgradeabilityTest.at(hotelDirectoryProxy.address);
-      await hotelDirectory.createAndRegisterHotel('dataUri2', { from: hotelAccount });
-      const length = await hotelDirectory.getHotelsLength();
-      const allHotels = await help.jsArrayFromSolidityArray(
-        hotelDirectory.hotels,
-        length,
-        help.isZeroAddress
-      );
-      assert.isDefined(allHotels[0]);
+      // upgrade directory
+      const upgradedDirectory = await HotelDirectoryUpgradeabilityTest.new({ from: hotelDirectoryOwner });
+      await project.proxyAdmin.upgradeProxy(hotelDirectoryProxy.address, upgradedDirectory.address, HotelDirectoryUpgradeabilityTest);
+      const newDirectory = await HotelDirectoryUpgradeabilityTest.at(hotelDirectoryProxy.address);
+      // register new organization
+      await newDirectory.methods.createAndRegisterHotel('dataUri2').send({ from: hotelAccount });
+      const allHotels = help.filterZeroAddresses(await newDirectory.methods.getHotels().call());
+      // test values
+      assert.isDefined(await newDirectory.methods.hotels(1).call());
+      assert.isDefined(await newDirectory.methods.hotels(2).call());
       assert.isFalse(help.isZeroAddress(allHotels[0]));
-      assert.equal(await hotelDirectory.hotelsIndex(allHotels[0]), 1);
-      assert.equal(await hotelDirectory.hotelsIndex(allHotels[1]), 2);
-
+      assert.isFalse(help.isZeroAddress(allHotels[1]));
+      assert.equal(await newDirectory.methods.hotelsIndex(allHotels[0]).call(), 1);
+      assert.equal(await newDirectory.methods.hotelsIndex(allHotels[1]).call(), 2);
       assert.equal(await (await Organization.at(allHotels[0])).dataUri(), 'dataUri');
       assert.equal(await (await Organization.at(allHotels[1])).dataUri(), 'dataUri2');
-
       assert.equal(await (await OrganizationUpgradeabilityTest.at(allHotels[1])).newFunction(), 100);
-      assert.equal(await hotelDirectory.newFunction(), 100);
+      assert.equal(await newDirectory.methods.newFunction().call(), 100);
     });
   });
 

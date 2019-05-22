@@ -14,7 +14,6 @@ const AirlineDirectoryUpgradeabilityTest = Contracts.getFromLocal('AirlineDirect
 // eaiser interaction with truffle-contract
 const Organization = artifacts.require('Organization');
 const AirlineDirectoryInterface = artifacts.require('AirlineDirectoryInterface');
-const TruffleAirlineDirectoryUpgradeabilityTest = artifacts.require('AirlineDirectoryUpgradeabilityTest');
 const OrganizationUpgradeabilityTest = artifacts.require('OrganizationUpgradeabilityTest');
 
 contract('AirlineDirectory', (accounts) => {
@@ -40,29 +39,26 @@ contract('AirlineDirectory', (accounts) => {
 
   describe('upgradeability', () => {
     it('should upgrade AirlineDirectory and have new functions in Index and Airline contracts', async () => {
+      // register old organization
       await airlineDirectory.createAndRegisterAirline('dataUri', { from: airlineAccount });
-      // Upgrade proxy with new implementation
-      const newIndex = await AirlineDirectoryUpgradeabilityTest.new({ from: airlineDirectoryOwner });
-      await project.proxyAdmin.upgradeProxy(airlineDirectoryProxy.address, newIndex.address, AirlineDirectoryUpgradeabilityTest);
-      airlineDirectory = await TruffleAirlineDirectoryUpgradeabilityTest.at(airlineDirectoryProxy.address);
-      await airlineDirectory.createAndRegisterAirline('dataUri2', { from: airlineAccount });
-      const length = await airlineDirectory.getAirlinesLength();
-      const allAirlines = await help.jsArrayFromSolidityArray(
-        airlineDirectory.airlines,
-        length,
-        help.isZeroAddress
-      );
-
-      assert.isDefined(allAirlines[0]);
+      // upgrade directory
+      const upgradedDirectory = await AirlineDirectoryUpgradeabilityTest.new({ from: airlineDirectoryOwner });
+      await project.proxyAdmin.upgradeProxy(airlineDirectoryProxy.address, upgradedDirectory.address, AirlineDirectoryUpgradeabilityTest);
+      const newDirectory = await AirlineDirectoryUpgradeabilityTest.at(airlineDirectoryProxy.address);
+      // register new organization
+      await newDirectory.methods.createAndRegisterAirline('dataUri2').send({ from: airlineAccount });
+      const allAirlines = help.filterZeroAddresses(await newDirectory.methods.getAirlines().call());
+      // test values
+      assert.isDefined(await newDirectory.methods.airlines(1).call());
+      assert.isDefined(await newDirectory.methods.airlines(2).call());
       assert.isFalse(help.isZeroAddress(allAirlines[0]));
-      assert.equal(await airlineDirectory.airlinesIndex(allAirlines[0]), 1);
-      assert.equal(await airlineDirectory.airlinesIndex(allAirlines[1]), 2);
-
+      assert.isFalse(help.isZeroAddress(allAirlines[1]));
+      assert.equal(await newDirectory.methods.airlinesIndex(allAirlines[0]).call(), 1);
+      assert.equal(await newDirectory.methods.airlinesIndex(allAirlines[1]).call(), 2);
       assert.equal(await (await Organization.at(allAirlines[0])).dataUri(), 'dataUri');
       assert.equal(await (await Organization.at(allAirlines[1])).dataUri(), 'dataUri2');
-
       assert.equal(await (await OrganizationUpgradeabilityTest.at(allAirlines[1])).newFunction(), 100);
-      assert.equal(await airlineDirectory.newFunction(), 100);
+      assert.equal(await newDirectory.methods.newFunction().call(), 100);
     });
   });
 
