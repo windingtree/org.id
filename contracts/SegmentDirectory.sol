@@ -6,7 +6,6 @@ import "./SegmentDirectoryEvents.sol";
 
 /**
  * An abstract SegmentDirectory that can handle a list of organizations
- * and their grouping by manager
  */
 contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 

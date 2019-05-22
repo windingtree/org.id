@@ -5,8 +5,7 @@ import "./SegmentDirectory.sol";
 
 /**
  * @title AirlineDirectory
- * @dev The airlines are stored in an array and can be filtered by the owner
- * address.
+ * @dev The airlines are stored in an array
  */
 contract AirlineDirectory is SegmentDirectory, AirlineDirectoryInterface {
 

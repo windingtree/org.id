@@ -5,8 +5,7 @@ import "./SegmentDirectory.sol";
 
 /**
  * @title HotelDirectory
- * @dev The hotels are stored in an array and can be filtered by the owner
- * address.
+ * @dev The hotels are stored in an array
  */
 contract HotelDirectory is SegmentDirectory, HotelDirectoryInterface {
 
