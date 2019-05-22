@@ -25,3 +25,4 @@ zos.dev*
 build/contracts/test/*
 contracts/test/*
 .flattened
+assets
