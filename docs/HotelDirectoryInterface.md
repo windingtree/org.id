@@ -1,9 +1,8 @@
-* [AbstractWTHotelIndex](#abstractwthotelindex)
+* [HotelDirectoryInterface](#hoteldirectoryinterface)
   * [getHotels](#function-gethotels)
   * [createHotel](#function-createhotel)
   * [deregisterHotel](#function-deregisterhotel)
   * [hotelsIndex](#function-hotelsindex)
-  * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
   * [createAndRegisterHotel](#function-createandregisterhotel)
@@ -13,12 +12,12 @@
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# AbstractWTHotelIndex
+# HotelDirectoryInterface
 
 
 ## *function* getHotels
 
-AbstractWTHotelIndex.getHotels() `view` `0d2e677a`
+HotelDirectoryInterface.getHotels() `view` `0d2e677a`
 
 
 
@@ -26,7 +25,7 @@ AbstractWTHotelIndex.getHotels() `view` `0d2e677a`
 
 ## *function* createHotel
 
-AbstractWTHotelIndex.createHotel(dataUri) `nonpayable` `6e36f8b0`
+HotelDirectoryInterface.createHotel(dataUri) `nonpayable` `6e36f8b0`
 
 
 Inputs
@@ -38,7 +37,7 @@ Inputs
 
 ## *function* deregisterHotel
 
-AbstractWTHotelIndex.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
+HotelDirectoryInterface.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
 
 
 Inputs
@@ -50,7 +49,7 @@ Inputs
 
 ## *function* hotelsIndex
 
-AbstractWTHotelIndex.hotelsIndex(hotel) `view` `9f9bfeb8`
+HotelDirectoryInterface.hotelsIndex(hotel) `view` `9f9bfeb8`
 
 
 Inputs
@@ -60,21 +59,9 @@ Inputs
 | *address* | hotel | undefined |
 
 
-## *function* getHotelsByManager
-
-AbstractWTHotelIndex.getHotelsByManager(manager) `view` `bb979c3d`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | undefined |
-
-
 ## *function* getHotelsLength
 
-AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
+HotelDirectoryInterface.getHotelsLength() `view` `ca63a55b`
 
 
 
@@ -82,7 +69,7 @@ AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
 
 ## *function* hotels
 
-AbstractWTHotelIndex.hotels(index) `view` `cd338265`
+HotelDirectoryInterface.hotels(index) `view` `cd338265`
 
 
 Inputs
@@ -94,7 +81,7 @@ Inputs
 
 ## *function* createAndRegisterHotel
 
-AbstractWTHotelIndex.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
+HotelDirectoryInterface.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
 
 
 Inputs
@@ -106,7 +93,7 @@ Inputs
 
 ## *function* registerHotel
 
-AbstractWTHotelIndex.registerHotel(hotel) `nonpayable` `dcd003fb`
+HotelDirectoryInterface.registerHotel(hotel) `nonpayable` `dcd003fb`
 
 
 Inputs
@@ -117,7 +104,7 @@ Inputs
 
 ## *event* OrganizationCreated
 
-AbstractWTHotelIndex.OrganizationCreated(organization) `47b68893`
+HotelDirectoryInterface.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -127,19 +114,18 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-AbstractWTHotelIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+HotelDirectoryInterface.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 
-AbstractWTHotelIndex.OrganizationDeregistered(organization) `2ef6503b`
+HotelDirectoryInterface.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
@@ -149,7 +135,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-AbstractWTHotelIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+HotelDirectoryInterface.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

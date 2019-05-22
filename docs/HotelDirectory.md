@@ -1,17 +1,15 @@
-* [WTHotelIndexUpgradeabilityTest](#wthotelindexupgradeabilitytest)
+* [HotelDirectory](#hoteldirectory)
   * [getHotels](#function-gethotels)
-  * [newFunction](#function-newfunction)
+  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsIndex](#function-organizationsindex)
   * [createHotel](#function-createhotel)
   * [deregisterHotel](#function-deregisterhotel)
+  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
-  * [organizationsByManagerIndex](#function-organizationsbymanagerindex)
-  * [organizationsByManager](#function-organizationsbymanager)
   * [getOrganizationsLength](#function-getorganizationslength)
-  * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
   * [createAndRegisterHotel](#function-createandregisterhotel)
@@ -19,18 +17,17 @@
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [getOrganizationsByManager](#function-getorganizationsbymanager)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationRegistered](#event-organizationregistered)
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# WTHotelIndexUpgradeabilityTest
+# HotelDirectory
 
 
 ## *function* getHotels
 
-WTHotelIndexUpgradeabilityTest.getHotels() `view` `0d2e677a`
+HotelDirectory.getHotels() `view` `0d2e677a`
 
 > `getHotels` proxies getOrganizations
 
@@ -42,17 +39,22 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* newFunction
+## *function* organizationsByManagerDeprecated
 
-WTHotelIndexUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+HotelDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
 
 
+Inputs
 
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+| *uint256* |  | undefined |
 
 
 ## *function* initialize
 
-WTHotelIndexUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
+HotelDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
 
 > Initializer for upgradeable contracts.
 
@@ -66,7 +68,7 @@ Inputs
 
 ## *function* LifToken
 
-WTHotelIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
+HotelDirectory.LifToken() `view` `554d8b37`
 
 
 
@@ -74,7 +76,7 @@ WTHotelIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 ## *function* organizationsIndex
 
-WTHotelIndexUpgradeabilityTest.organizationsIndex() `view` `63cd48fb`
+HotelDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs
@@ -86,7 +88,7 @@ Inputs
 
 ## *function* createHotel
 
-WTHotelIndexUpgradeabilityTest.createHotel(dataUri) `nonpayable` `6e36f8b0`
+HotelDirectory.createHotel(dataUri) `nonpayable` `6e36f8b0`
 
 > `createHotel` proxies and externalizes createOrganization
 
@@ -104,7 +106,7 @@ Outputs
 
 ## *function* deregisterHotel
 
-WTHotelIndexUpgradeabilityTest.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
+HotelDirectory.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
 
 > `deregisterHotel` proxies and externalizes deregisterOrganization
 
@@ -115,9 +117,21 @@ Inputs
 | *address* | hotel | Hotel's address |
 
 
+## *function* organizationsByManagerIndexDeprecated
+
+HotelDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
 ## *function* getOrganizations
 
-WTHotelIndexUpgradeabilityTest.getOrganizations() `view` `9754a3a8`
+HotelDirectory.getOrganizations() `view` `9754a3a8`
 
 > `getOrganizations` get `organizations` array
 
@@ -131,7 +145,7 @@ Outputs
 
 ## *function* hotelsIndex
 
-WTHotelIndexUpgradeabilityTest.hotelsIndex(hotel) `view` `9f9bfeb8`
+HotelDirectory.hotelsIndex(hotel) `view` `9f9bfeb8`
 
 > `hotelsIndex` aliases organizatoinsIndex 
 
@@ -147,34 +161,9 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* organizationsByManagerIndex
-
-WTHotelIndexUpgradeabilityTest.organizationsByManagerIndex() `view` `a6fd23b7`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
-## *function* organizationsByManager
-
-WTHotelIndexUpgradeabilityTest.organizationsByManager(, ) `view` `b4d9b278`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
-
-
 ## *function* getOrganizationsLength
 
-WTHotelIndexUpgradeabilityTest.getOrganizationsLength() `view` `b9306681`
+HotelDirectory.getOrganizationsLength() `view` `b9306681`
 
 > `getOrganizationsLength` get the length of the `organizations` array
 
@@ -186,27 +175,9 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* getHotelsByManager
-
-WTHotelIndexUpgradeabilityTest.getHotelsByManager(manager) `view` `bb979c3d`
-
-> `getHotelsByManager` proxies getOrganizationsByManager
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | Manager address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
-
 ## *function* getHotelsLength
 
-WTHotelIndexUpgradeabilityTest.getHotelsLength() `view` `ca63a55b`
+HotelDirectory.getHotelsLength() `view` `ca63a55b`
 
 > `getHotelsLength` proxies getOrganizationsLength
 
@@ -220,7 +191,7 @@ Outputs
 
 ## *function* hotels
 
-WTHotelIndexUpgradeabilityTest.hotels(index) `view` `cd338265`
+HotelDirectory.hotels(index) `view` `cd338265`
 
 > `hotels` aliases organizations
 
@@ -238,19 +209,25 @@ Outputs
 
 ## *function* createAndRegisterHotel
 
-WTHotelIndexUpgradeabilityTest.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
+HotelDirectory.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
 
+> `createAndRegisterHotel` proxies and externalizes createAndRegisterOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *string* | dataUri | Hotel's data pointer |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* registerHotel
 
-WTHotelIndexUpgradeabilityTest.registerHotel(hotel) `nonpayable` `dcd003fb`
+HotelDirectory.registerHotel(hotel) `nonpayable` `dcd003fb`
 
 > `registerHotel` proxies and externalizes registerOrganization
 
@@ -268,7 +245,7 @@ Outputs
 
 ## *function* organizations
 
-WTHotelIndexUpgradeabilityTest.organizations() `view` `e792dd8a`
+HotelDirectory.organizations() `view` `e792dd8a`
 
 
 Inputs
@@ -280,7 +257,7 @@ Inputs
 
 ## *function* setLifToken
 
-WTHotelIndexUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
+HotelDirectory.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
@@ -293,7 +270,7 @@ Inputs
 
 ## *function* transferOwnership
 
-WTHotelIndexUpgradeabilityTest.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+HotelDirectory.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -303,27 +280,9 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-
-## *function* getOrganizationsByManager
-
-WTHotelIndexUpgradeabilityTest.getOrganizationsByManager(manager) `view` `f439cdfc`
-
-> `getOrganizationsByManager` get all the organizations belonging to one manager
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | Manager address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
 ## *event* OrganizationCreated
 
-WTHotelIndexUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
+HotelDirectory.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -333,19 +292,18 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-WTHotelIndexUpgradeabilityTest.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+HotelDirectory.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 
-WTHotelIndexUpgradeabilityTest.OrganizationDeregistered(organization) `2ef6503b`
+HotelDirectory.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
@@ -355,7 +313,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-WTHotelIndexUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+HotelDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

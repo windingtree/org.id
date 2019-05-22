@@ -1,29 +1,33 @@
-* [TestSegmentDirectory](#testsegmentdirectory)
+* [OtaDirectory](#otadirectory)
   * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
-  * [createAndRegisterFoodTruck](#function-createandregisterfoodtruck)
-  * [deregisterFoodTruck](#function-deregisterfoodtruck)
+  * [createOta](#function-createota)
+  * [deregisterOta](#function-deregisterota)
+  * [otasIndex](#function-otasindex)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [getOtas](#function-getotas)
   * [organizationsIndex](#function-organizationsindex)
   * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
-  * [registerFoodTruck](#function-registerfoodtruck)
+  * [otas](#function-otas)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [getOtasLength](#function-getotaslength)
   * [organizations](#function-organizations)
+  * [createAndRegisterOta](#function-createandregisterota)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [createFoodTruck](#function-createfoodtruck)
+  * [registerOta](#function-registerota)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationRegistered](#event-organizationregistered)
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# TestSegmentDirectory
+# OtaDirectory
 
 
 ## *function* organizationsByManagerDeprecated
 
-TestSegmentDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+OtaDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
 
 
 Inputs
@@ -34,33 +38,58 @@ Inputs
 | *uint256* |  | undefined |
 
 
-## *function* createAndRegisterFoodTruck
+## *function* createOta
 
-TestSegmentDirectory.createAndRegisterFoodTruck(dataUri) `nonpayable` `1fcab0b5`
+OtaDirectory.createOta(dataUri) `nonpayable` `38004cf4`
 
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* deregisterFoodTruck
-
-TestSegmentDirectory.deregisterFoodTruck(foodTruck) `nonpayable` `28f3e623`
-
+> `createOta` proxies and externalizes createOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | foodTruck | undefined |
+| *string* | dataUri | Ota's data pointer |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* deregisterOta
+
+OtaDirectory.deregisterOta(ota) `nonpayable` `453a1f6a`
+
+> `deregisterOta` proxies and externalizes deregisterOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+
+## *function* otasIndex
+
+OtaDirectory.otasIndex(ota) `view` `460d3841`
+
+> `otasIndex` aliases organizatoinsIndex 
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
 
 ## *function* initialize
 
-TestSegmentDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
+OtaDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
 
 > Initializer for upgradeable contracts.
 
@@ -74,15 +103,29 @@ Inputs
 
 ## *function* LifToken
 
-TestSegmentDirectory.LifToken() `view` `554d8b37`
+OtaDirectory.LifToken() `view` `554d8b37`
 
 
 
 
+
+## *function* getOtas
+
+OtaDirectory.getOtas() `view` `5c8a8c8d`
+
+> `getOtas` proxies getOrganizations
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
 
 ## *function* organizationsIndex
 
-TestSegmentDirectory.organizationsIndex() `view` `63cd48fb`
+OtaDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs
@@ -94,7 +137,7 @@ Inputs
 
 ## *function* organizationsByManagerIndexDeprecated
 
-TestSegmentDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+OtaDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
 
 
 Inputs
@@ -106,7 +149,7 @@ Inputs
 
 ## *function* getOrganizations
 
-TestSegmentDirectory.getOrganizations() `view` `9754a3a8`
+OtaDirectory.getOrganizations() `view` `9754a3a8`
 
 > `getOrganizations` get `organizations` array
 
@@ -118,21 +161,27 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* registerFoodTruck
+## *function* otas
 
-TestSegmentDirectory.registerFoodTruck(foodTruck) `nonpayable` `b2c5d09f`
+OtaDirectory.otas(index) `view` `b02f7f65`
 
+> `otas` aliases organizations
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | foodTruck | undefined |
+| *uint256* | index | Ota's index |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* getOrganizationsLength
 
-TestSegmentDirectory.getOrganizationsLength() `view` `b9306681`
+OtaDirectory.getOrganizationsLength() `view` `b9306681`
 
 > `getOrganizationsLength` get the length of the `organizations` array
 
@@ -144,9 +193,23 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
+## *function* getOtasLength
+
+OtaDirectory.getOtasLength() `view` `d0be6aa3`
+
+> `getOtasLength` proxies getOrganizationsLength
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
 ## *function* organizations
 
-TestSegmentDirectory.organizations() `view` `e792dd8a`
+OtaDirectory.organizations() `view` `e792dd8a`
 
 
 Inputs
@@ -156,9 +219,27 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* createAndRegisterOta
+
+OtaDirectory.createAndRegisterOta(dataUri) `nonpayable` `f1e34560`
+
+> `createAndRegisterOta` proxies and externalizes createAndRegisterOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Ota's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
 ## *function* setLifToken
 
-TestSegmentDirectory.setLifToken(_lifToken) `nonpayable` `f2f0967b`
+OtaDirectory.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
@@ -171,7 +252,7 @@ Inputs
 
 ## *function* transferOwnership
 
-TestSegmentDirectory.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+OtaDirectory.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -182,20 +263,26 @@ Inputs
 | *address* | newOwner | The address to transfer ownership to. |
 
 
-## *function* createFoodTruck
+## *function* registerOta
 
-TestSegmentDirectory.createFoodTruck(dataUri) `nonpayable` `f9c7613a`
+OtaDirectory.registerOta(ota) `nonpayable` `ff69461c`
 
+> `registerOta` proxies and externalizes registerOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *address* | ota | Ota's address |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 ## *event* OrganizationCreated
 
-TestSegmentDirectory.OrganizationCreated(organization) `47b68893`
+OtaDirectory.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -205,7 +292,7 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-TestSegmentDirectory.OrganizationRegistered(organization, index) `0aa9369e`
+OtaDirectory.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
@@ -216,7 +303,7 @@ Arguments
 
 ## *event* OrganizationDeregistered
 
-TestSegmentDirectory.OrganizationDeregistered(organization) `2ef6503b`
+OtaDirectory.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
@@ -226,7 +313,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-TestSegmentDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+OtaDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

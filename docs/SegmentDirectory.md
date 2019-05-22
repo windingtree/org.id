@@ -1,21 +1,33 @@
 * [SegmentDirectory](#segmentdirectory)
+  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsIndex](#function-organizationsindex)
+  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
-  * [organizationsByManagerIndex](#function-organizationsbymanagerindex)
-  * [organizationsByManager](#function-organizationsbymanager)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [getOrganizationsByManager](#function-getorganizationsbymanager)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationRegistered](#event-organizationregistered)
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # SegmentDirectory
+
+
+## *function* organizationsByManagerDeprecated
+
+SegmentDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+| *uint256* |  | undefined |
 
 
 ## *function* initialize
@@ -52,6 +64,18 @@ Inputs
 | *address* |  | undefined |
 
 
+## *function* organizationsByManagerIndexDeprecated
+
+SegmentDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
 ## *function* getOrganizations
 
 SegmentDirectory.getOrganizations() `view` `9754a3a8`
@@ -65,31 +89,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address[]* |  | undefined |
-
-## *function* organizationsByManagerIndex
-
-SegmentDirectory.organizationsByManagerIndex() `view` `a6fd23b7`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
-## *function* organizationsByManager
-
-SegmentDirectory.organizationsByManager(, ) `view` `b4d9b278`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
-
 
 ## *function* getOrganizationsLength
 
@@ -142,24 +141,6 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-
-## *function* getOrganizationsByManager
-
-SegmentDirectory.getOrganizationsByManager(manager) `view` `f439cdfc`
-
-> `getOrganizationsByManager` get all the organizations belonging to one manager
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | Manager address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
 ## *event* OrganizationCreated
 
 SegmentDirectory.OrganizationCreated(organization) `47b68893`
@@ -172,15 +153,14 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-SegmentDirectory.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+SegmentDirectory.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 

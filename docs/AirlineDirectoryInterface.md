@@ -1,7 +1,6 @@
-* [AbstractWTAirlineIndex](#abstractwtairlineindex)
+* [AirlineDirectoryInterface](#airlinedirectoryinterface)
   * [getAirlines](#function-getairlines)
   * [airlines](#function-airlines)
-  * [getAirlinesByManager](#function-getairlinesbymanager)
   * [getAirlinesLength](#function-getairlineslength)
   * [createAndRegisterAirline](#function-createandregisterairline)
   * [createAirline](#function-createairline)
@@ -13,12 +12,12 @@
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# AbstractWTAirlineIndex
+# AirlineDirectoryInterface
 
 
 ## *function* getAirlines
 
-AbstractWTAirlineIndex.getAirlines() `view` `0d5dc054`
+AirlineDirectoryInterface.getAirlines() `view` `0d5dc054`
 
 
 
@@ -26,7 +25,7 @@ AbstractWTAirlineIndex.getAirlines() `view` `0d5dc054`
 
 ## *function* airlines
 
-AbstractWTAirlineIndex.airlines(index) `view` `3a9a77ca`
+AirlineDirectoryInterface.airlines(index) `view` `3a9a77ca`
 
 
 Inputs
@@ -36,21 +35,9 @@ Inputs
 | *uint256* | index | undefined |
 
 
-## *function* getAirlinesByManager
-
-AbstractWTAirlineIndex.getAirlinesByManager(manager) `view` `7ea6d3c1`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | undefined |
-
-
 ## *function* getAirlinesLength
 
-AbstractWTAirlineIndex.getAirlinesLength() `view` `98696eb5`
+AirlineDirectoryInterface.getAirlinesLength() `view` `98696eb5`
 
 
 
@@ -58,7 +45,7 @@ AbstractWTAirlineIndex.getAirlinesLength() `view` `98696eb5`
 
 ## *function* createAndRegisterAirline
 
-AbstractWTAirlineIndex.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
+AirlineDirectoryInterface.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
 
 
 Inputs
@@ -70,7 +57,7 @@ Inputs
 
 ## *function* createAirline
 
-AbstractWTAirlineIndex.createAirline(dataUri) `nonpayable` `b260c10a`
+AirlineDirectoryInterface.createAirline(dataUri) `nonpayable` `b260c10a`
 
 
 Inputs
@@ -82,7 +69,7 @@ Inputs
 
 ## *function* registerAirline
 
-AbstractWTAirlineIndex.registerAirline(airline) `nonpayable` `bdfd9877`
+AirlineDirectoryInterface.registerAirline(airline) `nonpayable` `bdfd9877`
 
 
 Inputs
@@ -94,19 +81,19 @@ Inputs
 
 ## *function* airlinesIndex
 
-AbstractWTAirlineIndex.airlinesIndex(hotel) `view` `c73f2bfb`
+AirlineDirectoryInterface.airlinesIndex(airline) `view` `c73f2bfb`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
+| *address* | airline | undefined |
 
 
 ## *function* deregisterAirline
 
-AbstractWTAirlineIndex.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
+AirlineDirectoryInterface.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
 
 
 Inputs
@@ -117,7 +104,7 @@ Inputs
 
 ## *event* OrganizationCreated
 
-AbstractWTAirlineIndex.OrganizationCreated(organization) `47b68893`
+AirlineDirectoryInterface.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -127,19 +114,18 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-AbstractWTAirlineIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+AirlineDirectoryInterface.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 
-AbstractWTAirlineIndex.OrganizationDeregistered(organization) `2ef6503b`
+AirlineDirectoryInterface.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
@@ -149,7 +135,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-AbstractWTAirlineIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+AirlineDirectoryInterface.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 

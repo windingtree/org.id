@@ -18,15 +18,14 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-SegmentDirectoryEvents.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+SegmentDirectoryEvents.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 

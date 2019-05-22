@@ -1,35 +1,33 @@
-* [WTAirlineIndex](#wtairlineindex)
+* [AirlineDirectory](#airlinedirectory)
   * [getAirlines](#function-getairlines)
+  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
   * [airlines](#function-airlines)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsIndex](#function-organizationsindex)
-  * [getAirlinesByManager](#function-getairlinesbymanager)
+  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [getAirlinesLength](#function-getairlineslength)
   * [createAndRegisterAirline](#function-createandregisterairline)
-  * [organizationsByManagerIndex](#function-organizationsbymanagerindex)
   * [createAirline](#function-createairline)
-  * [organizationsByManager](#function-organizationsbymanager)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [registerAirline](#function-registerairline)
   * [airlinesIndex](#function-airlinesindex)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [getOrganizationsByManager](#function-getorganizationsbymanager)
   * [deregisterAirline](#function-deregisterairline)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationRegistered](#event-organizationregistered)
   * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# WTAirlineIndex
+# AirlineDirectory
 
 
 ## *function* getAirlines
 
-WTAirlineIndex.getAirlines() `view` `0d5dc054`
+AirlineDirectory.getAirlines() `view` `0d5dc054`
 
 > `getAirlines` proxies getOrganizations
 
@@ -41,9 +39,22 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
+## *function* organizationsByManagerDeprecated
+
+AirlineDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+| *uint256* |  | undefined |
+
+
 ## *function* airlines
 
-WTAirlineIndex.airlines(index) `view` `3a9a77ca`
+AirlineDirectory.airlines(index) `view` `3a9a77ca`
 
 > `airlines` aliases organizations
 
@@ -61,7 +72,7 @@ Outputs
 
 ## *function* initialize
 
-WTAirlineIndex.initialize(__owner, _lifToken) `nonpayable` `485cc955`
+AirlineDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
 
 > Initializer for upgradeable contracts.
 
@@ -75,7 +86,7 @@ Inputs
 
 ## *function* LifToken
 
-WTAirlineIndex.LifToken() `view` `554d8b37`
+AirlineDirectory.LifToken() `view` `554d8b37`
 
 
 
@@ -83,7 +94,7 @@ WTAirlineIndex.LifToken() `view` `554d8b37`
 
 ## *function* organizationsIndex
 
-WTAirlineIndex.organizationsIndex() `view` `63cd48fb`
+AirlineDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs
@@ -93,27 +104,21 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* getAirlinesByManager
+## *function* organizationsByManagerIndexDeprecated
 
-WTAirlineIndex.getAirlinesByManager(manager) `view` `7ea6d3c1`
+AirlineDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
 
-> `getAirlinesByManager` proxies getOrganizationsByManager
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | manager | Manager address |
+| *address* |  | undefined |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
 
 ## *function* getOrganizations
 
-WTAirlineIndex.getOrganizations() `view` `9754a3a8`
+AirlineDirectory.getOrganizations() `view` `9754a3a8`
 
 > `getOrganizations` get `organizations` array
 
@@ -127,7 +132,7 @@ Outputs
 
 ## *function* getAirlinesLength
 
-WTAirlineIndex.getAirlinesLength() `view` `98696eb5`
+AirlineDirectory.getAirlinesLength() `view` `98696eb5`
 
 > `getAirlinesLength` proxies getOrganizationsLength
 
@@ -141,7 +146,7 @@ Outputs
 
 ## *function* createAndRegisterAirline
 
-WTAirlineIndex.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
+AirlineDirectory.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
 
 > `createAndRegisterAirline` proxies and externalizes createAndRegisterOrganization
 
@@ -157,21 +162,9 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* organizationsByManagerIndex
-
-WTAirlineIndex.organizationsByManagerIndex() `view` `a6fd23b7`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
 ## *function* createAirline
 
-WTAirlineIndex.createAirline(dataUri) `nonpayable` `b260c10a`
+AirlineDirectory.createAirline(dataUri) `nonpayable` `b260c10a`
 
 > `createAirline` proxies and externalizes createOrganization
 
@@ -187,22 +180,9 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* organizationsByManager
-
-WTAirlineIndex.organizationsByManager(, ) `view` `b4d9b278`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
-
-
 ## *function* getOrganizationsLength
 
-WTAirlineIndex.getOrganizationsLength() `view` `b9306681`
+AirlineDirectory.getOrganizationsLength() `view` `b9306681`
 
 > `getOrganizationsLength` get the length of the `organizations` array
 
@@ -216,7 +196,7 @@ Outputs
 
 ## *function* registerAirline
 
-WTAirlineIndex.registerAirline(airline) `nonpayable` `bdfd9877`
+AirlineDirectory.registerAirline(airline) `nonpayable` `bdfd9877`
 
 > `registerAirline` proxies and externalizes registerOrganization
 
@@ -234,7 +214,7 @@ Outputs
 
 ## *function* airlinesIndex
 
-WTAirlineIndex.airlinesIndex(airline) `view` `c73f2bfb`
+AirlineDirectory.airlinesIndex(airline) `view` `c73f2bfb`
 
 > `airlinesIndex` aliases organizatoinsIndex 
 
@@ -252,7 +232,7 @@ Outputs
 
 ## *function* organizations
 
-WTAirlineIndex.organizations() `view` `e792dd8a`
+AirlineDirectory.organizations() `view` `e792dd8a`
 
 
 Inputs
@@ -264,7 +244,7 @@ Inputs
 
 ## *function* setLifToken
 
-WTAirlineIndex.setLifToken(_lifToken) `nonpayable` `f2f0967b`
+AirlineDirectory.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
@@ -277,7 +257,7 @@ Inputs
 
 ## *function* transferOwnership
 
-WTAirlineIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+AirlineDirectory.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -288,27 +268,9 @@ Inputs
 | *address* | newOwner | The address to transfer ownership to. |
 
 
-## *function* getOrganizationsByManager
-
-WTAirlineIndex.getOrganizationsByManager(manager) `view` `f439cdfc`
-
-> `getOrganizationsByManager` get all the organizations belonging to one manager
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | manager | Manager address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
-
 ## *function* deregisterAirline
 
-WTAirlineIndex.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
+AirlineDirectory.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
 
 > `deregisterAirline` proxies and externalizes deregisterOrganization
 
@@ -320,7 +282,7 @@ Inputs
 
 ## *event* OrganizationCreated
 
-WTAirlineIndex.OrganizationCreated(organization) `47b68893`
+AirlineDirectory.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -330,19 +292,18 @@ Arguments
 
 ## *event* OrganizationRegistered
 
-WTAirlineIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+AirlineDirectory.OrganizationRegistered(organization, index) `0aa9369e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
+| *uint256* | index | not indexed |
 
 ## *event* OrganizationDeregistered
 
-WTAirlineIndex.OrganizationDeregistered(organization) `2ef6503b`
+AirlineDirectory.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
@@ -352,7 +313,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-WTAirlineIndex.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+AirlineDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
