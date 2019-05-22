@@ -62,15 +62,6 @@ contract WTAirlineIndex is SegmentDirectory, AbstractWTAirlineIndex {
     }
 
     /**
-     * @dev `getAirlinesByManager` proxies getOrganizationsByManager
-     * @param  manager Manager address
-     * @return {" ": "Array of airlines belonging to one manager. Might contain zero addresses."}
-     */
-    function getAirlinesByManager(address manager) public view returns (address[] memory) {
-        return this.getOrganizationsByManager(manager);
-    }
-
-    /**
      * @dev `airlinesIndex` aliases organizatoinsIndex 
      * @param  airline Airline's address
      * @return {" ": "Index of airline in the directory list."}

@@ -62,15 +62,6 @@ contract WTHotelIndex is SegmentDirectory, AbstractWTHotelIndex {
     }
 
     /**
-     * @dev `getHotelsByManager` proxies getOrganizationsByManager
-     * @param  manager Manager address
-     * @return {" ": "Array of hotels belonging to one manager. Might contain zero addresses."}
-     */
-    function getHotelsByManager(address manager) public view returns (address[] memory) {
-        return this.getOrganizationsByManager(manager);
-    }
-
-    /**
      * @dev `hotelsIndex` aliases organizatoinsIndex 
      * @param  hotel Hotel's address
      * @return {" ": "Index of hotel in the directory list."}

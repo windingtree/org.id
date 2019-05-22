@@ -52,16 +52,10 @@ contract('WTHotelIndex', (accounts) => {
         length,
         help.isZeroAddress
       );
-      const hotelsByManager = await hotelIndex.getHotelsByManager(hotelAccount);
-
       assert.isDefined(allHotels[0]);
-      assert.isDefined(hotelsByManager[0]);
       assert.isFalse(help.isZeroAddress(allHotels[0]));
-      assert.isFalse(help.isZeroAddress(hotelsByManager[0]));
       assert.equal(await hotelIndex.hotelsIndex(allHotels[0]), 1);
       assert.equal(await hotelIndex.hotelsIndex(allHotels[1]), 2);
-      assert.equal(allHotels[0], hotelsByManager[0]);
-      assert.equal(allHotels[1], hotelsByManager[1]);
 
       assert.equal(await (await WTHotel.at(allHotels[0])).dataUri(), 'dataUri');
       assert.equal(await (await WTHotel.at(allHotels[1])).dataUri(), 'dataUri2');
@@ -83,7 +77,7 @@ contract('WTHotelIndex', (accounts) => {
       assert.equal(receipt.logs[1].args[0], hotelIndex.address);
       assert.equal(receipt.logs[1].args[1], hotelAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args.organization, address);
     });
   });
 
@@ -94,9 +88,8 @@ contract('WTHotelIndex', (accounts) => {
       const receipt = await hotelIndex.registerHotel(address, { from: hotelAccount });
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[0].args[0], address);
-      assert.equal(receipt.logs[0].args.managerIndex, 0);
-      assert.equal(receipt.logs[0].args.allIndex, 1);
+      assert.equal(receipt.logs[0].args.organization, address);
+      assert.equal(receipt.logs[0].args.index, 1);
     });
   });
 
@@ -112,11 +105,10 @@ contract('WTHotelIndex', (accounts) => {
       assert.equal(receipt.logs[1].args[0], hotelIndex.address);
       assert.equal(receipt.logs[1].args[1], hotelAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args.organization, address);
       assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[3].args[0], address);
-      assert.equal(receipt.logs[3].args.managerIndex, 0);
-      assert.equal(receipt.logs[3].args.allIndex, 1);
+      assert.equal(receipt.logs[3].args.organization, address);
+      assert.equal(receipt.logs[3].args.index, 1);
     });
   });
 
@@ -161,19 +153,6 @@ contract('WTHotelIndex', (accounts) => {
       await hotelIndex.deregisterHotel(address, { from: hotelAccount });
       hotels = await hotelIndex.getHotels();
       assert.equal(help.filterZeroAddresses(hotels).length, 1);
-    });
-  });
-
-  describe('getHotelsByManager', () => {
-    it('should return list of hotels for existing manager', async () => {
-      await hotelIndex.createAndRegisterHotel('bbb', { from: hotelAccount });
-      const hotelList = await hotelIndex.getHotelsByManager(hotelAccount);
-      assert.equal(hotelList.length, 1);
-    });
-
-    it('should return empty list for a manager without hotels', async () => {
-      const hotelList = await hotelIndex.getHotelsByManager(hotelAccount);
-      assert.equal(hotelList.length, 0);
     });
   });
 });

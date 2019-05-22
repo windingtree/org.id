@@ -11,11 +11,8 @@ contract WTHotelIndexUpgradeabilityTest is WTHotelIndex {
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;
         organizations.push(newOrganizationAddress);
-        organizationsByManagerIndex[newOrganizationAddress] = organizationsByManager[msg.sender].length;
-        organizationsByManager[msg.sender].push(newOrganizationAddress);
         emit OrganizationRegistered(
             newOrganizationAddress,
-            organizationsByManagerIndex[newOrganizationAddress],
             organizationsIndex[newOrganizationAddress]
         );
         return newOrganizationAddress;

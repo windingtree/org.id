@@ -16,11 +16,15 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     // Mapping of organizations position in the general organization index
     mapping(address => uint) public organizationsIndex;
 
-    // Mapping of organizations indexed by manager's address
-    mapping(address => address[]) public organizationsByManager;
+    // Mapping of organizations indexed by manager's address. Deprecated,
+    // we cannot keep this consistent when organizations might change owners
+    // at any time.
+    mapping(address => address[]) public organizationsByManagerDeprecated;
 
-    // Mapping of organizations position in the manager-indexed organization index
-    mapping(address => uint) public organizationsByManagerIndex;
+    // Mapping of organizations position in the manager-indexed organization
+    // index. Deprecated, we cannot keep this consistent when organizations
+    // might change owners at any time.
+    mapping(address => uint) public organizationsByManagerIndexDeprecated;
 
     // Address of the LifToken contract
     // solhint-disable-next-line var-name-mixedcase
@@ -56,11 +60,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         require(org.manager() == msg.sender);
         organizationsIndex[organization] = organizations.length;
         organizations.push(organization);
-        organizationsByManagerIndex[organization] = organizationsByManager[msg.sender].length;
-        organizationsByManager[msg.sender].push(organization);
         emit OrganizationRegistered(
             organization,
-            organizationsByManagerIndex[organization],
             organizationsIndex[organization]
         );
         return organization;
@@ -94,13 +95,9 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         require(org.manager() == msg.sender);
         // There may actually be an organization on index zero, that's why we use a double check
         // TODO this is weird
-        require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
-        uint index = organizationsByManagerIndex[organization];
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
         delete organizationsIndex[organization];
-        delete organizationsByManager[msg.sender][index];
-        delete organizationsByManagerIndex[organization];
         emit OrganizationDeregistered(organization);
     }
 
@@ -130,15 +127,6 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function getOrganizations() public view returns (address[] memory) {
         return organizations;
-    }
-
-    /**
-     * @dev `getOrganizationsByManager` get all the organizations belonging to one manager
-     * @param  manager Manager address
-     * @return {" ": "Array of organizations belonging to one manager. Might contain zero addresses."}
-     */
-    function getOrganizationsByManager(address manager) public view returns (address[] memory) {
-        return organizationsByManager[manager];
     }
 
     /**

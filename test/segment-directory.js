@@ -121,24 +121,6 @@ contract('TestSegmentDirectory', (accounts) => {
     });
   });
 
-  describe('getOrganizationsByManager', () => {
-    it('should return empty list for a manager without foodTrucks', async () => {
-      const orgList = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
-      assert.equal(orgList.length, 0);
-    });
-
-    it('should return list of foodTrucks for existing manager', async () => {
-      await testSegmentDirectory.createAndRegisterFoodTruck('bbb', { from: foodTruckAccount });
-      const orgList = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
-      assert.equal(orgList.length, 1);
-    });
-
-    it('should return empty list for a non-existing manager', async () => {
-      const orgList = await segmentDirectory.getOrganizationsByManager(nonOwnerAccount);
-      assert.equal(orgList.length, 0);
-    });
-  });
-
   describe('createFoodTruck', () => {
     it('should create an Organization contract', async () => {
       // First emulate the transaction, then actually run it
@@ -156,13 +138,13 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[0], testSegmentDirectory.address);
       assert.equal(receipt.logs[1].args[1], foodTruckAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args.organization, address);
     });
 
     it('should not register the organization into any mapping', async () => {
       await testSegmentDirectory.createFoodTruck('dataUri', { from: foodTruckAccount });
-      const orgList = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
-      assert.equal(orgList.length, 0);
+      const orgList = await segmentDirectory.getOrganizations();
+      assert.equal(help.filterZeroAddresses(orgList).length, 0);
     });
 
     it('should not create an organization with empty dataUri', async () => {
@@ -185,25 +167,19 @@ contract('TestSegmentDirectory', (accounts) => {
       const receipt = await testSegmentDirectory.registerFoodTruck(organization.address, { from: foodTruckAccount });
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[0].args[0], organization.address);
-      assert.equal(receipt.logs[0].args.managerIndex, 0);
-      assert.equal(receipt.logs[0].args.allIndex, 1);
+      assert.equal(receipt.logs[0].args.organization, organization.address);
+      assert.equal(receipt.logs[0].args.index, 1);
 
       const allFoodTrucks = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const foodTrucksByManager = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
       const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
       const foodTruck = allFoodTrucks[0];
-      const foodTruckByManager = foodTrucksByManager[0];
       assert.isDefined(foodTruck);
-      assert.isDefined(foodTruckByManager);
       assert.isFalse(help.isZeroAddress(foodTruck));
-      assert.isFalse(help.isZeroAddress(foodTruckByManager));
       assert.equal(actualIndexPos, 1);
-      assert.equal(foodTruck, foodTrucksByManager);
     });
 
     it('should throw if somebody is registering organization which she does not own', async () => {
@@ -229,11 +205,10 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[0], testSegmentDirectory.address);
       assert.equal(receipt.logs[1].args[1], foodTruckAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], organization.address);
+      assert.equal(receipt.logs[2].args.organization, organization.address);
       assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[3].args[0], organization.address);
-      assert.equal(receipt.logs[3].args.managerIndex, 0);
-      assert.equal(receipt.logs[3].args.allIndex, 1);
+      assert.equal(receipt.logs[3].args.organization, organization.address);
+      assert.equal(receipt.logs[3].args.index, 1);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.manager, foodTruckAccount);
       assert.equal(info.dataUri, 'dataUri');
@@ -242,16 +217,11 @@ contract('TestSegmentDirectory', (accounts) => {
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const foodTrucksByManager = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
       const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
       const foodTruck = allFoodTrucks[0];
-      const foodTruckByManager = foodTrucksByManager[0];
       assert.isDefined(foodTruck);
-      assert.isDefined(foodTruckByManager);
       assert.isFalse(help.isZeroAddress(foodTruck));
-      assert.isFalse(help.isZeroAddress(foodTruckByManager));
       assert.equal(actualIndexPos, 1);
-      assert.equal(foodTruck, foodTrucksByManager);
     });
   });
 
@@ -270,12 +240,8 @@ contract('TestSegmentDirectory', (accounts) => {
         help.isZeroAddress
       );
       assert.equal(allFoodTrucks.length, 0);
-      const foodTrucksByManager = await segmentDirectory.getOrganizationsByManager(foodTruckAccount);
       const foodTruck = allFoodTrucks[0];
-      const foodTruckByManager = foodTrucksByManager[0];
       assert.isUndefined(foodTruck);
-      assert.isDefined(foodTruckByManager);
-      assert.isTrue(help.isZeroAddress(foodTruckByManager));
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationDeregistered');
       assert.equal(receipt.logs[0].args[0], organization.address);

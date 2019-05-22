@@ -52,16 +52,11 @@ contract('WTAirlineIndex', (accounts) => {
         length,
         help.isZeroAddress
       );
-      const airlinesByManager = await airlineIndex.getAirlinesByManager(airlineAccount);
 
       assert.isDefined(allAirlines[0]);
-      assert.isDefined(airlinesByManager[0]);
       assert.isFalse(help.isZeroAddress(allAirlines[0]));
-      assert.isFalse(help.isZeroAddress(airlinesByManager[0]));
       assert.equal(await airlineIndex.airlinesIndex(allAirlines[0]), 1);
       assert.equal(await airlineIndex.airlinesIndex(allAirlines[1]), 2);
-      assert.equal(allAirlines[0], airlinesByManager[0]);
-      assert.equal(allAirlines[1], airlinesByManager[1]);
 
       assert.equal(await (await WTAirline.at(allAirlines[0])).dataUri(), 'dataUri');
       assert.equal(await (await WTAirline.at(allAirlines[1])).dataUri(), 'dataUri2');
@@ -83,7 +78,7 @@ contract('WTAirlineIndex', (accounts) => {
       assert.equal(receipt.logs[1].args[0], airlineIndex.address);
       assert.equal(receipt.logs[1].args[1], airlineAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args.organization, address);
     });
   });
 
@@ -94,9 +89,8 @@ contract('WTAirlineIndex', (accounts) => {
       const receipt = await airlineIndex.registerAirline(address, { from: airlineAccount });
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[0].args[0], address);
-      assert.equal(receipt.logs[0].args.managerIndex, 0);
-      assert.equal(receipt.logs[0].args.allIndex, 1);
+      assert.equal(receipt.logs[0].args.organization, address);
+      assert.equal(receipt.logs[0].args.index, 1);
     });
   });
 
@@ -112,11 +106,10 @@ contract('WTAirlineIndex', (accounts) => {
       assert.equal(receipt.logs[1].args[0], airlineIndex.address);
       assert.equal(receipt.logs[1].args[1], airlineAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args.organization, address);
       assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
-      assert.equal(receipt.logs[3].args[0], address);
-      assert.equal(receipt.logs[3].args.managerIndex, 0);
-      assert.equal(receipt.logs[3].args.allIndex, 1);
+      assert.equal(receipt.logs[3].args.organization, address);
+      assert.equal(receipt.logs[3].args.index, 1);
     });
   });
 
@@ -161,19 +154,6 @@ contract('WTAirlineIndex', (accounts) => {
       await airlineIndex.deregisterAirline(address, { from: airlineAccount });
       airlines = await airlineIndex.getAirlines();
       assert.equal(help.filterZeroAddresses(airlines).length, 1);
-    });
-  });
-
-  describe('getAirlinesByManager', () => {
-    it('should return list of airlines for existing manager', async () => {
-      await airlineIndex.createAndRegisterAirline('bbb', { from: airlineAccount });
-      const airlineList = await airlineIndex.getAirlinesByManager(airlineAccount);
-      assert.equal(airlineList.length, 1);
-    });
-
-    it('should return empty list for a manager without airlines', async () => {
-      const airlineList = await airlineIndex.getAirlinesByManager(airlineAccount);
-      assert.equal(airlineList.length, 0);
     });
   });
 });

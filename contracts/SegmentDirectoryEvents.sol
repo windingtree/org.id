@@ -15,7 +15,7 @@ contract SegmentDirectoryEvents {
     /**
      * @dev Event triggered every time organization is registered
      */
-    event OrganizationRegistered(address indexed organization, uint managerIndex, uint allIndex);
+    event OrganizationRegistered(address indexed organization, uint index);
 
     /**
      * @dev Event triggered every time organization is deleted
