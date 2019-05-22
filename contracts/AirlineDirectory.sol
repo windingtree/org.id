@@ -1,14 +1,14 @@
 pragma solidity ^0.5.6;
 
-import "./AbstractWTAirlineIndex.sol";
+import "./AirlineDirectoryInterface.sol";
 import "./SegmentDirectory.sol";
 
 /**
- * @title WTAirlineIndex
+ * @title AirlineDirectory
  * @dev The airlines are stored in an array and can be filtered by the owner
  * address.
  */
-contract WTAirlineIndex is SegmentDirectory, AbstractWTAirlineIndex {
+contract AirlineDirectory is SegmentDirectory, AirlineDirectoryInterface {
 
     /**
      * @dev `createAirline` proxies and externalizes createOrganization

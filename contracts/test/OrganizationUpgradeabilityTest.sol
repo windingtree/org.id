@@ -2,8 +2,7 @@ pragma solidity ^0.5.6;
 
 import "../Organization.sol";
 
-
-contract AirlineUpgradeabilityTest is Organization {
+contract OrganizationUpgradeabilityTest is Organization {
 
     constructor(
         address payable _manager,

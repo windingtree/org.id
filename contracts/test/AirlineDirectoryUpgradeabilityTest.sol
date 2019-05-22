@@ -1,13 +1,12 @@
 pragma solidity ^0.5.6;
 
-import "../WTAirlineIndex.sol";
-import "./AirlineUpgradeabilityTest.sol";
+import "../AirlineDirectory.sol";
+import "./OrganizationUpgradeabilityTest.sol";
 
-
-contract WTAirlineIndexUpgradeabilityTest is WTAirlineIndex {
+contract AirlineDirectoryUpgradeabilityTest is AirlineDirectory {
 
     function createAndRegisterAirline(string calldata dataUri) external returns (address) {
-        AirlineUpgradeabilityTest newOrganization = new AirlineUpgradeabilityTest(msg.sender, dataUri);
+        OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(msg.sender, dataUri);
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;
         organizations.push(newOrganizationAddress);

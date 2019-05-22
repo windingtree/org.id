@@ -4,11 +4,13 @@
   "version": "0.6.1",
   "publish": true,
   "contracts": {
-    "WTHotelIndex": "WTHotelIndex",
-    "WTAirlineIndex": "WTAirlineIndex",
-    "WTAirlineIndexDemo": "WTAirlineIndex",
-    "WTHotelIndexDemo": "WTHotelIndex",
-    "WTAirlineIndexPlayground": "WTAirlineIndex",
-    "WTHotelIndexPlayground": "WTHotelIndex"
+    "WTHotelIndex": "HotelDirectory",
+    "WTAirlineIndex": "AirlineDirectory",
+    "WTAirlineIndexDemo": "AirlineDirectory",
+    "WTHotelIndexDemo": "HotelDirectory",
+    "WTAirlineIndexPlayground": "AirlineDirectory",
+    "WTHotelIndexPlayground": "HotelDirectory",
+    "HotelDirectory": "HotelDirectory",
+    "AirlineDirectory": "AirlineDirectory"
   }
 }

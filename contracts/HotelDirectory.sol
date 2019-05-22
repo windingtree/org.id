@@ -1,14 +1,14 @@
 pragma solidity ^0.5.6;
 
-import "./AbstractWTHotelIndex.sol";
+import "./HotelDirectoryInterface.sol";
 import "./SegmentDirectory.sol";
 
 /**
- * @title WTHotelIndex
+ * @title HotelDirectory
  * @dev The hotels are stored in an array and can be filtered by the owner
  * address.
  */
-contract WTHotelIndex is SegmentDirectory, AbstractWTHotelIndex {
+contract HotelDirectory is SegmentDirectory, HotelDirectoryInterface {
 
     /**
      * @dev `createHotel` proxies and externalizes createOrganization

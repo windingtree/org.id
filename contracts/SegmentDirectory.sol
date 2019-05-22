@@ -18,12 +18,14 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 
     // Mapping of organizations indexed by manager's address. Deprecated,
     // we cannot keep this consistent when organizations might change owners
-    // at any time.
+    // at any time. Do not delete this field as it would break the zos
+    // upgradeability.
     mapping(address => address[]) public organizationsByManagerDeprecated;
 
     // Mapping of organizations position in the manager-indexed organization
     // index. Deprecated, we cannot keep this consistent when organizations
-    // might change owners at any time.
+    // might change owners at any time. Do not delete this field as it would
+    // break the zos upgradeability.
     mapping(address => uint) public organizationsByManagerIndexDeprecated;
 
     // Address of the LifToken contract
@@ -93,8 +95,6 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Organization might have changed hands without the index taking notice
         Organization org = Organization(organization);
         require(org.manager() == msg.sender);
-        // There may actually be an organization on index zero, that's why we use a double check
-        // TODO this is weird
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
         delete organizationsIndex[organization];
