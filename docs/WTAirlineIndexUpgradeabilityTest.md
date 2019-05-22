@@ -1,47 +1,38 @@
 * [WTAirlineIndexUpgradeabilityTest](#wtairlineindexupgradeabilitytest)
-  * [deleteAirline](#function-deleteairline)
   * [getAirlines](#function-getairlines)
   * [newFunction](#function-newfunction)
-  * [registerAirline](#function-registerairline)
-  * [airlinesByManager](#function-airlinesbymanager)
-  * [callAirline](#function-callairline)
   * [airlines](#function-airlines)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
-  * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
+  * [organizationsIndex](#function-organizationsindex)
   * [getAirlinesByManager](#function-getairlinesbymanager)
+  * [getOrganizations](#function-getorganizations)
   * [getAirlinesLength](#function-getairlineslength)
+  * [createAndRegisterAirline](#function-createandregisterairline)
+  * [organizationsByManagerIndex](#function-organizationsbymanagerindex)
+  * [createAirline](#function-createairline)
+  * [organizationsByManager](#function-organizationsbymanager)
+  * [getOrganizationsLength](#function-getorganizationslength)
+  * [registerAirline](#function-registerairline)
   * [airlinesIndex](#function-airlinesindex)
-  * [transferAirline](#function-transferairline)
+  * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [AirlineRegistered](#event-airlineregistered)
-  * [AirlineDeleted](#event-airlinedeleted)
-  * [AirlineCalled](#event-airlinecalled)
-  * [AirlineTransferred](#event-airlinetransferred)
+  * [getOrganizationsByManager](#function-getorganizationsbymanager)
+  * [deregisterAirline](#function-deregisterairline)
+  * [OrganizationCreated](#event-organizationcreated)
+  * [OrganizationRegistered](#event-organizationregistered)
+  * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # WTAirlineIndexUpgradeabilityTest
-
-
-## *function* deleteAirline
-
-WTAirlineIndexUpgradeabilityTest.deleteAirline(airline) `nonpayable` `0b5ba03a`
-
-> `deleteAirline` Allows a manager to delete a airline, i. e. call destroy on the target Airline contract. Emits `AirlineDeleted` on success.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | Airline's address |
 
 
 ## *function* getAirlines
 
 WTAirlineIndexUpgradeabilityTest.getAirlines() `view` `0d5dc054`
 
-> `getAirlines` get `airlines` array
+> `getAirlines` proxies getOrganizations
 
 
 
@@ -59,56 +50,23 @@ WTAirlineIndexUpgradeabilityTest.newFunction() `pure` `1b28d63e`
 
 
 
-## *function* registerAirline
+## *function* airlines
 
-WTAirlineIndexUpgradeabilityTest.registerAirline(dataUri) `nonpayable` `25205210`
+WTAirlineIndexUpgradeabilityTest.airlines(index) `view` `3a9a77ca`
 
+> `airlines` aliases organizations
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *uint256* | index | Airline's index |
 
-
-## *function* airlinesByManager
-
-WTAirlineIndexUpgradeabilityTest.airlinesByManager(, ) `view` `2cc042b5`
-
-
-Inputs
+Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-| *uint256* |  | undefined |
-
-
-## *function* callAirline
-
-WTAirlineIndexUpgradeabilityTest.callAirline(airline, data) `nonpayable` `346ab715`
-
-> `callAirline` Call airline in the index, the airline can only be called by its manager. Effectively proxies a airline call. Emits AirlineCalled on success.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | Airline's address |
-| *bytes* | data | Encoded method call to be done on Airline contract. |
-
-
-## *function* airlines
-
-WTAirlineIndexUpgradeabilityTest.airlines() `view` `3a9a77ca`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* |  | undefined |
-
 
 ## *function* initialize
 
@@ -132,9 +90,9 @@ WTAirlineIndexUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 
 
-## *function* airlinesByManagerIndex
+## *function* organizationsIndex
 
-WTAirlineIndexUpgradeabilityTest.airlinesByManagerIndex() `view` `6f76b348`
+WTAirlineIndexUpgradeabilityTest.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs
@@ -148,7 +106,7 @@ Inputs
 
 WTAirlineIndexUpgradeabilityTest.getAirlinesByManager(manager) `view` `7ea6d3c1`
 
-> `getAirlinesByManager` get all the airlines belonging to one manager
+> `getAirlinesByManager` proxies getOrganizationsByManager
 
 Inputs
 
@@ -162,11 +120,25 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
+## *function* getOrganizations
+
+WTAirlineIndexUpgradeabilityTest.getOrganizations() `view` `9754a3a8`
+
+> `getOrganizations` get `organizations` array
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
 ## *function* getAirlinesLength
 
 WTAirlineIndexUpgradeabilityTest.getAirlinesLength() `view` `98696eb5`
 
-> `getAirlinesLength` get the length of the `airlines` array
+> `getAirlinesLength` proxies getOrganizationsLength
 
 
 
@@ -176,9 +148,21 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* airlinesIndex
+## *function* createAndRegisterAirline
 
-WTAirlineIndexUpgradeabilityTest.airlinesIndex() `view` `c73f2bfb`
+WTAirlineIndexUpgradeabilityTest.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
+
+
+## *function* organizationsByManagerIndex
+
+WTAirlineIndexUpgradeabilityTest.organizationsByManagerIndex() `view` `a6fd23b7`
 
 
 Inputs
@@ -188,25 +172,104 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* transferAirline
+## *function* createAirline
 
-WTAirlineIndexUpgradeabilityTest.transferAirline(airline, newManager) `nonpayable` `e6b999af`
+WTAirlineIndexUpgradeabilityTest.createAirline(dataUri) `nonpayable` `b260c10a`
 
-> `transferAirline` Allows to change ownership of the airline contract. Emits AirlineTransferred on success.
+> `createAirline` proxies and externalizes createOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Airline's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* organizationsByManager
+
+WTAirlineIndexUpgradeabilityTest.organizationsByManager(, ) `view` `b4d9b278`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+| *uint256* |  | undefined |
+
+
+## *function* getOrganizationsLength
+
+WTAirlineIndexUpgradeabilityTest.getOrganizationsLength() `view` `b9306681`
+
+> `getOrganizationsLength` get the length of the `organizations` array
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
+## *function* registerAirline
+
+WTAirlineIndexUpgradeabilityTest.registerAirline(airline) `nonpayable` `bdfd9877`
+
+> `registerAirline` proxies and externalizes registerOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | airline | Airline's address |
-| *address* | newManager | Address to which the airline will belong after transfer. |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* airlinesIndex
+
+WTAirlineIndexUpgradeabilityTest.airlinesIndex(airline) `view` `c73f2bfb`
+
+> `airlinesIndex` aliases organizatoinsIndex 
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | airline | Airline's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
+## *function* organizations
+
+WTAirlineIndexUpgradeabilityTest.organizations() `view` `e792dd8a`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
 
 
 ## *function* setLifToken
 
 WTAirlineIndexUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
-> `setLifToken` allows the owner of the contract to change the address of the LifToken contract
+> `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
 Inputs
 
@@ -227,51 +290,68 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-## *event* AirlineRegistered
 
-WTAirlineIndexUpgradeabilityTest.AirlineRegistered(airline, managerIndex, allIndex) `107b5845`
+## *function* getOrganizationsByManager
+
+WTAirlineIndexUpgradeabilityTest.getOrganizationsByManager(manager) `view` `f439cdfc`
+
+> `getOrganizationsByManager` get all the organizations belonging to one manager
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | manager | Manager address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
+## *function* deregisterAirline
+
+WTAirlineIndexUpgradeabilityTest.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
+
+> `deregisterAirline` proxies and externalizes deregisterOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | airline | Airline's address |
+
+## *event* OrganizationCreated
+
+WTAirlineIndexUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | indexed |
+| *address* | organization | indexed |
+
+## *event* OrganizationRegistered
+
+WTAirlineIndexUpgradeabilityTest.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
-## *event* AirlineDeleted
+## *event* OrganizationDeregistered
 
-WTAirlineIndexUpgradeabilityTest.AirlineDeleted(airline, managerIndex, allIndex) `b0ea7807`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
-
-## *event* AirlineCalled
-
-WTAirlineIndexUpgradeabilityTest.AirlineCalled(airline) `11e711e5`
+WTAirlineIndexUpgradeabilityTest.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | indexed |
-
-## *event* AirlineTransferred
-
-WTAirlineIndexUpgradeabilityTest.AirlineTransferred(airline, previousManager, newManager) `aa7e2fed`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | indexed |
-| *address* | previousManager | not indexed |
-| *address* | newManager | not indexed |
+| *address* | organization | indexed |
 
 ## *event* OwnershipTransferred
 

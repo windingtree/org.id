@@ -1,36 +1,19 @@
 * [AbstractWTAirlineIndex](#abstractwtairlineindex)
-  * [deleteAirline](#function-deleteairline)
   * [getAirlines](#function-getairlines)
-  * [registerAirline](#function-registerairline)
-  * [airlinesByManager](#function-airlinesbymanager)
-  * [callAirline](#function-callairline)
   * [airlines](#function-airlines)
-  * [LifToken](#function-liftoken)
-  * [airlinesByManagerIndex](#function-airlinesbymanagerindex)
   * [getAirlinesByManager](#function-getairlinesbymanager)
   * [getAirlinesLength](#function-getairlineslength)
+  * [createAndRegisterAirline](#function-createandregisterairline)
+  * [createAirline](#function-createairline)
+  * [registerAirline](#function-registerairline)
   * [airlinesIndex](#function-airlinesindex)
-  * [transferAirline](#function-transferairline)
-  * [transferOwnership](#function-transferownership)
-  * [AirlineRegistered](#event-airlineregistered)
-  * [AirlineDeleted](#event-airlinedeleted)
-  * [AirlineCalled](#event-airlinecalled)
-  * [AirlineTransferred](#event-airlinetransferred)
+  * [deregisterAirline](#function-deregisterairline)
+  * [OrganizationCreated](#event-organizationcreated)
+  * [OrganizationRegistered](#event-organizationregistered)
+  * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AbstractWTAirlineIndex
-
-
-## *function* deleteAirline
-
-AbstractWTAirlineIndex.deleteAirline(airline) `nonpayable` `0b5ba03a`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | undefined |
 
 
 ## *function* getAirlines
@@ -41,74 +24,16 @@ AbstractWTAirlineIndex.getAirlines() `view` `0d5dc054`
 
 
 
-## *function* registerAirline
-
-AbstractWTAirlineIndex.registerAirline(dataUri) `nonpayable` `25205210`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* airlinesByManager
-
-AbstractWTAirlineIndex.airlinesByManager(, ) `view` `2cc042b5`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
-
-
-## *function* callAirline
-
-AbstractWTAirlineIndex.callAirline(airline, data) `nonpayable` `346ab715`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | undefined |
-| *bytes* | data | undefined |
-
-
 ## *function* airlines
 
-AbstractWTAirlineIndex.airlines() `view` `3a9a77ca`
+AbstractWTAirlineIndex.airlines(index) `view` `3a9a77ca`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *uint256* |  | undefined |
-
-
-## *function* LifToken
-
-AbstractWTAirlineIndex.LifToken() `view` `554d8b37`
-
-
-
-
-
-## *function* airlinesByManagerIndex
-
-AbstractWTAirlineIndex.airlinesByManagerIndex() `view` `6f76b348`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
+| *uint256* | index | undefined |
 
 
 ## *function* getAirlinesByManager
@@ -131,21 +56,33 @@ AbstractWTAirlineIndex.getAirlinesLength() `view` `98696eb5`
 
 
 
-## *function* airlinesIndex
+## *function* createAndRegisterAirline
 
-AbstractWTAirlineIndex.airlinesIndex() `view` `c73f2bfb`
+AbstractWTAirlineIndex.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* |  | undefined |
+| *string* | dataUri | undefined |
 
 
-## *function* transferAirline
+## *function* createAirline
 
-AbstractWTAirlineIndex.transferAirline(airline, newManager) `nonpayable` `e6b999af`
+AbstractWTAirlineIndex.createAirline(dataUri) `nonpayable` `b260c10a`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
+
+
+## *function* registerAirline
+
+AbstractWTAirlineIndex.registerAirline(airline) `nonpayable` `bdfd9877`
 
 
 Inputs
@@ -153,66 +90,62 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | airline | undefined |
-| *address* | newManager | undefined |
 
 
-## *function* transferOwnership
+## *function* airlinesIndex
 
-AbstractWTAirlineIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+AbstractWTAirlineIndex.airlinesIndex(hotel) `view` `c73f2bfb`
 
-> Allows the current owner to transfer control of the contract to a newOwner.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | newOwner | The address to transfer ownership to. |
+| *address* | hotel | undefined |
 
-## *event* AirlineRegistered
 
-AbstractWTAirlineIndex.AirlineRegistered(airline, managerIndex, allIndex) `107b5845`
+## *function* deregisterAirline
+
+AbstractWTAirlineIndex.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | airline | undefined |
+
+## *event* OrganizationCreated
+
+AbstractWTAirlineIndex.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | indexed |
+| *address* | organization | indexed |
+
+## *event* OrganizationRegistered
+
+AbstractWTAirlineIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
-## *event* AirlineDeleted
+## *event* OrganizationDeregistered
 
-AbstractWTAirlineIndex.AirlineDeleted(airline, managerIndex, allIndex) `b0ea7807`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
-
-## *event* AirlineCalled
-
-AbstractWTAirlineIndex.AirlineCalled(airline) `11e711e5`
+AbstractWTAirlineIndex.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | airline | indexed |
-
-## *event* AirlineTransferred
-
-AbstractWTAirlineIndex.AirlineTransferred(airline, previousManager, newManager) `aa7e2fed`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | indexed |
-| *address* | previousManager | not indexed |
-| *address* | newManager | not indexed |
+| *address* | organization | indexed |
 
 ## *event* OwnershipTransferred
 

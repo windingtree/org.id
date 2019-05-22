@@ -2,6 +2,9 @@ pragma solidity ^0.5.6;
 
 import "./SegmentDirectoryEvents.sol";
 
+/**
+ * Interface of Hotel Index. Usable in libraries.
+ */
 contract AbstractWTHotelIndex is SegmentDirectoryEvents {
     function createHotel(string calldata dataUri) external returns (address);
     function createAndRegisterHotel(string calldata dataUri) external returns (address);

@@ -1,5 +1,10 @@
 pragma solidity ^0.5.6;
 
+/**
+ * List of events emittable by a SegmentDirectory. This is singled out
+ * so it can be included in segment directory instance interfaces which
+ * in turn can be easily used by the non-solidity libraries.
+ */
 contract SegmentDirectoryEvents {
 
     /**

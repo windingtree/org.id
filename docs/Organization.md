@@ -1,6 +1,5 @@
-* [AirlineUpgradeabilityTest](#airlineupgradeabilitytest)
+* [Organization](#organization)
   * [changeDataUri](#function-changedatauri)
-  * [newFunction](#function-newfunction)
   * [created](#function-created)
   * [manager](#function-manager)
   * [destroy](#function-destroy)
@@ -9,12 +8,12 @@
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [DataUriChanged](#event-dataurichanged)
 
-# AirlineUpgradeabilityTest
+# Organization
 
 
 ## *function* changeDataUri
 
-AirlineUpgradeabilityTest.changeDataUri(_dataUri) `nonpayable` `18f9205d`
+Organization.changeDataUri(_dataUri) `nonpayable` `18f9205d`
 
 > `changeDataUri` Allows owner to change Organization's dataUri.
 
@@ -25,17 +24,9 @@ Inputs
 | *string* | _dataUri | New dataUri pointer of this Organization |
 
 
-## *function* newFunction
-
-AirlineUpgradeabilityTest.newFunction() `pure` `1b28d63e`
-
-
-
-
-
 ## *function* created
 
-AirlineUpgradeabilityTest.created() `view` `325a19f1`
+Organization.created() `view` `325a19f1`
 
 
 
@@ -43,7 +34,7 @@ AirlineUpgradeabilityTest.created() `view` `325a19f1`
 
 ## *function* manager
 
-AirlineUpgradeabilityTest.manager() `view` `481c6a75`
+Organization.manager() `view` `481c6a75`
 
 
 
@@ -51,7 +42,7 @@ AirlineUpgradeabilityTest.manager() `view` `481c6a75`
 
 ## *function* destroy
 
-AirlineUpgradeabilityTest.destroy() `nonpayable` `83197ef0`
+Organization.destroy() `nonpayable` `83197ef0`
 
 > `destroy` allows the owner to delete the Organization altogether. All associated funds are transferred to the `manager`.
 
@@ -60,7 +51,7 @@ AirlineUpgradeabilityTest.destroy() `nonpayable` `83197ef0`
 
 ## *function* dataUri
 
-AirlineUpgradeabilityTest.dataUri() `view` `8a9b29eb`
+Organization.dataUri() `view` `8a9b29eb`
 
 
 
@@ -68,7 +59,7 @@ AirlineUpgradeabilityTest.dataUri() `view` `8a9b29eb`
 
 ## *function* transferOwnership
 
-AirlineUpgradeabilityTest.transferOwnership(newManager) `nonpayable` `f2fde38b`
+Organization.transferOwnership(newManager) `nonpayable` `f2fde38b`
 
 > Allows owner to change Organization manager.
 
@@ -81,7 +72,7 @@ Inputs
 
 ## *event* OwnershipTransferred
 
-AirlineUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+Organization.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
@@ -92,7 +83,7 @@ Arguments
 
 ## *event* DataUriChanged
 
-AirlineUpgradeabilityTest.DataUriChanged(previousDataUri, newDataUri) `2b3a8c1a`
+Organization.DataUriChanged(previousDataUri, newDataUri) `2b3a8c1a`
 
 Arguments
 

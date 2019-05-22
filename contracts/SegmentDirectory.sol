@@ -4,6 +4,10 @@ import "zos-lib/contracts/Initializable.sol";
 import "./Organization.sol";
 import "./SegmentDirectoryEvents.sol";
 
+/**
+ * An abstract SegmentDirectory that can handle a list of organizations
+ * and their grouping by manager
+ */
 contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 
     // Array of addresses of `Organization` contracts
@@ -12,10 +16,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     // Mapping of organizations position in the general organization index
     mapping(address => uint) public organizationsIndex;
 
-    // Mapping of the organizations indexed by manager's address
+    // Mapping of organizations indexed by manager's address
     mapping(address => address[]) public organizationsByManager;
 
-    // Mapping of organizations position in the manager's indexed organization index
+    // Mapping of organizations position in the manager-indexed organization index
     mapping(address => uint) public organizationsByManagerIndex;
 
     // Address of the LifToken contract
@@ -26,7 +30,9 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     address _owner;
 
     /**
-     * @dev `createOrganization` Register new organization in the index.
+     * @dev `createOrganization` Create new organization contract. Does not 
+     * register the organization in the directory. The created contract's
+     * ownership is transferred to `msg.sender`.
      * Emits `OrganizationCreated` on success.
      * @param  dataUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
@@ -40,7 +46,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     }
 
     /**
-     * @dev `registerOrganization` Register new organization in the index.
+     * @dev `registerOrganization` Register new organization in the directory.
      * Emits `OrganizationRegistered` on success.
      * @param  organization Organization's address
      * @return {" ": "Address of the organization."}
@@ -58,14 +64,21 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         return organization;
     }
 
+    /**
+     * @dev `createAndRegisterOrganization` Creates and registers new organization
+     * contract. Uses `createOrganization` and `registerOrganization` internally.
+     * @param  dataUri Organization's data pointer
+     * @return {" ": "Address of the new organization."}
+     */
     function createAndRegisterOrganization(string memory dataUri) internal returns (address) {
         address newOrganizationAddress = createOrganization(dataUri);
         return registerOrganization(newOrganizationAddress);
     }
 
     /**
-     * @dev `deleteOrganization` Allows a manager to delete a organization, i. e. call destroy
-     * on the target Organization contract. Emits `OrganizationDeregistered` on success.
+     * @dev `deregisterOrganization` Allows a manager to deregister an organization
+     * from the directory. Does not destroy the organization contract.
+     * Emits `OrganizationDeregistered` on success.
      * @param  organization  Organization's address
      */
     function deregisterOrganization(address organization) internal {
@@ -74,7 +87,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Ensure we know about the organization at all
         require(organizationsIndex[organization] != uint(0));
         // Ensure that the caller is the organization's rightful owner
-        // There may actually be a organization on index zero, that's why we use a double check
+        // There may actually be an organization on index zero, that's why we use a double check
+        // TODO check with org contract as well
         require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
         uint index = organizationsByManagerIndex[organization];
         uint allIndex = organizationsIndex[organization];
@@ -90,7 +104,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @param __owner The address of the contract owner
      * @param _lifToken The new contract address
      */
-    function initialize(address __owner, address _lifToken) public initializer {
+    function initialize(address payable __owner, address _lifToken) public initializer {
+        // TODO don't allow setting owner to zero address
         _owner = __owner;
         LifToken = _lifToken;
         organizations.length++;
@@ -121,7 +136,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         return organizationsByManager[manager];
     }
 
-        /**
+    /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
@@ -131,7 +146,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
 
     /**
      * @dev `setLifToken` allows the owner of the contract to change the
-     * address of the LifToken contract
+     * address of the LifToken contract. Allows to set the address to
+     * zero address
      * @param _lifToken The new contract address
      */
     function setLifToken(address _lifToken) public onlyOwner {
@@ -150,7 +166,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @dev Transfers control of the contract to a newOwner.
      * @param newOwner The address to transfer ownership to.
      */
-    function _transferOwnership(address newOwner) internal {
+    function _transferOwnership(address payable newOwner) internal {
         require(newOwner != address(0));
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;

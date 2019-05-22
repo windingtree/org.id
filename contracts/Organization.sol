@@ -1,13 +1,14 @@
 pragma solidity ^0.5.6;
 
 /**
- * @title Organization, contract for a Organization registered in the WT network
- * @dev A contract that represents a Organization in the WT network. We cannot use
- * zeppelin's Ownable, because we need the owner field to be public.
+ * @title Organization
+ * @dev A contract that represents an Organization in the WT network. We cannot use
+ * zeppelin's Ownable, because we need the owner (named `manager` in this instance)
+ * field to be publicly readable.
  */
 contract Organization {
 
-    // Who owns this Organization and can manage it.
+    // Who owns this Organization contract and can manage it.
     address payable public manager;
 
     // Arbitrary locator of the off-chain stored Organization data
@@ -15,7 +16,7 @@ contract Organization {
     // This is intentionally generic.
     string public dataUri;
 
-    // Number of block when the Organization was created
+    // Number of a block when the Organization was created
     uint public created;
 
     /**
@@ -23,6 +24,9 @@ contract Organization {
      */
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+    /**
+     * @dev Event triggered when dataUri of the organization is changed.
+     */
     event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
 
     /**
@@ -39,7 +43,7 @@ contract Organization {
 
     /**
      * Allows calling such methods only when msg.sender is equal
-     * to previously set index propert.y
+     * to previously set `manager` property.
      */
     modifier onlyManager() {
         require(msg.sender == manager);
@@ -58,7 +62,8 @@ contract Organization {
     }
 
     /**
-     * @dev `destroy` allows the owner to delete the Organization
+     * @dev `destroy` allows the owner to delete the Organization altogether.
+     * All associated funds are transferred to the `manager`.
      */
     function destroy() public onlyManager {
         selfdestruct(manager);

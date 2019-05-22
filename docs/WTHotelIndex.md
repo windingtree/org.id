@@ -1,23 +1,27 @@
 * [WTHotelIndex](#wthotelindex)
   * [getHotels](#function-gethotels)
-  * [callHotel](#function-callhotel)
-  * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
-  * [transferHotel](#function-transferhotel)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
-  * [hotelsByManager](#function-hotelsbymanager)
+  * [organizationsIndex](#function-organizationsindex)
+  * [createHotel](#function-createhotel)
+  * [deregisterHotel](#function-deregisterhotel)
+  * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
+  * [organizationsByManagerIndex](#function-organizationsbymanagerindex)
+  * [organizationsByManager](#function-organizationsbymanager)
+  * [getOrganizationsLength](#function-getorganizationslength)
   * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
+  * [createAndRegisterHotel](#function-createandregisterhotel)
+  * [registerHotel](#function-registerhotel)
+  * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [registerHotel](#function-registerhotel)
-  * [deleteHotel](#function-deletehotel)
-  * [HotelRegistered](#event-hotelregistered)
-  * [HotelDeleted](#event-hoteldeleted)
-  * [HotelCalled](#event-hotelcalled)
-  * [HotelTransferred](#event-hoteltransferred)
+  * [getOrganizationsByManager](#function-getorganizationsbymanager)
+  * [OrganizationCreated](#event-organizationcreated)
+  * [OrganizationRegistered](#event-organizationregistered)
+  * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # WTHotelIndex
@@ -27,7 +31,7 @@
 
 WTHotelIndex.getHotels() `view` `0d2e677a`
 
-> `getHotels` get `hotels` array
+> `getHotels` proxies getOrganizations
 
 
 
@@ -36,46 +40,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address[]* |  | undefined |
-
-## *function* callHotel
-
-WTHotelIndex.callHotel(hotel, data) `nonpayable` `154d56db`
-
-> `callHotel` Call hotel in the index, the hotel can only be called by its manager. Effectively proxies a hotel call. Emits HotelCalled on success.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | Hotel's address |
-| *bytes* | data | Encoded method call to be done on Hotel contract. |
-
-
-## *function* hotelsByManagerIndex
-
-WTHotelIndex.hotelsByManagerIndex() `view` `189f6aef`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
-## *function* transferHotel
-
-WTHotelIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
-
-> `transferHotel` Allows to change ownership of the hotel contract. Emits HotelTransferred on success.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | Hotel's address |
-| *address* | newManager | Address to which the hotel will belong after transfer. |
-
 
 ## *function* initialize
 
@@ -99,9 +63,96 @@ WTHotelIndex.LifToken() `view` `554d8b37`
 
 
 
-## *function* hotelsByManager
+## *function* organizationsIndex
 
-WTHotelIndex.hotelsByManager(, ) `view` `7cf2dfae`
+WTHotelIndex.organizationsIndex() `view` `63cd48fb`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
+## *function* createHotel
+
+WTHotelIndex.createHotel(dataUri) `nonpayable` `6e36f8b0`
+
+> `createHotel` proxies and externalizes createOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Hotel's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* deregisterHotel
+
+WTHotelIndex.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
+
+> `deregisterHotel` proxies and externalizes deregisterOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | Hotel's address |
+
+
+## *function* getOrganizations
+
+WTHotelIndex.getOrganizations() `view` `9754a3a8`
+
+> `getOrganizations` get `organizations` array
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
+## *function* hotelsIndex
+
+WTHotelIndex.hotelsIndex(hotel) `view` `9f9bfeb8`
+
+> `hotelsIndex` aliases organizatoinsIndex 
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | Hotel's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
+## *function* organizationsByManagerIndex
+
+WTHotelIndex.organizationsByManagerIndex() `view` `a6fd23b7`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
+## *function* organizationsByManager
+
+WTHotelIndex.organizationsByManager(, ) `view` `b4d9b278`
 
 
 Inputs
@@ -112,23 +163,25 @@ Inputs
 | *uint256* |  | undefined |
 
 
-## *function* hotelsIndex
+## *function* getOrganizationsLength
 
-WTHotelIndex.hotelsIndex() `view` `9f9bfeb8`
+WTHotelIndex.getOrganizationsLength() `view` `b9306681`
+
+> `getOrganizationsLength` get the length of the `organizations` array
 
 
-Inputs
+
+Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* |  | undefined |
-
+| *uint256* |  | undefined |
 
 ## *function* getHotelsByManager
 
 WTHotelIndex.getHotelsByManager(manager) `view` `bb979c3d`
 
-> `getHotelsByManager` get all the hotels belonging to one manager
+> `getHotelsByManager` proxies getOrganizationsByManager
 
 Inputs
 
@@ -146,7 +199,7 @@ Outputs
 
 WTHotelIndex.getHotelsLength() `view` `ca63a55b`
 
-> `getHotelsLength` get the length of the `hotels` array
+> `getHotelsLength` proxies getOrganizationsLength
 
 
 
@@ -158,7 +211,61 @@ Outputs
 
 ## *function* hotels
 
-WTHotelIndex.hotels() `view` `cd338265`
+WTHotelIndex.hotels(index) `view` `cd338265`
+
+> `hotels` aliases organizations
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* | index | Hotel's index |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* createAndRegisterHotel
+
+WTHotelIndex.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
+
+> `createAndRegisterHotel` proxies and externalizes createAndRegisterOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Hotel's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* registerHotel
+
+WTHotelIndex.registerHotel(hotel) `nonpayable` `dcd003fb`
+
+> `registerHotel` proxies and externalizes registerOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | Hotel's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* organizations
+
+WTHotelIndex.organizations() `view` `e792dd8a`
 
 
 Inputs
@@ -172,7 +279,7 @@ Inputs
 
 WTHotelIndex.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
-> `setLifToken` allows the owner of the contract to change the address of the LifToken contract
+> `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
 Inputs
 
@@ -194,81 +301,54 @@ Inputs
 | *address* | newOwner | The address to transfer ownership to. |
 
 
-## *function* registerHotel
+## *function* getOrganizationsByManager
 
-WTHotelIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
+WTHotelIndex.getOrganizationsByManager(manager) `view` `f439cdfc`
 
-> `registerHotel` Register new hotel in the index. Emits `HotelRegistered` on success.
+> `getOrganizationsByManager` get all the organizations belonging to one manager
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Hotel's data pointer |
+| *address* | manager | Manager address |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* |  | undefined |
+| *address[]* |  | undefined |
+## *event* OrganizationCreated
 
-## *function* deleteHotel
-
-WTHotelIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
-
-> `deleteHotel` Allows a manager to delete a hotel, i. e. call destroy on the target Hotel contract. Emits `HotelDeleted` on success.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | Hotel's address |
-
-## *event* HotelRegistered
-
-WTHotelIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
+WTHotelIndex.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | indexed |
+| *address* | organization | indexed |
+
+## *event* OrganizationRegistered
+
+WTHotelIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
-## *event* HotelDeleted
+## *event* OrganizationDeregistered
 
-WTHotelIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
-
-## *event* HotelCalled
-
-WTHotelIndex.HotelCalled(hotel) `e09d7761`
+WTHotelIndex.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | indexed |
-
-## *event* HotelTransferred
-
-WTHotelIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | indexed |
-| *address* | previousManager | not indexed |
-| *address* | newManager | not indexed |
+| *address* | organization | indexed |
 
 ## *event* OwnershipTransferred
 

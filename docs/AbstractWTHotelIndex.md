@@ -1,21 +1,16 @@
 * [AbstractWTHotelIndex](#abstractwthotelindex)
   * [getHotels](#function-gethotels)
-  * [callHotel](#function-callhotel)
-  * [hotelsByManagerIndex](#function-hotelsbymanagerindex)
-  * [transferHotel](#function-transferhotel)
-  * [LifToken](#function-liftoken)
-  * [hotelsByManager](#function-hotelsbymanager)
+  * [createHotel](#function-createhotel)
+  * [deregisterHotel](#function-deregisterhotel)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsByManager](#function-gethotelsbymanager)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
-  * [transferOwnership](#function-transferownership)
+  * [createAndRegisterHotel](#function-createandregisterhotel)
   * [registerHotel](#function-registerhotel)
-  * [deleteHotel](#function-deletehotel)
-  * [HotelRegistered](#event-hotelregistered)
-  * [HotelDeleted](#event-hoteldeleted)
-  * [HotelCalled](#event-hotelcalled)
-  * [HotelTransferred](#event-hoteltransferred)
+  * [OrganizationCreated](#event-organizationcreated)
+  * [OrganizationRegistered](#event-organizationregistered)
+  * [OrganizationDeregistered](#event-organizationderegistered)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AbstractWTHotelIndex
@@ -29,9 +24,21 @@ AbstractWTHotelIndex.getHotels() `view` `0d2e677a`
 
 
 
-## *function* callHotel
+## *function* createHotel
 
-AbstractWTHotelIndex.callHotel(hotel, data) `nonpayable` `154d56db`
+AbstractWTHotelIndex.createHotel(dataUri) `nonpayable` `6e36f8b0`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
+
+
+## *function* deregisterHotel
+
+AbstractWTHotelIndex.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
 
 
 Inputs
@@ -39,65 +46,18 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | undefined |
-| *bytes* | data | undefined |
-
-
-## *function* hotelsByManagerIndex
-
-AbstractWTHotelIndex.hotelsByManagerIndex() `view` `189f6aef`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
-## *function* transferHotel
-
-AbstractWTHotelIndex.transferHotel(hotel, newManager) `nonpayable` `292d64e0`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | undefined |
-| *address* | newManager | undefined |
-
-
-## *function* LifToken
-
-AbstractWTHotelIndex.LifToken() `view` `554d8b37`
-
-
-
-
-
-## *function* hotelsByManager
-
-AbstractWTHotelIndex.hotelsByManager(, ) `view` `7cf2dfae`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-| *uint256* |  | undefined |
 
 
 ## *function* hotelsIndex
 
-AbstractWTHotelIndex.hotelsIndex() `view` `9f9bfeb8`
+AbstractWTHotelIndex.hotelsIndex(hotel) `view` `9f9bfeb8`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* |  | undefined |
+| *address* | hotel | undefined |
 
 
 ## *function* getHotelsByManager
@@ -122,32 +82,19 @@ AbstractWTHotelIndex.getHotelsLength() `view` `ca63a55b`
 
 ## *function* hotels
 
-AbstractWTHotelIndex.hotels() `view` `cd338265`
+AbstractWTHotelIndex.hotels(index) `view` `cd338265`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *uint256* |  | undefined |
+| *uint256* | index | undefined |
 
 
-## *function* transferOwnership
+## *function* createAndRegisterHotel
 
-AbstractWTHotelIndex.transferOwnership(newOwner) `nonpayable` `f2fde38b`
-
-> Allows the current owner to transfer control of the contract to a newOwner.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | newOwner | The address to transfer ownership to. |
-
-
-## *function* registerHotel
-
-AbstractWTHotelIndex.registerHotel(dataUri) `nonpayable` `f88a067f`
+AbstractWTHotelIndex.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
 
 
 Inputs
@@ -157,9 +104,9 @@ Inputs
 | *string* | dataUri | undefined |
 
 
-## *function* deleteHotel
+## *function* registerHotel
 
-AbstractWTHotelIndex.deleteHotel(hotel) `nonpayable` `fb6f6875`
+AbstractWTHotelIndex.registerHotel(hotel) `nonpayable` `dcd003fb`
 
 
 Inputs
@@ -168,51 +115,37 @@ Inputs
 |-|-|-|
 | *address* | hotel | undefined |
 
-## *event* HotelRegistered
+## *event* OrganizationCreated
 
-AbstractWTHotelIndex.HotelRegistered(hotel, managerIndex, allIndex) `48ef5bfc`
+AbstractWTHotelIndex.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | indexed |
+| *address* | organization | indexed |
+
+## *event* OrganizationRegistered
+
+AbstractWTHotelIndex.OrganizationRegistered(organization, managerIndex, allIndex) `0896224a`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | indexed |
 | *uint256* | managerIndex | not indexed |
 | *uint256* | allIndex | not indexed |
 
-## *event* HotelDeleted
+## *event* OrganizationDeregistered
 
-AbstractWTHotelIndex.HotelDeleted(hotel, managerIndex, allIndex) `54f58abd`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | indexed |
-| *uint256* | managerIndex | not indexed |
-| *uint256* | allIndex | not indexed |
-
-## *event* HotelCalled
-
-AbstractWTHotelIndex.HotelCalled(hotel) `e09d7761`
+AbstractWTHotelIndex.OrganizationDeregistered(organization) `2ef6503b`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | indexed |
-
-## *event* HotelTransferred
-
-AbstractWTHotelIndex.HotelTransferred(hotel, previousManager, newManager) `04dd8111`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | indexed |
-| *address* | previousManager | not indexed |
-| *address* | newManager | not indexed |
+| *address* | organization | indexed |
 
 ## *event* OwnershipTransferred
 

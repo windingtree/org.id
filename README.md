@@ -5,14 +5,7 @@
 
 Smart contracts of the Winding Tree platform.
 
-The smart contracts in the [hotel folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/hotel) and
-[airline folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/airline) are representing
-inventory registered in the Winding Tree platform. The registries themselves are `WTHotelIndex` and `WTAirlineIndex`
-smart contracts.
-
-For interaction with those from your application, you can use the `Abstract*` smart contracts
-whose [JSON ABI](https://solidity.readthedocs.io/en/develop/abi-spec.html#json)s are significantly
-smaller (86 kB vs 500 kB in case of `WTHotelIndex`).
+<!-- TODO update with a picture -->
 
 ## Requirements
 
@@ -80,7 +73,7 @@ with the contracts.
     ```
 2. Start a zos session.
     ```bash
-    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4bb --expires 3600
+    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4BB --expires 3600
     ```
 3. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
 interacted with.
@@ -89,12 +82,12 @@ interacted with.
     ```
 4. Create the proxy instances of deployed contracts you can interact with. The `args`
 attribute is passed to the initialize function that sets the `owner` of the Index (it
-can be an address of a multisig) and a an actual instance of
+can be an address of a multisig) and an actual instance of
 [Lif token](https://github.com/windingtree/lif-token). You don't Lif token to play with
 this locally.
     ```bash
-    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4bb,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
-    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4bb,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console.
