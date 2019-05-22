@@ -207,7 +207,7 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[0], testSegmentDirectory.address);
       assert.equal(receipt.logs[1].args[1], foodTruckAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args[0], address);
+      assert.equal(receipt.logs[2].args[0], organization.address);
       assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
       assert.equal(receipt.logs[3].args[0], organization.address);
       assert.equal(receipt.logs[3].args.managerIndex, 0);
