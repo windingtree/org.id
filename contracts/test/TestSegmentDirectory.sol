@@ -2,6 +2,10 @@ pragma solidity ^0.5.6;
 
 import "../SegmentDirectory.sol";
 
+/**
+ * We are using this wrapper of SegmentDirectory for tests because
+ * the actual implementation has no external methods.
+ */
 contract TestSegmentDirectory is SegmentDirectory {
 
     function createFoodTruck(string calldata dataUri) external returns (address) {

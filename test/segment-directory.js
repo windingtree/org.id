@@ -241,7 +241,7 @@ contract('TestSegmentDirectory', (accounts) => {
     });
 
     it('should remove organization from the directory', async () => {
-      await testSegmentDirectory.deregisterFoodTruck(organization.address, { from: foodTruckAccount });
+      const receipt = await testSegmentDirectory.deregisterFoodTruck(organization.address, { from: foodTruckAccount });
       const allFoodTrucks = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
@@ -254,6 +254,9 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.isUndefined(foodTruck);
       assert.isDefined(foodTruckByManager);
       assert.isTrue(help.isZeroAddress(foodTruckByManager));
+      assert.equal(receipt.logs.length, 1);
+      assert.equal(receipt.logs[0].event, 'OrganizationDeregistered');
+      assert.equal(receipt.logs[0].args[0], organization.address);
     });
 
     it('should not destroy the organization contract', async () => {

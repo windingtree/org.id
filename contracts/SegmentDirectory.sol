@@ -82,7 +82,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         delete organizationsIndex[organization];
         delete organizationsByManager[msg.sender][index];
         delete organizationsByManagerIndex[organization];
-        emit OrganizationDeregistered(organization, index, allIndex);
+        emit OrganizationDeregistered(organization);
     }
 
     /**
