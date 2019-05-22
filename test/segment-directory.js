@@ -21,7 +21,20 @@ contract('TestSegmentDirectory', (accounts) => {
   });
 
   describe('initialize', () => {
+    it('should not allow zero address owner', async () => {
+      try {
+        testSegmentDirectory = await TestSegmentDirectory.new();
+        await testSegmentDirectory.initialize(help.zeroAddress, tokenAddress);
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
     it('should set liftoken', async () => {
+      testSegmentDirectory = await TestSegmentDirectory.new();
+      await testSegmentDirectory.initialize(segmentDirectoryOwner, tokenAddress);
+      segmentDirectory = await SegmentDirectory.at(testSegmentDirectory.address);
       assert.equal(await segmentDirectory.LifToken(), tokenAddress);
     });
   });
@@ -192,6 +205,15 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(actualIndexPos, 1);
       assert.equal(foodTruck, foodTrucksByManager);
     });
+
+    it('should throw if somebody is registering organization which she does not own', async () => {
+      try {
+        await testSegmentDirectory.registerFoodTruck(organization.address, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
   });
 
   describe('createAndRegisterFoodTruck', () => {
@@ -263,6 +285,16 @@ contract('TestSegmentDirectory', (accounts) => {
       await testSegmentDirectory.deregisterFoodTruck(organization.address, { from: foodTruckAccount });
       const code = await help.promisify(cb => web3.eth.getCode(organization.address, cb));
       assert.isAtLeast(code.length, 4);
+    });
+
+    it('should throw if somebody is deregistering organization which she does not own', async () => {
+      try {
+        await organization.transferOwnership(nonOwnerAccount, { from: foodTruckAccount });
+        await testSegmentDirectory.deregisterFoodTruck(organization.address, { from: foodTruckAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
     });
 
     it('should throw if organization is not registered', async () => {

@@ -52,6 +52,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Address of the organization."}
      */
     function registerOrganization(address organization) internal returns (address) {
+        Organization org = Organization(organization);
+        require(org.manager() == msg.sender);
         organizationsIndex[organization] = organizations.length;
         organizations.push(organization);
         organizationsByManagerIndex[organization] = organizationsByManager[msg.sender].length;
@@ -87,8 +89,11 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Ensure we know about the organization at all
         require(organizationsIndex[organization] != uint(0));
         // Ensure that the caller is the organization's rightful owner
+        // Organization might have changed hands without the index taking notice
+        Organization org = Organization(organization);
+        require(org.manager() == msg.sender);
         // There may actually be an organization on index zero, that's why we use a double check
-        // TODO check with org contract as well
+        // TODO this is weird
         require(organizationsByManager[msg.sender][organizationsByManagerIndex[organization]] != address(0));
         uint index = organizationsByManagerIndex[organization];
         uint allIndex = organizationsIndex[organization];
@@ -105,7 +110,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @param _lifToken The new contract address
      */
     function initialize(address payable __owner, address _lifToken) public initializer {
-        // TODO don't allow setting owner to zero address
+        require(__owner != address(0));
         _owner = __owner;
         LifToken = _lifToken;
         organizations.length++;
