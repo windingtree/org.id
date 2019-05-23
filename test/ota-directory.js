@@ -14,7 +14,6 @@ const OtaDirectoryUpgradeabilityTest = Contracts.getFromLocal('OtaDirectoryUpgra
 // eaiser interaction with truffle-contract
 const Organization = artifacts.require('Organization');
 const OtaDirectoryInterface = artifacts.require('OtaDirectoryInterface');
-const TruffleOtaDirectoryUpgradeabilityTest = artifacts.require('OtaDirectoryUpgradeabilityTest');
 const OrganizationUpgradeabilityTest = artifacts.require('OrganizationUpgradeabilityTest');
 
 contract('OtaDirectory', (accounts) => {
