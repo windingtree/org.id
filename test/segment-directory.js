@@ -128,7 +128,7 @@ contract('TestSegmentDirectory', (accounts) => {
       const receipt = await testSegmentDirectory.createFoodTruck('dataUri', { from: foodTruckAccount });
       const organization = await Organization.at(address);
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.manager, foodTruckAccount);
+      assert.equal(info.owner, foodTruckAccount);
       assert.equal(info.dataUri, 'dataUri');
       assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
@@ -210,7 +210,7 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[3].args.organization, organization.address);
       assert.equal(receipt.logs[3].args.index, 1);
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.manager, foodTruckAccount);
+      assert.equal(info.owner, foodTruckAccount);
       assert.equal(info.dataUri, 'dataUri');
       const allFoodTrucks = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,

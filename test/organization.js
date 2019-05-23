@@ -21,7 +21,7 @@ contract('Organization', (accounts) => {
       // We need callback, because getBlockNumber for some reason cannot be called with await
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.isAtMost(info.created, blockNumber);
-      assert.equal(info.manager, organizationOwner);
+      assert.equal(info.owner, organizationOwner);
       assert.equal(info.dataUri, organizationUri);
     });
 
@@ -71,7 +71,7 @@ contract('Organization', (accounts) => {
       assert.equal(receipt.logs[0].args.previousOwner, organizationOwner);
       assert.equal(receipt.logs[0].args.newOwner, nonOwnerAccount);
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.manager, nonOwnerAccount);
+      assert.equal(info.owner, nonOwnerAccount);
     });
 
     it('should throw if transferring to a zero address', async () => {

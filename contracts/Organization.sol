@@ -3,13 +3,13 @@ pragma solidity ^0.5.6;
 /**
  * @title Organization
  * @dev A contract that represents an Organization in the WT network. We cannot use
- * zeppelin's Ownable, because we need the owner (named `manager` in this instance)
+ * zeppelin's Ownable, because we need the owner
  * field to be publicly readable.
  */
 contract Organization {
 
     // Who owns this Organization contract and can manage it.
-    address payable public manager;
+    address payable public owner;
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -20,7 +20,7 @@ contract Organization {
     uint public created;
 
     /**
-     * @dev Event triggered when manager of the organization is changed.
+     * @dev Event triggered when owner of the organization is changed.
      */
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
@@ -35,18 +35,18 @@ contract Organization {
      */
     constructor(string memory _dataUri) public {
         require(bytes(_dataUri).length != 0);
-        manager = msg.sender;
+        owner = msg.sender;
         dataUri = _dataUri;
         created = block.number;
-        emit OwnershipTransferred(address(0), manager);
+        emit OwnershipTransferred(address(0), owner);
     }
 
     /**
      * Allows calling such methods only when msg.sender is equal
-     * to previously set `manager` property.
+     * to previously set `owner` property.
      */
-    modifier onlyManager() {
-        require(msg.sender == manager);
+    modifier onlyOwner() {
+        require(msg.sender == owner);
         _;
     }
 
@@ -54,7 +54,7 @@ contract Organization {
      * @dev `changeDataUri` Allows owner to change Organization's dataUri.
      * @param  _dataUri New dataUri pointer of this Organization
      */
-    function changeDataUri(string memory _dataUri) public onlyManager {
+    function changeDataUri(string memory _dataUri) public onlyOwner {
         bytes memory tempStringRepr = bytes(_dataUri);
         require(tempStringRepr.length != 0);
         emit DataUriChanged(dataUri, _dataUri);
@@ -63,19 +63,19 @@ contract Organization {
 
     /**
      * @dev `destroy` allows the owner to delete the Organization altogether.
-     * All associated funds are transferred to the `manager`.
+     * All associated funds are transferred to the `owner`.
      */
-    function destroy() public onlyManager {
-        selfdestruct(manager);
+    function destroy() public onlyOwner {
+        selfdestruct(owner);
     }
 
     /**
-     * @dev Allows owner to change Organization manager.
-     * @param newManager New manager's address
+     * @dev Allows owner to change Organization owner.
+     * @param newOwner New owner's address
      */
-    function transferOwnership(address payable newManager) public onlyManager {
-        require(newManager != address(0));
-        emit OwnershipTransferred(manager, newManager);
-        manager = newManager;
+    function transferOwnership(address payable newOwner) public onlyOwner {
+        require(newOwner != address(0));
+        emit OwnershipTransferred(owner, newOwner);
+        owner = newOwner;
     }
 }

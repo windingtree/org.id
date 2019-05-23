@@ -15,17 +15,17 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     // Mapping of organizations position in the general organization index
     mapping(address => uint) public organizationsIndex;
 
-    // Mapping of organizations indexed by manager's address. Deprecated,
+    // Mapping of organizations indexed by owner's address. Deprecated,
     // we cannot keep this consistent when organizations might change owners
     // at any time. Do not delete this field as it would break the zos
     // upgradeability.
-    mapping(address => address[]) public organizationsByManagerDeprecated;
+    mapping(address => address[]) public organizationsByOwnerDeprecated;
 
-    // Mapping of organizations position in the manager-indexed organization
+    // Mapping of organizations position in the owner-indexed organization
     // index. Deprecated, we cannot keep this consistent when organizations
     // might change owners at any time. Do not delete this field as it would
     // break the zos upgradeability.
-    mapping(address => uint) public organizationsByManagerIndexDeprecated;
+    mapping(address => uint) public organizationsByOwnerIndexDeprecated;
 
     // Address of the LifToken contract
     // solhint-disable-next-line var-name-mixedcase
@@ -58,7 +58,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function registerOrganization(address organization) internal returns (address) {
         Organization org = Organization(organization);
-        require(org.manager() == msg.sender);
+        require(org.owner() == msg.sender);
         organizationsIndex[organization] = organizations.length;
         organizations.push(organization);
         emit OrganizationRegistered(
@@ -80,7 +80,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     }
 
     /**
-     * @dev `deregisterOrganization` Allows a manager to deregister an organization
+     * @dev `deregisterOrganization` Allows a owner to deregister an organization
      * from the directory. Does not destroy the organization contract.
      * Emits `OrganizationDeregistered` on success.
      * @param  organization  Organization's address
@@ -93,7 +93,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
         Organization org = Organization(organization);
-        require(org.manager() == msg.sender);
+        require(org.owner() == msg.sender);
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
         delete organizationsIndex[organization];

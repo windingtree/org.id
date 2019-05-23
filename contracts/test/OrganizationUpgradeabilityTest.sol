@@ -5,10 +5,10 @@ import "../Organization.sol";
 contract OrganizationUpgradeabilityTest is Organization {
 
     constructor(
-        address payable _manager,
+        address payable _owner,
         string memory _dataUri
     ) Organization(_dataUri) public {
-        manager = _manager;
+        owner = _owner;
     }
 
     function newFunction() public pure returns(uint) {
