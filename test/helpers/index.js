@@ -2,7 +2,7 @@ const misc = require('./misc');
 
 async function getOrganizationInfo (wtOrganization) {
   // Airline Info
-  const dataUri = await wtOrganization.dataUri();
+  const dataUri = await wtOrganization.getDataUri();
   const owner = await wtOrganization.owner();
   const created = await wtOrganization.created();
 

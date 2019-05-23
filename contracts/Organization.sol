@@ -1,12 +1,14 @@
 pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
+import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
+import "./OrganizationInterface.sol";
 
 /**
  * @title Organization
  * @dev A contract that represents an Organization in the Windign Tree network.
  */
-contract Organization is Ownable {
+contract Organization is OrganizationInterface, ERC165, Ownable {
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -34,6 +36,8 @@ contract Organization is Ownable {
         require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
         dataUri = _dataUri;
         created = block.number;
+        OrganizationInterface i;
+        _registerInterface(i.owner.selector ^ i.getDataUri.selector);
     }
 
     /**
@@ -45,5 +49,13 @@ contract Organization is Ownable {
         require(tempStringRepr.length != 0, 'dataUri cannot be an empty string');
         emit DataUriChanged(dataUri, _dataUri);
         dataUri = _dataUri;
+    }
+
+    /**
+     * @dev Returns current dataUri
+     * @return {" ": "Current dataUri."}
+     */
+    function getDataUri() external view returns (string memory) {
+        return dataUri;
     }
 }

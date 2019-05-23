@@ -197,6 +197,15 @@ contract('TestSegmentDirectory', (accounts) => {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
+
+    it('should not add a FoodTruck that does not support OrganizationInterface', async () => {
+      try {
+        await testSegmentDirectory.addFoodTruck(nonOwnerAccount, { from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
   });
 
   describe('createAndAddFoodTruck', () => {

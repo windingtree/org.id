@@ -1,6 +1,8 @@
 pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
+import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
+import "./OrganizationInterface.sol";
 import "./Organization.sol";
 import "./SegmentDirectoryEvents.sol";
 
@@ -57,8 +59,11 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Address of the organization."}
      */
     function addOrganization(address organization) internal returns (address) {
-        Organization org = Organization(organization);
-        require(org.owner() == msg.sender, 'Only organization owner can add the organization');
+        // this is intentionally not part of the state variables as we expect it to change in time.
+        bytes4 _INTERFACE_ID_ORGANIZATION = 0xe8570cfc;
+        require(ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION));
+        OrganizationInterface org = OrganizationInterface(organization);
+        require(org.owner() == msg.sender, 'Only organization owner can register the organization');
         organizationsIndex[organization] = organizations.length;
         organizations.push(organization);
         emit OrganizationAdded(
@@ -92,7 +97,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         require(organizationsIndex[organization] != uint(0), 'Cannot remove unknown organization');
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
-        Organization org = Organization(organization);
+        OrganizationInterface org = OrganizationInterface(organization);
         require(org.owner() == msg.sender);
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
