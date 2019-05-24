@@ -92,21 +92,4 @@ contract('Organization', (accounts) => {
       }
     });
   });
-
-  describe('destroy', () => {
-    it('should destroy the contract', async () => {
-      await organization.destroy({ from: organizationOwner });
-      const code = await help.promisify(cb => web3.eth.getCode(organization.address, cb));
-      assert.isAtMost(code.length, 3);
-    });
-
-    it('should throw if not executed from owner address', async () => {
-      try {
-        await organization.destroy({ from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
 });

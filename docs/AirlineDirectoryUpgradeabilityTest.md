@@ -1,12 +1,12 @@
 * [AirlineDirectoryUpgradeabilityTest](#airlinedirectoryupgradeabilitytest)
   * [getAirlines](#function-getairlines)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [newFunction](#function-newfunction)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
   * [airlines](#function-airlines)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [getAirlinesLength](#function-getairlineslength)
   * [createAndRegisterAirline](#function-createandregisterairline)
@@ -40,17 +40,9 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* newFunction
+## *function* organizationsByOwnerDeprecated
 
-AirlineDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
-
-
-
-
-
-## *function* organizationsByManagerDeprecated
-
-AirlineDirectoryUpgradeabilityTest.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+AirlineDirectoryUpgradeabilityTest.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -59,6 +51,14 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
+
+
+## *function* newFunction
+
+AirlineDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
 
 
 ## *function* airlines
@@ -101,9 +101,9 @@ AirlineDirectoryUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 
 
-## *function* organizationsIndex
+## *function* organizationsByOwnerIndexDeprecated
 
-AirlineDirectoryUpgradeabilityTest.organizationsIndex() `view` `63cd48fb`
+AirlineDirectoryUpgradeabilityTest.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
 
 
 Inputs
@@ -113,9 +113,9 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* organizationsByManagerIndexDeprecated
+## *function* organizationsIndex
 
-AirlineDirectoryUpgradeabilityTest.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+AirlineDirectoryUpgradeabilityTest.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs

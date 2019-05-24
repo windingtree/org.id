@@ -1,11 +1,11 @@
 * [AirlineDirectory](#airlinedirectory)
   * [getAirlines](#function-getairlines)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [airlines](#function-airlines)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [getAirlinesLength](#function-getairlineslength)
   * [createAndRegisterAirline](#function-createandregisterairline)
@@ -39,9 +39,9 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* organizationsByManagerDeprecated
+## *function* organizationsByOwnerDeprecated
 
-AirlineDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+AirlineDirectory.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -92,9 +92,9 @@ AirlineDirectory.LifToken() `view` `554d8b37`
 
 
 
-## *function* organizationsIndex
+## *function* organizationsByOwnerIndexDeprecated
 
-AirlineDirectory.organizationsIndex() `view` `63cd48fb`
+AirlineDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
 
 
 Inputs
@@ -104,9 +104,9 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* organizationsByManagerIndexDeprecated
+## *function* organizationsIndex
 
-AirlineDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+AirlineDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs

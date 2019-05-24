@@ -15,6 +15,8 @@ coverage
 coverage.json
 .flattened
 allFiredEvents
+coverageEnv
+scTopics
 
 # ETH keys
 keys.json

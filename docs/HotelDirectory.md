@@ -1,12 +1,12 @@
 * [HotelDirectory](#hoteldirectory)
   * [getHotels](#function-gethotels)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
   * [createHotel](#function-createhotel)
   * [deregisterHotel](#function-deregisterhotel)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
   * [getOrganizationsLength](#function-getorganizationslength)
@@ -39,9 +39,9 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* organizationsByManagerDeprecated
+## *function* organizationsByOwnerDeprecated
 
-HotelDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+HotelDirectory.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -72,6 +72,18 @@ HotelDirectory.LifToken() `view` `554d8b37`
 
 
 
+
+
+## *function* organizationsByOwnerIndexDeprecated
+
+HotelDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 
 ## *function* organizationsIndex
@@ -115,18 +127,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | Hotel's address |
-
-
-## *function* organizationsByManagerIndexDeprecated
-
-HotelDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 
 ## *function* getOrganizations

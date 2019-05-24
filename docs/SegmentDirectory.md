@@ -1,9 +1,9 @@
 * [SegmentDirectory](#segmentdirectory)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
@@ -17,9 +17,9 @@
 # SegmentDirectory
 
 
-## *function* organizationsByManagerDeprecated
+## *function* organizationsByOwnerDeprecated
 
-SegmentDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+SegmentDirectory.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -52,9 +52,9 @@ SegmentDirectory.LifToken() `view` `554d8b37`
 
 
 
-## *function* organizationsIndex
+## *function* organizationsByOwnerIndexDeprecated
 
-SegmentDirectory.organizationsIndex() `view` `63cd48fb`
+SegmentDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
 
 
 Inputs
@@ -64,9 +64,9 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* organizationsByManagerIndexDeprecated
+## *function* organizationsIndex
 
-SegmentDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+SegmentDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs

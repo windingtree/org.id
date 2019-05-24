@@ -1,11 +1,11 @@
 * [TestSegmentDirectory](#testsegmentdirectory)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [createAndRegisterFoodTruck](#function-createandregisterfoodtruck)
   * [deregisterFoodTruck](#function-deregisterfoodtruck)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [registerFoodTruck](#function-registerfoodtruck)
   * [getOrganizationsLength](#function-getorganizationslength)
@@ -21,9 +21,9 @@
 # TestSegmentDirectory
 
 
-## *function* organizationsByManagerDeprecated
+## *function* organizationsByOwnerDeprecated
 
-TestSegmentDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+TestSegmentDirectory.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -80,9 +80,9 @@ TestSegmentDirectory.LifToken() `view` `554d8b37`
 
 
 
-## *function* organizationsIndex
+## *function* organizationsByOwnerIndexDeprecated
 
-TestSegmentDirectory.organizationsIndex() `view` `63cd48fb`
+TestSegmentDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
 
 
 Inputs
@@ -92,9 +92,9 @@ Inputs
 | *address* |  | undefined |
 
 
-## *function* organizationsByManagerIndexDeprecated
+## *function* organizationsIndex
 
-TestSegmentDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
+TestSegmentDirectory.organizationsIndex() `view` `63cd48fb`
 
 
 Inputs

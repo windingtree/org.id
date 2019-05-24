@@ -6,7 +6,7 @@ import "./OrganizationUpgradeabilityTest.sol";
 contract AirlineDirectoryUpgradeabilityTest is AirlineDirectory {
 
     function createAndRegisterAirline(string calldata dataUri) external returns (address) {
-        OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(msg.sender, dataUri);
+        OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(dataUri);
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;
         organizations.push(newOrganizationAddress);

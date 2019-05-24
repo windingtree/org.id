@@ -2,9 +2,10 @@
   * [changeDataUri](#function-changedatauri)
   * [newFunction](#function-newfunction)
   * [created](#function-created)
-  * [manager](#function-manager)
-  * [destroy](#function-destroy)
+  * [renounceOwnership](#function-renounceownership)
   * [dataUri](#function-datauri)
+  * [owner](#function-owner)
+  * [isOwner](#function-isowner)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [DataUriChanged](#event-dataurichanged)
@@ -41,19 +42,13 @@ OrganizationUpgradeabilityTest.created() `view` `325a19f1`
 
 
 
-## *function* manager
+## *function* renounceOwnership
 
-OrganizationUpgradeabilityTest.manager() `view` `481c6a75`
+OrganizationUpgradeabilityTest.renounceOwnership() `nonpayable` `715018a6`
 
+**Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.**
 
-
-
-
-## *function* destroy
-
-OrganizationUpgradeabilityTest.destroy() `nonpayable` `83197ef0`
-
-> `destroy` allows the owner to delete the Organization altogether. All associated funds are transferred to the `manager`.
+> Allows the current owner to relinquish control of the contract. It will not be possible to call the functions with the `onlyOwner` modifier anymore.
 
 
 
@@ -66,17 +61,43 @@ OrganizationUpgradeabilityTest.dataUri() `view` `8a9b29eb`
 
 
 
+## *function* owner
+
+OrganizationUpgradeabilityTest.owner() `view` `8da5cb5b`
+
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* isOwner
+
+OrganizationUpgradeabilityTest.isOwner() `view` `8f32d59b`
+
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
+
 ## *function* transferOwnership
 
-OrganizationUpgradeabilityTest.transferOwnership(newManager) `nonpayable` `f2fde38b`
+OrganizationUpgradeabilityTest.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
-> Allows owner to change Organization manager.
+> Allows the current owner to transfer control of the contract to a newOwner.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | newManager | New manager's address |
+| *address* | newOwner | The address to transfer ownership to. |
 
 
 ## *event* OwnershipTransferred

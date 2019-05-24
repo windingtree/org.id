@@ -1,13 +1,13 @@
 * [OtaDirectory](#otadirectory)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [createOta](#function-createota)
   * [deregisterOta](#function-deregisterota)
   * [otasIndex](#function-otasindex)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [getOtas](#function-getotas)
   * [organizationsIndex](#function-organizationsindex)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [otas](#function-otas)
   * [getOrganizationsLength](#function-getorganizationslength)
@@ -25,9 +25,9 @@
 # OtaDirectory
 
 
-## *function* organizationsByManagerDeprecated
+## *function* organizationsByOwnerDeprecated
 
-OtaDirectory.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+OtaDirectory.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -109,6 +109,18 @@ OtaDirectory.LifToken() `view` `554d8b37`
 
 
 
+## *function* organizationsByOwnerIndexDeprecated
+
+OtaDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
 ## *function* getOtas
 
 OtaDirectory.getOtas() `view` `5c8a8c8d`
@@ -126,18 +138,6 @@ Outputs
 ## *function* organizationsIndex
 
 OtaDirectory.organizationsIndex() `view` `63cd48fb`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-
-## *function* organizationsByManagerIndexDeprecated
-
-OtaDirectory.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
 
 
 Inputs

@@ -1,13 +1,13 @@
 * [HotelDirectoryUpgradeabilityTest](#hoteldirectoryupgradeabilitytest)
   * [getHotels](#function-gethotels)
+  * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [newFunction](#function-newfunction)
-  * [organizationsByManagerDeprecated](#function-organizationsbymanagerdeprecated)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
   * [createHotel](#function-createhotel)
   * [deregisterHotel](#function-deregisterhotel)
-  * [organizationsByManagerIndexDeprecated](#function-organizationsbymanagerindexdeprecated)
   * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
   * [getOrganizationsLength](#function-getorganizationslength)
@@ -40,17 +40,9 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* newFunction
+## *function* organizationsByOwnerDeprecated
 
-HotelDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
-
-
-
-
-
-## *function* organizationsByManagerDeprecated
-
-HotelDirectoryUpgradeabilityTest.organizationsByManagerDeprecated(, ) `view` `1dafad71`
+HotelDirectoryUpgradeabilityTest.organizationsByOwnerDeprecated(, ) `view` `18531bb6`
 
 
 Inputs
@@ -59,6 +51,14 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
+
+
+## *function* newFunction
+
+HotelDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
 
 
 ## *function* initialize
@@ -81,6 +81,18 @@ HotelDirectoryUpgradeabilityTest.LifToken() `view` `554d8b37`
 
 
 
+
+
+## *function* organizationsByOwnerIndexDeprecated
+
+HotelDirectoryUpgradeabilityTest.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 
 ## *function* organizationsIndex
@@ -124,18 +136,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | Hotel's address |
-
-
-## *function* organizationsByManagerIndexDeprecated
-
-HotelDirectoryUpgradeabilityTest.organizationsByManagerIndexDeprecated() `view` `7ead8a4c`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 
 ## *function* getOrganizations
