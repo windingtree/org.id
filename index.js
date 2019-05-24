@@ -4,6 +4,7 @@ const AirlineDirectoryInterfaceContract = require('./build/contracts/AirlineDire
 const HotelDirectoryContract = require('./build/contracts/HotelDirectory.json');
 const HotelDirectoryInterfaceContract = require('./build/contracts/HotelDirectoryInterface.json');
 const OrganizationContract = require('./build/contracts/Organization.json');
+const OrganizationInterfaceContract = require('./build/contracts/OrganizationInterface.json');
 const OtaDirectoryContract = require('./build/contracts/OtaDirectory.json');
 const OtaDirectoryInterfaceContract = require('./build/contracts/OtaDirectoryInterface.json');
 const SegmentDirectoryContract = require('./build/contracts/SegmentDirectory.json');
@@ -16,6 +17,7 @@ module.exports = {
   HotelDirectoryContract: HotelDirectoryContract,
   HotelDirectoryInterfaceContract: HotelDirectoryInterfaceContract,
   OrganizationContract: OrganizationContract,
+  OrganizationInterfaceContract: OrganizationInterfaceContract,
   OtaDirectoryContract: OtaDirectoryContract,
   OtaDirectoryInterfaceContract: OtaDirectoryInterfaceContract,
   SegmentDirectoryContract: SegmentDirectoryContract,
