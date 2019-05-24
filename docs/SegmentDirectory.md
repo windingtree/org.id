@@ -4,14 +4,15 @@
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
+  * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # SegmentDirectory
@@ -74,6 +75,15 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
+
+
+## *function* owner
+
+SegmentDirectory.owner() `view` `8da5cb5b`
+
+> Returns the address of the current owner.
+
+
 
 
 ## *function* getOrganizations
@@ -151,9 +161,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-SegmentDirectory.OrganizationRegistered(organization, index) `0aa9369e`
+SegmentDirectory.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -162,9 +172,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-SegmentDirectory.OrganizationDeregistered(organization) `2ef6503b`
+SegmentDirectory.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

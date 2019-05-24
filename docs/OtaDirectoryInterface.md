@@ -1,18 +1,30 @@
 * [OtaDirectoryInterface](#otadirectoryinterface)
+  * [createAndAddOta](#function-createandaddota)
   * [createOta](#function-createota)
-  * [deregisterOta](#function-deregisterota)
   * [otasIndex](#function-otasindex)
   * [getOtas](#function-getotas)
+  * [addOta](#function-addota)
   * [otas](#function-otas)
   * [getOtasLength](#function-getotaslength)
-  * [createAndRegisterOta](#function-createandregisterota)
-  * [registerOta](#function-registerota)
+  * [removeOta](#function-removeota)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # OtaDirectoryInterface
+
+
+## *function* createAndAddOta
+
+OtaDirectoryInterface.createAndAddOta(dataUri) `nonpayable` `1adc44cd`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
 
 
 ## *function* createOta
@@ -25,18 +37,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | dataUri | undefined |
-
-
-## *function* deregisterOta
-
-OtaDirectoryInterface.deregisterOta(ota) `nonpayable` `453a1f6a`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | ota | undefined |
 
 
 ## *function* otasIndex
@@ -59,6 +59,18 @@ OtaDirectoryInterface.getOtas() `view` `5c8a8c8d`
 
 
 
+## *function* addOta
+
+OtaDirectoryInterface.addOta(ota) `nonpayable` `84902979`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | undefined |
+
+
 ## *function* otas
 
 OtaDirectoryInterface.otas(index) `view` `b02f7f65`
@@ -79,21 +91,9 @@ OtaDirectoryInterface.getOtasLength() `view` `d0be6aa3`
 
 
 
-## *function* createAndRegisterOta
+## *function* removeOta
 
-OtaDirectoryInterface.createAndRegisterOta(dataUri) `nonpayable` `f1e34560`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* registerOta
-
-OtaDirectoryInterface.registerOta(ota) `nonpayable` `ff69461c`
+OtaDirectoryInterface.removeOta(ota) `nonpayable` `de6bd6b2`
 
 
 Inputs
@@ -112,9 +112,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-OtaDirectoryInterface.OrganizationRegistered(organization, index) `0aa9369e`
+OtaDirectoryInterface.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -123,9 +123,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-OtaDirectoryInterface.OrganizationDeregistered(organization) `2ef6503b`
+OtaDirectoryInterface.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

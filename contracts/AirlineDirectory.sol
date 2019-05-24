@@ -19,29 +19,29 @@ contract AirlineDirectory is SegmentDirectory, AirlineDirectoryInterface {
     }
 
     /**
-     * @dev `registerAirline` proxies and externalizes registerOrganization
+     * @dev `addAirline` proxies and externalizes addOrganization
      * @param  airline Airline's address
      * @return {" ": "Address of the airline."}
      */
-    function registerAirline(address airline) external returns (address) {
-        return registerOrganization(airline);
+    function addAirline(address airline) external returns (address) {
+        return addOrganization(airline);
     }
 
     /**
-     * @dev `createAndRegisterAirline` proxies and externalizes createAndRegisterOrganization
+     * @dev `createAndAddAirline` proxies and externalizes createAndAddOrganization
      * @param  dataUri Airline's data pointer
      * @return {" ": "Address of the new airline."}
      */
-    function createAndRegisterAirline(string calldata dataUri) external returns (address) {
-        return createAndRegisterOrganization(dataUri);
+    function createAndAddAirline(string calldata dataUri) external returns (address) {
+        return createAndAddOrganization(dataUri);
     }
 
     /**
-     * @dev `deregisterAirline` proxies and externalizes deregisterOrganization
+     * @dev `removeAirline` proxies and externalizes removeOrganization
      * @param  airline  Airline's address
      */
-    function deregisterAirline(address airline) external {
-        return deregisterOrganization(airline);
+    function removeAirline(address airline) external {
+        return removeOrganization(airline);
     }
 
     /**

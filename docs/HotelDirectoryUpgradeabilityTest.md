@@ -2,25 +2,26 @@
   * [getHotels](#function-gethotels)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [newFunction](#function-newfunction)
+  * [removeHotel](#function-removehotel)
   * [initialize](#function-initialize)
+  * [addHotel](#function-addhotel)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
   * [createHotel](#function-createhotel)
-  * [deregisterHotel](#function-deregisterhotel)
+  * [owner](#function-owner)
+  * [createAndAddHotel](#function-createandaddhotel)
   * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
-  * [createAndRegisterHotel](#function-createandregisterhotel)
-  * [registerHotel](#function-registerhotel)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # HotelDirectoryUpgradeabilityTest
@@ -61,6 +62,19 @@ HotelDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
 
 
 
+## *function* removeHotel
+
+HotelDirectoryUpgradeabilityTest.removeHotel(hotel) `nonpayable` `315610a1`
+
+> `removeHotel` proxies and externalizes removeOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | Hotel's address |
+
+
 ## *function* initialize
 
 HotelDirectoryUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
@@ -74,6 +88,24 @@ Inputs
 | *address* | __owner | The address of the contract owner |
 | *address* | _lifToken | The new contract address |
 
+
+## *function* addHotel
+
+HotelDirectoryUpgradeabilityTest.addHotel(hotel) `nonpayable` `50cd3fc0`
+
+> `addHotel` proxies and externalizes addOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | Hotel's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* LifToken
 
@@ -125,17 +157,25 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* deregisterHotel
+## *function* owner
 
-HotelDirectoryUpgradeabilityTest.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
+HotelDirectoryUpgradeabilityTest.owner() `view` `8da5cb5b`
 
-> `deregisterHotel` proxies and externalizes deregisterOrganization
+> Returns the address of the current owner.
+
+
+
+
+## *function* createAndAddHotel
+
+HotelDirectoryUpgradeabilityTest.createAndAddHotel(dataUri) `nonpayable` `95a5f074`
+
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | Hotel's address |
+| *string* | dataUri | undefined |
 
 
 ## *function* getOrganizations
@@ -216,36 +256,6 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* createAndRegisterHotel
-
-HotelDirectoryUpgradeabilityTest.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* registerHotel
-
-HotelDirectoryUpgradeabilityTest.registerHotel(hotel) `nonpayable` `dcd003fb`
-
-> `registerHotel` proxies and externalizes registerOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | Hotel's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
 ## *function* organizations
 
 HotelDirectoryUpgradeabilityTest.organizations() `view` `e792dd8a`
@@ -293,9 +303,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-HotelDirectoryUpgradeabilityTest.OrganizationRegistered(organization, index) `0aa9369e`
+HotelDirectoryUpgradeabilityTest.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -304,9 +314,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-HotelDirectoryUpgradeabilityTest.OrganizationDeregistered(organization) `2ef6503b`
+HotelDirectoryUpgradeabilityTest.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

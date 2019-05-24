@@ -39,14 +39,14 @@ contract('AirlineDirectory', (accounts) => {
 
   describe('upgradeability', () => {
     it('should upgrade AirlineDirectory and have new functions in Index and Airline contracts', async () => {
-      // register old organization
-      await airlineDirectory.createAndRegisterAirline('dataUri', { from: airlineAccount });
+      // add old organization
+      await airlineDirectory.createAndAddAirline('dataUri', { from: airlineAccount });
       // upgrade directory
       const upgradedDirectory = await AirlineDirectoryUpgradeabilityTest.new({ from: airlineDirectoryOwner });
       await project.proxyAdmin.upgradeProxy(airlineDirectoryProxy.address, upgradedDirectory.address, AirlineDirectoryUpgradeabilityTest);
       const newDirectory = await AirlineDirectoryUpgradeabilityTest.at(airlineDirectoryProxy.address);
-      // register new organization
-      await newDirectory.methods.createAndRegisterAirline('dataUri2').send({ from: airlineAccount });
+      // add new organization
+      await newDirectory.methods.createAndAddAirline('dataUri2').send({ from: airlineAccount });
       const allAirlines = help.filterZeroAddresses(await newDirectory.methods.getAirlines().call());
       // test values
       assert.isDefined(await newDirectory.methods.airlines(1).call());
@@ -78,22 +78,22 @@ contract('AirlineDirectory', (accounts) => {
     });
   });
 
-  describe('registerAirline', () => {
-    it('should register airline', async () => {
+  describe('addAirline', () => {
+    it('should add airline', async () => {
       const address = await airlineDirectory.createAirline.call('dataUri', { from: airlineAccount });
       await airlineDirectory.createAirline('dataUri', { from: airlineAccount });
-      const receipt = await airlineDirectory.registerAirline(address, { from: airlineAccount });
+      const receipt = await airlineDirectory.addAirline(address, { from: airlineAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
       assert.equal(receipt.logs[0].args.organization, address);
       assert.equal(receipt.logs[0].args.index, 1);
     });
   });
 
-  describe('createAndRegisterAirline', () => {
-    it('should create and register airline', async () => {
-      const address = await airlineDirectory.createAndRegisterAirline.call('dataUri', { from: airlineAccount });
-      const receipt = await airlineDirectory.createAndRegisterAirline('dataUri', { from: airlineAccount });
+  describe('createAndAddAirline', () => {
+    it('should create and add airline', async () => {
+      const address = await airlineDirectory.createAndAddAirline.call('dataUri', { from: airlineAccount });
+      const receipt = await airlineDirectory.createAndAddAirline('dataUri', { from: airlineAccount });
       assert.equal(receipt.logs.length, 4);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
@@ -103,19 +103,19 @@ contract('AirlineDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[1], airlineAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
       assert.equal(receipt.logs[3].args.organization, address);
       assert.equal(receipt.logs[3].args.index, 1);
     });
   });
 
-  describe('deregisterAirline', () => {
+  describe('removeAirline', () => {
     it('should remove an airline', async () => {
-      const address = await airlineDirectory.createAndRegisterAirline.call('dataUri', { from: airlineAccount });
-      await airlineDirectory.createAndRegisterAirline('dataUri', { from: airlineAccount });
-      const receipt = await airlineDirectory.deregisterAirline(address, { from: airlineAccount });
+      const address = await airlineDirectory.createAndAddAirline.call('dataUri', { from: airlineAccount });
+      await airlineDirectory.createAndAddAirline('dataUri', { from: airlineAccount });
+      const receipt = await airlineDirectory.removeAirline(address, { from: airlineAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationDeregistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
       assert.equal(receipt.logs[0].args[0], address);
     });
   });
@@ -126,12 +126,12 @@ contract('AirlineDirectory', (accounts) => {
       let length = await airlineDirectory.getAirlinesLength();
       // length is a bignumber
       assert.equal(length.toNumber(), 1);
-      const address = await airlineDirectory.createAndRegisterAirline.call('aaa', { from: airlineAccount });
-      await airlineDirectory.createAndRegisterAirline('aaa', { from: airlineAccount });
-      await airlineDirectory.createAndRegisterAirline('bbb', { from: airlineAccount });
+      const address = await airlineDirectory.createAndAddAirline.call('aaa', { from: airlineAccount });
+      await airlineDirectory.createAndAddAirline('aaa', { from: airlineAccount });
+      await airlineDirectory.createAndAddAirline('bbb', { from: airlineAccount });
       length = await airlineDirectory.getAirlinesLength();
       assert.equal(length.toNumber(), 3);
-      await airlineDirectory.deregisterAirline(address, { from: airlineAccount });
+      await airlineDirectory.removeAirline(address, { from: airlineAccount });
       length = await airlineDirectory.getAirlinesLength();
       // length counts zero addresses
       assert.equal(length.toNumber(), 3);
@@ -142,12 +142,12 @@ contract('AirlineDirectory', (accounts) => {
     it('should return airlines properly', async () => {
       let airlines = await airlineDirectory.getAirlines();
       assert.equal(help.filterZeroAddresses(airlines).length, 0);
-      const address = await airlineDirectory.createAndRegisterAirline.call('aaa', { from: airlineAccount });
-      await airlineDirectory.createAndRegisterAirline('aaa', { from: airlineAccount });
-      await airlineDirectory.createAndRegisterAirline('bbb', { from: airlineAccount });
+      const address = await airlineDirectory.createAndAddAirline.call('aaa', { from: airlineAccount });
+      await airlineDirectory.createAndAddAirline('aaa', { from: airlineAccount });
+      await airlineDirectory.createAndAddAirline('bbb', { from: airlineAccount });
       airlines = await airlineDirectory.getAirlines();
       assert.equal(help.filterZeroAddresses(airlines).length, 2);
-      await airlineDirectory.deregisterAirline(address, { from: airlineAccount });
+      await airlineDirectory.removeAirline(address, { from: airlineAccount });
       airlines = await airlineDirectory.getAirlines();
       assert.equal(help.filterZeroAddresses(airlines).length, 1);
     });

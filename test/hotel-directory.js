@@ -39,14 +39,14 @@ contract('HotelDirectory', (accounts) => {
 
   describe('upgradeability', () => {
     it('should upgrade HotelDirectory and have new functions in Index and Hotel contracts', async () => {
-      // register old organization
-      await hotelDirectory.createAndRegisterHotel('dataUri', { from: hotelAccount });
+      // add old organization
+      await hotelDirectory.createAndAddHotel('dataUri', { from: hotelAccount });
       // upgrade directory
       const upgradedDirectory = await HotelDirectoryUpgradeabilityTest.new({ from: hotelDirectoryOwner });
       await project.proxyAdmin.upgradeProxy(hotelDirectoryProxy.address, upgradedDirectory.address, HotelDirectoryUpgradeabilityTest);
       const newDirectory = await HotelDirectoryUpgradeabilityTest.at(hotelDirectoryProxy.address);
-      // register new organization
-      await newDirectory.methods.createAndRegisterHotel('dataUri2').send({ from: hotelAccount });
+      // add new organization
+      await newDirectory.methods.createAndAddHotel('dataUri2').send({ from: hotelAccount });
       const allHotels = help.filterZeroAddresses(await newDirectory.methods.getHotels().call());
       // test values
       assert.isDefined(await newDirectory.methods.hotels(1).call());
@@ -78,22 +78,22 @@ contract('HotelDirectory', (accounts) => {
     });
   });
 
-  describe('registerHotel', () => {
-    it('should register hotel', async () => {
+  describe('addHotel', () => {
+    it('should add hotel', async () => {
       const address = await hotelDirectory.createHotel.call('dataUri', { from: hotelAccount });
       await hotelDirectory.createHotel('dataUri', { from: hotelAccount });
-      const receipt = await hotelDirectory.registerHotel(address, { from: hotelAccount });
+      const receipt = await hotelDirectory.addHotel(address, { from: hotelAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
       assert.equal(receipt.logs[0].args.organization, address);
       assert.equal(receipt.logs[0].args.index, 1);
     });
   });
 
-  describe('createAndRegisterHotel', () => {
-    it('should create and register hotel', async () => {
-      const address = await hotelDirectory.createAndRegisterHotel.call('dataUri', { from: hotelAccount });
-      const receipt = await hotelDirectory.createAndRegisterHotel('dataUri', { from: hotelAccount });
+  describe('createAndAddHotel', () => {
+    it('should create and add hotel', async () => {
+      const address = await hotelDirectory.createAndAddHotel.call('dataUri', { from: hotelAccount });
+      const receipt = await hotelDirectory.createAndAddHotel('dataUri', { from: hotelAccount });
       assert.equal(receipt.logs.length, 4);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
@@ -103,19 +103,19 @@ contract('HotelDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[1], hotelAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
       assert.equal(receipt.logs[3].args.organization, address);
       assert.equal(receipt.logs[3].args.index, 1);
     });
   });
 
-  describe('deregisterHotel', () => {
+  describe('removeHotel', () => {
     it('should remove an hotel', async () => {
-      const address = await hotelDirectory.createAndRegisterHotel.call('dataUri', { from: hotelAccount });
-      await hotelDirectory.createAndRegisterHotel('dataUri', { from: hotelAccount });
-      const receipt = await hotelDirectory.deregisterHotel(address, { from: hotelAccount });
+      const address = await hotelDirectory.createAndAddHotel.call('dataUri', { from: hotelAccount });
+      await hotelDirectory.createAndAddHotel('dataUri', { from: hotelAccount });
+      const receipt = await hotelDirectory.removeHotel(address, { from: hotelAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationDeregistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
       assert.equal(receipt.logs[0].args[0], address);
     });
   });
@@ -126,12 +126,12 @@ contract('HotelDirectory', (accounts) => {
       let length = await hotelDirectory.getHotelsLength();
       // length is a bignumber
       assert.equal(length.toNumber(), 1);
-      const address = await hotelDirectory.createAndRegisterHotel.call('aaa', { from: hotelAccount });
-      await hotelDirectory.createAndRegisterHotel('aaa', { from: hotelAccount });
-      await hotelDirectory.createAndRegisterHotel('bbb', { from: hotelAccount });
+      const address = await hotelDirectory.createAndAddHotel.call('aaa', { from: hotelAccount });
+      await hotelDirectory.createAndAddHotel('aaa', { from: hotelAccount });
+      await hotelDirectory.createAndAddHotel('bbb', { from: hotelAccount });
       length = await hotelDirectory.getHotelsLength();
       assert.equal(length.toNumber(), 3);
-      await hotelDirectory.deregisterHotel(address, { from: hotelAccount });
+      await hotelDirectory.removeHotel(address, { from: hotelAccount });
       length = await hotelDirectory.getHotelsLength();
       // length counts zero addresses
       assert.equal(length.toNumber(), 3);
@@ -142,12 +142,12 @@ contract('HotelDirectory', (accounts) => {
     it('should return hotels properly', async () => {
       let hotels = await hotelDirectory.getHotels();
       assert.equal(help.filterZeroAddresses(hotels).length, 0);
-      const address = await hotelDirectory.createAndRegisterHotel.call('aaa', { from: hotelAccount });
-      await hotelDirectory.createAndRegisterHotel('aaa', { from: hotelAccount });
-      await hotelDirectory.createAndRegisterHotel('bbb', { from: hotelAccount });
+      const address = await hotelDirectory.createAndAddHotel.call('aaa', { from: hotelAccount });
+      await hotelDirectory.createAndAddHotel('aaa', { from: hotelAccount });
+      await hotelDirectory.createAndAddHotel('bbb', { from: hotelAccount });
       hotels = await hotelDirectory.getHotels();
       assert.equal(help.filterZeroAddresses(hotels).length, 2);
-      await hotelDirectory.deregisterHotel(address, { from: hotelAccount });
+      await hotelDirectory.removeHotel(address, { from: hotelAccount });
       hotels = await hotelDirectory.getHotels();
       assert.equal(help.filterZeroAddresses(hotels).length, 1);
     });

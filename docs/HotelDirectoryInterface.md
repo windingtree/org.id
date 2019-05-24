@@ -1,15 +1,15 @@
 * [HotelDirectoryInterface](#hoteldirectoryinterface)
   * [getHotels](#function-gethotels)
+  * [removeHotel](#function-removehotel)
+  * [addHotel](#function-addhotel)
   * [createHotel](#function-createhotel)
-  * [deregisterHotel](#function-deregisterhotel)
+  * [createAndAddHotel](#function-createandaddhotel)
   * [hotelsIndex](#function-hotelsindex)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
-  * [createAndRegisterHotel](#function-createandregisterhotel)
-  * [registerHotel](#function-registerhotel)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # HotelDirectoryInterface
@@ -21,6 +21,30 @@ HotelDirectoryInterface.getHotels() `view` `0d2e677a`
 
 
 
+
+
+## *function* removeHotel
+
+HotelDirectoryInterface.removeHotel(hotel) `nonpayable` `315610a1`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | undefined |
+
+
+## *function* addHotel
+
+HotelDirectoryInterface.addHotel(hotel) `nonpayable` `50cd3fc0`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | hotel | undefined |
 
 
 ## *function* createHotel
@@ -35,16 +59,16 @@ Inputs
 | *string* | dataUri | undefined |
 
 
-## *function* deregisterHotel
+## *function* createAndAddHotel
 
-HotelDirectoryInterface.deregisterHotel(hotel) `nonpayable` `7dd2eea0`
+HotelDirectoryInterface.createAndAddHotel(dataUri) `nonpayable` `95a5f074`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | hotel | undefined |
+| *string* | dataUri | undefined |
 
 
 ## *function* hotelsIndex
@@ -78,30 +102,6 @@ Inputs
 |-|-|-|
 | *uint256* | index | undefined |
 
-
-## *function* createAndRegisterHotel
-
-HotelDirectoryInterface.createAndRegisterHotel(dataUri) `nonpayable` `d5b3f23f`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* registerHotel
-
-HotelDirectoryInterface.registerHotel(hotel) `nonpayable` `dcd003fb`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | hotel | undefined |
-
 ## *event* OrganizationCreated
 
 HotelDirectoryInterface.OrganizationCreated(organization) `47b68893`
@@ -112,9 +112,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-HotelDirectoryInterface.OrganizationRegistered(organization, index) `0aa9369e`
+HotelDirectoryInterface.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -123,9 +123,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-HotelDirectoryInterface.OrganizationDeregistered(organization) `2ef6503b`
+HotelDirectoryInterface.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

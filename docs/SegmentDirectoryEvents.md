@@ -1,7 +1,7 @@
 * [SegmentDirectoryEvents](#segmentdirectoryevents)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # SegmentDirectoryEvents
@@ -16,9 +16,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-SegmentDirectoryEvents.OrganizationRegistered(organization, index) `0aa9369e`
+SegmentDirectoryEvents.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -27,9 +27,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-SegmentDirectoryEvents.OrganizationDeregistered(organization) `2ef6503b`
+SegmentDirectoryEvents.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

@@ -12,15 +12,15 @@ contract TestSegmentDirectory is SegmentDirectory {
         return createOrganization(dataUri);
     }
 
-    function registerFoodTruck(address foodTruck) external returns (address) {
-        return registerOrganization(foodTruck);
+    function addFoodTruck(address foodTruck) external returns (address) {
+        return addOrganization(foodTruck);
     }
 
-    function createAndRegisterFoodTruck(string calldata dataUri) external returns (address) {
-        return createAndRegisterOrganization(dataUri);
+    function createAndAddFoodTruck(string calldata dataUri) external returns (address) {
+        return createAndAddOrganization(dataUri);
     }
 
-    function deregisterFoodTruck(address foodTruck) external {
-        return deregisterOrganization(foodTruck);
+    function removeFoodTruck(address foodTruck) external {
+        return removeOrganization(foodTruck);
     }
 }

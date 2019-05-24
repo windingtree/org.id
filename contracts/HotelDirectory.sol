@@ -19,29 +19,29 @@ contract HotelDirectory is SegmentDirectory, HotelDirectoryInterface {
     }
 
     /**
-     * @dev `registerHotel` proxies and externalizes registerOrganization
+     * @dev `addHotel` proxies and externalizes addOrganization
      * @param  hotel Hotel's address
      * @return {" ": "Address of the hotel."}
      */
-    function registerHotel(address hotel) external returns (address) {
-        return registerOrganization(hotel);
+    function addHotel(address hotel) external returns (address) {
+        return addOrganization(hotel);
     }
 
     /**
-     * @dev `createAndRegisterHotel` proxies and externalizes createAndRegisterOrganization
+     * @dev `createAndAddHotel` proxies and externalizes createAndAddOrganization
      * @param  dataUri Hotel's data pointer
      * @return {" ": "Address of the new hotel."}
      */
-    function createAndRegisterHotel(string calldata dataUri) external returns (address) {
-        return createAndRegisterOrganization(dataUri);
+    function createAndAddHotel(string calldata dataUri) external returns (address) {
+        return createAndAddOrganization(dataUri);
     }
 
     /**
-     * @dev `deregisterHotel` proxies and externalizes deregisterOrganization
+     * @dev `removeHotel` proxies and externalizes removeOrganization
      * @param  hotel  Hotel's address
      */
-    function deregisterHotel(address hotel) external {
-        return deregisterOrganization(hotel);
+    function removeHotel(address hotel) external {
+        return removeOrganization(hotel);
     }
 
     /**

@@ -5,12 +5,12 @@ import "./OrganizationUpgradeabilityTest.sol";
 
 contract OtaDirectoryUpgradeabilityTest is OtaDirectory {
 
-    function createAndRegisterOta(string calldata dataUri) external returns (address) {
+    function createAndAddOta(string calldata dataUri) external returns (address) {
         OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(dataUri);
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;
         organizations.push(newOrganizationAddress);
-        emit OrganizationRegistered(
+        emit OrganizationAdded(
             newOrganizationAddress,
             organizationsIndex[newOrganizationAddress]
         );

@@ -19,29 +19,29 @@ contract OtaDirectory is SegmentDirectory, OtaDirectoryInterface {
     }
 
     /**
-     * @dev `registerOta` proxies and externalizes registerOrganization
+     * @dev `addOta` proxies and externalizes addOrganization
      * @param  ota Ota's address
      * @return {" ": "Address of the ota."}
      */
-    function registerOta(address ota) external returns (address) {
-        return registerOrganization(ota);
+    function addOta(address ota) external returns (address) {
+        return addOrganization(ota);
     }
 
     /**
-     * @dev `createAndRegisterOta` proxies and externalizes createAndRegisterOrganization
+     * @dev `createAndAddOta` proxies and externalizes createAndAddOrganization
      * @param  dataUri Ota's data pointer
      * @return {" ": "Address of the new ota."}
      */
-    function createAndRegisterOta(string calldata dataUri) external returns (address) {
-        return createAndRegisterOrganization(dataUri);
+    function createAndAddOta(string calldata dataUri) external returns (address) {
+        return createAndAddOrganization(dataUri);
     }
 
     /**
-     * @dev `deregisterOta` proxies and externalizes deregisterOrganization
+     * @dev `removeOta` proxies and externalizes removeOrganization
      * @param  ota  Ota's address
      */
-    function deregisterOta(address ota) external {
-        return deregisterOrganization(ota);
+    function removeOta(address ota) external {
+        return removeOrganization(ota);
     }
 
     /**

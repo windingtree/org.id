@@ -1,21 +1,22 @@
 * [TestSegmentDirectory](#testsegmentdirectory)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
-  * [createAndRegisterFoodTruck](#function-createandregisterfoodtruck)
-  * [deregisterFoodTruck](#function-deregisterfoodtruck)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
+  * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
-  * [registerFoodTruck](#function-registerfoodtruck)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [addFoodTruck](#function-addfoodtruck)
+  * [removeFoodTruck](#function-removefoodtruck)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
+  * [createAndAddFoodTruck](#function-createandaddfoodtruck)
   * [createFoodTruck](#function-createfoodtruck)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # TestSegmentDirectory
@@ -32,30 +33,6 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
-
-
-## *function* createAndRegisterFoodTruck
-
-TestSegmentDirectory.createAndRegisterFoodTruck(dataUri) `nonpayable` `1fcab0b5`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
-
-
-## *function* deregisterFoodTruck
-
-TestSegmentDirectory.deregisterFoodTruck(foodTruck) `nonpayable` `28f3e623`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | foodTruck | undefined |
 
 
 ## *function* initialize
@@ -104,6 +81,15 @@ Inputs
 | *address* |  | undefined |
 
 
+## *function* owner
+
+TestSegmentDirectory.owner() `view` `8da5cb5b`
+
+> Returns the address of the current owner.
+
+
+
+
 ## *function* getOrganizations
 
 TestSegmentDirectory.getOrganizations() `view` `9754a3a8`
@@ -118,18 +104,6 @@ Outputs
 |-|-|-|
 | *address[]* |  | undefined |
 
-## *function* registerFoodTruck
-
-TestSegmentDirectory.registerFoodTruck(foodTruck) `nonpayable` `b2c5d09f`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | foodTruck | undefined |
-
-
 ## *function* getOrganizationsLength
 
 TestSegmentDirectory.getOrganizationsLength() `view` `b9306681`
@@ -143,6 +117,30 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* addFoodTruck
+
+TestSegmentDirectory.addFoodTruck(foodTruck) `nonpayable` `c58eac90`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | foodTruck | undefined |
+
+
+## *function* removeFoodTruck
+
+TestSegmentDirectory.removeFoodTruck(foodTruck) `nonpayable` `e14fe06b`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | foodTruck | undefined |
+
 
 ## *function* organizations
 
@@ -182,6 +180,18 @@ Inputs
 | *address* | newOwner | The address to transfer ownership to. |
 
 
+## *function* createAndAddFoodTruck
+
+TestSegmentDirectory.createAndAddFoodTruck(dataUri) `nonpayable` `f8a0a63c`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
+
+
 ## *function* createFoodTruck
 
 TestSegmentDirectory.createFoodTruck(dataUri) `nonpayable` `f9c7613a`
@@ -203,9 +213,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-TestSegmentDirectory.OrganizationRegistered(organization, index) `0aa9369e`
+TestSegmentDirectory.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -214,9 +224,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-TestSegmentDirectory.OrganizationDeregistered(organization) `2ef6503b`
+TestSegmentDirectory.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

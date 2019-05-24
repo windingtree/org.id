@@ -1,26 +1,27 @@
 * [OtaDirectoryUpgradeabilityTest](#otadirectoryupgradeabilitytest)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
+  * [createAndAddOta](#function-createandaddota)
   * [newFunction](#function-newfunction)
   * [createOta](#function-createota)
-  * [deregisterOta](#function-deregisterota)
   * [otasIndex](#function-otasindex)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [getOtas](#function-getotas)
   * [organizationsIndex](#function-organizationsindex)
+  * [addOta](#function-addota)
+  * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
   * [otas](#function-otas)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [getOtasLength](#function-getotaslength)
+  * [removeOta](#function-removeota)
   * [organizations](#function-organizations)
-  * [createAndRegisterOta](#function-createandregisterota)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [registerOta](#function-registerota)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # OtaDirectoryUpgradeabilityTest
@@ -37,6 +38,18 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
+
+
+## *function* createAndAddOta
+
+OtaDirectoryUpgradeabilityTest.createAndAddOta(dataUri) `nonpayable` `1adc44cd`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
 
 
 ## *function* newFunction
@@ -64,19 +77,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-
-## *function* deregisterOta
-
-OtaDirectoryUpgradeabilityTest.deregisterOta(ota) `nonpayable` `453a1f6a`
-
-> `deregisterOta` proxies and externalizes deregisterOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | ota | Ota's address |
-
 
 ## *function* otasIndex
 
@@ -156,6 +156,33 @@ Inputs
 | *address* |  | undefined |
 
 
+## *function* addOta
+
+OtaDirectoryUpgradeabilityTest.addOta(ota) `nonpayable` `84902979`
+
+> `addOta` proxies and externalizes addOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* owner
+
+OtaDirectoryUpgradeabilityTest.owner() `view` `8da5cb5b`
+
+> Returns the address of the current owner.
+
+
+
+
 ## *function* getOrganizations
 
 OtaDirectoryUpgradeabilityTest.getOrganizations() `view` `9754a3a8`
@@ -216,6 +243,19 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
+## *function* removeOta
+
+OtaDirectoryUpgradeabilityTest.removeOta(ota) `nonpayable` `de6bd6b2`
+
+> `removeOta` proxies and externalizes removeOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+
 ## *function* organizations
 
 OtaDirectoryUpgradeabilityTest.organizations() `view` `e792dd8a`
@@ -226,18 +266,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-
-## *function* createAndRegisterOta
-
-OtaDirectoryUpgradeabilityTest.createAndRegisterOta(dataUri) `nonpayable` `f1e34560`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | undefined |
 
 
 ## *function* setLifToken
@@ -265,24 +293,6 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-
-## *function* registerOta
-
-OtaDirectoryUpgradeabilityTest.registerOta(ota) `nonpayable` `ff69461c`
-
-> `registerOta` proxies and externalizes registerOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | ota | Ota's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 ## *event* OrganizationCreated
 
 OtaDirectoryUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
@@ -293,9 +303,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-OtaDirectoryUpgradeabilityTest.OrganizationRegistered(organization, index) `0aa9369e`
+OtaDirectoryUpgradeabilityTest.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -304,9 +314,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-OtaDirectoryUpgradeabilityTest.OrganizationDeregistered(organization) `2ef6503b`
+OtaDirectoryUpgradeabilityTest.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

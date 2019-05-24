@@ -1,15 +1,15 @@
 * [AirlineDirectoryInterface](#airlinedirectoryinterface)
   * [getAirlines](#function-getairlines)
+  * [addAirline](#function-addairline)
   * [airlines](#function-airlines)
+  * [createAndAddAirline](#function-createandaddairline)
   * [getAirlinesLength](#function-getairlineslength)
-  * [createAndRegisterAirline](#function-createandregisterairline)
+  * [removeAirline](#function-removeairline)
   * [createAirline](#function-createairline)
-  * [registerAirline](#function-registerairline)
   * [airlinesIndex](#function-airlinesindex)
-  * [deregisterAirline](#function-deregisterairline)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AirlineDirectoryInterface
@@ -21,6 +21,18 @@ AirlineDirectoryInterface.getAirlines() `view` `0d5dc054`
 
 
 
+
+
+## *function* addAirline
+
+AirlineDirectoryInterface.addAirline(airline) `nonpayable` `3a0295d1`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | airline | undefined |
 
 
 ## *function* airlines
@@ -35,6 +47,18 @@ Inputs
 | *uint256* | index | undefined |
 
 
+## *function* createAndAddAirline
+
+AirlineDirectoryInterface.createAndAddAirline(dataUri) `nonpayable` `59a4507a`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | undefined |
+
+
 ## *function* getAirlinesLength
 
 AirlineDirectoryInterface.getAirlinesLength() `view` `98696eb5`
@@ -43,16 +67,16 @@ AirlineDirectoryInterface.getAirlinesLength() `view` `98696eb5`
 
 
 
-## *function* createAndRegisterAirline
+## *function* removeAirline
 
-AirlineDirectoryInterface.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
+AirlineDirectoryInterface.removeAirline(airline) `nonpayable` `a4945e84`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *address* | airline | undefined |
 
 
 ## *function* createAirline
@@ -67,33 +91,9 @@ Inputs
 | *string* | dataUri | undefined |
 
 
-## *function* registerAirline
-
-AirlineDirectoryInterface.registerAirline(airline) `nonpayable` `bdfd9877`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | undefined |
-
-
 ## *function* airlinesIndex
 
 AirlineDirectoryInterface.airlinesIndex(airline) `view` `c73f2bfb`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | undefined |
-
-
-## *function* deregisterAirline
-
-AirlineDirectoryInterface.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
 
 
 Inputs
@@ -112,9 +112,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-AirlineDirectoryInterface.OrganizationRegistered(organization, index) `0aa9369e`
+AirlineDirectoryInterface.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -123,9 +123,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-AirlineDirectoryInterface.OrganizationDeregistered(organization) `2ef6503b`
+AirlineDirectoryInterface.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

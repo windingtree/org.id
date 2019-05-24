@@ -39,14 +39,14 @@ contract('OtaDirectory', (accounts) => {
 
   describe('upgradeability', () => {
     it('should upgrade OtaDirectory and have new functions in Index and Ota contracts', async () => {
-      // register old organization
-      await otaDirectory.createAndRegisterOta('dataUri', { from: otaAccount });
+      // add old organization
+      await otaDirectory.createAndAddOta('dataUri', { from: otaAccount });
       // upgrade directory
       const upgradedDirectory = await OtaDirectoryUpgradeabilityTest.new({ from: otaDirectoryOwner });
       await project.proxyAdmin.upgradeProxy(otaDirectoryProxy.address, upgradedDirectory.address, OtaDirectoryUpgradeabilityTest);
       const newDirectory = await OtaDirectoryUpgradeabilityTest.at(otaDirectoryProxy.address);
-      // register new organization
-      await newDirectory.methods.createAndRegisterOta('dataUri2').send({ from: otaAccount });
+      // add new organization
+      await newDirectory.methods.createAndAddOta('dataUri2').send({ from: otaAccount });
       const allOtas = help.filterZeroAddresses(await newDirectory.methods.getOtas().call());
       // test values
       assert.isDefined(await newDirectory.methods.otas(1).call());
@@ -78,22 +78,22 @@ contract('OtaDirectory', (accounts) => {
     });
   });
 
-  describe('registerOta', () => {
-    it('should register ota', async () => {
+  describe('addOta', () => {
+    it('should add ota', async () => {
       const address = await otaDirectory.createOta.call('dataUri', { from: otaAccount });
       await otaDirectory.createOta('dataUri', { from: otaAccount });
-      const receipt = await otaDirectory.registerOta(address, { from: otaAccount });
+      const receipt = await otaDirectory.addOta(address, { from: otaAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
       assert.equal(receipt.logs[0].args.organization, address);
       assert.equal(receipt.logs[0].args.index, 1);
     });
   });
 
-  describe('createAndRegisterOta', () => {
-    it('should create and register ota', async () => {
-      const address = await otaDirectory.createAndRegisterOta.call('dataUri', { from: otaAccount });
-      const receipt = await otaDirectory.createAndRegisterOta('dataUri', { from: otaAccount });
+  describe('createAndAddOta', () => {
+    it('should create and add ota', async () => {
+      const address = await otaDirectory.createAndAddOta.call('dataUri', { from: otaAccount });
+      const receipt = await otaDirectory.createAndAddOta('dataUri', { from: otaAccount });
       assert.equal(receipt.logs.length, 4);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
@@ -103,19 +103,19 @@ contract('OtaDirectory', (accounts) => {
       assert.equal(receipt.logs[1].args[1], otaAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationRegistered');
+      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
       assert.equal(receipt.logs[3].args.organization, address);
       assert.equal(receipt.logs[3].args.index, 1);
     });
   });
 
-  describe('deregisterOta', () => {
+  describe('removeOta', () => {
     it('should remove an ota', async () => {
-      const address = await otaDirectory.createAndRegisterOta.call('dataUri', { from: otaAccount });
-      await otaDirectory.createAndRegisterOta('dataUri', { from: otaAccount });
-      const receipt = await otaDirectory.deregisterOta(address, { from: otaAccount });
+      const address = await otaDirectory.createAndAddOta.call('dataUri', { from: otaAccount });
+      await otaDirectory.createAndAddOta('dataUri', { from: otaAccount });
+      const receipt = await otaDirectory.removeOta(address, { from: otaAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationDeregistered');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
       assert.equal(receipt.logs[0].args[0], address);
     });
   });
@@ -126,12 +126,12 @@ contract('OtaDirectory', (accounts) => {
       let length = await otaDirectory.getOtasLength();
       // length is a bignumber
       assert.equal(length.toNumber(), 1);
-      const address = await otaDirectory.createAndRegisterOta.call('aaa', { from: otaAccount });
-      await otaDirectory.createAndRegisterOta('aaa', { from: otaAccount });
-      await otaDirectory.createAndRegisterOta('bbb', { from: otaAccount });
+      const address = await otaDirectory.createAndAddOta.call('aaa', { from: otaAccount });
+      await otaDirectory.createAndAddOta('aaa', { from: otaAccount });
+      await otaDirectory.createAndAddOta('bbb', { from: otaAccount });
       length = await otaDirectory.getOtasLength();
       assert.equal(length.toNumber(), 3);
-      await otaDirectory.deregisterOta(address, { from: otaAccount });
+      await otaDirectory.removeOta(address, { from: otaAccount });
       length = await otaDirectory.getOtasLength();
       // length counts zero addresses
       assert.equal(length.toNumber(), 3);
@@ -142,12 +142,12 @@ contract('OtaDirectory', (accounts) => {
     it('should return otas properly', async () => {
       let otas = await otaDirectory.getOtas();
       assert.equal(help.filterZeroAddresses(otas).length, 0);
-      const address = await otaDirectory.createAndRegisterOta.call('aaa', { from: otaAccount });
-      await otaDirectory.createAndRegisterOta('aaa', { from: otaAccount });
-      await otaDirectory.createAndRegisterOta('bbb', { from: otaAccount });
+      const address = await otaDirectory.createAndAddOta.call('aaa', { from: otaAccount });
+      await otaDirectory.createAndAddOta('aaa', { from: otaAccount });
+      await otaDirectory.createAndAddOta('bbb', { from: otaAccount });
       otas = await otaDirectory.getOtas();
       assert.equal(help.filterZeroAddresses(otas).length, 2);
-      await otaDirectory.deregisterOta(address, { from: otaAccount });
+      await otaDirectory.removeOta(address, { from: otaAccount });
       otas = await otaDirectory.getOtas();
       assert.equal(help.filterZeroAddresses(otas).length, 1);
     });

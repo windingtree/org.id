@@ -7,9 +7,9 @@ import "./SegmentDirectoryEvents.sol";
  */
 contract HotelDirectoryInterface is SegmentDirectoryEvents {
     function createHotel(string calldata dataUri) external returns (address);
-    function createAndRegisterHotel(string calldata dataUri) external returns (address);
-    function registerHotel(address hotel) external returns (address);
-    function deregisterHotel(address hotel) external;
+    function createAndAddHotel(string calldata dataUri) external returns (address);
+    function addHotel(address hotel) external returns (address);
+    function removeHotel(address hotel) external;
     function getHotelsLength() public view returns (uint);
     function getHotels() public view returns (address[] memory);
     function hotelsIndex(address hotel) public view returns (uint);

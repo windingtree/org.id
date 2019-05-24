@@ -8,19 +8,19 @@ pragma solidity ^0.5.6;
 contract SegmentDirectoryEvents {
 
     /**
-     * @dev Event triggered every time organization is registered
+     * @dev Event triggered every time organization is added
      */
     event OrganizationCreated(address indexed organization);
 
     /**
-     * @dev Event triggered every time organization is registered
+     * @dev Event triggered every time organization is added
      */
-    event OrganizationRegistered(address indexed organization, uint index);
+    event OrganizationAdded(address indexed organization, uint index);
 
     /**
      * @dev Event triggered every time organization is deleted
      */
-    event OrganizationDeregistered(address indexed organization);
+    event OrganizationRemoveed(address indexed organization);
 
     /**
      * @dev Event triggered when owner of the index is changed.

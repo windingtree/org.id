@@ -1,25 +1,26 @@
 * [AirlineDirectory](#airlinedirectory)
   * [getAirlines](#function-getairlines)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
+  * [addAirline](#function-addairline)
   * [airlines](#function-airlines)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [createAndAddAirline](#function-createandaddairline)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
+  * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
   * [getAirlinesLength](#function-getairlineslength)
-  * [createAndRegisterAirline](#function-createandregisterairline)
+  * [removeAirline](#function-removeairline)
   * [createAirline](#function-createairline)
   * [getOrganizationsLength](#function-getorganizationslength)
-  * [registerAirline](#function-registerairline)
   * [airlinesIndex](#function-airlinesindex)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [deregisterAirline](#function-deregisterairline)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # AirlineDirectory
@@ -51,6 +52,24 @@ Inputs
 | *address* |  | undefined |
 | *uint256* |  | undefined |
 
+
+## *function* addAirline
+
+AirlineDirectory.addAirline(airline) `nonpayable` `3a0295d1`
+
+> `addAirline` proxies and externalizes addOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | airline | Airline's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* airlines
 
@@ -92,6 +111,24 @@ AirlineDirectory.LifToken() `view` `554d8b37`
 
 
 
+## *function* createAndAddAirline
+
+AirlineDirectory.createAndAddAirline(dataUri) `nonpayable` `59a4507a`
+
+> `createAndAddAirline` proxies and externalizes createAndAddOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Airline's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
 ## *function* organizationsByOwnerIndexDeprecated
 
 AirlineDirectory.organizationsByOwnerIndexDeprecated() `view` `5bb087d8`
@@ -114,6 +151,15 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
+
+
+## *function* owner
+
+AirlineDirectory.owner() `view` `8da5cb5b`
+
+> Returns the address of the current owner.
+
+
 
 
 ## *function* getOrganizations
@@ -144,23 +190,18 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* createAndRegisterAirline
+## *function* removeAirline
 
-AirlineDirectory.createAndRegisterAirline(dataUri) `nonpayable` `9c808770`
+AirlineDirectory.removeAirline(airline) `nonpayable` `a4945e84`
 
-> `createAndRegisterAirline` proxies and externalizes createAndRegisterOrganization
+> `removeAirline` proxies and externalizes removeOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Airline's data pointer |
+| *address* | airline | Airline's address |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* createAirline
 
@@ -193,24 +234,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* registerAirline
-
-AirlineDirectory.registerAirline(airline) `nonpayable` `bdfd9877`
-
-> `registerAirline` proxies and externalizes registerOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | Airline's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* airlinesIndex
 
@@ -267,19 +290,6 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-
-## *function* deregisterAirline
-
-AirlineDirectory.deregisterAirline(airline) `nonpayable` `f9d7e9e5`
-
-> `deregisterAirline` proxies and externalizes deregisterOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | airline | Airline's address |
-
 ## *event* OrganizationCreated
 
 AirlineDirectory.OrganizationCreated(organization) `47b68893`
@@ -290,9 +300,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-AirlineDirectory.OrganizationRegistered(organization, index) `0aa9369e`
+AirlineDirectory.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -301,9 +311,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-AirlineDirectory.OrganizationDeregistered(organization) `2ef6503b`
+AirlineDirectory.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 

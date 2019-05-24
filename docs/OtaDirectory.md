@@ -1,25 +1,26 @@
 * [OtaDirectory](#otadirectory)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
+  * [createAndAddOta](#function-createandaddota)
   * [createOta](#function-createota)
-  * [deregisterOta](#function-deregisterota)
   * [otasIndex](#function-otasindex)
   * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [getOtas](#function-getotas)
   * [organizationsIndex](#function-organizationsindex)
+  * [addOta](#function-addota)
+  * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
   * [otas](#function-otas)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [getOtasLength](#function-getotaslength)
+  * [removeOta](#function-removeota)
   * [organizations](#function-organizations)
-  * [createAndRegisterOta](#function-createandregisterota)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [registerOta](#function-registerota)
   * [OrganizationCreated](#event-organizationcreated)
-  * [OrganizationRegistered](#event-organizationregistered)
-  * [OrganizationDeregistered](#event-organizationderegistered)
+  * [OrganizationAdded](#event-organizationadded)
+  * [OrganizationRemoveed](#event-organizationremoveed)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # OtaDirectory
@@ -38,6 +39,24 @@ Inputs
 | *uint256* |  | undefined |
 
 
+## *function* createAndAddOta
+
+OtaDirectory.createAndAddOta(dataUri) `nonpayable` `1adc44cd`
+
+> `createAndAddOta` proxies and externalizes createAndAddOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | dataUri | Ota's data pointer |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
 ## *function* createOta
 
 OtaDirectory.createOta(dataUri) `nonpayable` `38004cf4`
@@ -55,19 +74,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-
-## *function* deregisterOta
-
-OtaDirectory.deregisterOta(ota) `nonpayable` `453a1f6a`
-
-> `deregisterOta` proxies and externalizes deregisterOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | ota | Ota's address |
-
 
 ## *function* otasIndex
 
@@ -147,6 +153,33 @@ Inputs
 | *address* |  | undefined |
 
 
+## *function* addOta
+
+OtaDirectory.addOta(ota) `nonpayable` `84902979`
+
+> `addOta` proxies and externalizes addOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* owner
+
+OtaDirectory.owner() `view` `8da5cb5b`
+
+> Returns the address of the current owner.
+
+
+
+
 ## *function* getOrganizations
 
 OtaDirectory.getOrganizations() `view` `9754a3a8`
@@ -207,6 +240,19 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
+## *function* removeOta
+
+OtaDirectory.removeOta(ota) `nonpayable` `de6bd6b2`
+
+> `removeOta` proxies and externalizes removeOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | ota | Ota's address |
+
+
 ## *function* organizations
 
 OtaDirectory.organizations() `view` `e792dd8a`
@@ -218,24 +264,6 @@ Inputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-
-## *function* createAndRegisterOta
-
-OtaDirectory.createAndRegisterOta(dataUri) `nonpayable` `f1e34560`
-
-> `createAndRegisterOta` proxies and externalizes createAndRegisterOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | dataUri | Ota's data pointer |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* setLifToken
 
@@ -262,24 +290,6 @@ Inputs
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
 
-
-## *function* registerOta
-
-OtaDirectory.registerOta(ota) `nonpayable` `ff69461c`
-
-> `registerOta` proxies and externalizes registerOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | ota | Ota's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 ## *event* OrganizationCreated
 
 OtaDirectory.OrganizationCreated(organization) `47b68893`
@@ -290,9 +300,9 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
-## *event* OrganizationRegistered
+## *event* OrganizationAdded
 
-OtaDirectory.OrganizationRegistered(organization, index) `0aa9369e`
+OtaDirectory.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -301,9 +311,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationDeregistered
+## *event* OrganizationRemoveed
 
-OtaDirectory.OrganizationDeregistered(organization) `2ef6503b`
+OtaDirectory.OrganizationRemoveed(organization) `3325ef95`
 
 Arguments
 
