@@ -31,7 +31,7 @@ contract Organization is Ownable {
      * @param _dataUri pointer to Organization data
      */
     constructor(string memory _dataUri) public {
-        require(bytes(_dataUri).length != 0);
+        require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
         dataUri = _dataUri;
         created = block.number;
     }
@@ -42,7 +42,7 @@ contract Organization is Ownable {
      */
     function changeDataUri(string memory _dataUri) public onlyOwner {
         bytes memory tempStringRepr = bytes(_dataUri);
-        require(tempStringRepr.length != 0);
+        require(tempStringRepr.length != 0, 'dataUri cannot be an empty string');
         emit DataUriChanged(dataUri, _dataUri);
         dataUri = _dataUri;
     }

@@ -58,7 +58,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function registerOrganization(address organization) internal returns (address) {
         Organization org = Organization(organization);
-        require(org.owner() == msg.sender);
+        require(org.owner() == msg.sender, 'Only organization owner can register the organization');
         organizationsIndex[organization] = organizations.length;
         organizations.push(organization);
         emit OrganizationRegistered(
@@ -87,9 +87,9 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function deregisterOrganization(address organization) internal {
         // Ensure organization address is valid
-        require(organization != address(0));
+        require(organization != address(0), 'Cannot remove organization on 0x0 address');
         // Ensure we know about the organization at all
-        require(organizationsIndex[organization] != uint(0));
+        require(organizationsIndex[organization] != uint(0), 'Cannot remove unknown organization');
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
         Organization org = Organization(organization);
@@ -106,7 +106,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @param _lifToken The new contract address
      */
     function initialize(address payable __owner, address _lifToken) public initializer {
-        require(__owner != address(0));
+        require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
         LifToken = _lifToken;
         organizations.length++;
