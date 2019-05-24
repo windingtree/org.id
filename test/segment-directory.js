@@ -71,6 +71,13 @@ contract('TestSegmentDirectory', (accounts) => {
     });
   });
 
+  describe('owner', async () => {
+    it('should report current owner', async () => {
+      const owner = await segmentDirectory.owner();
+      assert.equal(owner, segmentDirectoryOwner);
+    });
+  });
+
   describe('setLifToken', () => {
     it('should set the LifToken address', async () => {
       await segmentDirectory.setLifToken(tokenAddress, { from: segmentDirectoryOwner });

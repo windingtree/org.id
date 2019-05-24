@@ -163,4 +163,11 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view returns (address) {
+        return _owner;
+    }
 }
