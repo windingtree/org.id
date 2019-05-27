@@ -259,7 +259,7 @@ contract('TestSegmentDirectory', (accounts) => {
       const foodTruck = allFoodTrucks[0];
       assert.isUndefined(foodTruck);
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoved');
       assert.equal(receipt.logs[0].args[0], organization.address);
     });
 

@@ -87,7 +87,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     /**
      * @dev `removeOrganization` Allows a owner to remove an organization
      * from the directory. Does not destroy the organization contract.
-     * Emits `OrganizationRemoveed` on success.
+     * Emits `OrganizationRemoved` on success.
      * @param  organization  Organization's address
      */
     function removeOrganization(address organization) internal {
@@ -102,7 +102,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         uint allIndex = organizationsIndex[organization];
         delete organizations[allIndex];
         delete organizationsIndex[organization];
-        emit OrganizationRemoveed(organization);
+        emit OrganizationRemoved(organization);
     }
 
     /**

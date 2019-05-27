@@ -115,7 +115,7 @@ contract('HotelDirectory', (accounts) => {
       await hotelDirectory.createAndAddHotel('dataUri', { from: hotelAccount });
       const receipt = await hotelDirectory.removeHotel(address, { from: hotelAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoved');
       assert.equal(receipt.logs[0].args[0], address);
     });
   });

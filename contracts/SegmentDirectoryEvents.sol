@@ -20,7 +20,7 @@ contract SegmentDirectoryEvents {
     /**
      * @dev Event triggered every time organization is deleted
      */
-    event OrganizationRemoveed(address indexed organization);
+    event OrganizationRemoved(address indexed organization);
 
     /**
      * @dev Event triggered when owner of the index is changed.

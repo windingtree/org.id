@@ -115,7 +115,7 @@ contract('OtaDirectory', (accounts) => {
       await otaDirectory.createAndAddOta('dataUri', { from: otaAccount });
       const receipt = await otaDirectory.removeOta(address, { from: otaAccount });
       assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OrganizationRemoveed');
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoved');
       assert.equal(receipt.logs[0].args[0], address);
     });
   });
