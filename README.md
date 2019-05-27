@@ -5,14 +5,7 @@
 
 Smart contracts of the Winding Tree platform.
 
-The smart contracts in the [hotel folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/hotel) and
-[airline folder](https://github.com/windingtree/wt-contracts/tree/master/contracts/airline) are representing
-inventory registered in the Winding Tree platform. The registries themselves are `WTHotelIndex` and `WTAirlineIndex`
-smart contracts.
-
-For interaction with those from your application, you can use the `Abstract*` smart contracts
-whose [JSON ABI](https://solidity.readthedocs.io/en/develop/abi-spec.html#json)s are significantly
-smaller (86 kB vs 500 kB in case of `WTHotelIndex`).
+![](https://raw.githubusercontent.com/windingtree/wt-contracts/feat/otaindex/assets/contracts-schema.png)
 
 ## Requirements
 
@@ -25,9 +18,9 @@ npm install @windingtree/wt-contracts
 ```
 
 ```js
-import HotelContractMetadata from '@windingtree/wt-contracts/build/contracts/AbstractHotel.json';
+import Organization from '@windingtree/wt-contracts/build/contracts/Organization.json';
 // or
-import { AbstractHotelContract, AbstractWTHotelIndexContract } from '@windingtree/wt-contracts';
+import { Organization, HotelDirectoryInterface } from '@windingtree/wt-contracts';
 ```
 
 ## Development
@@ -39,14 +32,13 @@ npm install
 npm test
 ```
 
-You can run a specific test with `npm test -- test/WTHotel.js`
+You can run a specific test with `npm test -- test/segment-directory.js`
 or you can generate a coverage report with `npm run coverage`.
 
 ### Flattener
 
-A flattener script is also available, and by running `npm run flattener`,
-you cancreate a flattened version of the contracts without imports in
-one single file for all contracts in the contracts folder.
+A flattener script is also available. `npm run flattener` command
+will create a flattened version without imports - one file per contract.
 This is needed if you plan to use tools like [etherscan verifier](https://etherscan.io/verifyContract)
 or [securify.ch](https://securify.ch/).
 
@@ -80,7 +72,7 @@ with the contracts.
     ```
 2. Start a zos session.
     ```bash
-    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4bb --expires 3600
+    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4BB --expires 3600
     ```
 3. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
 interacted with.
@@ -89,22 +81,22 @@ interacted with.
     ```
 4. Create the proxy instances of deployed contracts you can interact with. The `args`
 attribute is passed to the initialize function that sets the `owner` of the Index (it
-can be an address of a multisig) and a an actual instance of
-[Lif token](https://github.com/windingtree/lif-token). You don't Lif token to play with
+can be an address of a multisig) and an actual instance of
+[Lif token](https://github.com/windingtree/lif-token). You don't need Lif token to play with
 this locally.
     ```bash
-    > ./node_modules/.bin/zos create WTHotelIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4bb,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
-    > ./node_modules/.bin/zos create WTAirlineIndex --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4bb,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create HotelDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create AirlineDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console.
 ```bash
 > ./node_modules/.bin/truffle console --network development
-truffle(development)> contract = await WTHotelIndex.at('0x839c960087942a82636e191d9a7ed6145582cfac')
+truffle(development)> contract = await HotelDirectory.at('0x...address returned by zos create command')
 undefined
 truffle(development)> contract.getHotels()
 [ '0x0000000000000000000000000000000000000000' ]
-truffle(development)> contract.registerHotel('http://windingtree.com')
+truffle(development)> contract.createAndRegisterHotel('http://windingtree.com')
 truffle(development)> contract.getHotels()
 [ '0x0000000000000000000000000000000000000000',
   '0x4D377b0a8fa386FA118B09947eEE2B1f7f126C76' ]
@@ -133,20 +125,20 @@ via NPM (under the new version number). No data is lost.
 Yes, we can. If we adhere to [zos recommendations](https://docs.zeppelinos.org/docs/writing_contracts.html#modifying-your-contracts),
 we can extend the data stored in WT Index.
 
-**Can you change the hotel/airline data structure?**
+**Can you change the organization data structure?**
 
 Yes, we can. But it's not as smooth as with the Index. Until #218
 is implemented, we cannot easily migrate all of the existing records
 at once. That means that if we change the data structure, all newly
-registered records will have the new data structure, but the old ones
+added records will have the new data structure, but the old ones
 will keep the old layout and functionality.
 
-**Can I switch to the new hotel/airline version?**
+**Can I switch to the new organization version?**
 
 Yes, you can. There are multiple options.
 
-1. You can deregister and register your hotel. This will give you a new
-blockchain address of your hotel. You probably don't want that.
+1. You can remove and add your organization. This will give you a new
+blockchain address of your organization. You probably don't want that.
 2. We will provide an `upgrade` method which would allow you to upgrade
 your record with a single transaction.
 3. We will eventually implement #218 and you wouldn't have to do anything.
@@ -154,9 +146,9 @@ your record with a single transaction.
 We suspect that in case of upgrade, the tooling will somehow support both
 versions for a transitional period.
 
-**How do I work with different hotel/airline versions on the client?**
+**How do I work with different organization versions on the client?**
 
-That's a tricky one. In case of hotel/airline upgrade, you might need to
+That's a tricky one. In case of organization upgrade, you might need to
 represent different records with different ABIs. We will provide an easy
 way to distinguish between versions - or you can use [wt-js-libs](https://github.com/windingtree/wt-js-libs)
 which will have this built in.

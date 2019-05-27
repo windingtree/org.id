@@ -4,11 +4,13 @@ const fs = require('fs'),
 const BASE_PATH = 'build/contracts';
 const CONTRACTS_DIR = path.resolve(__dirname, `../${BASE_PATH}`);
 const exceptions = [
-  'AdminUpgradeabilityProxy.json',
-  'Initializable.json',
-  'UpgradeabilityProxy.json',
-  'Proxy.json',
-  '.*UpgradeabilityTest.json',
+  'AdminUpgradeabilityProxy\.json',
+  'Initializable\.json',
+  'Ownable\.json',
+  'UpgradeabilityProxy\.json',
+  'Proxy\.json',
+  '.*UpgradeabilityTest\.json',
+  '.*ERC165.*\.json',
 ]
 const files = fs.readdirSync(CONTRACTS_DIR)
 const exceptionsRegex = new RegExp(exceptions.join('|'));
