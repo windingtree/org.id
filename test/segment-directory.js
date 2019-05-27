@@ -42,13 +42,7 @@ contract('TestSegmentDirectory', (accounts) => {
   describe('transferOwnership', async () => {
     it('should transfer ownership', async () => {
       await segmentDirectory.transferOwnership(nonOwnerAccount, { from: segmentDirectoryOwner });
-      // We cannot access _owner directly, it is not public
-      try {
-        await segmentDirectory.setLifToken(tokenAddress, { from: segmentDirectoryOwner });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
+      assert.equal(await segmentDirectory.owner(), nonOwnerAccount);
       await segmentDirectory.transferOwnership(segmentDirectoryOwner, { from: nonOwnerAccount });
     });
 

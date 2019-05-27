@@ -12,6 +12,7 @@
     "WTHotelIndexPlayground": "HotelDirectory",
     "HotelDirectory": "HotelDirectory",
     "AirlineDirectory": "AirlineDirectory",
-    "OtaDirectory": "OtaDirectory"
+    "OtaDirectory": "OtaDirectory",
+    "WindingTreeEntrypoint": "WindingTreeEntrypoint"
   }
 }
