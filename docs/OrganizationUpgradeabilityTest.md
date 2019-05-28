@@ -1,16 +1,23 @@
 * [OrganizationUpgradeabilityTest](#organizationupgradeabilitytest)
   * [supportsInterface](#function-supportsinterface)
+  * [isDelegate](#function-isdelegate)
   * [changeDataUri](#function-changedatauri)
   * [newFunction](#function-newfunction)
   * [created](#function-created)
   * [getDataUri](#function-getdatauri)
+  * [removeDelegate](#function-removedelegate)
   * [renounceOwnership](#function-renounceownership)
   * [dataUri](#function-datauri)
   * [owner](#function-owner)
   * [isOwner](#function-isowner)
+  * [delegates](#function-delegates)
+  * [delegatesIndex](#function-delegatesindex)
+  * [addDelegate](#function-adddelegate)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [DataUriChanged](#event-dataurichanged)
+  * [DelegateAdded](#event-delegateadded)
+  * [DelegateRemoved](#event-delegateremoved)
 
 # OrganizationUpgradeabilityTest
 
@@ -27,6 +34,24 @@ Inputs
 |-|-|-|
 | *bytes4* | interfaceId | undefined |
 
+
+## *function* isDelegate
+
+OrganizationUpgradeabilityTest.isDelegate(addr) `view` `07779627`
+
+> Is an address considered a delegate for this organization?
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | undefined |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
 
 ## *function* changeDataUri
 
@@ -71,6 +96,19 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
+## *function* removeDelegate
+
+OrganizationUpgradeabilityTest.removeDelegate(addr) `nonpayable` `67e7646f`
+
+> Removes delegate address. Only owner can call this.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | Delegate's Ethereum address |
+
+
 ## *function* renounceOwnership
 
 OrganizationUpgradeabilityTest.renounceOwnership() `nonpayable` `715018a6`
@@ -106,6 +144,48 @@ OrganizationUpgradeabilityTest.isOwner() `view` `8f32d59b`
 
 
 
+## *function* delegates
+
+OrganizationUpgradeabilityTest.delegates() `view` `b1548afc`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
+
+## *function* delegatesIndex
+
+OrganizationUpgradeabilityTest.delegatesIndex() `view` `c72934d5`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+
+## *function* addDelegate
+
+OrganizationUpgradeabilityTest.addDelegate(addr) `nonpayable` `e71bdf41`
+
+> Adds new delegate address. Only owner can call this.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | Delegate's Ethereum address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
 ## *function* transferOwnership
 
 OrganizationUpgradeabilityTest.transferOwnership(newOwner) `nonpayable` `f2fde38b`
@@ -140,6 +220,27 @@ Arguments
 |-|-|-|
 | *string* | previousDataUri | indexed |
 | *string* | newDataUri | indexed |
+
+## *event* DelegateAdded
+
+OrganizationUpgradeabilityTest.DelegateAdded(delegate, index) `ea230cdd`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | delegate | indexed |
+| *uint256* | index | not indexed |
+
+## *event* DelegateRemoved
+
+OrganizationUpgradeabilityTest.DelegateRemoved(delegate) `5a362b19`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | delegate | indexed |
 
 
 ---

@@ -6,7 +6,7 @@ import "./OrganizationInterface.sol";
 
 /**
  * @title Organization
- * @dev A contract that represents an Organization in the Windign Tree network.
+ * @dev A contract that represents an Organization in the Winding Tree platform.
  */
 contract Organization is OrganizationInterface, ERC165, Ownable {
 
@@ -17,6 +17,16 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
 
     // Number of a block when the Organization was created
     uint public created;
+
+    // Index of registered delegate addresses. These can be used
+    // to verify that signed data can be presented on behalf of this
+    // organization.
+    mapping(address => uint) public delegatesIndex;
+
+    // List of delegate addresses. These addresses (i. e. public key
+    // fingerprints) can be used to associate signed content with this
+    // organization.
+    address[] public delegates;
 
     /**
      * @dev Event triggered when owner of the organization is changed.
@@ -29,6 +39,16 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
     event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
 
     /**
+     * @dev Event triggered when new delegate is added.
+     */
+    event DelegateAdded(address indexed delegate, uint index);
+
+    /**
+     * @dev Event triggered when a delegate is removed.
+     */    
+    event DelegateRemoved(address indexed delegate);
+
+    /**
      * @dev Constructor.
      * @param _dataUri pointer to Organization data
      */
@@ -36,8 +56,9 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
         require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
         dataUri = _dataUri;
         created = block.number;
+        delegates.length++;
         OrganizationInterface i;
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector);
+        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
     }
 
     /**
@@ -57,5 +78,39 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
      */
     function getDataUri() external view returns (string memory) {
         return dataUri;
+    }
+
+    /**
+     * @dev Adds new delegate address. Only owner can call this.
+     * @param addr Delegate's Ethereum address
+     * @return {" ": "Address of the added delegate"}
+     */
+    function addDelegate(address addr) public onlyOwner returns(address) {
+        require(addr != address(0), 'Cannot add delegate with 0x0 address');
+        require(delegatesIndex[addr] == 0, 'Cannot add delegate twice');
+        delegatesIndex[addr] = delegates.length;
+        delegates.push(addr);
+        emit DelegateAdded(addr, delegatesIndex[addr]);
+        return addr;
+    }
+
+    /**
+     * @dev Removes delegate address. Only owner can call this.
+     * @param addr Delegate's Ethereum address
+     */
+    function removeDelegate(address addr) public onlyOwner {
+        require(addr != address(0), 'Cannot remove delegate with 0x0 address');
+        require(delegatesIndex[addr] != uint(0), 'Cannot remove unknown organization');
+        delete delegates[delegatesIndex[addr]];
+        delete delegatesIndex[addr];
+        emit DelegateRemoved(addr);
+    }
+
+    /**
+     * @dev Is an address considered a delegate for this organization?
+     * @return {" ": "True if address is considered a delegate, false otherwise"}
+     */
+    function isDelegate(address addr) external view returns(bool) {
+        return delegates[delegatesIndex[addr]] != address(0);
     }
 }
