@@ -61,7 +61,7 @@ contract HotelDirectory is SegmentDirectory, HotelDirectoryInterface {
     }
 
     /**
-     * @dev `hotelsIndex` aliases organizatoinsIndex 
+     * @dev `hotelsIndex` aliases organizationsIndex 
      * @param  hotel Hotel's address
      * @return {" ": "Index of hotel in the directory list."}
      */

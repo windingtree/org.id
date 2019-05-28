@@ -269,7 +269,7 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.isAtLeast(code.length, 4);
     });
 
-    it('should throw if somebody is removeing organization which she does not own', async () => {
+    it('should throw if somebody is removing organization which she does not own', async () => {
       try {
         await organization.transferOwnership(nonOwnerAccount, { from: foodTruckAccount });
         await testSegmentDirectory.removeFoodTruck(organization.address, { from: foodTruckAccount });
@@ -297,7 +297,7 @@ contract('TestSegmentDirectory', (accounts) => {
       }
     });
 
-    it('should throw if organization non-owner initiates the removeing', async () => {
+    it('should throw if organization non-owner initiates the removing', async () => {
       try {
         await testSegmentDirectory.removeFoodTruck(organization.address, { from: nonOwnerAccount });
         assert(false);

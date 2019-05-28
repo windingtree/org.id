@@ -61,7 +61,7 @@ contract AirlineDirectory is SegmentDirectory, AirlineDirectoryInterface {
     }
 
     /**
-     * @dev `airlinesIndex` aliases organizatoinsIndex 
+     * @dev `airlinesIndex` aliases organizationsIndex 
      * @param  airline Airline's address
      * @return {" ": "Index of airline in the directory list."}
      */

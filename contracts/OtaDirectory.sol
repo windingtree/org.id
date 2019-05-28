@@ -61,7 +61,7 @@ contract OtaDirectory is SegmentDirectory, OtaDirectoryInterface {
     }
 
     /**
-     * @dev `otasIndex` aliases organizatoinsIndex 
+     * @dev `otasIndex` aliases organizationsIndex 
      * @param  ota Ota's address
      * @return {" ": "Index of ota in the directory list."}
      */
