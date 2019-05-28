@@ -9,7 +9,7 @@
   * [hotels](#function-hotels)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
-  * [OrganizationRemoveed](#event-organizationremoveed)
+  * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # HotelDirectoryInterface
@@ -123,9 +123,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationRemoveed
+## *event* OrganizationRemoved
 
-HotelDirectoryInterface.OrganizationRemoveed(organization) `3325ef95`
+HotelDirectoryInterface.OrganizationRemoved(organization) `ed5ec13b`
 
 Arguments
 

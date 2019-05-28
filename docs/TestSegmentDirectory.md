@@ -16,7 +16,7 @@
   * [createFoodTruck](#function-createfoodtruck)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
-  * [OrganizationRemoveed](#event-organizationremoveed)
+  * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # TestSegmentDirectory
@@ -224,9 +224,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationRemoveed
+## *event* OrganizationRemoved
 
-TestSegmentDirectory.OrganizationRemoveed(organization) `3325ef95`
+TestSegmentDirectory.OrganizationRemoved(organization) `ed5ec13b`
 
 Arguments
 

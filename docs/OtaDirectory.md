@@ -20,7 +20,7 @@
   * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
-  * [OrganizationRemoveed](#event-organizationremoveed)
+  * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
 # OtaDirectory
@@ -311,9 +311,9 @@ Arguments
 | *address* | organization | indexed |
 | *uint256* | index | not indexed |
 
-## *event* OrganizationRemoveed
+## *event* OrganizationRemoved
 
-OtaDirectory.OrganizationRemoveed(organization) `3325ef95`
+OtaDirectory.OrganizationRemoved(organization) `ed5ec13b`
 
 Arguments
 
