@@ -60,6 +60,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function addOrganization(address organization) internal returns (address) {
         // this is intentionally not part of the state variables as we expect it to change in time.
+        require(organizationsIndex[organization] == 0, 'Cannot add organization twice');
         bytes4 _INTERFACE_ID_ORGANIZATION = 0xe8570cfc;
         require(ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION));
         OrganizationInterface org = OrganizationInterface(organization);

@@ -189,6 +189,25 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(actualIndexPos, 1);
     });
 
+    it('should throw if adding an already added organization', async () => {
+      await testSegmentDirectory.addFoodTruck(organization.address, { from: foodTruckAccount });
+      try {
+        await testSegmentDirectory.addFoodTruck(organization.address, { from: foodTruckAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if adding organization on a zero address', async () => {
+      try {
+        await testSegmentDirectory.addFoodTruck(help.zeroAddress, { from: foodTruckAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
     it('should throw if somebody is adding organization which she does not own', async () => {
       try {
         await testSegmentDirectory.addFoodTruck(organization.address, { from: nonOwnerAccount });
