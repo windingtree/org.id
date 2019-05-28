@@ -99,7 +99,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
       const addr = await windingTreeEntrypoint.methods.getSegment('hotels').call();
       assert.equal(addr, nonOwnerAccount);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 1);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 1);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(1).call(), 'hotels');
     });
     
@@ -110,7 +110,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
       await windingTreeEntrypoint.methods.setSegment('hotels', windingTreeEntrypointOwner).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getSegment('hotels').call(), windingTreeEntrypointOwner);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 1);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 1);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(1).call(), 'hotels');
     });
   });
@@ -137,7 +137,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should set to a zero address and emit', async () => {
       await windingTreeEntrypoint.methods.setSegment('hotels', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 1);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 1);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(1).call(), 'hotels');
       assert.equal(await windingTreeEntrypoint.methods.getSegment('hotels').call(), nonOwnerAccount);
       const rcpt = await windingTreeEntrypoint.methods.removeSegment('hotels').send({ from: windingTreeEntrypointOwner });
@@ -148,7 +148,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
       assert.equal(rcpt.events.SegmentSet.returnValues.segment, web3Utils.keccak256('hotels'));
       assert.equal(await windingTreeEntrypoint.methods.getSegment('hotels').call(), help.zeroAddress);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 0);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 0);
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(1).call(), '');
     });
   });
@@ -186,16 +186,16 @@ contract('WindingTreeEntrypoint', (accounts) => {
     });
   });
 
-  describe('getSegmentIndex', () => {
+  describe('getSegmentsIndex', () => {
     it('should return segment index', async () => {
       await windingTreeEntrypoint.methods.setSegment('hotels', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       await windingTreeEntrypoint.methods.setSegment('airlines', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 1);
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('airlines').call(), 2);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 1);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('airlines').call(), 2);
     });
 
     it('should return 0 for unknown segment', async () => {
-      assert.equal(await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call(), 0);
+      assert.equal(await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call(), 0);
     });
   });
 
@@ -203,9 +203,9 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should return segment name', async () => {
       await windingTreeEntrypoint.methods.setSegment('hotels', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       await windingTreeEntrypoint.methods.setSegment('airlines', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
-      const hotelIndex = await windingTreeEntrypoint.methods.getSegmentIndex('hotels').call();
+      const hotelIndex = await windingTreeEntrypoint.methods.getSegmentsIndex('hotels').call();
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(hotelIndex).call(), 'hotels');
-      const airlinesIndex = await windingTreeEntrypoint.methods.getSegmentIndex('airlines').call();
+      const airlinesIndex = await windingTreeEntrypoint.methods.getSegmentsIndex('airlines').call();
       assert.equal(await windingTreeEntrypoint.methods.getSegmentName(airlinesIndex).call(), 'airlines');
     });
   });

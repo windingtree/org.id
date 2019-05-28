@@ -15,7 +15,7 @@ contract WindingTreeEntrypoint is Initializable {
     // Mapping of keccak256(segment) => directory address
     mapping(bytes32 => address) public directories;
     // Mapping of keccak256(segment) => index in segments array
-    mapping(bytes32 => uint) public segmentIndex;
+    mapping(bytes32 => uint) public segmentsIndex;
     // List of registered segments
     string[] public segments;
 
@@ -58,8 +58,8 @@ contract WindingTreeEntrypoint is Initializable {
         bytes memory segmentBytes = bytes(segment);
         require(segmentBytes.length != 0, 'Segment cannot be empty');
         bytes32 segmentHash = keccak256(segmentBytes);
-        if (segmentIndex[segmentHash] == 0) {
-            segmentIndex[segmentHash] = segments.length;
+        if (segmentsIndex[segmentHash] == 0) {
+            segmentsIndex[segmentHash] = segments.length;
             segments.push(segment);
         }
         emit SegmentSet(segmentHash, directories[segmentHash], addr);
@@ -75,8 +75,8 @@ contract WindingTreeEntrypoint is Initializable {
         bytes memory segmentBytes = bytes(segment);
         require(segmentBytes.length != 0, 'Segment cannot be empty');
         bytes32 segmentHash = keccak256(segmentBytes);
-        delete segments[segmentIndex[segmentHash]];
-        delete segmentIndex[segmentHash];
+        delete segments[segmentsIndex[segmentHash]];
+        delete segmentsIndex[segmentHash];
         emit SegmentSet(segmentHash, directories[segmentHash], address(0));
         directories[segmentHash] = address(0);
     }
@@ -105,15 +105,15 @@ contract WindingTreeEntrypoint is Initializable {
     }
 
     /**
-     * @dev `getSegmentIndex` get index of the segment by such name. On that
+     * @dev `getSegmentsIndex` get index of the segment by such name. On that
      * index, segment's name is stored.
      * @param segment Segment name
      * @return {" ": "Index of the segment in segments array."}
      */
-    function getSegmentIndex(string memory segment) public view returns(uint) {
+    function getSegmentsIndex(string memory segment) public view returns(uint) {
         bytes memory segmentBytes = bytes(segment);
         bytes32 segmentHash = keccak256(segmentBytes);
-        return segmentIndex[segmentHash];
+        return segmentsIndex[segmentHash];
     }
 
     /**

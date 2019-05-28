@@ -1,39 +1,21 @@
 * [WindingTreeEntrypoint](#windingtreeentrypoint)
-  * [getSegmentIndex](#function-getsegmentindex)
   * [getSegmentsLength](#function-getsegmentslength)
   * [segments](#function-segments)
   * [setSegment](#function-setsegment)
   * [removeSegment](#function-removesegment)
   * [directories](#function-directories)
   * [getSegmentName](#function-getsegmentname)
+  * [getSegmentsIndex](#function-getsegmentsindex)
   * [owner](#function-owner)
+  * [segmentsIndex](#function-segmentsindex)
   * [getSegment](#function-getsegment)
   * [initialize](#function-initialize)
-  * [segmentIndex](#function-segmentindex)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SegmentSet](#event-segmentset)
 
 # WindingTreeEntrypoint
 
-
-## *function* getSegmentIndex
-
-WindingTreeEntrypoint.getSegmentIndex(segment) `view` `06b9a18c`
-
-> `getSegmentIndex` get index of the segment by such name. On that index, segment's name is stored.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | segment | Segment name |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* |  | undefined |
 
 ## *function* getSegmentsLength
 
@@ -118,6 +100,24 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
+## *function* getSegmentsIndex
+
+WindingTreeEntrypoint.getSegmentsIndex(segment) `view` `861f1072`
+
+> `getSegmentsIndex` get index of the segment by such name. On that index, segment's name is stored.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | segment | Segment name |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
 ## *function* owner
 
 WindingTreeEntrypoint.owner() `view` `8da5cb5b`
@@ -125,6 +125,18 @@ WindingTreeEntrypoint.owner() `view` `8da5cb5b`
 > Returns the address of the current owner.
 
 
+
+
+## *function* segmentsIndex
+
+WindingTreeEntrypoint.segmentsIndex() `view` `9191178a`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* |  | undefined |
 
 
 ## *function* getSegment
@@ -156,18 +168,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | __owner | The address of the contract owner |
-
-
-## *function* segmentIndex
-
-WindingTreeEntrypoint.segmentIndex() `view` `e37064bd`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* |  | undefined |
 
 
 ## *function* transferOwnership
