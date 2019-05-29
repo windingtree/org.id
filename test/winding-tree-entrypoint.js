@@ -192,7 +192,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
   });
 
   describe('getSegmentsLength', () => {
-    it('should incerement the counter', async () => {
+    it('should increment the counter', async () => {
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 1);
       await windingTreeEntrypoint.methods.setSegment('hotels', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
@@ -200,7 +200,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 3);
     });
 
-    it('should not incerement the counter whenc updating the segment', async () => {
+    it('should not increment the counter when updating the segment', async () => {
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 1);
       await windingTreeEntrypoint.methods.setSegment('hotels', nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getSegmentsLength().call(), 2);
