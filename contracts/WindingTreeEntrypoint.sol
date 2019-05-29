@@ -12,6 +12,10 @@ contract WindingTreeEntrypoint is Initializable {
     // Address of the contract owner
     address _owner;
 
+    // Address of the LifToken contract
+    // solhint-disable-next-line var-name-mixedcase
+    address public LifToken;
+
     // Mapping of keccak256(segment) => directory address
     mapping(bytes32 => address) public directories;
     // Mapping of keccak256(segment) => index in segments array
@@ -32,19 +36,30 @@ contract WindingTreeEntrypoint is Initializable {
     /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
+     * @param _lifToken The new contract address
      */
-    function initialize(address payable __owner) public initializer {
+    function initialize(address payable __owner, address _lifToken) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
+        LifToken = _lifToken;
         segments.length++;
     }
-
     /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
         require(msg.sender == _owner);
         _;
+    }
+
+    /**
+     * @dev `setLifToken` allows the owner of the contract to change the
+     * address of the LifToken contract. Allows to set the address to
+     * zero address
+     * @param _lifToken The new contract address
+     */
+    function setLifToken(address _lifToken) public onlyOwner {
+        LifToken = _lifToken;
     }
 
     /**

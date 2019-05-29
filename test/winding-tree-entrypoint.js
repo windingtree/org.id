@@ -17,6 +17,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
   const windingTreeEntrypointOwner = accounts[1];
   const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
+  const tokenAddress = accounts[4];
 
   let windingTreeEntrypointProxy;
   let windingTreeEntrypoint;
@@ -27,7 +28,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     windingTreeEntrypointProxy = await project.createProxy(WindingTreeEntrypoint, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [windingTreeEntrypointOwner],
+      initArgs: [windingTreeEntrypointOwner, tokenAddress],
     });
     windingTreeEntrypoint = await WindingTreeEntrypoint.at(windingTreeEntrypointProxy.address);
   });
@@ -53,7 +54,29 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const entrypoint = await WindingTreeEntrypoint.new();
-        await entrypoint.methods.initialize(help.zeroAddress).send({ from: windingTreeEntrypointOwner });
+        await entrypoint.methods.initialize(help.zeroAddress, tokenAddress).send({ from: windingTreeEntrypointOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should set liftoken', async () => {
+      const entrypoint = await WindingTreeEntrypoint.new();
+      await entrypoint.methods.initialize(windingTreeEntrypointOwner, tokenAddress).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await entrypoint.methods.LifToken().call(), tokenAddress);
+    });
+  });
+
+  describe('setLifToken', () => {
+    it('should set the LifToken address', async () => {
+      await windingTreeEntrypoint.methods.setLifToken(tokenAddress).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.LifToken().call(), tokenAddress);
+    });
+
+    it('should throw if non-owner sets the LifToken address', async () => {
+      try {
+        await windingTreeEntrypoint.methods.setLifToken(tokenAddress).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
