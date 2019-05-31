@@ -5,7 +5,7 @@
 
 Smart contracts of the Winding Tree platform.
 
-![](https://raw.githubusercontent.com/windingtree/wt-contracts/feat/otaindex/assets/contracts-schema.png)
+![](https://raw.githubusercontent.com/windingtree/wt-contracts/13e121a2c2b031b991ab716e0cce73c8085fa0d2/assets/contracts-schema.png)
 
 ## Requirements
 

@@ -6,11 +6,13 @@
   * [removeSegment](#function-removesegment)
   * [directories](#function-directories)
   * [getSegmentName](#function-getsegmentname)
+  * [initialize](#function-initialize)
+  * [LifToken](#function-liftoken)
   * [getSegmentsIndex](#function-getsegmentsindex)
   * [owner](#function-owner)
   * [segmentsIndex](#function-segmentsindex)
   * [getSegment](#function-getsegment)
-  * [initialize](#function-initialize)
+  * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SegmentSet](#event-segmentset)
@@ -109,6 +111,28 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
+## *function* initialize
+
+WindingTreeEntrypointUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+
+
+## *function* LifToken
+
+WindingTreeEntrypointUpgradeabilityTest.LifToken() `view` `554d8b37`
+
+
+
+
+
 ## *function* getSegmentsIndex
 
 WindingTreeEntrypointUpgradeabilityTest.getSegmentsIndex(segment) `view` `861f1072`
@@ -166,17 +190,17 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* initialize
+## *function* setLifToken
 
-WindingTreeEntrypointUpgradeabilityTest.initialize(__owner) `nonpayable` `c4d66de8`
+WindingTreeEntrypointUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
 
-> Initializer for upgradeable contracts.
+> `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
 
 
 ## *function* transferOwnership

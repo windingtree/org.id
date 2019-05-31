@@ -10,6 +10,7 @@ const OtaDirectoryInterfaceContract = require('./build/contracts/OtaDirectoryInt
 const SegmentDirectoryContract = require('./build/contracts/SegmentDirectory.json');
 const SegmentDirectoryEventsContract = require('./build/contracts/SegmentDirectoryEvents.json');
 const TestSegmentDirectoryContract = require('./build/contracts/TestSegmentDirectory.json');
+const WindingTreeEntrypointContract = require('./build/contracts/WindingTreeEntrypoint.json');
 
 module.exports = {
   AirlineDirectoryContract: AirlineDirectoryContract,
@@ -23,5 +24,6 @@ module.exports = {
   SegmentDirectoryContract: SegmentDirectoryContract,
   SegmentDirectoryEventsContract: SegmentDirectoryEventsContract,
   TestSegmentDirectoryContract: TestSegmentDirectoryContract,
+  WindingTreeEntrypointContract: WindingTreeEntrypointContract,
 };
 

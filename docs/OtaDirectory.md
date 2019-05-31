@@ -79,7 +79,7 @@ Outputs
 
 OtaDirectory.otasIndex(ota) `view` `460d3841`
 
-> `otasIndex` aliases organizatoinsIndex 
+> `otasIndex` aliases organizationsIndex 
 
 Inputs
 

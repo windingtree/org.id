@@ -193,7 +193,7 @@ Outputs
 
 HotelDirectory.hotelsIndex(hotel) `view` `9f9bfeb8`
 
-> `hotelsIndex` aliases organizatoinsIndex 
+> `hotelsIndex` aliases organizationsIndex 
 
 Inputs
 

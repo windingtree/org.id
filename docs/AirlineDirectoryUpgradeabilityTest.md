@@ -242,7 +242,7 @@ Outputs
 
 AirlineDirectoryUpgradeabilityTest.airlinesIndex(airline) `view` `c73f2bfb`
 
-> `airlinesIndex` aliases organizatoinsIndex 
+> `airlinesIndex` aliases organizationsIndex 
 
 Inputs
 
