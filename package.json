@@ -8,7 +8,7 @@
   "scripts": {
     "test": "scripts/test.sh",
     "lint": "eslint test; solhint 'contracts/**/*.sol'",
-    "testrpc": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
+    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
     "flattener": "scripts/flattener.sh",

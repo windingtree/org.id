@@ -7,23 +7,23 @@ set -o errexit
 trap cleanup EXIT
 
 cleanup() {
-  # Kill the testrpc instance that we started (if we started one and if it's still running).
-  if [ -n "$testrpc_pid" ] && ps -p $testrpc_pid > /dev/null; then
-    kill -9 $testrpc_pid
+  # Kill the ganache instance that we started (if we started one and if it's still running).
+  if [ -n "$ganache_pid" ] && ps -p $ganache_pid > /dev/null; then
+    kill -9 $ganache_pid
   fi
 }
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
-  testrpc_port=8555
+  ganache_port=8555
 else
-  testrpc_port=8545
+  ganache_port=8545
 fi
 
-testrpc_running() {
-  nc -z localhost "$testrpc_port"
+ganache_running() {
+  netstat -a | grep ":$ganache_port" | grep -i listen
 }
 
-start_testrpc() {
+start_ganache() {
   # We define 10 accounts with balance lots of ether, needed for high-value tests.
   local accounts=(
     --account="0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000"
@@ -40,19 +40,19 @@ start_testrpc() {
   )
 
   if [ "$SOLIDITY_COVERAGE" = true ]; then
-    node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port "$testrpc_port" "${accounts[@]}" --allowUnlimitedContractSize > /dev/null &
+    node_modules/.bin/testrpc-sc --gasLimit 0xfffffffffff --port "$ganache_port" "${accounts[@]}" --allowUnlimitedContractSize > /dev/null &
   else
     node_modules/.bin/ganache-cli  --gasLimit 0xfffffffffff "${accounts[@]}" > /dev/null &
   fi
 
-  testrpc_pid=$!
+  ganache_pid=$!
 }
 
-if testrpc_running; then
-  echo "Using existing testrpc instance"
+if ganache_running; then
+  echo "Using existing ganache instance"
 else
-  echo "Starting our own testrpc instance"
-  start_testrpc
+  echo "Starting our own ganache instance"
+  start_ganache
 fi
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then

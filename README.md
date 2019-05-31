@@ -68,7 +68,7 @@ with the contracts.
 
 1. Start a local Ethereum network.
     ```bash
-    > npm run testrpc
+    > npm run dev-net
     ```
 2. Start a zos session.
     ```bash
