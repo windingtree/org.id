@@ -6,14 +6,14 @@
     "test": "test"
   },
   "scripts": {
-    "test": "scripts/test.sh",
+    "test": "management/test.sh",
     "lint": "eslint test; solhint 'contracts/**/*.sol'",
     "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
-    "soldoc": "scripts/soldoc.sh",
-    "flattener": "scripts/flattener.sh",
+    "soldoc": "management/soldoc.sh",
+    "flattener": "management/flattener.sh",
     "clean": "rimraf build",
-    "build-index": "node scripts/build-index.js > index.js",
+    "build-index": "node management/build-index.js > index.js",
     "set-zos-version": "zos bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "buildfornpm": "npm run clean && truffle compile",
     "version": "npm run set-zos-version && git add zos.json && npm run build-index && git add index.js"
