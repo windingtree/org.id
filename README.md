@@ -96,7 +96,7 @@ truffle(development)> contract = await HotelDirectory.at('0x...address returned 
 undefined
 truffle(development)> contract.getHotels()
 [ '0x0000000000000000000000000000000000000000' ]
-truffle(development)> contract.createAndRegisterHotel('http://windingtree.com')
+truffle(development)> contract.createAndAddHotel('http://windingtree.com')
 truffle(development)> contract.getHotels()
 [ '0x0000000000000000000000000000000000000000',
   '0x4D377b0a8fa386FA118B09947eEE2B1f7f126C76' ]
