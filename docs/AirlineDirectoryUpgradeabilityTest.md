@@ -4,7 +4,6 @@
   * [newFunction](#function-newfunction)
   * [addAirline](#function-addairline)
   * [airlines](#function-airlines)
-  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [createAndAddAirline](#function-createandaddairline)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
@@ -15,6 +14,7 @@
   * [removeAirline](#function-removeairline)
   * [createAirline](#function-createairline)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [initialize](#function-initialize)
   * [airlinesIndex](#function-airlinesindex)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
@@ -97,20 +97,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-
-## *function* initialize
-
-AirlineDirectoryUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The new contract address |
-
 
 ## *function* LifToken
 
@@ -237,6 +223,21 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* initialize
+
+AirlineDirectoryUpgradeabilityTest.initialize(__owner, _lifToken, _app) `nonpayable` `c0c53b8b`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+| *address* | _app | ZeppelinOS App address |
+
 
 ## *function* airlinesIndex
 
