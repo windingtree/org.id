@@ -42,6 +42,20 @@ contract('Organization', (accounts) => {
       assert.equal(info.dataUri, organizationUri);
     });
 
+    it('should throw with zero owner', async () => {
+      try {
+        const tProject = await TestHelper();
+        await tProject.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: ['0x0000000000000000000000000000000000000000', 'dataUri'],
+        });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
     it('should throw with empty dataUri', async () => {
       try {
         const tProject = await TestHelper();
