@@ -10,6 +10,7 @@ const exceptions = [
   'UpgradeabilityProxy\.json',
   'Proxy\.json',
   '.*UpgradeabilityTest\.json',
+  '.*Test\.json',
   '.*ERC165.*\.json',
 ]
 const files = fs.readdirSync(CONTRACTS_DIR)
