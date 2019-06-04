@@ -1,9 +1,11 @@
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
+const OrganizationInterface = artifacts.require('OrganizationInterface');
 const Organization = artifacts.require('Organization');
 const TestSegmentDirectory = artifacts.require('TestSegmentDirectory');
 const SegmentDirectory = artifacts.require('SegmentDirectory');
+const CustomOrganizationTest = artifacts.require('CustomOrganizationTest');
 
 contract('TestSegmentDirectory', (accounts) => {
   const segmentDirectoryOwner = accounts[1];
@@ -218,6 +220,28 @@ contract('TestSegmentDirectory', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+
+    it('should add a custom organization contract', async () => {
+      const customOrg = await CustomOrganizationTest.new({ from: foodTruckAccount });
+      const receipt = await testSegmentDirectory.addFoodTruck(customOrg.address, { from: foodTruckAccount });
+      assert.equal(receipt.logs.length, 1);
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
+      assert.equal(receipt.logs[0].args.organization, customOrg.address);
+      assert.equal(receipt.logs[0].args.index, 1);
+
+      const allFoodTrucks = await help.jsArrayFromSolidityArray(
+        segmentDirectory.organizations,
+        await segmentDirectory.getOrganizationsLength(),
+        help.isZeroAddress
+      );
+      const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
+      const foodTruck = allFoodTrucks[0];
+      assert.isDefined(foodTruck);
+      assert.isFalse(help.isZeroAddress(foodTruck));
+      assert.equal(actualIndexPos, 1);
+      const org = await OrganizationInterface.at(customOrg.address);
+      assert.equal(await org.getDataUri(), 'https://super-sweet-custom-organization.com');
     });
   });
 
