@@ -4,10 +4,17 @@ import "../OtaDirectory.sol";
 import "./OrganizationUpgradeabilityTest.sol";
 
 contract OtaDirectoryUpgradeabilityTest is OtaDirectory {
-
+    
     function createAndAddOta(string calldata dataUri) external returns (address) {
-        OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(dataUri);
-        address newOrganizationAddress = address(newOrganization);
+        address newOrganizationAddress = address(
+            app.create(
+                "wt-contracts", 
+                "OrganizationUpgradeabilityTest", 
+                _owner, 
+                abi.encodeWithSignature("initialize(address,string)", msg.sender, dataUri)
+            )
+        );
+        emit OrganizationCreated(newOrganizationAddress);
         organizationsIndex[newOrganizationAddress] = organizations.length;
         organizations.push(newOrganizationAddress);
         emit OrganizationAdded(

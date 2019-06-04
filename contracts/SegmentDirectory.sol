@@ -1,6 +1,7 @@
 pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
+import "zos-lib/contracts/application/App.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
 import "./OrganizationInterface.sol";
 import "./Organization.sol";
@@ -10,6 +11,8 @@ import "./SegmentDirectoryEvents.sol";
  * An abstract SegmentDirectory that can handle a list of organizations
  */
 contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
+    // ZeppelinOS App instance
+    App internal app;
 
     // Array of addresses of `Organization` contracts
     address[] public organizations;
@@ -45,9 +48,14 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Address of the new organization."}
      */
     function createOrganization(string memory dataUri) internal returns (address) {
-        Organization newOrganization = new Organization(dataUri);
-        newOrganization.transferOwnership(msg.sender);
-        address newOrganizationAddress = address(newOrganization);
+        address newOrganizationAddress = address(
+            app.create(
+                "wt-contracts", 
+                "Organization", 
+                _owner, 
+                abi.encodeWithSignature("initialize(address,string)", msg.sender, dataUri)
+            )
+        );
         emit OrganizationCreated(newOrganizationAddress);
         return newOrganizationAddress;
     }
@@ -110,11 +118,13 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _lifToken The new contract address
+     * @param _app ZeppelinOS App address
      */
-    function initialize(address payable __owner, address _lifToken) public initializer {
+    function initialize(address payable __owner, address _lifToken, App _app) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
         LifToken = _lifToken;
+        app = _app;
         organizations.length++;
     }
 

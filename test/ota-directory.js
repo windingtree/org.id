@@ -32,7 +32,7 @@ contract('OtaDirectory', (accounts) => {
     otaDirectoryProxy = await project.createProxy(OtaDirectory, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [otaDirectoryOwner, tokenAddress],
+      initArgs: [otaDirectoryOwner, tokenAddress, project.app.address],
     });
     otaDirectory = await OtaDirectoryInterface.at(otaDirectoryProxy.address);
   });
@@ -66,15 +66,12 @@ contract('OtaDirectory', (accounts) => {
     it('should create ota', async () => {
       const address = await otaDirectory.createOta.call('dataUri', { from: otaAccount });
       const receipt = await otaDirectory.createOta('dataUri', { from: otaAccount });
-      assert.equal(receipt.logs.length, 3);
+      assert.equal(receipt.logs.length, 2);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], otaDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], otaDirectory.address);
-      assert.equal(receipt.logs[1].args[1], otaAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args.organization, address);
+      assert.equal(receipt.logs[0].args[1], otaAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
     });
   });
 
@@ -94,18 +91,15 @@ contract('OtaDirectory', (accounts) => {
     it('should create and add ota', async () => {
       const address = await otaDirectory.createAndAddOta.call('dataUri', { from: otaAccount });
       const receipt = await otaDirectory.createAndAddOta('dataUri', { from: otaAccount });
-      assert.equal(receipt.logs.length, 4);
+      assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], otaDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], otaDirectory.address);
-      assert.equal(receipt.logs[1].args[1], otaAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[0].args[1], otaAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
+      assert.equal(receipt.logs[2].event, 'OrganizationAdded');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
-      assert.equal(receipt.logs[3].args.organization, address);
-      assert.equal(receipt.logs[3].args.index, 1);
+      assert.equal(receipt.logs[2].args.index, 1);
     });
   });
 

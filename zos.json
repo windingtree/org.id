@@ -13,6 +13,9 @@
     "HotelDirectory": "HotelDirectory",
     "AirlineDirectory": "AirlineDirectory",
     "OtaDirectory": "OtaDirectory",
-    "WindingTreeEntrypoint": "WindingTreeEntrypoint"
+    "WindingTreeEntrypoint": "WindingTreeEntrypoint",
+    "Organization": "Organization",
+    "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
+    "AirlineDirectoryUpgradeabilityTest": "AirlineDirectoryUpgradeabilityTest"
   }
 }

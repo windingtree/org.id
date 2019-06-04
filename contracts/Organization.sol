@@ -1,14 +1,16 @@
 pragma solidity ^0.5.6;
 
-import "openzeppelin-solidity/contracts/ownership/Ownable.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 import "./OrganizationInterface.sol";
+import "zos-lib/contracts/Initializable.sol";
 
 /**
  * @title Organization
  * @dev A contract that represents an Organization in the Winding Tree platform.
  */
-contract Organization is OrganizationInterface, ERC165, Ownable {
+contract Organization is OrganizationInterface, ERC165, Initializable {
+    // Address of the contract owner
+    address _owner;
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -49,16 +51,29 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
     event DelegateRemoved(address indexed delegate);
 
     /**
-     * @dev Constructor.
+     * @dev Initializer for upgradeable contracts.
+     * @param __owner The address of the contract owner
      * @param _dataUri pointer to Organization data
      */
-    constructor(string memory _dataUri) public {
+    function initialize(address payable __owner, string memory _dataUri) public initializer {
+        require(__owner != address(0), 'Cannot set owner to 0x0 address');
         require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
+        emit OwnershipTransferred(_owner, __owner);
+        _owner = __owner;        
         dataUri = _dataUri;
         created = block.number;
         delegates.length++;
         OrganizationInterface i;
+        _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
         _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
+    }
+
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
+    modifier onlyOwner() {
+        require(msg.sender == _owner);
+        _;
     }
 
     /**
@@ -66,8 +81,7 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
      * @param  _dataUri New dataUri pointer of this Organization
      */
     function changeDataUri(string memory _dataUri) public onlyOwner {
-        bytes memory tempStringRepr = bytes(_dataUri);
-        require(tempStringRepr.length != 0, 'dataUri cannot be an empty string');
+        require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
         emit DataUriChanged(dataUri, _dataUri);
         dataUri = _dataUri;
     }
@@ -112,5 +126,22 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
      */
     function isDelegate(address addr) external view returns(bool) {
         return delegates[delegatesIndex[addr]] != address(0);
+    }
+
+    /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address payable newOwner) public onlyOwner {
+        require(newOwner != address(0));
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view returns (address) {
+        return _owner;
     }
 }

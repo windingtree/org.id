@@ -1,18 +1,35 @@
+const { TestHelper } = require('zos');
+const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 
-const Organization = artifacts.require('Organization');
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
+
+const Organization = Contracts.getFromLocal('Organization');
+const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 
 contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
-  const organizationOwner = accounts[2];
+  const organizationOwner = accounts[1];
+  const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
+
+  let organizationProxy;
   let organization;
+  let project;
 
   beforeEach(async () => {
-    organization = await Organization.new(organizationUri, {
-      from: organizationOwner,
+    project = await TestHelper();
+    organizationProxy = await project.createProxy(Organization, {
+      from: proxyOwner,
+      initFunction: 'initialize',
+      initArgs: [organizationOwner, organizationUri],
     });
+    organization = await Organization.at(organizationProxy.address);
   });
 
   describe('Constructor', () => {
@@ -27,11 +44,25 @@ contract('Organization', (accounts) => {
 
     it('should throw with empty dataUri', async () => {
       try {
-        await Organization.new('', { from: organizationOwner });
+        const tProject = await TestHelper();
+        await tProject.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: [organizationOwner, ''],
+        });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+  });
+
+  describe('upgradeability', () => {
+    it('should upgrade Organisation and have new functions', async () => {
+      const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
+      await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest);
+      const newOrganization = await OrganizationUpgradeabilityTest.at(organizationProxy.address);
+      assert.equal(await newOrganization.methods.newFunction().call(), 100);
     });
   });
 
@@ -40,7 +71,7 @@ contract('Organization', (accounts) => {
 
     it('should not set empty dataUri', async () => {
       try {
-        await organization.changeDataUri('', { from: organizationOwner });
+        await organization.methods.changeDataUri('').send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -48,14 +79,14 @@ contract('Organization', (accounts) => {
     });
 
     it('should set dataUri', async () => {
-      await organization.changeDataUri(newDataUri, { from: organizationOwner });
+      await organization.methods.changeDataUri(newDataUri).send({ from: organizationOwner });
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.dataUri, newDataUri);
     });
 
     it('should throw if not executed by organization owner', async () => {
       try {
-        await organization.changeDataUri(newDataUri, { from: nonOwnerAccount });
+        await organization.methods.changeDataUri(newDataUri).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -65,18 +96,17 @@ contract('Organization', (accounts) => {
 
   describe('transferOwnership', () => {
     it('should transfer contract and emit OwnershipTransferred', async () => {
-      const receipt = await organization.transferOwnership(nonOwnerAccount, { from: organizationOwner });
-      assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[0].args.previousOwner, organizationOwner);
-      assert.equal(receipt.logs[0].args.newOwner, nonOwnerAccount);
+      const receipt = await organization.methods.transferOwnership(nonOwnerAccount).send({ from: organizationOwner });
+      assert.equal(Object.keys(receipt.events).length, 1);
+      assert.equal(receipt.events.OwnershipTransferred.returnValues.previousOwner, organizationOwner);
+      assert.equal(receipt.events.OwnershipTransferred.returnValues.newOwner, nonOwnerAccount);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, nonOwnerAccount);
     });
 
     it('should throw if transferring to a zero address', async () => {
       try {
-        await organization.transferOwnership(help.zeroAddress, { from: organizationOwner });
+        await organization.methods.transferOwnership(help.zeroAddress).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -85,7 +115,7 @@ contract('Organization', (accounts) => {
 
     it('should throw if not executed from owner address', async () => {
       try {
-        await organization.transferOwnership(nonOwnerAccount, { from: nonOwnerAccount });
+        await organization.methods.transferOwnership(nonOwnerAccount).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -95,20 +125,19 @@ contract('Organization', (accounts) => {
 
   describe('addDelegate', async () => {
     it('should add delegate and emit', async () => {
-      const receipt = await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
-      assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'DelegateAdded');
-      assert.equal(receipt.logs[0].args.delegate, nonOwnerAccount);
-      assert.equal(receipt.logs[0].args.index, 1);
-      assert.equal(await organization.delegatesIndex(nonOwnerAccount), 1);
-      assert.equal(await organization.delegates(1), nonOwnerAccount);
-      assert.equal(await organization.isDelegate(nonOwnerAccount), true);
+      const receipt = await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+      assert.equal(Object.keys(receipt.events).length, 1);
+      assert.equal(receipt.events.DelegateAdded.returnValues.delegate, nonOwnerAccount);
+      assert.equal(receipt.events.DelegateAdded.returnValues.index, 1);
+      assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 1);
+      assert.equal(await organization.methods.delegates(1).call(), nonOwnerAccount);
+      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), true);
     });
 
     it('should throw when adding an existing delegate', async () => {
-      await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
+      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
       try {
-        await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
+        await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -117,7 +146,7 @@ contract('Organization', (accounts) => {
 
     it('should throw when adding a delegate with zero address', async () => {
       try {
-        await organization.addDelegate(help.zeroAddress, { from: organizationOwner });
+        await organization.methods.addDelegate(help.zeroAddress).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -126,7 +155,7 @@ contract('Organization', (accounts) => {
 
     it('should throw when adding a delegate by a non-owner', async () => {
       try {
-        await organization.addDelegate(nonOwnerAccount, { from: nonOwnerAccount });
+        await organization.methods.addDelegate(nonOwnerAccount).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -136,19 +165,18 @@ contract('Organization', (accounts) => {
 
   describe('removeDelegate', async () => {
     it('should remove an existing delegate and emit', async () => {
-      await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
-      const receipt = await organization.removeDelegate(nonOwnerAccount, { from: organizationOwner });
-      assert.equal(receipt.logs.length, 1);
-      assert.equal(receipt.logs[0].event, 'DelegateRemoved');
-      assert.equal(receipt.logs[0].args.delegate, nonOwnerAccount);
-      assert.equal(await organization.isDelegate(nonOwnerAccount), false);
-      assert.equal(await organization.delegates(1), help.zeroAddress);
-      assert.equal(await organization.delegatesIndex(nonOwnerAccount), 0);
+      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+      const receipt = await organization.methods.removeDelegate(nonOwnerAccount).send({ from: organizationOwner });
+      assert.equal(Object.keys(receipt.events).length, 1);
+      assert.equal(receipt.events.DelegateRemoved.returnValues.delegate, nonOwnerAccount);
+      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), false);
+      assert.equal(await organization.methods.delegates(1).call(), help.zeroAddress);
+      assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 0);
     });
 
     it('should throw when removing a non-existing delegate', async () => {
       try {
-        await organization.removeDelegate(nonOwnerAccount, { from: organizationOwner });
+        await organization.methods.removeDelegate(nonOwnerAccount).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -157,7 +185,7 @@ contract('Organization', (accounts) => {
 
     it('should throw when removing a zero address', async () => {
       try {
-        await organization.removeDelegate(help.zeroAddress, { from: organizationOwner });
+        await organization.methods.removeDelegate(help.zeroAddress).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -167,12 +195,12 @@ contract('Organization', (accounts) => {
 
   describe('isDelegate', async () => {
     it('should return false for a non-delegate', async () => {
-      assert.equal(await organization.isDelegate(nonOwnerAccount), false);
+      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), false);
     });
 
     it('should return true for a delegate', async () => {
-      await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
-      assert.equal(await organization.isDelegate(nonOwnerAccount), true);
+      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), true);
     });
   });
 });
