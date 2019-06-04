@@ -4,15 +4,17 @@
   "version": "0.6.1",
   "publish": true,
   "contracts": {
-    "WTHotelIndex": "HotelDirectory",
-    "WTAirlineIndex": "AirlineDirectory",
-    "WTAirlineIndexDemo": "AirlineDirectory",
-    "WTHotelIndexDemo": "HotelDirectory",
-    "WTAirlineIndexPlayground": "AirlineDirectory",
-    "WTHotelIndexPlayground": "HotelDirectory",
     "HotelDirectory": "HotelDirectory",
     "AirlineDirectory": "AirlineDirectory",
     "OtaDirectory": "OtaDirectory",
-    "WindingTreeEntrypoint": "WindingTreeEntrypoint"
+    "WindingTreeEntrypoint": "WindingTreeEntrypoint",
+    "PlaygroundEntrypoint": "WindingTreeEntrypoint",
+    "PlaygroundHotelDirectory": "HotelDirectory",
+    "PlaygroundAirlineDirectory": "AirlineDirectory",
+    "PlaygroundOtaDirectory": "OtaDirectory",
+    "DemoEntrypoint": "WindingTreeEntrypoint",
+    "DemoHotelDirectory": "HotelDirectory",
+    "DemoAirlineDirectory": "AirlineDirectory",
+    "DemoOtaDirectory": "OtaDirectory"
   }
 }
