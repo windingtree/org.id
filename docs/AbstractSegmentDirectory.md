@@ -1,7 +1,10 @@
 * [AbstractSegmentDirectory](#abstractsegmentdirectory)
   * [add](#function-add)
+  * [getSegment](#function-getsegment)
   * [remove](#function-remove)
   * [organizationsIndex](#function-organizationsindex)
+  * [getLifToken](#function-getliftoken)
+  * [owner](#function-owner)
   * [createAndAdd](#function-createandadd)
   * [getOrganizations](#function-getorganizations)
   * [create](#function-create)
@@ -27,6 +30,14 @@ Inputs
 | *address* | organization | undefined |
 
 
+## *function* getSegment
+
+AbstractSegmentDirectory.getSegment() `view` `2203793c`
+
+
+
+
+
 ## *function* remove
 
 AbstractSegmentDirectory.remove(organization) `nonpayable` `29092d0e`
@@ -49,6 +60,22 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | undefined |
+
+
+## *function* getLifToken
+
+AbstractSegmentDirectory.getLifToken() `view` `8b0728cf`
+
+
+
+
+
+## *function* owner
+
+AbstractSegmentDirectory.owner() `view` `8da5cb5b`
+
+
+
 
 
 ## *function* createAndAdd

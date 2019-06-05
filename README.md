@@ -66,7 +66,7 @@ npm install @windingtree/wt-contracts
 ```js
 import Organization from '@windingtree/wt-contracts/build/contracts/Organization.json';
 // or
-import { Organization, HotelDirectoryInterface } from '@windingtree/wt-contracts';
+import { Organization, AbstractSegmentDirectory } from '@windingtree/wt-contracts';
 ```
 
 ## Development
@@ -179,8 +179,7 @@ can be an address of a multisig) and an actual instance of
 [Lif token](https://github.com/windingtree/lif-token). You don't need Lif token to play with
 this locally.
     ```bash
-    > ./node_modules/.bin/zos create HotelDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
-    > ./node_modules/.bin/zos create AirlineDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console.

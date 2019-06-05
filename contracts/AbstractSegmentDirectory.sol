@@ -25,10 +25,15 @@ contract AbstractSegmentDirectory {
      */
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
+    function owner() public view returns (address);
+    function getSegment() public view returns (string memory);
+    function getLifToken() public view returns (address);
+
     function create(string calldata dataUri) external returns (address);
     function createAndAdd(string calldata dataUri) external returns (address);
     function add(address organization) external returns (address);
     function remove(address organization) external;
+
     function getOrganizationsLength() public view returns (uint);
     function getOrganizations() public view returns (address[] memory);
     function organizationsIndex(address organization) public view returns (uint);
