@@ -29,7 +29,6 @@ contract AbstractSegmentDirectory {
     function createAndAdd(string calldata dataUri) external returns (address);
     function add(address organization) external returns (address);
     function remove(address organization) external;
-
     function getOrganizationsLength() public view returns (uint);
     function getOrganizations() public view returns (address[] memory);
     function organizationsIndex(address organization) public view returns (uint);

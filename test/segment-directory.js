@@ -31,7 +31,7 @@ contract('SegmentDirectory', (accounts) => {
     segmentDirectoryProxy = await project.createProxy(SegmentDirectory, {
       from: segmentDirectoryOwner,
       initFunction: 'initialize',
-      initArgs: [segmentDirectoryOwner, tokenAddress],
+      initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenAddress],
     });
     segmentDirectory = await SegmentDirectory.at(segmentDirectoryProxy.address);
   });
@@ -40,18 +40,18 @@ contract('SegmentDirectory', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-        await segmentDirectory.methods.initialize(help.zeroAddress, tokenAddress).send({ from: segmentDirectoryOwner });
+        await segmentDirectory.methods.initialize(help.zeroAddress, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should set liftoken', async () => {
+    it('should set liftoken and segment', async () => {
       const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-      await segmentDirectory.methods.initialize(segmentDirectoryOwner, tokenAddress).send({ from: segmentDirectoryOwner });
-      const testSegmentDirectory = await SegmentDirectory.at(segmentDirectory.address);
-      assert.equal(await testSegmentDirectory.methods.LifToken().call(), tokenAddress);
+      await segmentDirectory.methods.initialize(segmentDirectoryOwner, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenAddress);
+      assert.equal(await segmentDirectory.methods.getSegment().call(), 'foodtrucks');
     });
   });
 
@@ -116,13 +116,39 @@ contract('SegmentDirectory', (accounts) => {
   describe('setLifToken', () => {
     it('should set the LifToken address', async () => {
       await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: segmentDirectoryOwner });
-      const setValue = await segmentDirectory.methods.LifToken().call();
+      const setValue = await segmentDirectory.methods.getLifToken().call();
       assert.equal(setValue, tokenAddress);
     });
 
     it('should throw if non-owner sets the LifToken address', async () => {
       try {
         await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
+  describe('setSegment', () => {
+    it('should set the segment', async () => {
+      await segmentDirectory.methods.setSegment('hotels').send({ from: segmentDirectoryOwner });
+      const setValue = await segmentDirectory.methods.getSegment().call();
+      assert.equal(setValue, 'hotels');
+    });
+
+    it('should throw if non-owner sets segment', async () => {
+      try {
+        await segmentDirectory.methods.setSegment('hotels').send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if segment is empty', async () => {
+      try {
+        await segmentDirectory.methods.setSegment('').send({ from: segmentDirectoryOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

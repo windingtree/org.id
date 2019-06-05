@@ -18,8 +18,10 @@ contract WindingTreeEntrypoint is Initializable {
 
     // Mapping of keccak256(segment) => directory address
     mapping(bytes32 => address) public directories;
+
     // Mapping of keccak256(segment) => index in segments array
     mapping(bytes32 => uint) public segmentsIndex;
+
     // List of registered segments
     string[] public segments;
 

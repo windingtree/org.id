@@ -7,22 +7,24 @@ import "./Organization.sol";
 import "./AbstractSegmentDirectory.sol";
 
 /**
- * An abstract SegmentDirectory that can handle a list of organizations
+ * A SegmentDirectory that can handle a list of organizations
  */
 contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
-    // Array of addresses of `Organization` contracts
-    address[] public _organizations;
-
-    // Mapping of organizations position in the general organization index
-    mapping(address => uint) public _organizationsIndex;
-
-    // Address of the LifToken contract
-    // solhint-disable-next-line var-name-mixedcase
-    address public LifToken;
-
     // Address of the contract owner
     address _owner;
+
+    // Segment name, i. e. hotel, airline
+    string _segment;
+
+    // Array of addresses of `Organization` contracts
+    address[] _organizations;
+
+    // Mapping of organizations position in the general organization index
+    mapping(address => uint) _organizationsIndex;
+
+    // Address of the LifToken contract
+    address _lifToken;
 
     /**
      * @dev `createOrganization` Create new organization contract. Does not 
@@ -129,19 +131,22 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @param  organization  Organization's address
      */
     function remove(address organization) external {
-        return removeOrganization(organization);
+        removeOrganization(organization);
     }
 
     /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
-     * @param _lifToken The new contract address
+     * @param __segment The segment name
+     * @param __lifToken The Lif Token contract address
      */
-    function initialize(address payable __owner, address _lifToken) public initializer {
+    function initialize(address payable __owner, string memory __segment, address __lifToken) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
+        require(bytes(__segment).length != 0, 'Segment cannot be empty');
         _owner = __owner;
-        LifToken = _lifToken;
+        _lifToken = __lifToken;
         _organizations.length++;
+        _segment = __segment;
     }
 
     /**
@@ -160,10 +165,18 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
         return _organizations;
     }
 
+    /**
+     * @dev `organizationsIndex` get index of Organization
+     * @return {" ": "Organization index."}
+     */
     function organizationsIndex(address organization) public view returns (uint) {
         return _organizationsIndex[organization];
     }
 
+    /**
+     * @dev `organizations` get Organization address on an index
+     * @return {" ": "Organization address."}
+     */
     function organizations(uint index) public view returns (address) {
         return _organizations[index];
     }
@@ -180,10 +193,36 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @dev `setLifToken` allows the owner of the contract to change the
      * address of the LifToken contract. Allows to set the address to
      * zero address
-     * @param _lifToken The new contract address
+     * @param __lifToken The new contract address
      */
-    function setLifToken(address _lifToken) public onlyOwner {
-        LifToken = _lifToken;
+    function setLifToken(address __lifToken) public onlyOwner {
+        _lifToken = __lifToken;
+    }
+
+    /**
+     * @dev `getLifToken` Returns address of set Lif token
+     * @return {" ": "LifToken address."}
+     */
+    function getLifToken() public view returns (address) {
+        return _lifToken;
+    }
+
+    /**
+     * @dev `setSegment` allows the owner of the contract to change the
+     * segment name.
+     * @param __segment The new segment name
+     */
+    function setSegment(string memory __segment) public onlyOwner {
+        require(bytes(__segment).length != 0, 'Segment cannot be empty');
+        _segment = __segment;
+    }
+
+    /**
+     * @dev `getSegment` Returns segment name
+     * @return {" ": "Segment name."}
+     */
+    function getSegment() public view returns (string memory) {
+        return _segment;
     }
 
     /**
