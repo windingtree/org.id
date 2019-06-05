@@ -15,6 +15,7 @@ const CustomOrganizationTest = artifacts.require('CustomOrganizationTest');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 const SegmentDirectory = Contracts.getFromLocal('SegmentDirectory');
 const SegmentDirectoryUpgradeabilityTest = Contracts.getFromLocal('SegmentDirectoryUpgradeabilityTest');
+const AbstractSegmentDirectory = artifacts.require('AbstractSegmentDirectory');
 
 contract('SegmentDirectory', (accounts) => {
   const segmentDirectoryOwner = accounts[1];
@@ -24,6 +25,7 @@ contract('SegmentDirectory', (accounts) => {
 
   let segmentDirectoryProxy;
   let segmentDirectory;
+  let abstractSegmentDirectory;
   let project;
 
   beforeEach(async () => {
@@ -34,6 +36,7 @@ contract('SegmentDirectory', (accounts) => {
       initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenAddress],
     });
     segmentDirectory = await SegmentDirectory.at(segmentDirectoryProxy.address);
+    abstractSegmentDirectory = await AbstractSegmentDirectory.at(segmentDirectoryProxy.address);
   });
 
   describe('initialize', () => {
@@ -159,18 +162,18 @@ contract('SegmentDirectory', (accounts) => {
   describe('getOrganizationsLength', () => {
     it('should count organizations properly', async () => {
       // length is a bignumber
-      let length = await segmentDirectory.methods.getOrganizationsLength().call();
+      let length = await abstractSegmentDirectory.getOrganizationsLength();
       // We start with empty address on the zero segmentDirectory
       assert.equal(length, 1);
-      await segmentDirectory.methods.createAndAdd('aaa').send({ from: organizationAccount });
-      length = await segmentDirectory.methods.getOrganizationsLength().call();
+      await abstractSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
+      length = await abstractSegmentDirectory.getOrganizationsLength();
       assert.equal(length, 2);
-      const receipt = await segmentDirectory.methods.createAndAdd('bbb').send({ from: organizationAccount });
-      length = await segmentDirectory.methods.getOrganizationsLength().call();
+      const receipt = await abstractSegmentDirectory.createAndAdd('bbb', { from: organizationAccount });
+      length = await abstractSegmentDirectory.getOrganizationsLength();
       assert.equal(length, 3);
-      const expectedOrganizationAddress = receipt.events.OrganizationCreated.returnValues.organization;
-      await segmentDirectory.methods.remove(expectedOrganizationAddress).send({ from: organizationAccount });
-      length = await segmentDirectory.methods.getOrganizationsLength().call();
+      const expectedOrganizationAddress = receipt.logs[0].address;
+      await abstractSegmentDirectory.remove(expectedOrganizationAddress, { from: organizationAccount });
+      length = await abstractSegmentDirectory.getOrganizationsLength();
       // length counts zero addresses
       assert.equal(length, 3);
     });
@@ -178,45 +181,46 @@ contract('SegmentDirectory', (accounts) => {
 
   describe('getOrganizations', () => {
     it('should return organizations properly', async () => {
-      assert.equal(help.filterZeroAddresses(await segmentDirectory.methods.getOrganizations().call()).length, 0);
-      const receipt = await segmentDirectory.methods.createAndAdd('aaa').send({ from: organizationAccount });
-      const expectedOrganizationAddress = receipt.events.OrganizationCreated.returnValues.organization;
-      assert.equal(help.filterZeroAddresses(await segmentDirectory.methods.getOrganizations().call()).length, 1);
-      await segmentDirectory.methods.createAndAdd('bbb').send({ from: organizationAccount });
-      assert.equal(help.filterZeroAddresses(await segmentDirectory.methods.getOrganizations().call()).length, 2);
-      await segmentDirectory.methods.remove(expectedOrganizationAddress).send({ from: organizationAccount });
-      assert.equal(help.filterZeroAddresses(await segmentDirectory.methods.getOrganizations().call()).length, 1);
+      assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 0);
+      const receipt = await abstractSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
+      const expectedOrganizationAddress = receipt.logs[0].address;
+      assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 1);
+      await abstractSegmentDirectory.createAndAdd('bbb', { from: organizationAccount });
+      assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 2);
+      await abstractSegmentDirectory.remove(expectedOrganizationAddress, { from: organizationAccount });
+      assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 1);
     });
   });
 
   describe('create', () => {
     it('should create an Organization contract', async () => {
       // First emulate the transaction, then actually run it
-      const address = await segmentDirectory.methods.create('dataUri').call({ from: organizationAccount });
-      const receipt = await segmentDirectory.methods.create('dataUri').send({ from: organizationAccount });
+      const address = await abstractSegmentDirectory.create.call('dataUri');
+      const receipt = await abstractSegmentDirectory.create('dataUri', { from: organizationAccount });
       const organization = await Organization.at(address);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
       assert.equal(info.dataUri, 'dataUri');
-      assert.isDefined(receipt.events.OwnershipTransferred);
-      assert.isDefined(receipt.events.OrganizationCreated);
-      assert.equal(receipt.events.OwnershipTransferred.length, 2);
-      assert.equal(receipt.events.OwnershipTransferred[0].returnValues.previousOwner, help.zeroAddress);
-      assert.equal(receipt.events.OwnershipTransferred[0].returnValues.newOwner, segmentDirectory.address);
-      assert.equal(receipt.events.OwnershipTransferred[1].returnValues.previousOwner, segmentDirectory.address);
-      assert.equal(receipt.events.OwnershipTransferred[1].returnValues.newOwner, organizationAccount);
-      assert.equal(receipt.events.OrganizationCreated.returnValues.organization, address);
+      assert.equal(receipt.logs.length, 3);
+      assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[0].args[0], help.zeroAddress);
+      assert.equal(receipt.logs[0].args[1], abstractSegmentDirectory.address);
+      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[1].args[0], abstractSegmentDirectory.address);
+      assert.equal(receipt.logs[1].args[1], organizationAccount);
+      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[2].args.organization, address);
     });
 
     it('should not add the organization into any mapping', async () => {
-      await segmentDirectory.methods.create('dataUri').send({ from: organizationAccount });
-      const orgList = await segmentDirectory.methods.getOrganizations().call();
+      await abstractSegmentDirectory.create('dataUri', { from: organizationAccount });
+      const orgList = await abstractSegmentDirectory.getOrganizations();
       assert.equal(help.filterZeroAddresses(orgList).length, 0);
     });
 
     it('should not create an organization with empty dataUri', async () => {
       try {
-        await segmentDirectory.methods.create('').send({ from: organizationAccount });
+        await abstractSegmentDirectory.create('', { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -231,25 +235,27 @@ contract('SegmentDirectory', (accounts) => {
     });
 
     it('should add the organization to the registry', async () => {
-      const receipt = await segmentDirectory.methods.add(organization.address).send({ from: organizationAccount });
-      assert.equal(receipt.events.OrganizationAdded.returnValues.organization, organization.address);
-      assert.equal(receipt.events.OrganizationAdded.returnValues.index, 1);
+      const receipt = await abstractSegmentDirectory.add(organization.address, { from: organizationAccount });
+      assert.equal(receipt.logs.length, 1);
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
+      assert.equal(receipt.logs[0].args.organization, organization.address);
+      assert.equal(receipt.logs[0].args.index, 1);
 
       const allOrganizations = await help.jsArrayFromSolidityArray(
-        segmentDirectory.methods.organizations,
-        await segmentDirectory.methods.getOrganizationsLength().call(),
+        abstractSegmentDirectory.organizations,
+        await abstractSegmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.methods.organizationsIndex(allOrganizations[0]).call();
+      const actualIndexPos = await abstractSegmentDirectory.organizationsIndex(allOrganizations[0]);
       assert.isDefined(allOrganizations[0]);
       assert.isFalse(help.isZeroAddress(allOrganizations[0]));
       assert.equal(actualIndexPos, 1);
     });
 
     it('should throw if adding an already added organization', async () => {
-      await segmentDirectory.methods.add(organization.address).send({ from: organizationAccount });
+      await abstractSegmentDirectory.add(organization.address, { from: organizationAccount });
       try {
-        await segmentDirectory.methods.add(organization.address).send({ from: organizationAccount });
+        await abstractSegmentDirectory.add(organization.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -258,7 +264,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should throw if adding organization on a zero address', async () => {
       try {
-        await segmentDirectory.methods.add(help.zeroAddress).send({ from: organizationAccount });
+        await abstractSegmentDirectory.add(help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -267,7 +273,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should throw if somebody is adding organization which she does not own', async () => {
       try {
-        await segmentDirectory.methods.add(organization.address).send({ from: nonOwnerAccount });
+        await abstractSegmentDirectory.add(organization.address, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -276,7 +282,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should not add an Organization that does not support OrganizationInterface', async () => {
       try {
-        await segmentDirectory.methods.add(nonOwnerAccount).send({ from: nonOwnerAccount });
+        await abstractSegmentDirectory.add(nonOwnerAccount, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -285,16 +291,18 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should add a custom organization contract', async () => {
       const customOrg = await CustomOrganizationTest.new({ from: organizationAccount });
-      const receipt = await segmentDirectory.methods.add(customOrg.address).send({ from: organizationAccount });
-      assert.equal(receipt.events.OrganizationAdded.returnValues.organization, customOrg.address);
-      assert.equal(receipt.events.OrganizationAdded.returnValues.index, 1);
+      const receipt = await abstractSegmentDirectory.add(customOrg.address, { from: organizationAccount });
+      assert.equal(receipt.logs.length, 1);
+      assert.equal(receipt.logs[0].event, 'OrganizationAdded');
+      assert.equal(receipt.logs[0].args.organization, customOrg.address);
+      assert.equal(receipt.logs[0].args.index, 1);
 
       const allOrganizations = await help.jsArrayFromSolidityArray(
-        segmentDirectory.methods.organizations,
-        await segmentDirectory.methods.getOrganizationsLength().call(),
+        abstractSegmentDirectory.organizations,
+        await abstractSegmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.methods.organizationsIndex(allOrganizations[0]).call();
+      const actualIndexPos = await abstractSegmentDirectory.organizationsIndex(allOrganizations[0]);
       const organization = allOrganizations[0];
       assert.isDefined(organization);
       assert.isFalse(help.isZeroAddress(organization));
@@ -306,30 +314,30 @@ contract('SegmentDirectory', (accounts) => {
 
   describe('createAndAdd', () => {
     it('should create and add the organization to the registry', async () => {
-      const address = await segmentDirectory.methods.createAndAdd('dataUri').call({ from: organizationAccount });
-      const receipt = await segmentDirectory.methods.createAndAdd('dataUri').send({ from: organizationAccount });
+      const address = await abstractSegmentDirectory.createAndAdd.call('dataUri');
+      const receipt = await abstractSegmentDirectory.createAndAdd('dataUri', { from: organizationAccount });
       const organization = await Organization.at(address);
-
-      assert.isDefined(receipt.events.OwnershipTransferred);
-      assert.isDefined(receipt.events.OrganizationCreated);
-      assert.equal(receipt.events.OwnershipTransferred.length, 2);
-      assert.equal(receipt.events.OwnershipTransferred[0].returnValues.previousOwner, help.zeroAddress);
-      assert.equal(receipt.events.OwnershipTransferred[0].returnValues.newOwner, segmentDirectory.address);
-      assert.equal(receipt.events.OwnershipTransferred[1].returnValues.previousOwner, segmentDirectory.address);
-      assert.equal(receipt.events.OwnershipTransferred[1].returnValues.newOwner, organizationAccount);
-      assert.equal(receipt.events.OrganizationCreated.returnValues.organization, organization.address);
-      assert.equal(receipt.events.OrganizationAdded.returnValues.organization, organization.address);
-      assert.equal(receipt.events.OrganizationAdded.returnValues.index, 1);
-
+      assert.equal(receipt.logs.length, 4);
+      assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[0].args[0], help.zeroAddress);
+      assert.equal(receipt.logs[0].args[1], abstractSegmentDirectory.address);
+      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[1].args[0], abstractSegmentDirectory.address);
+      assert.equal(receipt.logs[1].args[1], organizationAccount);
+      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[2].args.organization, organization.address);
+      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
+      assert.equal(receipt.logs[3].args.organization, organization.address);
+      assert.equal(receipt.logs[3].args.index, 1);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
       assert.equal(info.dataUri, 'dataUri');
       const allOrganizations = await help.jsArrayFromSolidityArray(
-        segmentDirectory.methods.organizations,
-        await segmentDirectory.methods.getOrganizationsLength().call(),
+        abstractSegmentDirectory.organizations,
+        await abstractSegmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.methods.organizationsIndex(allOrganizations[0]).call();
+      const actualIndexPos = await abstractSegmentDirectory.organizationsIndex(allOrganizations[0]);
       assert.isDefined(allOrganizations[0]);
       assert.isFalse(help.isZeroAddress(allOrganizations[0]));
       assert.equal(actualIndexPos, 1);
@@ -339,25 +347,26 @@ contract('SegmentDirectory', (accounts) => {
   describe('remove', () => {
     let organization;
     beforeEach(async () => {
-      const receipt = await segmentDirectory.methods.createAndAdd('aaa').send({ from: organizationAccount });
-      organization = await Organization.at(receipt.events.OrganizationCreated.returnValues.organization);
+      const receipt = await abstractSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
+      organization = await Organization.at(receipt.logs[2].args[0]);
     });
 
     it('should remove organization from the directory', async () => {
-      const receipt = await segmentDirectory.methods.remove(organization.address).send({ from: organizationAccount });
+      const receipt = await abstractSegmentDirectory.remove(organization.address, { from: organizationAccount });
       const allOrganizations = await help.jsArrayFromSolidityArray(
-        segmentDirectory.methods.organizations,
-        await segmentDirectory.methods.getOrganizationsLength().call(),
+        abstractSegmentDirectory.organizations,
+        await abstractSegmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
       assert.equal(allOrganizations.length, 0);
       assert.isUndefined(allOrganizations[0]);
-      assert.isDefined(receipt.events.OrganizationRemoved);
-      assert.equal(receipt.events.OrganizationRemoved.returnValues.organization, organization.address);
+      assert.equal(receipt.logs.length, 1);
+      assert.equal(receipt.logs[0].event, 'OrganizationRemoved');
+      assert.equal(receipt.logs[0].args[0], organization.address);
     });
 
     it('should not destroy the organization contract', async () => {
-      await segmentDirectory.methods.remove(organization.address).send({ from: organizationAccount });
+      await abstractSegmentDirectory.remove(organization.address, { from: organizationAccount });
       const code = await help.promisify(cb => web3.eth.getCode(organization.address, cb));
       assert.isAtLeast(code.length, 4);
     });
@@ -365,7 +374,7 @@ contract('SegmentDirectory', (accounts) => {
     it('should throw if somebody is removing organization which she does not own', async () => {
       try {
         await organization.transferOwnership(nonOwnerAccount, { from: organizationAccount });
-        await segmentDirectory.methods.remove(organization.address).send({ from: organizationAccount });
+        await abstractSegmentDirectory.remove(organization.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -374,7 +383,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should throw if organization is not added', async () => {
       try {
-        await segmentDirectory.methods.remove(nonOwnerAccount).send({ from: organizationAccount });
+        await abstractSegmentDirectory.remove(nonOwnerAccount, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -383,7 +392,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should throw if organization is on zero address', async () => {
       try {
-        await segmentDirectory.methods.remove(help.zeroAddress).send({ from: organizationAccount });
+        await abstractSegmentDirectory.remove(help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -392,7 +401,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should throw if organization non-owner initiates the removing', async () => {
       try {
-        await segmentDirectory.methods.remove(organization.address).send({ from: nonOwnerAccount });
+        await abstractSegmentDirectory.remove(organization.address, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
