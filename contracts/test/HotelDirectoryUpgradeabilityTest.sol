@@ -5,7 +5,7 @@ import "./OrganizationUpgradeabilityTest.sol";
 
 contract HotelDirectoryUpgradeabilityTest is HotelDirectory {
 
-    function createAndAddHotel(string calldata dataUri) external returns (address) {
+    function createAndAdd(string calldata dataUri) external returns (address) {
         OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(dataUri);
         address newOrganizationAddress = address(newOrganization);
         organizationsIndex[newOrganizationAddress] = organizations.length;

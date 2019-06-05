@@ -3,13 +3,12 @@ const help = require('./helpers/index.js');
 
 const OrganizationInterface = artifacts.require('OrganizationInterface');
 const Organization = artifacts.require('Organization');
-const TestSegmentDirectory = artifacts.require('TestSegmentDirectory');
 const SegmentDirectory = artifacts.require('SegmentDirectory');
 const CustomOrganizationTest = artifacts.require('CustomOrganizationTest');
 
-contract('TestSegmentDirectory', (accounts) => {
+contract('SegmentDirectory', (accounts) => {
   const segmentDirectoryOwner = accounts[1];
-  const foodTruckAccount = accounts[3];
+  const organizationAccount = accounts[3];
   const nonOwnerAccount = accounts[4];
   const tokenAddress = accounts[5];
 
@@ -17,7 +16,7 @@ contract('TestSegmentDirectory', (accounts) => {
   let segmentDirectory;
 
   beforeEach(async () => {
-    testSegmentDirectory = await TestSegmentDirectory.new();
+    testSegmentDirectory = await SegmentDirectory.new();
     await testSegmentDirectory.initialize(segmentDirectoryOwner, tokenAddress);
     segmentDirectory = await SegmentDirectory.at(testSegmentDirectory.address);
   });
@@ -25,7 +24,7 @@ contract('TestSegmentDirectory', (accounts) => {
   describe('initialize', () => {
     it('should not allow zero address owner', async () => {
       try {
-        testSegmentDirectory = await TestSegmentDirectory.new();
+        testSegmentDirectory = await SegmentDirectory.new();
         await testSegmentDirectory.initialize(help.zeroAddress, tokenAddress);
         assert(false);
       } catch (e) {
@@ -34,7 +33,7 @@ contract('TestSegmentDirectory', (accounts) => {
     });
 
     it('should set liftoken', async () => {
-      testSegmentDirectory = await TestSegmentDirectory.new();
+      testSegmentDirectory = await SegmentDirectory.new();
       await testSegmentDirectory.initialize(segmentDirectoryOwner, tokenAddress);
       segmentDirectory = await SegmentDirectory.at(testSegmentDirectory.address);
       assert.equal(await segmentDirectory.LifToken(), tokenAddress);
@@ -92,19 +91,19 @@ contract('TestSegmentDirectory', (accounts) => {
   });
 
   describe('getOrganizationsLength', () => {
-    it('should count foodTrucks properly', async () => {
+    it('should count organizations properly', async () => {
       // length is a bignumber
       let length = await segmentDirectory.getOrganizationsLength();
       // We start with empty address on the zero segmentDirectory
       assert.equal(length.toNumber(), 1);
-      await testSegmentDirectory.createAndAddFoodTruck('aaa', { from: foodTruckAccount });
+      await testSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
       length = await segmentDirectory.getOrganizationsLength();
       assert.equal(length.toNumber(), 2);
-      const receipt = await testSegmentDirectory.createAndAddFoodTruck('bbb', { from: foodTruckAccount });
+      const receipt = await testSegmentDirectory.createAndAdd('bbb', { from: organizationAccount });
       length = await testSegmentDirectory.getOrganizationsLength();
       assert.equal(length.toNumber(), 3);
-      const expectedFoodTruckAddress = receipt.logs[0].address;
-      await testSegmentDirectory.removeFoodTruck(expectedFoodTruckAddress, { from: foodTruckAccount });
+      const expectedOrganizationAddress = receipt.logs[0].address;
+      await testSegmentDirectory.remove(expectedOrganizationAddress, { from: organizationAccount });
       length = await testSegmentDirectory.getOrganizationsLength();
       // length counts zero addresses
       assert.equal(length.toNumber(), 3);
@@ -112,26 +111,26 @@ contract('TestSegmentDirectory', (accounts) => {
   });
 
   describe('getOrganizations', () => {
-    it('should return foodTrucks properly', async () => {
+    it('should return organizations properly', async () => {
       assert.equal(help.filterZeroAddresses(await testSegmentDirectory.getOrganizations()).length, 0);
-      const receipt = await testSegmentDirectory.createAndAddFoodTruck('aaa', { from: foodTruckAccount });
-      const expectedFoodTruckAddress = receipt.logs[0].address;
+      const receipt = await testSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
+      const expectedOrganizationAddress = receipt.logs[0].address;
       assert.equal(help.filterZeroAddresses(await testSegmentDirectory.getOrganizations()).length, 1);
-      await testSegmentDirectory.createAndAddFoodTruck('bbb', { from: foodTruckAccount });
+      await testSegmentDirectory.createAndAdd('bbb', { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await testSegmentDirectory.getOrganizations()).length, 2);
-      await testSegmentDirectory.removeFoodTruck(expectedFoodTruckAddress, { from: foodTruckAccount });
+      await testSegmentDirectory.remove(expectedOrganizationAddress, { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await testSegmentDirectory.getOrganizations()).length, 1);
     });
   });
 
-  describe('createFoodTruck', () => {
+  describe('create', () => {
     it('should create an Organization contract', async () => {
       // First emulate the transaction, then actually run it
-      const address = await testSegmentDirectory.createFoodTruck.call('dataUri', { from: foodTruckAccount });
-      const receipt = await testSegmentDirectory.createFoodTruck('dataUri', { from: foodTruckAccount });
+      const address = await testSegmentDirectory.create.call('dataUri', { from: organizationAccount });
+      const receipt = await testSegmentDirectory.create('dataUri', { from: organizationAccount });
       const organization = await Organization.at(address);
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.owner, foodTruckAccount);
+      assert.equal(info.owner, organizationAccount);
       assert.equal(info.dataUri, 'dataUri');
       assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
@@ -139,20 +138,20 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[0].args[1], testSegmentDirectory.address);
       assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[1].args[0], testSegmentDirectory.address);
-      assert.equal(receipt.logs[1].args[1], foodTruckAccount);
+      assert.equal(receipt.logs[1].args[1], organizationAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
       assert.equal(receipt.logs[2].args.organization, address);
     });
 
     it('should not add the organization into any mapping', async () => {
-      await testSegmentDirectory.createFoodTruck('dataUri', { from: foodTruckAccount });
+      await testSegmentDirectory.create('dataUri', { from: organizationAccount });
       const orgList = await segmentDirectory.getOrganizations();
       assert.equal(help.filterZeroAddresses(orgList).length, 0);
     });
 
     it('should not create an organization with empty dataUri', async () => {
       try {
-        await testSegmentDirectory.createFoodTruck('', { from: foodTruckAccount });
+        await testSegmentDirectory.create('', { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -160,35 +159,34 @@ contract('TestSegmentDirectory', (accounts) => {
     });
   });
 
-  describe('addFoodTruck', () => {
+  describe('add', () => {
     let organization;
     beforeEach(async () => {
-      organization = await Organization.new('dataUri', { from: foodTruckAccount });
+      organization = await Organization.new('dataUri', { from: organizationAccount });
     });
 
     it('should add the organization to the registry', async () => {
-      const receipt = await testSegmentDirectory.addFoodTruck(organization.address, { from: foodTruckAccount });
+      const receipt = await testSegmentDirectory.add(organization.address, { from: organizationAccount });
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationAdded');
       assert.equal(receipt.logs[0].args.organization, organization.address);
       assert.equal(receipt.logs[0].args.index, 1);
 
-      const allFoodTrucks = await help.jsArrayFromSolidityArray(
+      const allOrganizations = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
-      const foodTruck = allFoodTrucks[0];
-      assert.isDefined(foodTruck);
-      assert.isFalse(help.isZeroAddress(foodTruck));
+      const actualIndexPos = await segmentDirectory.organizationsIndex(allOrganizations[0]);
+      assert.isDefined(allOrganizations[0]);
+      assert.isFalse(help.isZeroAddress(allOrganizations[0]));
       assert.equal(actualIndexPos, 1);
     });
 
     it('should throw if adding an already added organization', async () => {
-      await testSegmentDirectory.addFoodTruck(organization.address, { from: foodTruckAccount });
+      await testSegmentDirectory.add(organization.address, { from: organizationAccount });
       try {
-        await testSegmentDirectory.addFoodTruck(organization.address, { from: foodTruckAccount });
+        await testSegmentDirectory.add(organization.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -197,7 +195,7 @@ contract('TestSegmentDirectory', (accounts) => {
 
     it('should throw if adding organization on a zero address', async () => {
       try {
-        await testSegmentDirectory.addFoodTruck(help.zeroAddress, { from: foodTruckAccount });
+        await testSegmentDirectory.add(help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -206,16 +204,16 @@ contract('TestSegmentDirectory', (accounts) => {
 
     it('should throw if somebody is adding organization which she does not own', async () => {
       try {
-        await testSegmentDirectory.addFoodTruck(organization.address, { from: nonOwnerAccount });
+        await testSegmentDirectory.add(organization.address, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should not add a FoodTruck that does not support OrganizationInterface', async () => {
+    it('should not add an Organization that does not support OrganizationInterface', async () => {
       try {
-        await testSegmentDirectory.addFoodTruck(nonOwnerAccount, { from: nonOwnerAccount });
+        await testSegmentDirectory.add(nonOwnerAccount, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -223,32 +221,32 @@ contract('TestSegmentDirectory', (accounts) => {
     });
 
     it('should add a custom organization contract', async () => {
-      const customOrg = await CustomOrganizationTest.new({ from: foodTruckAccount });
-      const receipt = await testSegmentDirectory.addFoodTruck(customOrg.address, { from: foodTruckAccount });
+      const customOrg = await CustomOrganizationTest.new({ from: organizationAccount });
+      const receipt = await testSegmentDirectory.add(customOrg.address, { from: organizationAccount });
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationAdded');
       assert.equal(receipt.logs[0].args.organization, customOrg.address);
       assert.equal(receipt.logs[0].args.index, 1);
 
-      const allFoodTrucks = await help.jsArrayFromSolidityArray(
+      const allOrganizations = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
-      const foodTruck = allFoodTrucks[0];
-      assert.isDefined(foodTruck);
-      assert.isFalse(help.isZeroAddress(foodTruck));
+      const actualIndexPos = await segmentDirectory.organizationsIndex(allOrganizations[0]);
+      const organization = allOrganizations[0];
+      assert.isDefined(organization);
+      assert.isFalse(help.isZeroAddress(organization));
       assert.equal(actualIndexPos, 1);
       const org = await OrganizationInterface.at(customOrg.address);
       assert.equal(await org.getDataUri(), 'https://super-sweet-custom-organization.com');
     });
   });
 
-  describe('createAndAddFoodTruck', () => {
+  describe('createAndAdd', () => {
     it('should create and add the organization to the registry', async () => {
-      const address = await testSegmentDirectory.createAndAddFoodTruck.call('dataUri', { from: foodTruckAccount });
-      const receipt = await testSegmentDirectory.createAndAddFoodTruck('dataUri', { from: foodTruckAccount });
+      const address = await testSegmentDirectory.createAndAdd.call('dataUri', { from: organizationAccount });
+      const receipt = await testSegmentDirectory.createAndAdd('dataUri', { from: organizationAccount });
       const organization = await Organization.at(address);
       assert.equal(receipt.logs.length, 4);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
@@ -256,60 +254,58 @@ contract('TestSegmentDirectory', (accounts) => {
       assert.equal(receipt.logs[0].args[1], testSegmentDirectory.address);
       assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[1].args[0], testSegmentDirectory.address);
-      assert.equal(receipt.logs[1].args[1], foodTruckAccount);
+      assert.equal(receipt.logs[1].args[1], organizationAccount);
       assert.equal(receipt.logs[2].event, 'OrganizationCreated');
       assert.equal(receipt.logs[2].args.organization, organization.address);
       assert.equal(receipt.logs[3].event, 'OrganizationAdded');
       assert.equal(receipt.logs[3].args.organization, organization.address);
       assert.equal(receipt.logs[3].args.index, 1);
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.owner, foodTruckAccount);
+      assert.equal(info.owner, organizationAccount);
       assert.equal(info.dataUri, 'dataUri');
-      const allFoodTrucks = await help.jsArrayFromSolidityArray(
+      const allOrganizations = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      const actualIndexPos = await segmentDirectory.organizationsIndex(allFoodTrucks[0]);
-      const foodTruck = allFoodTrucks[0];
-      assert.isDefined(foodTruck);
-      assert.isFalse(help.isZeroAddress(foodTruck));
+      const actualIndexPos = await segmentDirectory.organizationsIndex(allOrganizations[0]);
+      assert.isDefined(allOrganizations[0]);
+      assert.isFalse(help.isZeroAddress(allOrganizations[0]));
       assert.equal(actualIndexPos, 1);
     });
   });
 
-  describe('removeFoodTruck', () => {
+  describe('remove', () => {
     let organization;
     beforeEach(async () => {
-      const receipt = await testSegmentDirectory.createAndAddFoodTruck('aaa', { from: foodTruckAccount });
+      const receipt = await testSegmentDirectory.createAndAdd('aaa', { from: organizationAccount });
       organization = await Organization.at(receipt.logs[2].args[0]);
     });
 
     it('should remove organization from the directory', async () => {
-      const receipt = await testSegmentDirectory.removeFoodTruck(organization.address, { from: foodTruckAccount });
-      const allFoodTrucks = await help.jsArrayFromSolidityArray(
+      const receipt = await testSegmentDirectory.remove(organization.address, { from: organizationAccount });
+      const allOrganizations = await help.jsArrayFromSolidityArray(
         segmentDirectory.organizations,
         await segmentDirectory.getOrganizationsLength(),
         help.isZeroAddress
       );
-      assert.equal(allFoodTrucks.length, 0);
-      const foodTruck = allFoodTrucks[0];
-      assert.isUndefined(foodTruck);
+      assert.equal(allOrganizations.length, 0);
+      assert.isUndefined(allOrganizations[0]);
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'OrganizationRemoved');
       assert.equal(receipt.logs[0].args[0], organization.address);
     });
 
     it('should not destroy the organization contract', async () => {
-      await testSegmentDirectory.removeFoodTruck(organization.address, { from: foodTruckAccount });
+      await testSegmentDirectory.remove(organization.address, { from: organizationAccount });
       const code = await help.promisify(cb => web3.eth.getCode(organization.address, cb));
       assert.isAtLeast(code.length, 4);
     });
 
     it('should throw if somebody is removing organization which she does not own', async () => {
       try {
-        await organization.transferOwnership(nonOwnerAccount, { from: foodTruckAccount });
-        await testSegmentDirectory.removeFoodTruck(organization.address, { from: foodTruckAccount });
+        await organization.transferOwnership(nonOwnerAccount, { from: organizationAccount });
+        await testSegmentDirectory.remove(organization.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -318,7 +314,7 @@ contract('TestSegmentDirectory', (accounts) => {
 
     it('should throw if organization is not added', async () => {
       try {
-        await testSegmentDirectory.removeFoodTruck(nonOwnerAccount, { from: foodTruckAccount });
+        await testSegmentDirectory.remove(nonOwnerAccount, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -327,7 +323,7 @@ contract('TestSegmentDirectory', (accounts) => {
 
     it('should throw if organization is on zero address', async () => {
       try {
-        await testSegmentDirectory.removeFoodTruck(help.zeroAddress, { from: foodTruckAccount });
+        await testSegmentDirectory.remove(help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -336,7 +332,7 @@ contract('TestSegmentDirectory', (accounts) => {
 
     it('should throw if organization non-owner initiates the removing', async () => {
       try {
-        await testSegmentDirectory.removeFoodTruck(organization.address, { from: nonOwnerAccount });
+        await testSegmentDirectory.remove(organization.address, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

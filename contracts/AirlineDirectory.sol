@@ -7,42 +7,7 @@ import "./SegmentDirectory.sol";
  * @title AirlineDirectory
  * @dev The airlines are stored in an array
  */
-contract AirlineDirectory is SegmentDirectory, AirlineDirectoryInterface {
-
-    /**
-     * @dev `createAirline` proxies and externalizes createOrganization
-     * @param  dataUri Airline's data pointer
-     * @return {" ": "Address of the new airline."}
-     */
-    function createAirline(string calldata dataUri) external returns (address) {
-        return createOrganization(dataUri);
-    }
-
-    /**
-     * @dev `addAirline` proxies and externalizes addOrganization
-     * @param  airline Airline's address
-     * @return {" ": "Address of the airline."}
-     */
-    function addAirline(address airline) external returns (address) {
-        return addOrganization(airline);
-    }
-
-    /**
-     * @dev `createAndAddAirline` proxies and externalizes createAndAddOrganization
-     * @param  dataUri Airline's data pointer
-     * @return {" ": "Address of the new airline."}
-     */
-    function createAndAddAirline(string calldata dataUri) external returns (address) {
-        return createAndAddOrganization(dataUri);
-    }
-
-    /**
-     * @dev `removeAirline` proxies and externalizes removeOrganization
-     * @param  airline  Airline's address
-     */
-    function removeAirline(address airline) external {
-        return removeOrganization(airline);
-    }
+contract AirlineDirectory is AirlineDirectoryInterface, SegmentDirectory {
 
     /**
      * @dev `getAirlinesLength` proxies getOrganizationsLength

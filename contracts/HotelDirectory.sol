@@ -7,42 +7,7 @@ import "./SegmentDirectory.sol";
  * @title HotelDirectory
  * @dev The hotels are stored in an array
  */
-contract HotelDirectory is SegmentDirectory, HotelDirectoryInterface {
-
-    /**
-     * @dev `createHotel` proxies and externalizes createOrganization
-     * @param  dataUri Hotel's data pointer
-     * @return {" ": "Address of the new hotel."}
-     */
-    function createHotel(string calldata dataUri) external returns (address) {
-        return createOrganization(dataUri);
-    }
-
-    /**
-     * @dev `addHotel` proxies and externalizes addOrganization
-     * @param  hotel Hotel's address
-     * @return {" ": "Address of the hotel."}
-     */
-    function addHotel(address hotel) external returns (address) {
-        return addOrganization(hotel);
-    }
-
-    /**
-     * @dev `createAndAddHotel` proxies and externalizes createAndAddOrganization
-     * @param  dataUri Hotel's data pointer
-     * @return {" ": "Address of the new hotel."}
-     */
-    function createAndAddHotel(string calldata dataUri) external returns (address) {
-        return createAndAddOrganization(dataUri);
-    }
-
-    /**
-     * @dev `removeHotel` proxies and externalizes removeOrganization
-     * @param  hotel  Hotel's address
-     */
-    function removeHotel(address hotel) external {
-        return removeOrganization(hotel);
-    }
+contract HotelDirectory is HotelDirectoryInterface, SegmentDirectory {
 
     /**
      * @dev `getHotelsLength` proxies getOrganizationsLength

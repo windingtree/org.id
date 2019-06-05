@@ -110,6 +110,41 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
     }
 
     /**
+     * @dev `create` proxies and externalizes createOrganization
+     * @param  dataUri Organization's data pointer
+     * @return {" ": "Address of the new organization."}
+     */
+    function create(string calldata dataUri) external returns (address) {
+        return createOrganization(dataUri);
+    }
+
+    /**
+     * @dev `add` proxies and externalizes addOrganization
+     * @param  organization Organization's address
+     * @return {" ": "Address of the organization."}
+     */
+    function add(address organization) external returns (address) {
+        return addOrganization(organization);
+    }
+
+    /**
+     * @dev `createAndAdd` proxies and externalizes createAndAddOrganization
+     * @param  dataUri Organization's data pointer
+     * @return {" ": "Address of the new organization."}
+     */
+    function createAndAdd(string calldata dataUri) external returns (address) {
+        return createAndAddOrganization(dataUri);
+    }
+
+    /**
+     * @dev `remove` proxies and externalizes removeOrganization
+     * @param  organization  Organization's address
+     */
+    function remove(address organization) external {
+        return removeOrganization(organization);
+    }
+
+    /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _lifToken The new contract address

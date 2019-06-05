@@ -6,10 +6,10 @@ import "./SegmentDirectoryEvents.sol";
  * Interface of Ota Directory. Usable in libraries.
  */
 contract OtaDirectoryInterface is SegmentDirectoryEvents {
-    function createOta(string calldata dataUri) external returns (address);
-    function createAndAddOta(string calldata dataUri) external returns (address);
-    function addOta(address ota) external returns (address);
-    function removeOta(address ota) external;
+    function create(string calldata dataUri) external returns (address);
+    function createAndAdd(string calldata dataUri) external returns (address);
+    function add(address hotel) external returns (address);
+    function remove(address hotel) external;
     function getOtasLength() public view returns (uint);
     function getOtas() public view returns (address[] memory);
     function otasIndex(address ota) public view returns (uint);
