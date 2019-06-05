@@ -1,18 +1,18 @@
 pragma solidity ^0.5.6;
 
-import "../HotelDirectory.sol";
+import "../SegmentDirectory.sol";
 import "./OrganizationUpgradeabilityTest.sol";
 
-contract HotelDirectoryUpgradeabilityTest is HotelDirectory {
+contract SegmentDirectoryUpgradeabilityTest is SegmentDirectory {
 
     function createAndAdd(string calldata dataUri) external returns (address) {
         OrganizationUpgradeabilityTest newOrganization = new OrganizationUpgradeabilityTest(dataUri);
         address newOrganizationAddress = address(newOrganization);
-        organizationsIndex[newOrganizationAddress] = organizations.length;
-        organizations.push(newOrganizationAddress);
+        _organizationsIndex[newOrganizationAddress] = _organizations.length;
+        _organizations.push(newOrganizationAddress);
         emit OrganizationAdded(
             newOrganizationAddress,
-            organizationsIndex[newOrganizationAddress]
+            _organizationsIndex[newOrganizationAddress]
         );
         return newOrganizationAddress;
     }

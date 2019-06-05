@@ -52,7 +52,7 @@ module.exports = {
     const arr = [];
 
     for (let i = 0; i < length; i++) {
-      let item = await getAtIndex(i);
+      let item = await getAtIndex(i).call();
       arr.push(item);
     };
 

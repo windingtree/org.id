@@ -4,30 +4,18 @@ import "zos-lib/contracts/Initializable.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
 import "./OrganizationInterface.sol";
 import "./Organization.sol";
-import "./SegmentDirectoryEvents.sol";
+import "./AbstractSegmentDirectory.sol";
 
 /**
  * An abstract SegmentDirectory that can handle a list of organizations
  */
-contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
+contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
     // Array of addresses of `Organization` contracts
-    address[] public organizations;
+    address[] public _organizations;
 
     // Mapping of organizations position in the general organization index
-    mapping(address => uint) public organizationsIndex;
-
-    // Mapping of organizations indexed by owner's address. Deprecated,
-    // we cannot keep this consistent when organizations might change owners
-    // at any time. Do not delete this field as it would break the zos
-    // upgradeability.
-    mapping(address => address[]) public organizationsByOwnerDeprecated;
-
-    // Mapping of organizations position in the owner-indexed organization
-    // index. Deprecated, we cannot keep this consistent when organizations
-    // might change owners at any time. Do not delete this field as it would
-    // break the zos upgradeability.
-    mapping(address => uint) public organizationsByOwnerIndexDeprecated;
+    mapping(address => uint) public _organizationsIndex;
 
     // Address of the LifToken contract
     // solhint-disable-next-line var-name-mixedcase
@@ -60,7 +48,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      */
     function addOrganization(address organization) internal returns (address) {
         // this is intentionally not part of the state variables as we expect it to change in time.
-        require(organizationsIndex[organization] == 0, 'Cannot add organization twice');
+        require(_organizationsIndex[organization] == 0, 'Cannot add organization twice');
         bytes4 _INTERFACE_ID_ORGANIZATION = 0xef209adb;
         require(
             ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION),
@@ -68,11 +56,11 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         );
         OrganizationInterface org = OrganizationInterface(organization);
         require(org.owner() == msg.sender, 'Only organization owner can register the organization');
-        organizationsIndex[organization] = organizations.length;
-        organizations.push(organization);
+        _organizationsIndex[organization] = _organizations.length;
+        _organizations.push(organization);
         emit OrganizationAdded(
             organization,
-            organizationsIndex[organization]
+            _organizationsIndex[organization]
         );
         return organization;
     }
@@ -98,14 +86,14 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         // Ensure organization address is valid
         require(organization != address(0), 'Cannot remove organization on 0x0 address');
         // Ensure we know about the organization at all
-        require(organizationsIndex[organization] != uint(0), 'Cannot remove unknown organization');
+        require(_organizationsIndex[organization] != uint(0), 'Cannot remove unknown organization');
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
         OrganizationInterface org = OrganizationInterface(organization);
         require(org.owner() == msg.sender);
-        uint allIndex = organizationsIndex[organization];
-        delete organizations[allIndex];
-        delete organizationsIndex[organization];
+        uint allIndex = _organizationsIndex[organization];
+        delete _organizations[allIndex];
+        delete _organizationsIndex[organization];
         emit OrganizationRemoved(organization);
     }
 
@@ -153,7 +141,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
         LifToken = _lifToken;
-        organizations.length++;
+        _organizations.length++;
     }
 
     /**
@@ -161,7 +149,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Length of the organizations array. Might contain zero addresses."}
      */
     function getOrganizationsLength() public view returns (uint) {
-        return organizations.length;
+        return _organizations.length;
     }
 
     /**
@@ -169,7 +157,15 @@ contract SegmentDirectory is Initializable, SegmentDirectoryEvents {
      * @return {" ": "Array of organization addresses. Might contain zero addresses."}
      */
     function getOrganizations() public view returns (address[] memory) {
-        return organizations;
+        return _organizations;
+    }
+
+    function organizationsIndex(address organization) public view returns (uint) {
+        return _organizationsIndex[organization];
+    }
+
+    function organizations(uint index) public view returns (address) {
+        return _organizations[index];
     }
 
     /**
