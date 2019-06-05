@@ -44,6 +44,7 @@ contract WindingTreeEntrypoint is Initializable {
         LifToken = _lifToken;
         segments.length++;
     }
+    
     /**
      * @dev Throws if called by any account other than the owner.
      */

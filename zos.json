@@ -15,6 +15,9 @@
     "DemoEntrypoint": "WindingTreeEntrypoint",
     "DemoHotelDirectory": "HotelDirectory",
     "DemoAirlineDirectory": "AirlineDirectory",
-    "DemoOtaDirectory": "OtaDirectory"
+    "DemoOtaDirectory": "OtaDirectory",
+    "Organization": "Organization",
+    "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
+    "AirlineDirectoryUpgradeabilityTest": "AirlineDirectoryUpgradeabilityTest"
   }
 }

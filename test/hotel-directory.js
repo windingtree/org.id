@@ -32,7 +32,7 @@ contract('HotelDirectory', (accounts) => {
     hotelDirectoryProxy = await project.createProxy(HotelDirectory, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [hotelDirectoryOwner, tokenAddress],
+      initArgs: [hotelDirectoryOwner, tokenAddress, project.app.address],
     });
     hotelDirectory = await HotelDirectoryInterface.at(hotelDirectoryProxy.address);
   });
@@ -66,15 +66,12 @@ contract('HotelDirectory', (accounts) => {
     it('should create hotel', async () => {
       const address = await hotelDirectory.createHotel.call('dataUri', { from: hotelAccount });
       const receipt = await hotelDirectory.createHotel('dataUri', { from: hotelAccount });
-      assert.equal(receipt.logs.length, 3);
+      assert.equal(receipt.logs.length, 2);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], hotelDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], hotelDirectory.address);
-      assert.equal(receipt.logs[1].args[1], hotelAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args.organization, address);
+      assert.equal(receipt.logs[0].args[1], hotelAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
     });
   });
 
@@ -94,18 +91,15 @@ contract('HotelDirectory', (accounts) => {
     it('should create and add hotel', async () => {
       const address = await hotelDirectory.createAndAddHotel.call('dataUri', { from: hotelAccount });
       const receipt = await hotelDirectory.createAndAddHotel('dataUri', { from: hotelAccount });
-      assert.equal(receipt.logs.length, 4);
+      assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], hotelDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], hotelDirectory.address);
-      assert.equal(receipt.logs[1].args[1], hotelAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[0].args[1], hotelAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
+      assert.equal(receipt.logs[2].event, 'OrganizationAdded');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
-      assert.equal(receipt.logs[3].args.organization, address);
-      assert.equal(receipt.logs[3].args.index, 1);
+      assert.equal(receipt.logs[2].args.index, 1);
     });
   });
 

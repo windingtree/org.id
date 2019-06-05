@@ -1,12 +1,12 @@
 * [TestSegmentDirectory](#testsegmentdirectory)
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
-  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [organizationsIndex](#function-organizationsindex)
   * [owner](#function-owner)
   * [getOrganizations](#function-getorganizations)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [initialize](#function-initialize)
   * [addFoodTruck](#function-addfoodtruck)
   * [removeFoodTruck](#function-removefoodtruck)
   * [organizations](#function-organizations)
@@ -33,20 +33,6 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 | *uint256* |  | undefined |
-
-
-## *function* initialize
-
-TestSegmentDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The new contract address |
 
 
 ## *function* LifToken
@@ -117,6 +103,21 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* initialize
+
+TestSegmentDirectory.initialize(__owner, _lifToken, _app) `nonpayable` `c0c53b8b`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+| *address* | _app | ZeppelinOS App address |
+
 
 ## *function* addFoodTruck
 

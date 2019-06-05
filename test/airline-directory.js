@@ -32,7 +32,7 @@ contract('AirlineDirectory', (accounts) => {
     airlineDirectoryProxy = await project.createProxy(AirlineDirectory, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [airlineDirectoryOwner, tokenAddress],
+      initArgs: [airlineDirectoryOwner, tokenAddress, project.app.address],
     });
     airlineDirectory = await AirlineDirectoryInterface.at(airlineDirectoryProxy.address);
   });
@@ -66,15 +66,12 @@ contract('AirlineDirectory', (accounts) => {
     it('should create airline', async () => {
       const address = await airlineDirectory.createAirline.call('dataUri', { from: airlineAccount });
       const receipt = await airlineDirectory.createAirline('dataUri', { from: airlineAccount });
-      assert.equal(receipt.logs.length, 3);
+      assert.equal(receipt.logs.length, 2);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], airlineDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], airlineDirectory.address);
-      assert.equal(receipt.logs[1].args[1], airlineAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
-      assert.equal(receipt.logs[2].args.organization, address);
+      assert.equal(receipt.logs[0].args[1], airlineAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
     });
   });
 
@@ -94,18 +91,15 @@ contract('AirlineDirectory', (accounts) => {
     it('should create and add airline', async () => {
       const address = await airlineDirectory.createAndAddAirline.call('dataUri', { from: airlineAccount });
       const receipt = await airlineDirectory.createAndAddAirline('dataUri', { from: airlineAccount });
-      assert.equal(receipt.logs.length, 4);
+      assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
-      assert.equal(receipt.logs[0].args[1], airlineDirectory.address);
-      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
-      assert.equal(receipt.logs[1].args[0], airlineDirectory.address);
-      assert.equal(receipt.logs[1].args[1], airlineAccount);
-      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[0].args[1], airlineAccount);
+      assert.equal(receipt.logs[1].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[1].args.organization, address);
+      assert.equal(receipt.logs[2].event, 'OrganizationAdded');
       assert.equal(receipt.logs[2].args.organization, address);
-      assert.equal(receipt.logs[3].event, 'OrganizationAdded');
-      assert.equal(receipt.logs[3].args.organization, address);
-      assert.equal(receipt.logs[3].args.index, 1);
+      assert.equal(receipt.logs[2].args.index, 1);
     });
   });
 

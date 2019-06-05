@@ -3,7 +3,6 @@
   * [createAndAddOta](#function-createandaddota)
   * [createOta](#function-createota)
   * [otasIndex](#function-otasindex)
-  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
   * [getOtas](#function-getotas)
@@ -13,6 +12,7 @@
   * [getOrganizations](#function-getorganizations)
   * [otas](#function-otas)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [initialize](#function-initialize)
   * [getOtasLength](#function-getotaslength)
   * [removeOta](#function-removeota)
   * [organizations](#function-organizations)
@@ -92,20 +92,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* initialize
-
-OtaDirectory.initialize(__owner, _lifToken) `nonpayable` `485cc955`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The new contract address |
-
 
 ## *function* LifToken
 
@@ -225,6 +211,21 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* initialize
+
+OtaDirectory.initialize(__owner, _lifToken, _app) `nonpayable` `c0c53b8b`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+| *address* | _app | ZeppelinOS App address |
+
 
 ## *function* getOtasLength
 

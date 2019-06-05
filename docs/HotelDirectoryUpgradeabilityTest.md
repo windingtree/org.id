@@ -3,7 +3,6 @@
   * [organizationsByOwnerDeprecated](#function-organizationsbyownerdeprecated)
   * [newFunction](#function-newfunction)
   * [removeHotel](#function-removehotel)
-  * [initialize](#function-initialize)
   * [addHotel](#function-addhotel)
   * [LifToken](#function-liftoken)
   * [organizationsByOwnerIndexDeprecated](#function-organizationsbyownerindexdeprecated)
@@ -14,6 +13,7 @@
   * [getOrganizations](#function-getorganizations)
   * [hotelsIndex](#function-hotelsindex)
   * [getOrganizationsLength](#function-getorganizationslength)
+  * [initialize](#function-initialize)
   * [getHotelsLength](#function-gethotelslength)
   * [hotels](#function-hotels)
   * [organizations](#function-organizations)
@@ -73,20 +73,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | hotel | Hotel's address |
-
-
-## *function* initialize
-
-HotelDirectoryUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The new contract address |
 
 
 ## *function* addHotel
@@ -223,6 +209,21 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* initialize
+
+HotelDirectoryUpgradeabilityTest.initialize(__owner, _lifToken, _app) `nonpayable` `c0c53b8b`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The new contract address |
+| *address* | _app | ZeppelinOS App address |
+
 
 ## *function* getHotelsLength
 
