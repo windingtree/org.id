@@ -4,17 +4,15 @@
   "version": "0.6.1",
   "publish": true,
   "contracts": {
-    "HotelDirectory": "HotelDirectory",
-    "AirlineDirectory": "AirlineDirectory",
-    "OtaDirectory": "OtaDirectory",
     "WindingTreeEntrypoint": "WindingTreeEntrypoint",
     "PlaygroundEntrypoint": "WindingTreeEntrypoint",
-    "PlaygroundHotelDirectory": "HotelDirectory",
-    "PlaygroundAirlineDirectory": "AirlineDirectory",
-    "PlaygroundOtaDirectory": "OtaDirectory",
+    "PlaygroundHotelDirectory": "SegmentDirectory",
+    "PlaygroundAirlineDirectory": "SegmentDirectory",
+    "PlaygroundOtaDirectory": "SegmentDirectory",
     "DemoEntrypoint": "WindingTreeEntrypoint",
-    "DemoHotelDirectory": "HotelDirectory",
-    "DemoAirlineDirectory": "AirlineDirectory",
-    "DemoOtaDirectory": "OtaDirectory"
+    "DemoHotelDirectory": "SegmentDirectory",
+    "DemoAirlineDirectory": "SegmentDirectory",
+    "DemoOtaDirectory": "SegmentDirectory",
+    "SegmentDirectory": "SegmentDirectory"
   }
 }

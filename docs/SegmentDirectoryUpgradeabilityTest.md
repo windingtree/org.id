@@ -1,5 +1,6 @@
-* [SegmentDirectory](#segmentdirectory)
+* [SegmentDirectoryUpgradeabilityTest](#segmentdirectoryupgradeabilitytest)
   * [add](#function-add)
+  * [newFunction](#function-newfunction)
   * [getSegment](#function-getsegment)
   * [remove](#function-remove)
   * [organizationsIndex](#function-organizationsindex)
@@ -19,12 +20,12 @@
   * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
-# SegmentDirectory
+# SegmentDirectoryUpgradeabilityTest
 
 
 ## *function* add
 
-SegmentDirectory.add(organization) `nonpayable` `0a3b0a4f`
+SegmentDirectoryUpgradeabilityTest.add(organization) `nonpayable` `0a3b0a4f`
 
 > `add` proxies and externalizes addOrganization
 
@@ -40,9 +41,17 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
+## *function* newFunction
+
+SegmentDirectoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
+
+
 ## *function* getSegment
 
-SegmentDirectory.getSegment() `view` `2203793c`
+SegmentDirectoryUpgradeabilityTest.getSegment() `view` `2203793c`
 
 > `getSegment` Returns segment name
 
@@ -56,7 +65,7 @@ Outputs
 
 ## *function* remove
 
-SegmentDirectory.remove(organization) `nonpayable` `29092d0e`
+SegmentDirectoryUpgradeabilityTest.remove(organization) `nonpayable` `29092d0e`
 
 > `remove` proxies and externalizes removeOrganization
 
@@ -69,7 +78,7 @@ Inputs
 
 ## *function* organizationsIndex
 
-SegmentDirectory.organizationsIndex(organization) `view` `63cd48fb`
+SegmentDirectoryUpgradeabilityTest.organizationsIndex(organization) `view` `63cd48fb`
 
 > `organizationsIndex` get index of Organization
 
@@ -87,7 +96,7 @@ Outputs
 
 ## *function* initialize
 
-SegmentDirectory.initialize(__owner, __segment, __lifToken) `nonpayable` `7bb7c0d8`
+SegmentDirectoryUpgradeabilityTest.initialize(__owner, __segment, __lifToken) `nonpayable` `7bb7c0d8`
 
 > Initializer for upgradeable contracts.
 
@@ -102,7 +111,7 @@ Inputs
 
 ## *function* getLifToken
 
-SegmentDirectory.getLifToken() `view` `8b0728cf`
+SegmentDirectoryUpgradeabilityTest.getLifToken() `view` `8b0728cf`
 
 > `getLifToken` Returns address of set Lif token
 
@@ -116,7 +125,7 @@ Outputs
 
 ## *function* owner
 
-SegmentDirectory.owner() `view` `8da5cb5b`
+SegmentDirectoryUpgradeabilityTest.owner() `view` `8da5cb5b`
 
 > Returns the address of the current owner.
 
@@ -125,25 +134,19 @@ SegmentDirectory.owner() `view` `8da5cb5b`
 
 ## *function* createAndAdd
 
-SegmentDirectory.createAndAdd(dataUri) `nonpayable` `962cd2c9`
+SegmentDirectoryUpgradeabilityTest.createAndAdd(dataUri) `nonpayable` `962cd2c9`
 
-> `createAndAdd` proxies and externalizes createAndAddOrganization
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Organization's data pointer |
+| *string* | dataUri | undefined |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* getOrganizations
 
-SegmentDirectory.getOrganizations() `view` `9754a3a8`
+SegmentDirectoryUpgradeabilityTest.getOrganizations() `view` `9754a3a8`
 
 > `getOrganizations` get `organizations` array
 
@@ -157,7 +160,7 @@ Outputs
 
 ## *function* setSegment
 
-SegmentDirectory.setSegment(__segment) `nonpayable` `a81159ea`
+SegmentDirectoryUpgradeabilityTest.setSegment(__segment) `nonpayable` `a81159ea`
 
 > `setSegment` allows the owner of the contract to change the segment name.
 
@@ -170,7 +173,7 @@ Inputs
 
 ## *function* create
 
-SegmentDirectory.create(dataUri) `nonpayable` `b6a46b3b`
+SegmentDirectoryUpgradeabilityTest.create(dataUri) `nonpayable` `b6a46b3b`
 
 > `create` proxies and externalizes createOrganization
 
@@ -188,7 +191,7 @@ Outputs
 
 ## *function* getOrganizationsLength
 
-SegmentDirectory.getOrganizationsLength() `view` `b9306681`
+SegmentDirectoryUpgradeabilityTest.getOrganizationsLength() `view` `b9306681`
 
 > `getOrganizationsLength` get the length of the `organizations` array
 
@@ -202,7 +205,7 @@ Outputs
 
 ## *function* organizations
 
-SegmentDirectory.organizations(index) `view` `e792dd8a`
+SegmentDirectoryUpgradeabilityTest.organizations(index) `view` `e792dd8a`
 
 > `organizations` get Organization address on an index
 
@@ -220,7 +223,7 @@ Outputs
 
 ## *function* setLifToken
 
-SegmentDirectory.setLifToken(__lifToken) `nonpayable` `f2f0967b`
+SegmentDirectoryUpgradeabilityTest.setLifToken(__lifToken) `nonpayable` `f2f0967b`
 
 > `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
 
@@ -233,7 +236,7 @@ Inputs
 
 ## *function* transferOwnership
 
-SegmentDirectory.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+SegmentDirectoryUpgradeabilityTest.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Allows the current owner to transfer control of the contract to a newOwner.
 
@@ -245,7 +248,7 @@ Inputs
 
 ## *event* OrganizationCreated
 
-SegmentDirectory.OrganizationCreated(organization) `47b68893`
+SegmentDirectoryUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
 
 Arguments
 
@@ -255,7 +258,7 @@ Arguments
 
 ## *event* OrganizationAdded
 
-SegmentDirectory.OrganizationAdded(organization, index) `424a91ec`
+SegmentDirectoryUpgradeabilityTest.OrganizationAdded(organization, index) `424a91ec`
 
 Arguments
 
@@ -266,7 +269,7 @@ Arguments
 
 ## *event* OrganizationRemoved
 
-SegmentDirectory.OrganizationRemoved(organization) `ed5ec13b`
+SegmentDirectoryUpgradeabilityTest.OrganizationRemoved(organization) `ed5ec13b`
 
 Arguments
 
@@ -276,7 +279,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-SegmentDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+SegmentDirectoryUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
