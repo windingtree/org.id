@@ -58,6 +58,7 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
         created = block.number;
         delegates.length++;
         OrganizationInterface i;
+        _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
         _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
     }
 
