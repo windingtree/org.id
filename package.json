@@ -36,7 +36,7 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "openzeppelin-solidity": "^2.2.0",
-    "zos-lib": "^2.3.0"
+    "zos-lib": "^2.3.1"
   },
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
@@ -63,7 +63,7 @@
     "truffle-hdwallet-provider": "^1.0.6",
     "web3": "^1.0.0-beta.48",
     "web3-utils": "^1.0.0-beta.48",
-    "zos": "^2.3.0"
+    "zos": "^2.3.1"
   },
   "engines": {
     "node": ">=10.3.0"
