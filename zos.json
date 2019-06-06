@@ -16,8 +16,6 @@
     "DemoHotelDirectory": "HotelDirectory",
     "DemoAirlineDirectory": "AirlineDirectory",
     "DemoOtaDirectory": "OtaDirectory",
-    "Organization": "Organization",
-    "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
-    "AirlineDirectoryUpgradeabilityTest": "AirlineDirectoryUpgradeabilityTest"
+    "Organization": "Organization"
   }
 }

@@ -1,0 +1,23 @@
+{
+    "zosversion": "2.2",
+    "name": "wt-contracts",
+    "version": "0.6.1",
+    "publish": true,
+    "contracts": {
+      "HotelDirectory": "HotelDirectory",
+      "AirlineDirectory": "AirlineDirectory",
+      "OtaDirectory": "OtaDirectory",
+      "WindingTreeEntrypoint": "WindingTreeEntrypoint",
+      "PlaygroundEntrypoint": "WindingTreeEntrypoint",
+      "PlaygroundHotelDirectory": "HotelDirectory",
+      "PlaygroundAirlineDirectory": "AirlineDirectory",
+      "PlaygroundOtaDirectory": "OtaDirectory",
+      "DemoEntrypoint": "WindingTreeEntrypoint",
+      "DemoHotelDirectory": "HotelDirectory",
+      "DemoAirlineDirectory": "AirlineDirectory",
+      "DemoOtaDirectory": "OtaDirectory",
+      "Organization": "Organization",
+      "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
+      "AirlineDirectoryUpgradeabilityTest": "AirlineDirectoryUpgradeabilityTest"
+    }
+  }

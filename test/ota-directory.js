@@ -1,4 +1,4 @@
-const { TestHelper } = require('zos');
+const TestHelper = require('./helpers/zostest');
 const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
