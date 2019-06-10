@@ -5,14 +5,13 @@
   * [created](#function-created)
   * [getDataUri](#function-getdatauri)
   * [removeDelegate](#function-removedelegate)
-  * [renounceOwnership](#function-renounceownership)
   * [dataUri](#function-datauri)
   * [owner](#function-owner)
-  * [isOwner](#function-isowner)
   * [delegates](#function-delegates)
   * [delegatesIndex](#function-delegatesindex)
   * [addDelegate](#function-adddelegate)
   * [transferOwnership](#function-transferownership)
+  * [initialize](#function-initialize)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [DataUriChanged](#event-dataurichanged)
   * [DelegateAdded](#event-delegateadded)
@@ -100,15 +99,6 @@ Inputs
 | *address* | addr | Delegate's Ethereum address |
 
 
-## *function* renounceOwnership
-
-Organization.renounceOwnership() `nonpayable` `715018a6`
-
-> Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-
-
-
-
 ## *function* dataUri
 
 Organization.dataUri() `view` `8a9b29eb`
@@ -122,15 +112,6 @@ Organization.dataUri() `view` `8a9b29eb`
 Organization.owner() `view` `8da5cb5b`
 
 > Returns the address of the current owner.
-
-
-
-
-## *function* isOwner
-
-Organization.isOwner() `view` `8f32d59b`
-
-> Returns true if the caller is the current owner.
 
 
 
@@ -181,14 +162,27 @@ Outputs
 
 Organization.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
-> Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
+> Allows the current owner to transfer control of the contract to a newOwner.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | newOwner | undefined |
+| *address* | newOwner | The address to transfer ownership to. |
 
+
+## *function* initialize
+
+Organization.initialize(__owner, _dataUri) `nonpayable` `f399e22e`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *string* | _dataUri | pointer to Organization data |
 
 ## *event* OwnershipTransferred
 

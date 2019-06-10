@@ -1,6 +1,7 @@
 pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
+import "zos-lib/contracts/application/App.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
 import "./OrganizationInterface.sol";
 import "./Organization.sol";
@@ -10,6 +11,8 @@ import "./AbstractSegmentDirectory.sol";
  * A SegmentDirectory that can handle a list of organizations
  */
 contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
+    // ZeppelinOS App instance
+    App internal app;
 
     // Address of the contract owner
     address _owner;
@@ -35,9 +38,14 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @return {" ": "Address of the new organization."}
      */
     function createOrganization(string memory dataUri) internal returns (address) {
-        Organization newOrganization = new Organization(dataUri);
-        newOrganization.transferOwnership(msg.sender);
-        address newOrganizationAddress = address(newOrganization);
+        address newOrganizationAddress = address(
+            app.create(
+                "wt-contracts", 
+                "Organization", 
+                _owner, 
+                abi.encodeWithSignature("initialize(address,string)", msg.sender, dataUri)
+            )
+        );
         emit OrganizationCreated(newOrganizationAddress);
         return newOrganizationAddress;
     }
@@ -139,12 +147,19 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @param __owner The address of the contract owner
      * @param __segment The segment name
      * @param __lifToken The Lif Token contract address
+     * @param _app ZeppelinOS App address
      */
-    function initialize(address payable __owner, string memory __segment, address __lifToken) public initializer {
+    function initialize(
+        address payable __owner,
+        string memory __segment,
+        address __lifToken,
+        App _app)
+    public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         require(bytes(__segment).length != 0, 'Segment cannot be empty');
         _owner = __owner;
         _lifToken = __lifToken;
+        app = _app;
         _organizations.length++;
         _segment = __segment;
     }

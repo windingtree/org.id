@@ -4,13 +4,13 @@
   * [getSegment](#function-getsegment)
   * [remove](#function-remove)
   * [organizationsIndex](#function-organizationsindex)
-  * [initialize](#function-initialize)
   * [getLifToken](#function-getliftoken)
   * [owner](#function-owner)
   * [createAndAdd](#function-createandadd)
   * [getOrganizations](#function-getorganizations)
   * [setSegment](#function-setsegment)
   * [create](#function-create)
+  * [initialize](#function-initialize)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
@@ -94,21 +94,6 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* initialize
-
-SegmentDirectoryUpgradeabilityTest.initialize(__owner, __segment, __lifToken) `nonpayable` `7bb7c0d8`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *string* | __segment | The segment name |
-| *address* | __lifToken | The Lif Token contract address |
-
-
 ## *function* getLifToken
 
 SegmentDirectoryUpgradeabilityTest.getLifToken() `view` `8b0728cf`
@@ -188,6 +173,22 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
+
+## *function* initialize
+
+SegmentDirectoryUpgradeabilityTest.initialize(__owner, __segment, __lifToken, _app) `nonpayable` `b8f88d64`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *string* | __segment | The segment name |
+| *address* | __lifToken | The Lif Token contract address |
+| *address* | _app | ZeppelinOS App address |
+
 
 ## *function* getOrganizationsLength
 

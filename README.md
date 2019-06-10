@@ -175,22 +175,22 @@ interacted with.
     ```
 4. Create the proxy instances of deployed contracts you can interact with. The `args`
 attribute is passed to the initialize function that sets the `owner` of the Index (it
-can be an address of a multisig) and an actual instance of
-[Lif token](https://github.com/windingtree/lif-token). You don't need Lif token to play with
-this locally.
+can be an address of a multisig), segment name, actual instance of
+[Lif token](https://github.com/windingtree/lif-token) and a `zos app` address. The zos app
+address (`0x988..` example below might differ). You don't need Lif token to play with this locally.
     ```bash
-    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x988f24d8356bf7e3D4645BA34068a5723BF3ec6B
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console.
 ```bash
 > ./node_modules/.bin/truffle console --network development
-truffle(development)> contract = await HotelDirectory.at('0x...address returned by zos create command')
+truffle(development)> contract = await SegmentDirectory.at('0x...address returned by zos create command')
 undefined
-truffle(development)> contract.getHotels()
+truffle(development)> contract.getOrganizations()
 [ '0x0000000000000000000000000000000000000000' ]
-truffle(development)> contract.createAndAddHotel('http://windingtree.com')
-truffle(development)> contract.getHotels()
+truffle(development)> contract.createAndAdd('http://windingtree.com')
+truffle(development)> contract.getOrganizations()
 [ '0x0000000000000000000000000000000000000000',
   '0x4D377b0a8fa386FA118B09947eEE2B1f7f126C76' ]
 ```

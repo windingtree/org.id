@@ -13,6 +13,7 @@
     "DemoHotelDirectory": "SegmentDirectory",
     "DemoAirlineDirectory": "SegmentDirectory",
     "DemoOtaDirectory": "SegmentDirectory",
-    "SegmentDirectory": "SegmentDirectory"
+    "SegmentDirectory": "SegmentDirectory",
+    "Organization": "Organization"
   }
 }
