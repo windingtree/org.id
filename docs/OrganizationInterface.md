@@ -1,6 +1,6 @@
 * [OrganizationInterface](#organizationinterface)
   * [supportsInterface](#function-supportsinterface)
-  * [isDelegate](#function-isdelegate)
+  * [hasDelegate](#function-hasdelegate)
   * [getDataUri](#function-getdatauri)
   * [owner](#function-owner)
 
@@ -20,9 +20,9 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* isDelegate
+## *function* hasDelegate
 
-OrganizationInterface.isDelegate(addr) `view` `07779627`
+OrganizationInterface.hasDelegate(addr) `view` `480005cd`
 
 > Returns if an `address` is Organization's delegate. Delegates can operate on behalf of the organization, typically sign messages.
 

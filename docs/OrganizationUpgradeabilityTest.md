@@ -1,9 +1,9 @@
 * [OrganizationUpgradeabilityTest](#organizationupgradeabilitytest)
   * [supportsInterface](#function-supportsinterface)
-  * [isDelegate](#function-isdelegate)
   * [changeDataUri](#function-changedatauri)
   * [newFunction](#function-newfunction)
   * [created](#function-created)
+  * [hasDelegate](#function-hasdelegate)
   * [getDataUri](#function-getdatauri)
   * [removeDelegate](#function-removedelegate)
   * [renounceOwnership](#function-renounceownership)
@@ -35,24 +35,6 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* isDelegate
-
-OrganizationUpgradeabilityTest.isDelegate(addr) `view` `07779627`
-
-> Is an address considered a delegate for this organization?
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | undefined |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bool* |  | undefined |
-
 ## *function* changeDataUri
 
 OrganizationUpgradeabilityTest.changeDataUri(_dataUri) `nonpayable` `18f9205d`
@@ -81,6 +63,24 @@ OrganizationUpgradeabilityTest.created() `view` `325a19f1`
 
 
 
+
+## *function* hasDelegate
+
+OrganizationUpgradeabilityTest.hasDelegate(addr) `view` `480005cd`
+
+> Is an address considered a delegate for this organization?
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | undefined |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
 
 ## *function* getDataUri
 

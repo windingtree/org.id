@@ -1,6 +1,6 @@
 * [CustomOrganizationTest](#customorganizationtest)
   * [supportsInterface](#function-supportsinterface)
-  * [isDelegate](#function-isdelegate)
+  * [hasDelegate](#function-hasdelegate)
   * [getDataUri](#function-getdatauri)
   * [owner](#function-owner)
 
@@ -20,9 +20,9 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* isDelegate
+## *function* hasDelegate
 
-CustomOrganizationTest.isDelegate(addr) `view` `07779627`
+CustomOrganizationTest.hasDelegate(addr) `view` `480005cd`
 
 
 Inputs
