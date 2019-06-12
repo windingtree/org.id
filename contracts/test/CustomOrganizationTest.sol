@@ -9,7 +9,7 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
     constructor() public {
         OrganizationInterface i;
         _owner = msg.sender;
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
+        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.hasDelegate.selector);
     }
 
     function owner() public view returns (address) {
@@ -20,7 +20,7 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
         return "https://super-sweet-custom-organization.com";
     }
 
-    function isDelegate(address addr) external view returns(bool) {
+    function hasDelegate(address addr) external view returns(bool) {
         return addr == _owner;
     }
 }

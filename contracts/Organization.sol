@@ -59,7 +59,7 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
         delegates.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
+        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.hasDelegate.selector);
     }
 
     /**
@@ -111,7 +111,7 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
      * @dev Is an address considered a delegate for this organization?
      * @return {" ": "True if address is considered a delegate, false otherwise"}
      */
-    function isDelegate(address addr) external view returns(bool) {
+    function hasDelegate(address addr) external view returns(bool) {
         return delegates[delegatesIndex[addr]] != address(0);
     }
 }

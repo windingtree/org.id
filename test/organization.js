@@ -102,7 +102,7 @@ contract('Organization', (accounts) => {
       assert.equal(receipt.logs[0].args.index, 1);
       assert.equal(await organization.delegatesIndex(nonOwnerAccount), 1);
       assert.equal(await organization.delegates(1), nonOwnerAccount);
-      assert.equal(await organization.isDelegate(nonOwnerAccount), true);
+      assert.equal(await organization.hasDelegate(nonOwnerAccount), true);
     });
 
     it('should throw when adding an existing delegate', async () => {
@@ -141,7 +141,7 @@ contract('Organization', (accounts) => {
       assert.equal(receipt.logs.length, 1);
       assert.equal(receipt.logs[0].event, 'DelegateRemoved');
       assert.equal(receipt.logs[0].args.delegate, nonOwnerAccount);
-      assert.equal(await organization.isDelegate(nonOwnerAccount), false);
+      assert.equal(await organization.hasDelegate(nonOwnerAccount), false);
       assert.equal(await organization.delegates(1), help.zeroAddress);
       assert.equal(await organization.delegatesIndex(nonOwnerAccount), 0);
     });
@@ -165,14 +165,14 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('isDelegate', async () => {
+  describe('hasDelegate', async () => {
     it('should return false for a non-delegate', async () => {
-      assert.equal(await organization.isDelegate(nonOwnerAccount), false);
+      assert.equal(await organization.hasDelegate(nonOwnerAccount), false);
     });
 
     it('should return true for a delegate', async () => {
       await organization.addDelegate(nonOwnerAccount, { from: organizationOwner });
-      assert.equal(await organization.isDelegate(nonOwnerAccount), true);
+      assert.equal(await organization.hasDelegate(nonOwnerAccount), true);
     });
   });
 });
