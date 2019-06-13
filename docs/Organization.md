@@ -1,20 +1,20 @@
 * [Organization](#organization)
   * [supportsInterface](#function-supportsinterface)
-  * [changeDataUri](#function-changedatauri)
+  * [getOrgJsonUri](#function-getorgjsonuri)
   * [created](#function-created)
+  * [orgJsonUri](#function-orgjsonuri)
   * [hasDelegate](#function-hasdelegate)
-  * [getDataUri](#function-getdatauri)
   * [removeDelegate](#function-removedelegate)
   * [renounceOwnership](#function-renounceownership)
-  * [dataUri](#function-datauri)
   * [owner](#function-owner)
   * [isOwner](#function-isowner)
   * [delegates](#function-delegates)
+  * [changeOrgJsonUri](#function-changeorgjsonuri)
   * [delegatesIndex](#function-delegatesindex)
   * [addDelegate](#function-adddelegate)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
-  * [DataUriChanged](#event-dataurichanged)
+  * [OrgJsonUriChanged](#event-orgjsonurichanged)
   * [DelegateAdded](#event-delegateadded)
   * [DelegateRemoved](#event-delegateremoved)
 
@@ -34,22 +34,31 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* changeDataUri
+## *function* getOrgJsonUri
 
-Organization.changeDataUri(_dataUri) `nonpayable` `18f9205d`
+Organization.getOrgJsonUri() `view` `1d855977`
 
-> `changeDataUri` Allows owner to change Organization's dataUri.
+> Returns current orgJsonUri
 
-Inputs
+
+
+Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | _dataUri | New dataUri pointer of this Organization |
-
+| *string* |  | undefined |
 
 ## *function* created
 
 Organization.created() `view` `325a19f1`
+
+
+
+
+
+## *function* orgJsonUri
+
+Organization.orgJsonUri() `view` `3b3ba578`
 
 
 
@@ -73,20 +82,6 @@ Outputs
 |-|-|-|
 | *bool* |  | undefined |
 
-## *function* getDataUri
-
-Organization.getDataUri() `view` `65f2c7a7`
-
-> Returns current dataUri
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* |  | undefined |
-
 ## *function* removeDelegate
 
 Organization.removeDelegate(addr) `nonpayable` `67e7646f`
@@ -105,14 +100,6 @@ Inputs
 Organization.renounceOwnership() `nonpayable` `715018a6`
 
 > Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * > Note: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-
-
-
-
-## *function* dataUri
-
-Organization.dataUri() `view` `8a9b29eb`
-
 
 
 
@@ -145,6 +132,19 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+
+## *function* changeOrgJsonUri
+
+Organization.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
+
+> `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
 
 
 ## *function* delegatesIndex
@@ -201,16 +201,16 @@ Arguments
 | *address* | previousOwner | indexed |
 | *address* | newOwner | indexed |
 
-## *event* DataUriChanged
+## *event* OrgJsonUriChanged
 
-Organization.DataUriChanged(previousDataUri, newDataUri) `2b3a8c1a`
+Organization.OrgJsonUriChanged(previousOrgJsonUri, newOrgJsonUri) `0153064f`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | previousDataUri | indexed |
-| *string* | newDataUri | indexed |
+| *string* | previousOrgJsonUri | indexed |
+| *string* | newOrgJsonUri | indexed |
 
 ## *event* DelegateAdded
 

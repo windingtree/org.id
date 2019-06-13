@@ -80,14 +80,14 @@ AbstractSegmentDirectory.owner() `view` `8da5cb5b`
 
 ## *function* createAndAdd
 
-AbstractSegmentDirectory.createAndAdd(dataUri) `nonpayable` `962cd2c9`
+AbstractSegmentDirectory.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizations
@@ -100,14 +100,14 @@ AbstractSegmentDirectory.getOrganizations() `view` `9754a3a8`
 
 ## *function* create
 
-AbstractSegmentDirectory.create(dataUri) `nonpayable` `b6a46b3b`
+AbstractSegmentDirectory.create(orgJsonUri) `nonpayable` `b6a46b3b`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizationsLength

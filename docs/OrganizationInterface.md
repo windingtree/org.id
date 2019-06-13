@@ -1,7 +1,7 @@
 * [OrganizationInterface](#organizationinterface)
   * [supportsInterface](#function-supportsinterface)
+  * [getOrgJsonUri](#function-getorgjsonuri)
   * [hasDelegate](#function-hasdelegate)
-  * [getDataUri](#function-getdatauri)
   * [owner](#function-owner)
 
 # OrganizationInterface
@@ -20,6 +20,20 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
+## *function* getOrgJsonUri
+
+OrganizationInterface.getOrgJsonUri() `view` `1d855977`
+
+> Returns the URI of ORG.ID JSON file stored off-chain.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* |  | undefined |
+
 ## *function* hasDelegate
 
 OrganizationInterface.hasDelegate(addr) `view` `480005cd`
@@ -37,20 +51,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bool* |  | undefined |
-
-## *function* getDataUri
-
-OrganizationInterface.getDataUri() `view` `65f2c7a7`
-
-> Returns the URI of ORG.ID JSON file stored off-chain.
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* |  | undefined |
 
 ## *function* owner
 

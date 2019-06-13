@@ -13,7 +13,7 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
     // This is intentionally generic.
-    string public dataUri;
+    string public orgJsonUri;
 
     // Number of a block when the Organization was created
     uint public created;
@@ -34,9 +34,9 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @dev Event triggered when dataUri of the organization is changed.
+     * @dev Event triggered when orgJsonUri of the organization is changed.
      */
-    event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
+    event OrgJsonUriChanged(string indexed previousOrgJsonUri, string indexed newOrgJsonUri);
 
     /**
      * @dev Event triggered when new delegate is added.
@@ -50,35 +50,35 @@ contract Organization is OrganizationInterface, ERC165, Ownable {
 
     /**
      * @dev Constructor.
-     * @param _dataUri pointer to Organization data
+     * @param _orgJsonUri pointer to Organization data
      */
-    constructor(string memory _dataUri) public {
-        require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
-        dataUri = _dataUri;
+    constructor(string memory _orgJsonUri) public {
+        require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
+        orgJsonUri = _orgJsonUri;
         created = block.number;
         delegates.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.hasDelegate.selector);
+        _registerInterface(i.owner.selector ^ i.getOrgJsonUri.selector ^ i.hasDelegate.selector);
     }
 
     /**
-     * @dev `changeDataUri` Allows owner to change Organization's dataUri.
-     * @param  _dataUri New dataUri pointer of this Organization
+     * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
-    function changeDataUri(string memory _dataUri) public onlyOwner {
-        bytes memory tempStringRepr = bytes(_dataUri);
-        require(tempStringRepr.length != 0, 'dataUri cannot be an empty string');
-        emit DataUriChanged(dataUri, _dataUri);
-        dataUri = _dataUri;
+    function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwner {
+        bytes memory tempStringRepr = bytes(_orgJsonUri);
+        require(tempStringRepr.length != 0, 'orgJsonUri cannot be an empty string');
+        emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
+        orgJsonUri = _orgJsonUri;
     }
 
     /**
-     * @dev Returns current dataUri
-     * @return {" ": "Current dataUri."}
+     * @dev Returns current orgJsonUri
+     * @return {" ": "Current orgJsonUri."}
      */
-    function getDataUri() external view returns (string memory) {
-        return dataUri;
+    function getOrgJsonUri() external view returns (string memory) {
+        return orgJsonUri;
     }
 
     /**

@@ -134,14 +134,14 @@ SegmentDirectoryUpgradeabilityTest.owner() `view` `8da5cb5b`
 
 ## *function* createAndAdd
 
-SegmentDirectoryUpgradeabilityTest.createAndAdd(dataUri) `nonpayable` `962cd2c9`
+SegmentDirectoryUpgradeabilityTest.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | undefined |
+| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizations
@@ -173,7 +173,7 @@ Inputs
 
 ## *function* create
 
-SegmentDirectoryUpgradeabilityTest.create(dataUri) `nonpayable` `b6a46b3b`
+SegmentDirectoryUpgradeabilityTest.create(orgJsonUri) `nonpayable` `b6a46b3b`
 
 > `create` proxies and externalizes createOrganization
 
@@ -181,7 +181,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Organization's data pointer |
+| *string* | orgJsonUri | Organization's data pointer |
 
 Outputs
 

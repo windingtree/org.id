@@ -9,14 +9,14 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
     constructor() public {
         OrganizationInterface i;
         _owner = msg.sender;
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.hasDelegate.selector);
+        _registerInterface(i.owner.selector ^ i.getOrgJsonUri.selector ^ i.hasDelegate.selector);
     }
 
     function owner() public view returns (address) {
         return _owner;
     }
 
-    function getDataUri() external view returns (string memory) {
+    function getOrgJsonUri() external view returns (string memory) {
         return "https://super-sweet-custom-organization.com";
     }
 

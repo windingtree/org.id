@@ -29,8 +29,8 @@ contract AbstractSegmentDirectory {
     function getSegment() public view returns (string memory);
     function getLifToken() public view returns (address);
 
-    function create(string calldata dataUri) external returns (address);
-    function createAndAdd(string calldata dataUri) external returns (address);
+    function create(string calldata orgJsonUri) external returns (address);
+    function createAndAdd(string calldata orgJsonUri) external returns (address);
     function add(address organization) external returns (address);
     function remove(address organization) external;
 

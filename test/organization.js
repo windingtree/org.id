@@ -22,10 +22,10 @@ contract('Organization', (accounts) => {
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.isAtMost(info.created, blockNumber);
       assert.equal(info.owner, organizationOwner);
-      assert.equal(info.dataUri, organizationUri);
+      assert.equal(info.orgJsonUri, organizationUri);
     });
 
-    it('should throw with empty dataUri', async () => {
+    it('should throw with empty orgJsonUri', async () => {
       try {
         await Organization.new('', { from: organizationOwner });
         assert(false);
@@ -35,27 +35,27 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('changeDataUri', () => {
-    const newDataUri = 'goo.gl/12345';
+  describe('changeOrgJsonUri', () => {
+    const newOrgJsonUri = 'goo.gl/12345';
 
-    it('should not set empty dataUri', async () => {
+    it('should not set empty orgJsonUri', async () => {
       try {
-        await organization.changeDataUri('', { from: organizationOwner });
+        await organization.changeOrgJsonUri('', { from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should set dataUri', async () => {
-      await organization.changeDataUri(newDataUri, { from: organizationOwner });
+    it('should set orgJsonUri', async () => {
+      await organization.changeOrgJsonUri(newOrgJsonUri, { from: organizationOwner });
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.dataUri, newDataUri);
+      assert.equal(info.orgJsonUri, newOrgJsonUri);
     });
 
     it('should throw if not executed by organization owner', async () => {
       try {
-        await organization.changeDataUri(newDataUri, { from: nonOwnerAccount });
+        await organization.changeOrgJsonUri(newOrgJsonUri, { from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

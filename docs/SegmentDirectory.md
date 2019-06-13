@@ -125,7 +125,7 @@ SegmentDirectory.owner() `view` `8da5cb5b`
 
 ## *function* createAndAdd
 
-SegmentDirectory.createAndAdd(dataUri) `nonpayable` `962cd2c9`
+SegmentDirectory.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
 
 > `createAndAdd` proxies and externalizes createAndAddOrganization
 
@@ -133,7 +133,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Organization's data pointer |
+| *string* | orgJsonUri | Organization's data pointer |
 
 Outputs
 
@@ -170,7 +170,7 @@ Inputs
 
 ## *function* create
 
-SegmentDirectory.create(dataUri) `nonpayable` `b6a46b3b`
+SegmentDirectory.create(orgJsonUri) `nonpayable` `b6a46b3b`
 
 > `create` proxies and externalizes createOrganization
 
@@ -178,7 +178,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | dataUri | Organization's data pointer |
+| *string* | orgJsonUri | Organization's data pointer |
 
 Outputs
 

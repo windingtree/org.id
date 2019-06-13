@@ -24,7 +24,7 @@ contract OrganizationInterface is IERC165 {
      * @dev Returns the URI of ORG.ID JSON file stored off-chain.
      * @return {" ": "Current ORG.ID JSON URI."}
      */
-    function getDataUri() external view returns (string memory);
+    function getOrgJsonUri() external view returns (string memory);
 
     /**
      * @dev Returns if an `address` is Organization's delegate.

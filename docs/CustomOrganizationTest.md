@@ -1,7 +1,7 @@
 * [CustomOrganizationTest](#customorganizationtest)
   * [supportsInterface](#function-supportsinterface)
+  * [getOrgJsonUri](#function-getorgjsonuri)
   * [hasDelegate](#function-hasdelegate)
-  * [getDataUri](#function-getdatauri)
   * [owner](#function-owner)
 
 # CustomOrganizationTest
@@ -20,6 +20,14 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
+## *function* getOrgJsonUri
+
+CustomOrganizationTest.getOrgJsonUri() `view` `1d855977`
+
+
+
+
+
 ## *function* hasDelegate
 
 CustomOrganizationTest.hasDelegate(addr) `view` `480005cd`
@@ -30,14 +38,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | addr | undefined |
-
-
-## *function* getDataUri
-
-CustomOrganizationTest.getDataUri() `view` `65f2c7a7`
-
-
-
 
 
 ## *function* owner
