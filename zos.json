@@ -14,6 +14,7 @@
     "DemoAirlineDirectory": "SegmentDirectory",
     "DemoOtaDirectory": "SegmentDirectory",
     "SegmentDirectory": "SegmentDirectory",
-    "Organization": "Organization"
+    "Organization": "Organization",
+    "OrganizationFactory": "OrganizationFactory"
   }
 }

@@ -81,6 +81,10 @@ npm test
 You can run a specific test with `npm test -- test/segment-directory.js`
 or you can generate a coverage report with `npm run coverage`.
 
+**Warning:** We are **not** using the `zos.json` in tests, rather `zos.test.json`. If you are
+getting the `Cannot set a proxy implementation to a non-contract address` error, its probably
+because of that.
+
 ### Flattener
 
 A flattener script is also available. `npm run flattener` command

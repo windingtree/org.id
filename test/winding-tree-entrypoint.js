@@ -28,7 +28,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     windingTreeEntrypointProxy = await project.createProxy(WindingTreeEntrypoint, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [windingTreeEntrypointOwner, tokenAddress],
+      initArgs: [windingTreeEntrypointOwner, tokenAddress, help.zeroAddress],
     });
     windingTreeEntrypoint = await WindingTreeEntrypoint.at(windingTreeEntrypointProxy.address);
   });
@@ -54,7 +54,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const entrypoint = await WindingTreeEntrypoint.new();
-        await entrypoint.methods.initialize(help.zeroAddress, tokenAddress).send({ from: windingTreeEntrypointOwner });
+        await entrypoint.methods.initialize(help.zeroAddress, tokenAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -63,7 +63,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
 
     it('should set liftoken', async () => {
       const entrypoint = await WindingTreeEntrypoint.new();
-      await entrypoint.methods.initialize(windingTreeEntrypointOwner, tokenAddress).send({ from: windingTreeEntrypointOwner });
+      await entrypoint.methods.initialize(windingTreeEntrypointOwner, tokenAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
       assert.equal(await entrypoint.methods.LifToken().call(), tokenAddress);
     });
   });

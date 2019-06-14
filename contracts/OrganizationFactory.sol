@@ -1,9 +1,10 @@
 pragma solidity ^0.5.6;
 
+import "./AbstractOrganizationFactory.sol";
 import "zos-lib/contracts/Initializable.sol";
 import "zos-lib/contracts/application/App.sol";
 
-contract OrganizationFactory is Initializable {
+contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     // ZeppelinOS App instance
     App internal app;
 
@@ -15,16 +16,6 @@ contract OrganizationFactory is Initializable {
 
     // Mapping of organizations position in the general created organization index
     mapping(address => uint) _createdOrganizationsIndex;
-
-    /**
-     * @dev Event triggered every time organization is added
-     */
-    event OrganizationCreated(address indexed organization);
-
-    /**
-     * @dev Event triggered when owner of the index is changed.
-     */
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
      * @dev `createOrganization` Create new organization upgradeable contract.
@@ -46,6 +37,8 @@ contract OrganizationFactory is Initializable {
             )
         );
         emit OrganizationCreated(newOrganizationAddress);
+        _createdOrganizationsIndex[newOrganizationAddress] = _createdOrganizations.length;
+        _createdOrganizations.push(newOrganizationAddress);
         return newOrganizationAddress;
     }
 
