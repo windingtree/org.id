@@ -8,11 +8,6 @@ contract AbstractSegmentDirectory {
     /**
      * @dev Event triggered every time organization is added
      */
-    event OrganizationCreated(address indexed organization);
-
-    /**
-     * @dev Event triggered every time organization is added
-     */
     event OrganizationAdded(address indexed organization, uint index);
 
     /**
@@ -29,8 +24,6 @@ contract AbstractSegmentDirectory {
     function getSegment() public view returns (string memory);
     function getLifToken() public view returns (address);
 
-    function create(string calldata orgJsonUri) external returns (address);
-    function createAndAdd(string calldata orgJsonUri) external returns (address);
     function add(address organization) external returns (address);
     function remove(address organization) external;
 

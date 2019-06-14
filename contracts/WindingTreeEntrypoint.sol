@@ -25,6 +25,9 @@ contract WindingTreeEntrypoint is Initializable {
     // List of registered segments
     string[] public segments;
 
+    // Address of Organization factory
+    address public organizationFactory;
+
     /**
      * @dev Event triggered when owner of the entrypoint is changed.
      */
@@ -36,14 +39,21 @@ contract WindingTreeEntrypoint is Initializable {
     event SegmentSet(bytes32 indexed segment, address indexed oldAddress, address indexed newAddress);
 
     /**
+     * @dev Event triggered when the organization factory address is changed.
+     */
+    event OrganizationFactorySet(address indexed oldAddress, address indexed newAddress);
+
+    /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
-     * @param _lifToken The new contract address
+     * @param _lifToken The LifToken contract address
+     * @param _organizationFactory The OrganizationFactory contract address
      */
-    function initialize(address payable __owner, address _lifToken) public initializer {
+    function initialize(address payable __owner, address _lifToken, address _organizationFactory) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
         LifToken = _lifToken;
+        organizationFactory = _organizationFactory;
         segments.length++;
     }
     
@@ -82,6 +92,12 @@ contract WindingTreeEntrypoint is Initializable {
         }
         emit SegmentSet(segmentHash, directories[segmentHash], addr);
         directories[segmentHash] = addr;
+    }
+
+    function setOrganizationFactory(address addr) public onlyOwner {
+        require(addr != address(0), 'Cannot set factory addr to 0x0 address');
+        emit OrganizationFactorySet(organizationFactory, addr);
+        organizationFactory = addr;
     }
 
     /**
