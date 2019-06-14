@@ -5,13 +5,13 @@ import "./OrganizationUpgradeabilityTest.sol";
 
 contract SegmentDirectoryUpgradeabilityTest is SegmentDirectory {
 
-    function createAndAdd(string calldata dataUri) external returns (address) {
+    function createAndAdd(string calldata orgJsonUri) external returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "OrganizationUpgradeabilityTest", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", msg.sender, dataUri)
+                abi.encodeWithSignature("initialize(address,string)", msg.sender, orgJsonUri)
             )
         );
         _organizationsIndex[newOrganizationAddress] = _organizations.length;

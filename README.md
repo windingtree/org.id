@@ -109,10 +109,18 @@ that does the heavy lifting for zos.
 
 ### Upgradeability FAQ
 
+TODO rewrite this
+
 **What does upgradeability mean?**
 
-We can update the logic of Entrypoint or Segment Directory while keeping their
-public address the same.
+We can update the logic of Entrypoint, Segment Directory or Organization while keeping their
+public address the same and *without touching any data*.
+
+**Can you change the Organization data structure?**
+
+**Can I switch to the new Organization version?**
+
+**Why do I keep getting "revert Cannot call fallback function from the proxy admin" when interacting with Organization?**
 
 **What happens when you upgrade the Directory?**
 
@@ -120,40 +128,14 @@ The Directory address stays the same, the client software has to
 interact with the Directory only with the updated ABI which is distributed
 via NPM (under the new version number). No data is lost.
 
-**Can you change the directory data structure?**
+**Can you change the Directory data structure?**
 
 Yes, we can. If we adhere to [zos recommendations](https://docs.zeppelinos.org/docs/writing_contracts.html#modifying-your-contracts),
 we can extend the data stored in Segment Directories.
 
-**Can you change the Organization data structure?**
-
-Yes, we can. But it's not as smooth as with the Directory. Until #218
-is implemented, we cannot easily migrate all of the existing records
-at once. That means that if we change the data structure, all newly
-added records will have the new data structure, but the old ones
-will keep the old layout and functionality. This gets much more complicated
-by opening the directories to custom Organization implementations. That's 
-why we require a simple Organization interface.
-
-**Can I switch to the new Organization version?**
-
-Because the Organization smart contracts cannot be controlled by Winding Tree
-even if they are created by the Segment Directory, there's no easy way of
-upgrading their implementation. More importantly, **every Organization owner**
-is responsible for the eventual upgrade. There is a couple of approaches:
-
-1. You can create a new Organization. This will give you a new
-blockchain address which you will add to the Directory again.
-The old Organization needs to be removed from the Directory.
-You probably don't want that.
-2. Your Organization implementation allows upgradeability. The Organization
-contracts created by Segment Directories **cannot do that until #218 is implemented**.
-
-We suspect that in case of upgrade, the tooling should somehow support both
-versions for a transitional period.
-
 **How do I work with different organization versions on the client?**
 That should be possible by using an ABI of `OrganizationInterface` on the client side.
+
 
 ### Local testing
 

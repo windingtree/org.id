@@ -2,14 +2,12 @@ const misc = require('./misc');
 
 async function getOrganizationInfo (wtOrganization) {
   // Airline Info
-  const dataUri = await wtOrganization.methods.getDataUri().call();
+  const orgJsonUri = await wtOrganization.methods.getOrgJsonUri().call();
   const owner = await wtOrganization.methods.owner().call();
-  const created = await wtOrganization.methods.created().call();
 
   return {
-    dataUri: misc.isZeroString(dataUri) ? null : dataUri,
+    orgJsonUri: misc.isZeroString(orgJsonUri) ? null : orgJsonUri,
     owner: misc.isZeroAddress(owner) ? null : owner,
-    created: misc.isZeroUint(created) ? null : parseInt(created),
   };
 }
 

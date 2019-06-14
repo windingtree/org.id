@@ -37,9 +37,8 @@ contract('Organization', (accounts) => {
       const info = await help.getOrganizationInfo(organization);
       // We need callback, because getBlockNumber for some reason cannot be called with await
       const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
-      assert.isAtMost(info.created, blockNumber);
       assert.equal(info.owner, organizationOwner);
-      assert.equal(info.dataUri, organizationUri);
+      assert.equal(info.orgJsonUri, organizationUri);
     });
 
     it('should throw with zero owner', async () => {
@@ -48,7 +47,7 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: ['0x0000000000000000000000000000000000000000', 'dataUri'],
+          initArgs: ['0x0000000000000000000000000000000000000000', 'orgJsonUri'],
         });
         assert(false);
       } catch (e) {
@@ -56,7 +55,7 @@ contract('Organization', (accounts) => {
       }
     });
 
-    it('should throw with empty dataUri', async () => {
+    it('should throw with empty orgJsonUri', async () => {
       try {
         const tProject = await TestHelper();
         await tProject.createProxy(Organization, {
@@ -80,27 +79,26 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('changeDataUri', () => {
-    const newDataUri = 'goo.gl/12345';
-
-    it('should not set empty dataUri', async () => {
+  describe('changeOrgJsonUri', () => {
+    const newOrgJsonUri = 'goo.gl/12345';
+    it('should not set empty orgJsonUri', async () => {
       try {
-        await organization.methods.changeDataUri('').send({ from: organizationOwner });
+        await organization.methods.changeOrgJsonUri('').send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should set dataUri', async () => {
-      await organization.methods.changeDataUri(newDataUri).send({ from: organizationOwner });
+    it('should set orgJsonUri', async () => {
+      await organization.methods.changeOrgJsonUri(newOrgJsonUri).send({ from: organizationOwner });
       const info = await help.getOrganizationInfo(organization);
-      assert.equal(info.dataUri, newDataUri);
+      assert.equal(info.orgJsonUri, newOrgJsonUri);
     });
 
     it('should throw if not executed by organization owner', async () => {
       try {
-        await organization.methods.changeDataUri(newDataUri).send({ from: nonOwnerAccount });
+        await organization.methods.changeOrgJsonUri(newOrgJsonUri).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -145,7 +143,7 @@ contract('Organization', (accounts) => {
       assert.equal(receipt.events.DelegateAdded.returnValues.index, 1);
       assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 1);
       assert.equal(await organization.methods.delegates(1).call(), nonOwnerAccount);
-      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), true);
+      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), true);
     });
 
     it('should throw when adding an existing delegate', async () => {
@@ -183,7 +181,7 @@ contract('Organization', (accounts) => {
       const receipt = await organization.methods.removeDelegate(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(Object.keys(receipt.events).length, 1);
       assert.equal(receipt.events.DelegateRemoved.returnValues.delegate, nonOwnerAccount);
-      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), false);
+      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), false);
       assert.equal(await organization.methods.delegates(1).call(), help.zeroAddress);
       assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 0);
     });
@@ -207,14 +205,14 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('isDelegate', async () => {
+  describe('hasDelegate', async () => {
     it('should return false for a non-delegate', async () => {
-      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), false);
+      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), false);
     });
 
     it('should return true for a delegate', async () => {
       await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
-      assert.equal(await organization.methods.isDelegate(nonOwnerAccount).call(), true);
+      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), true);
     });
   });
 });

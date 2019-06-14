@@ -15,7 +15,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
     // This is intentionally generic.
-    string public dataUri;
+    string public orgJsonUri;
 
     // Number of a block when the Organization was created
     uint public created;
@@ -36,9 +36,9 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
 
     /**
-     * @dev Event triggered when dataUri of the organization is changed.
+     * @dev Event triggered when orgJsonUri of the organization is changed.
      */
-    event DataUriChanged(string indexed previousDataUri, string indexed newDataUri);
+    event OrgJsonUriChanged(string indexed previousOrgJsonUri, string indexed newOrgJsonUri);
 
     /**
      * @dev Event triggered when new delegate is added.
@@ -53,19 +53,19 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
-     * @param _dataUri pointer to Organization data
+     * @param _orgJsonUri pointer to Organization data
      */
-    function initialize(address payable __owner, string memory _dataUri) public initializer {
+    function initialize(address payable __owner, string memory _orgJsonUri) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
-        require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
+        require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
         emit OwnershipTransferred(_owner, __owner);
         _owner = __owner;        
-        dataUri = _dataUri;
+        orgJsonUri = _orgJsonUri;
         created = block.number;
         delegates.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        _registerInterface(i.owner.selector ^ i.getDataUri.selector ^ i.isDelegate.selector);
+        _registerInterface(i.owner.selector ^ i.getOrgJsonUri.selector ^ i.hasDelegate.selector);
     }
 
     /**
@@ -77,21 +77,22 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev `changeDataUri` Allows owner to change Organization's dataUri.
-     * @param  _dataUri New dataUri pointer of this Organization
+     * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
-    function changeDataUri(string memory _dataUri) public onlyOwner {
-        require(bytes(_dataUri).length != 0, 'dataUri cannot be an empty string');
-        emit DataUriChanged(dataUri, _dataUri);
-        dataUri = _dataUri;
+    function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwner {
+        bytes memory tempStringRepr = bytes(_orgJsonUri);
+        require(tempStringRepr.length != 0, 'orgJsonUri cannot be an empty string');
+        emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
+        orgJsonUri = _orgJsonUri;
     }
 
     /**
-     * @dev Returns current dataUri
-     * @return {" ": "Current dataUri."}
+     * @dev Returns current orgJsonUri
+     * @return {" ": "Current orgJsonUri."}
      */
-    function getDataUri() external view returns (string memory) {
-        return dataUri;
+    function getOrgJsonUri() external view returns (string memory) {
+        return orgJsonUri;
     }
 
     /**
@@ -124,7 +125,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Is an address considered a delegate for this organization?
      * @return {" ": "True if address is considered a delegate, false otherwise"}
      */
-    function isDelegate(address addr) external view returns(bool) {
+    function hasDelegate(address addr) external view returns(bool) {
         return delegates[delegatesIndex[addr]] != address(0);
     }
 

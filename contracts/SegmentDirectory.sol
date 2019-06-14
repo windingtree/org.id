@@ -34,16 +34,16 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * add the organization in the directory. The created contract's
      * ownership is transferred to `msg.sender`.
      * Emits `OrganizationCreated` on success.
-     * @param  dataUri Organization's data pointer
+     * @param  orgJsonUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
      */
-    function createOrganization(string memory dataUri) internal returns (address) {
+    function createOrganization(string memory orgJsonUri) internal returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", msg.sender, dataUri)
+                abi.encodeWithSignature("initialize(address,string)", msg.sender, orgJsonUri)
             )
         );
         emit OrganizationCreated(newOrganizationAddress);
@@ -59,7 +59,7 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
     function addOrganization(address organization) internal returns (address) {
         // this is intentionally not part of the state variables as we expect it to change in time.
         require(_organizationsIndex[organization] == 0, 'Cannot add organization twice');
-        bytes4 _INTERFACE_ID_ORGANIZATION = 0xef209adb;
+        bytes4 _INTERFACE_ID_ORGANIZATION = 0xd82097e1;
         require(
             ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION),
             'Organization has to support _INTERFACE_ID_ORGANIZATION'
@@ -78,11 +78,11 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
     /**
      * @dev `createAndAddOrganization` Creates and adds new organization
      * contract. Uses `createOrganization` and `addOrganization` internally.
-     * @param  dataUri Organization's data pointer
+     * @param  orgJsonUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
      */
-    function createAndAddOrganization(string memory dataUri) internal returns (address) {
-        address newOrganizationAddress = createOrganization(dataUri);
+    function createAndAddOrganization(string memory orgJsonUri) internal returns (address) {
+        address newOrganizationAddress = createOrganization(orgJsonUri);
         return addOrganization(newOrganizationAddress);
     }
 
@@ -109,11 +109,11 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
     /**
      * @dev `create` proxies and externalizes createOrganization
-     * @param  dataUri Organization's data pointer
+     * @param  orgJsonUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
      */
-    function create(string calldata dataUri) external returns (address) {
-        return createOrganization(dataUri);
+    function create(string calldata orgJsonUri) external returns (address) {
+        return createOrganization(orgJsonUri);
     }
 
     /**
@@ -127,11 +127,11 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
     /**
      * @dev `createAndAdd` proxies and externalizes createAndAddOrganization
-     * @param  dataUri Organization's data pointer
+     * @param  orgJsonUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
      */
-    function createAndAdd(string calldata dataUri) external returns (address) {
-        return createAndAddOrganization(dataUri);
+    function createAndAdd(string calldata orgJsonUri) external returns (address) {
+        return createAndAddOrganization(orgJsonUri);
     }
 
     /**

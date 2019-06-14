@@ -1,7 +1,7 @@
 * [OrganizationInterface](#organizationinterface)
   * [supportsInterface](#function-supportsinterface)
-  * [isDelegate](#function-isdelegate)
-  * [getDataUri](#function-getdatauri)
+  * [getOrgJsonUri](#function-getorgjsonuri)
+  * [hasDelegate](#function-hasdelegate)
   * [owner](#function-owner)
 
 # OrganizationInterface
@@ -20,32 +20,50 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* isDelegate
+## *function* getOrgJsonUri
 
-OrganizationInterface.isDelegate(addr) `view` `07779627`
+OrganizationInterface.getOrgJsonUri() `view` `1d855977`
 
+> Returns the URI of ORG.ID JSON file stored off-chain.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* |  | undefined |
+
+## *function* hasDelegate
+
+OrganizationInterface.hasDelegate(addr) `view` `480005cd`
+
+> Returns if an `address` is Organization's delegate. Delegates can operate on behalf of the organization, typically sign messages.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | addr | undefined |
+| *address* | addr | Delegate's Ethereum address |
 
+Outputs
 
-## *function* getDataUri
-
-OrganizationInterface.getDataUri() `view` `65f2c7a7`
-
-
-
-
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
 
 ## *function* owner
 
 OrganizationInterface.owner() `view` `8da5cb5b`
 
+> Returns the address of the current owner.
 
 
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ---

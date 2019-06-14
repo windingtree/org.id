@@ -1,20 +1,20 @@
 * [OrganizationUpgradeabilityTest](#organizationupgradeabilitytest)
   * [supportsInterface](#function-supportsinterface)
-  * [isDelegate](#function-isdelegate)
-  * [changeDataUri](#function-changedatauri)
   * [newFunction](#function-newfunction)
+  * [getOrgJsonUri](#function-getorgjsonuri)
   * [created](#function-created)
-  * [getDataUri](#function-getdatauri)
+  * [orgJsonUri](#function-orgjsonuri)
+  * [hasDelegate](#function-hasdelegate)
   * [removeDelegate](#function-removedelegate)
-  * [dataUri](#function-datauri)
   * [owner](#function-owner)
   * [delegates](#function-delegates)
+  * [changeOrgJsonUri](#function-changeorgjsonuri)
   * [delegatesIndex](#function-delegatesindex)
   * [addDelegate](#function-adddelegate)
   * [transferOwnership](#function-transferownership)
   * [initialize](#function-initialize)
   * [OwnershipTransferred](#event-ownershiptransferred)
-  * [DataUriChanged](#event-dataurichanged)
+  * [OrgJsonUriChanged](#event-orgjsonurichanged)
   * [DelegateAdded](#event-delegateadded)
   * [DelegateRemoved](#event-delegateremoved)
 
@@ -34,9 +34,47 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* isDelegate
+## *function* newFunction
 
-OrganizationUpgradeabilityTest.isDelegate(addr) `view` `07779627`
+OrganizationUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
+
+
+## *function* getOrgJsonUri
+
+OrganizationUpgradeabilityTest.getOrgJsonUri() `view` `1d855977`
+
+> Returns current orgJsonUri
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* |  | undefined |
+
+## *function* created
+
+OrganizationUpgradeabilityTest.created() `view` `325a19f1`
+
+
+
+
+
+## *function* orgJsonUri
+
+OrganizationUpgradeabilityTest.orgJsonUri() `view` `3b3ba578`
+
+
+
+
+
+## *function* hasDelegate
+
+OrganizationUpgradeabilityTest.hasDelegate(addr) `view` `480005cd`
 
 > Is an address considered a delegate for this organization?
 
@@ -52,49 +90,6 @@ Outputs
 |-|-|-|
 | *bool* |  | undefined |
 
-## *function* changeDataUri
-
-OrganizationUpgradeabilityTest.changeDataUri(_dataUri) `nonpayable` `18f9205d`
-
-> `changeDataUri` Allows owner to change Organization's dataUri.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | _dataUri | New dataUri pointer of this Organization |
-
-
-## *function* newFunction
-
-OrganizationUpgradeabilityTest.newFunction() `pure` `1b28d63e`
-
-
-
-
-
-## *function* created
-
-OrganizationUpgradeabilityTest.created() `view` `325a19f1`
-
-
-
-
-
-## *function* getDataUri
-
-OrganizationUpgradeabilityTest.getDataUri() `view` `65f2c7a7`
-
-> Returns current dataUri
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* |  | undefined |
-
 ## *function* removeDelegate
 
 OrganizationUpgradeabilityTest.removeDelegate(addr) `nonpayable` `67e7646f`
@@ -106,14 +101,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | addr | Delegate's Ethereum address |
-
-
-## *function* dataUri
-
-OrganizationUpgradeabilityTest.dataUri() `view` `8a9b29eb`
-
-
-
 
 
 ## *function* owner
@@ -135,6 +122,19 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+
+## *function* changeOrgJsonUri
+
+OrganizationUpgradeabilityTest.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
+
+> `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
 
 
 ## *function* delegatesIndex
@@ -182,7 +182,7 @@ Inputs
 
 ## *function* initialize
 
-OrganizationUpgradeabilityTest.initialize(__owner, _dataUri) `nonpayable` `f399e22e`
+OrganizationUpgradeabilityTest.initialize(__owner, _orgJsonUri) `nonpayable` `f399e22e`
 
 > Initializer for upgradeable contracts.
 
@@ -191,7 +191,7 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | __owner | The address of the contract owner |
-| *string* | _dataUri | pointer to Organization data |
+| *string* | _orgJsonUri | pointer to Organization data |
 
 ## *event* OwnershipTransferred
 
@@ -204,16 +204,16 @@ Arguments
 | *address* | previousOwner | indexed |
 | *address* | newOwner | indexed |
 
-## *event* DataUriChanged
+## *event* OrgJsonUriChanged
 
-OrganizationUpgradeabilityTest.DataUriChanged(previousDataUri, newDataUri) `2b3a8c1a`
+OrganizationUpgradeabilityTest.OrgJsonUriChanged(previousOrgJsonUri, newOrgJsonUri) `0153064f`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | previousDataUri | indexed |
-| *string* | newDataUri | indexed |
+| *string* | previousOrgJsonUri | indexed |
+| *string* | newOrgJsonUri | indexed |
 
 ## *event* DelegateAdded
 
