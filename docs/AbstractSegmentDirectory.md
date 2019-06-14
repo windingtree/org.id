@@ -5,12 +5,9 @@
   * [organizationsIndex](#function-organizationsindex)
   * [getLifToken](#function-getliftoken)
   * [owner](#function-owner)
-  * [createAndAdd](#function-createandadd)
   * [getOrganizations](#function-getorganizations)
-  * [create](#function-create)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
-  * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
   * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
@@ -78,36 +75,12 @@ AbstractSegmentDirectory.owner() `view` `8da5cb5b`
 
 
 
-## *function* createAndAdd
-
-AbstractSegmentDirectory.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | undefined |
-
-
 ## *function* getOrganizations
 
 AbstractSegmentDirectory.getOrganizations() `view` `9754a3a8`
 
 
 
-
-
-## *function* create
-
-AbstractSegmentDirectory.create(orgJsonUri) `nonpayable` `b6a46b3b`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizationsLength
@@ -128,16 +101,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* | index | undefined |
-
-## *event* OrganizationCreated
-
-AbstractSegmentDirectory.OrganizationCreated(organization) `47b68893`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | organization | indexed |
 
 ## *event* OrganizationAdded
 

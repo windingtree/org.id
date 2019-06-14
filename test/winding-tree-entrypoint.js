@@ -237,7 +237,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should set organization factory and emit', async () => {
       const r = await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), nonOwnerAccount);
-      assert.isDefined(r.events.OrganizationFactorySet)
+      assert.isDefined(r.events.OrganizationFactorySet);
       assert.equal(r.events.OrganizationFactorySet.returnValues.oldAddress, help.zeroAddress);
       assert.equal(r.events.OrganizationFactorySet.returnValues.newAddress, nonOwnerAccount);
     });
@@ -245,12 +245,12 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should overwrite organization factory and emit', async () => {
       const r = await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), nonOwnerAccount);
-      assert.isDefined(r.events.OrganizationFactorySet)
+      assert.isDefined(r.events.OrganizationFactorySet);
       assert.equal(r.events.OrganizationFactorySet.returnValues.oldAddress, help.zeroAddress);
       assert.equal(r.events.OrganizationFactorySet.returnValues.newAddress, nonOwnerAccount);
       const r2 = await windingTreeEntrypoint.methods.setOrganizationFactory(windingTreeEntrypointOwner).send({ from: windingTreeEntrypointOwner });
       assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), windingTreeEntrypointOwner);
-      assert.isDefined(r2.events.OrganizationFactorySet)
+      assert.isDefined(r2.events.OrganizationFactorySet);
       assert.equal(r2.events.OrganizationFactorySet.returnValues.oldAddress, nonOwnerAccount);
       assert.equal(r2.events.OrganizationFactorySet.returnValues.newAddress, windingTreeEntrypointOwner);
     });

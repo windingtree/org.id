@@ -1,21 +1,25 @@
 * [WindingTreeEntrypointUpgradeabilityTest](#windingtreeentrypointupgradeabilitytest)
   * [getSegmentsLength](#function-getsegmentslength)
+  * [getOrganizationFactory](#function-getorganizationfactory)
   * [newFunction](#function-newfunction)
   * [segments](#function-segments)
   * [setSegment](#function-setsegment)
   * [removeSegment](#function-removesegment)
   * [directories](#function-directories)
   * [getSegmentName](#function-getsegmentname)
-  * [initialize](#function-initialize)
   * [LifToken](#function-liftoken)
+  * [organizationFactory](#function-organizationfactory)
   * [getSegmentsIndex](#function-getsegmentsindex)
   * [owner](#function-owner)
   * [segmentsIndex](#function-segmentsindex)
   * [getSegment](#function-getsegment)
+  * [setOrganizationFactory](#function-setorganizationfactory)
+  * [initialize](#function-initialize)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SegmentSet](#event-segmentset)
+  * [OrganizationFactorySet](#event-organizationfactoryset)
 
 # WindingTreeEntrypointUpgradeabilityTest
 
@@ -33,6 +37,20 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* getOrganizationFactory
+
+WindingTreeEntrypointUpgradeabilityTest.getOrganizationFactory() `view` `163fdcc8`
+
+> Returns Organization Factory address.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* newFunction
 
@@ -111,23 +129,17 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
-## *function* initialize
-
-WindingTreeEntrypointUpgradeabilityTest.initialize(__owner, _lifToken) `nonpayable` `485cc955`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The new contract address |
-
-
 ## *function* LifToken
 
 WindingTreeEntrypointUpgradeabilityTest.LifToken() `view` `554d8b37`
+
+
+
+
+
+## *function* organizationFactory
+
+WindingTreeEntrypointUpgradeabilityTest.organizationFactory() `view` `81d6bb50`
 
 
 
@@ -190,6 +202,34 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
+## *function* setOrganizationFactory
+
+WindingTreeEntrypointUpgradeabilityTest.setOrganizationFactory(addr) `nonpayable` `a89fb282`
+
+> Sets an address for the organization factory. Overwrites existing value. Can be called only by the contract owner.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | New organization factory address |
+
+
+## *function* initialize
+
+WindingTreeEntrypointUpgradeabilityTest.initialize(__owner, _lifToken, _organizationFactory) `nonpayable` `c0c53b8b`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *address* | _lifToken | The LifToken contract address |
+| *address* | _organizationFactory | The OrganizationFactory contract address |
+
+
 ## *function* setLifToken
 
 WindingTreeEntrypointUpgradeabilityTest.setLifToken(_lifToken) `nonpayable` `f2f0967b`
@@ -235,6 +275,17 @@ Arguments
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes32* | segment | indexed |
+| *address* | oldAddress | indexed |
+| *address* | newAddress | indexed |
+
+## *event* OrganizationFactorySet
+
+WindingTreeEntrypointUpgradeabilityTest.OrganizationFactorySet(oldAddress, newAddress) `3b79604b`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
 | *address* | oldAddress | indexed |
 | *address* | newAddress | indexed |
 
