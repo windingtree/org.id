@@ -25,7 +25,7 @@ contract WindingTreeEntrypoint is Initializable {
     // List of registered segments
     string[] public segments;
 
-    // Address of Organization factory
+    // Address of Organization Factory
     address public organizationFactory;
 
     /**
@@ -94,10 +94,23 @@ contract WindingTreeEntrypoint is Initializable {
         directories[segmentHash] = addr;
     }
 
+    /**
+     * @dev Sets an address for the organization factory. Overwrites existing
+     * value. Can be called only by the contract owner.
+     * @param addr New organization factory address
+     */
     function setOrganizationFactory(address addr) public onlyOwner {
         require(addr != address(0), 'Cannot set factory addr to 0x0 address');
         emit OrganizationFactorySet(organizationFactory, addr);
         organizationFactory = addr;
+    }
+
+    /**
+     * @dev Returns Organization Factory address.
+     * @return {" ": "Address of the organization factory"}
+     */
+    function getOrganizationFactory() public view returns(address) {
+        return organizationFactory;
     }
 
     /**

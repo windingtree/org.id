@@ -233,6 +233,55 @@ contract('WindingTreeEntrypoint', (accounts) => {
     });
   });
 
+  describe('setOrganizationFactory', () => {
+    it('should set organization factory and emit', async () => {
+      const r = await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), nonOwnerAccount);
+      assert.isDefined(r.events.OrganizationFactorySet)
+      assert.equal(r.events.OrganizationFactorySet.returnValues.oldAddress, help.zeroAddress);
+      assert.equal(r.events.OrganizationFactorySet.returnValues.newAddress, nonOwnerAccount);
+    });
+
+    it('should overwrite organization factory and emit', async () => {
+      const r = await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), nonOwnerAccount);
+      assert.isDefined(r.events.OrganizationFactorySet)
+      assert.equal(r.events.OrganizationFactorySet.returnValues.oldAddress, help.zeroAddress);
+      assert.equal(r.events.OrganizationFactorySet.returnValues.newAddress, nonOwnerAccount);
+      const r2 = await windingTreeEntrypoint.methods.setOrganizationFactory(windingTreeEntrypointOwner).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), windingTreeEntrypointOwner);
+      assert.isDefined(r2.events.OrganizationFactorySet)
+      assert.equal(r2.events.OrganizationFactorySet.returnValues.oldAddress, nonOwnerAccount);
+      assert.equal(r2.events.OrganizationFactorySet.returnValues.newAddress, windingTreeEntrypointOwner);
+    });
+
+    it('should throw when setting a zero address', async () => {
+      try {
+        await windingTreeEntrypoint.methods.setOrganizationFactory(help.zeroAddress).send({ from: windingTreeEntrypointOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw when setting factory from a non owner', async () => {
+      try {
+        await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
+  describe('getOrganizationFactory', () => {
+    it('should return organization factory', async () => {
+      assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), help.zeroAddress);
+      await windingTreeEntrypoint.methods.setOrganizationFactory(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.getOrganizationFactory().call(), nonOwnerAccount);
+    });
+  });
+
   describe('transferOwnership', () => {
     it('should transfer ownership', async () => {
       await windingTreeEntrypoint.methods.transferOwnership(nonOwnerAccount).send({ from: windingTreeEntrypointOwner });
