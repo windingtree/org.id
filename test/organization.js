@@ -36,7 +36,6 @@ contract('Organization', (accounts) => {
     it('should be initialised with the correct data', async () => {
       const info = await help.getOrganizationInfo(organization);
       // We need callback, because getBlockNumber for some reason cannot be called with await
-      const blockNumber = await help.promisify(cb => web3.eth.getBlockNumber(cb));
       assert.equal(info.owner, organizationOwner);
       assert.equal(info.orgJsonUri, organizationUri);
     });
