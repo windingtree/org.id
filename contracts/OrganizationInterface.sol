@@ -34,5 +34,11 @@ contract OrganizationInterface is IERC165 {
      * @param addr Delegate's Ethereum address
      * @return {" ": "true if delegate, false otherwise"}
      */
-    function hasDelegate(address addr) external view returns(bool);
+    function hasDelegate(address addr) external view returns (bool);
+
+    /**
+     * @dev Returns all delegates associated with this organization.
+     * @return {" ": "List of delegates"}
+     */
+    function getDelegates() external view returns (address[] memory);
 }

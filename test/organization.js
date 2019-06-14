@@ -204,6 +204,14 @@ contract('Organization', (accounts) => {
     });
   });
 
+  describe('getDelegates', async () => {
+    it('should list delegates', async () => {
+      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+      const r = await organization.methods.getDelegates().call();
+      assert.equal(r.length, 2);
+    });
+  });
+
   describe('hasDelegate', async () => {
     it('should return false for a non-delegate', async () => {
       assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), false);

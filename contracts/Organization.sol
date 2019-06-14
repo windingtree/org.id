@@ -65,7 +65,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         delegates.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        _registerInterface(i.owner.selector ^ i.getOrgJsonUri.selector ^ i.hasDelegate.selector);
+        _registerInterface(
+            i.owner.selector ^
+            i.getOrgJsonUri.selector ^
+            i.hasDelegate.selector ^
+            i.getDelegates.selector
+            );
     }
 
     /**
@@ -127,6 +132,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      */
     function hasDelegate(address addr) external view returns(bool) {
         return delegates[delegatesIndex[addr]] != address(0);
+    }
+
+    /**
+     * @dev Returns all delegates associated with this organization.
+     * @return {" ": "List of delegates"}
+     */
+    function getDelegates() external view returns (address[] memory) {
+        return delegates;
     }
 
     /**
