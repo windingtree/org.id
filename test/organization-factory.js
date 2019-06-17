@@ -47,6 +47,17 @@ contract('OrganizationFactory', (accounts) => {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
+
+    it('should not allow zero address app', async () => {
+      try {
+        const organizationFactory = await OrganizationFactory.new({ from: organizationFactoryOwner });
+        await organizationFactory.methods.initialize(project.app.address, help.zeroAddress).send({ from: organizationFactoryOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
   });
 
   describe('upgradeability', () => {

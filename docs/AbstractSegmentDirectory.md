@@ -19,6 +19,7 @@
 
 AbstractSegmentDirectory.add(organization) `nonpayable` `0a3b0a4f`
 
+> Adds an organization to the list
 
 Inputs
 
@@ -31,6 +32,7 @@ Inputs
 
 AbstractSegmentDirectory.getSegment() `view` `2203793c`
 
+> Returns the segment name
 
 
 
@@ -39,6 +41,7 @@ AbstractSegmentDirectory.getSegment() `view` `2203793c`
 
 AbstractSegmentDirectory.remove(organization) `nonpayable` `29092d0e`
 
+> Removes an organization from the list
 
 Inputs
 
@@ -51,6 +54,7 @@ Inputs
 
 AbstractSegmentDirectory.organizationsIndex(organization) `view` `63cd48fb`
 
+> Returns index of `organization`
 
 Inputs
 
@@ -63,6 +67,7 @@ Inputs
 
 AbstractSegmentDirectory.getLifToken() `view` `8b0728cf`
 
+> Returns the address of the associated lif token
 
 
 
@@ -71,6 +76,7 @@ AbstractSegmentDirectory.getLifToken() `view` `8b0728cf`
 
 AbstractSegmentDirectory.owner() `view` `8da5cb5b`
 
+> Returns the address of the current owner.
 
 
 
@@ -79,6 +85,7 @@ AbstractSegmentDirectory.owner() `view` `8da5cb5b`
 
 AbstractSegmentDirectory.getOrganizations() `view` `9754a3a8`
 
+> Returns a list of added organizations. Might contain zero addresses.
 
 
 
@@ -87,6 +94,7 @@ AbstractSegmentDirectory.getOrganizations() `view` `9754a3a8`
 
 AbstractSegmentDirectory.getOrganizationsLength() `view` `b9306681`
 
+> Returns the number of added organizations. Might contain zero addresses (these remain after removing an organization).
 
 
 
@@ -95,6 +103,7 @@ AbstractSegmentDirectory.getOrganizationsLength() `view` `b9306681`
 
 AbstractSegmentDirectory.organizations(index) `view` `e792dd8a`
 
+> Returns organization address on `index` position.
 
 Inputs
 

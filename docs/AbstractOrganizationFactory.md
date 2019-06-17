@@ -15,6 +15,7 @@
 
 AbstractOrganizationFactory.createdOrganizationsIndex(organization) `view` `0a1bd90b`
 
+> Returns index of `organization`
 
 Inputs
 
@@ -27,6 +28,7 @@ Inputs
 
 AbstractOrganizationFactory.getCreatedOrganizations() `view` `270ca0f0`
 
+> Returns a list of created organizations.
 
 
 
@@ -35,6 +37,7 @@ AbstractOrganizationFactory.getCreatedOrganizations() `view` `270ca0f0`
 
 AbstractOrganizationFactory.getCreatedOrganizationsLength() `view` `3db297e9`
 
+> Returns number of created organizations.
 
 
 
@@ -43,6 +46,7 @@ AbstractOrganizationFactory.getCreatedOrganizationsLength() `view` `3db297e9`
 
 AbstractOrganizationFactory.owner() `view` `8da5cb5b`
 
+> Returns the address of the current owner.
 
 
 
@@ -51,6 +55,7 @@ AbstractOrganizationFactory.owner() `view` `8da5cb5b`
 
 AbstractOrganizationFactory.createdOrganizations(index) `view` `9e356f4c`
 
+> Returns organization address on `index` position.
 
 Inputs
 
@@ -63,13 +68,19 @@ Inputs
 
 AbstractOrganizationFactory.create(orgJsonUri) `nonpayable` `b6a46b3b`
 
+> Creates new 0xORG smart contract
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | orgJsonUri | undefined |
+| *string* | orgJsonUri | Organization's data pointer |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 ## *event* OrganizationCreated
 
 AbstractOrganizationFactory.OrganizationCreated(organization) `47b68893`

@@ -7,7 +7,8 @@ import "./Organization.sol";
 import "./AbstractSegmentDirectory.sol";
 
 /**
- * A SegmentDirectory that can handle a list of organizations
+ * A SegmentDirectory that can handle a list of organizations sharing a 
+ * common segment such as hotels, airlines etc.
  */
 contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
     // Address of the contract owner
@@ -27,6 +28,9 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
     /**
      * @dev `addOrganization` Add new organization in the directory.
+     * Only organizations that conform to OrganizationInterface can be added.
+     * ERC165 method of interface checking is used.
+     * 
      * Emits `OrganizationAdded` on success.
      * @param  organization Organization's address
      * @return {" ": "Address of the organization."}

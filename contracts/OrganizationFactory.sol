@@ -4,6 +4,13 @@ import "./AbstractOrganizationFactory.sol";
 import "zos-lib/contracts/Initializable.sol";
 import "zos-lib/contracts/application/App.sol";
 
+/**
+ * @title OrganizationFactory
+ *
+ * @dev A factory contract that can create new instances of upgradeable
+ * 0xORG smart contracts from the `Organization` blueprint published in
+ * `wt-contracts` ZeppelinOS package.
+ */
 contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     // ZeppelinOS App instance
     App internal app;
@@ -11,7 +18,10 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     // Address of the contract owner
     address _owner;
 
-    // Array of addresses of created `Organization` contracts
+    // Array of addresses of created `Organization` contracts. We need to keep
+    // track of it because owner of this factory remains the Proxy Owner of
+    // the created smart contracts and is the only account that can change
+    // the implementation or transfer its ownership.
     address[] _createdOrganizations;
 
     // Mapping of organizations position in the general created organization index
@@ -23,6 +33,9 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * The created Organizations's ownership is given to `msg.sender`.
      * This ownership design allows the factory owner to keep the implementation
      * safe whilst giving the data owner full control over their data.
+     *
+     * See the reasoning on https://github.com/windingtree/wt-contracts/pull/241#issuecomment-501726595
+     * 
      * Emits `OrganizationCreated` on success.
      * @param  orgJsonUri Organization's data pointer
      * @return {" ": "Address of the new organization."}
@@ -58,6 +71,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      */
     function initialize(address payable __owner, App _app) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
+        require(address(_app) != address(0), 'Cannot set app to 0x0 address');
         _owner = __owner;
         app = _app;
         _createdOrganizations.length++;
