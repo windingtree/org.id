@@ -27,18 +27,18 @@ contract OrganizationInterface is IERC165 {
     function getOrgJsonUri() external view returns (string memory);
 
     /**
-     * @dev Returns if an `address` is Organization's delegate.
-     * Delegates can operate on behalf of the organization,
-     * typically sign messages.
+     * @dev Returns if an `address` is associated with the Organization.
+     * Associated keys can be used on behalf of the organization,
+     * typically to sign messages.
      *
-     * @param addr Delegate's Ethereum address
-     * @return {" ": "true if delegate, false otherwise"}
+     * @param addr Associated Ethereum address
+     * @return {" ": "true if associated, false otherwise"}
      */
-    function hasDelegate(address addr) external view returns (bool);
+    function hasAssociatedKey(address addr) external view returns (bool);
 
     /**
-     * @dev Returns all delegates associated with this organization.
-     * @return {" ": "List of delegates"}
+     * @dev Returns all associatedKeys associated with this organization.
+     * @return {" ": "List of associatedKeys"}
      */
-    function getDelegates() external view returns (address[] memory);
+    function getAssociatedKeys() external view returns (address[] memory);
 }

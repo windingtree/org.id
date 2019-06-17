@@ -27,15 +27,15 @@ When a producer wants to participate, they have to do the following:
     1. Fully custom
         1. Create an implementation of `OrganizationInterface` smart contract.
         1. Deploy the custom implementation.
-        1. Call `add*` method on the appropriate Segment Directory.
+        1. Call `add` method on the appropriate Segment Directory.
     1. Assisted
-        1. Call `addAndRegister*` method on the appropriate Segment Directory with the address of off-chain data.
+        1. Call `createAndAdd` method on the appropriate Segment Directory with the address of off-chain data.
         Organization smart contract that belongs to the transaction sender is created and registered in the
         Directory in this single transaction.
 
-In any case, every Organization can have many *delegates*. A *delegate* is an Ethereum address
-registered in the Organization and she is officially associated with the Organization. That means
-that for example, the delegate address can **sign messages on behalf** of the Organization. This
+In any case, every Organization can have many *associated keys*. An *associated key* is an Ethereum address
+registered in the Organization thatcan operate on behalf of the organization. That means
+that for example, the associated key can **sign messages on behalf** of the Organization. This
 is handy when providing guarantees or proving data integrity.
 
 ### Content consumers
@@ -45,13 +45,13 @@ When a consumer wants to participate, they have to do the following:
 1. Locate Winding Tree Entrypoint address
 1. Locate the appropriate Segment Directory address
 1. Call `get*` on the Segment Directory.
-1. Call `getDataUri` on every non-zero address returned as an instance of `OrganizationInterface` and crawl the off-chain data
+1. Call `getOrgJsonUri` on every non-zero address returned as an instance of `OrganizationInterface` and crawl the off-chain data
 for more information.
 
 If a signed message occurs somewhere in the platform, a content consumer might want to decide
 if it was signed by an account associated with the declared Organization. That's when they would 
 first verify the signature and obtain an address of the signer. In the next step, they have to verify
-that the actual signer is declared as a *delegate* of the Organization by checking its smart contract.
+that the actual signer is registered as an *associated key* with the Organization by checking its smart contract.
 
 ## Requirements
 
@@ -171,7 +171,7 @@ truffle(development)> contract = await SegmentDirectory.at('0x...address returne
 undefined
 truffle(development)> contract.getOrganizations()
 [ '0x0000000000000000000000000000000000000000' ]
-truffle(development)> contract.createAndAdd('http://windingtree.com')
+truffle(development)> contract.createAndAdd('https://windingtree.com')
 truffle(development)> contract.getOrganizations()
 [ '0x0000000000000000000000000000000000000000',
   '0x4D377b0a8fa386FA118B09947eEE2B1f7f126C76' ]

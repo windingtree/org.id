@@ -1,24 +1,38 @@
 * [OrganizationUpgradeabilityTest](#organizationupgradeabilitytest)
+  * [removeAssociatedKey](#function-removeassociatedkey)
   * [supportsInterface](#function-supportsinterface)
+  * [getAssociatedKeys](#function-getassociatedkeys)
+  * [associatedKeys](#function-associatedkeys)
   * [newFunction](#function-newfunction)
   * [getOrgJsonUri](#function-getorgjsonuri)
   * [created](#function-created)
   * [orgJsonUri](#function-orgjsonuri)
-  * [hasDelegate](#function-hasdelegate)
-  * [removeDelegate](#function-removedelegate)
+  * [addAssociatedKey](#function-addassociatedkey)
   * [owner](#function-owner)
-  * [delegates](#function-delegates)
   * [changeOrgJsonUri](#function-changeorgjsonuri)
-  * [delegatesIndex](#function-delegatesindex)
-  * [addDelegate](#function-adddelegate)
+  * [associatedKeysIndex](#function-associatedkeysindex)
   * [transferOwnership](#function-transferownership)
   * [initialize](#function-initialize)
+  * [hasAssociatedKey](#function-hasassociatedkey)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
-  * [DelegateAdded](#event-delegateadded)
-  * [DelegateRemoved](#event-delegateremoved)
+  * [AssociatedKeyAdded](#event-associatedkeyadded)
+  * [AssociatedKeyRemoved](#event-associatedkeyremoved)
 
 # OrganizationUpgradeabilityTest
+
+
+## *function* removeAssociatedKey
+
+OrganizationUpgradeabilityTest.removeAssociatedKey(addr) `nonpayable` `01aedb62`
+
+> Removes associatedKey address. Only owner can call this.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | Associated Ethereum address |
 
 
 ## *function* supportsInterface
@@ -32,6 +46,32 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes4* | interfaceId | undefined |
+
+
+## *function* getAssociatedKeys
+
+OrganizationUpgradeabilityTest.getAssociatedKeys() `view` `0ba11d86`
+
+> Returns all associatedKeys associated with this organization.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
+## *function* associatedKeys
+
+OrganizationUpgradeabilityTest.associatedKeys() `view` `1ad2c3cb`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
 
 
 ## *function* newFunction
@@ -72,36 +112,23 @@ OrganizationUpgradeabilityTest.orgJsonUri() `view` `3b3ba578`
 
 
 
-## *function* hasDelegate
+## *function* addAssociatedKey
 
-OrganizationUpgradeabilityTest.hasDelegate(addr) `view` `480005cd`
+OrganizationUpgradeabilityTest.addAssociatedKey(addr) `nonpayable` `8d6c8ef0`
 
-> Is an address considered a delegate for this organization?
+> Adds new associatedKey address. Only owner can call this.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | addr | undefined |
+| *address* | addr | Associated Ethereum address |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bool* |  | undefined |
-
-## *function* removeDelegate
-
-OrganizationUpgradeabilityTest.removeDelegate(addr) `nonpayable` `67e7646f`
-
-> Removes delegate address. Only owner can call this.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Delegate's Ethereum address |
-
+| *address* |  | undefined |
 
 ## *function* owner
 
@@ -110,18 +137,6 @@ OrganizationUpgradeabilityTest.owner() `view` `8da5cb5b`
 > Returns the address of the current owner.
 
 
-
-
-## *function* delegates
-
-OrganizationUpgradeabilityTest.delegates() `view` `b1548afc`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* |  | undefined |
 
 
 ## *function* changeOrgJsonUri
@@ -137,9 +152,9 @@ Inputs
 | *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
 
 
-## *function* delegatesIndex
+## *function* associatedKeysIndex
 
-OrganizationUpgradeabilityTest.delegatesIndex() `view` `c72934d5`
+OrganizationUpgradeabilityTest.associatedKeysIndex() `view` `df0a2bca`
 
 
 Inputs
@@ -148,24 +163,6 @@ Inputs
 |-|-|-|
 | *address* |  | undefined |
 
-
-## *function* addDelegate
-
-OrganizationUpgradeabilityTest.addDelegate(addr) `nonpayable` `e71bdf41`
-
-> Adds new delegate address. Only owner can call this.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Delegate's Ethereum address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* transferOwnership
 
@@ -193,6 +190,24 @@ Inputs
 | *address* | __owner | The address of the contract owner |
 | *string* | _orgJsonUri | pointer to Organization data |
 
+
+## *function* hasAssociatedKey
+
+OrganizationUpgradeabilityTest.hasAssociatedKey(addr) `view` `f5760597`
+
+> Is an address considered a associatedKey for this organization?
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | undefined |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
 ## *event* OwnershipTransferred
 
 OrganizationUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
@@ -215,26 +230,26 @@ Arguments
 | *string* | previousOrgJsonUri | indexed |
 | *string* | newOrgJsonUri | indexed |
 
-## *event* DelegateAdded
+## *event* AssociatedKeyAdded
 
-OrganizationUpgradeabilityTest.DelegateAdded(delegate, index) `ea230cdd`
+OrganizationUpgradeabilityTest.AssociatedKeyAdded(associatedKey, index) `1cbc30c7`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | delegate | indexed |
+| *address* | associatedKey | indexed |
 | *uint256* | index | not indexed |
 
-## *event* DelegateRemoved
+## *event* AssociatedKeyRemoved
 
-OrganizationUpgradeabilityTest.DelegateRemoved(delegate) `5a362b19`
+OrganizationUpgradeabilityTest.AssociatedKeyRemoved(associatedKey) `e8c3a62e`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | delegate | indexed |
+| *address* | associatedKey | indexed |
 
 
 ---

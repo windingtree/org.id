@@ -20,15 +20,15 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Number of a block when the Organization was created
     uint public created;
 
-    // Index of registered delegate addresses. These can be used
+    // Index of registered associatedKey addresses. These can be used
     // to verify that signed data can be presented on behalf of this
     // organization.
-    mapping(address => uint) public delegatesIndex;
+    mapping(address => uint) public associatedKeysIndex;
 
-    // List of delegate addresses. These addresses (i. e. public key
+    // List of associatedKey addresses. These addresses (i. e. public key
     // fingerprints) can be used to associate signed content with this
     // organization.
-    address[] public delegates;
+    address[] public associatedKeys;
 
     /**
      * @dev Event triggered when owner of the organization is changed.
@@ -41,14 +41,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     event OrgJsonUriChanged(string indexed previousOrgJsonUri, string indexed newOrgJsonUri);
 
     /**
-     * @dev Event triggered when new delegate is added.
+     * @dev Event triggered when new associatedKey is added.
      */
-    event DelegateAdded(address indexed delegate, uint index);
+    event AssociatedKeyAdded(address indexed associatedKey, uint index);
 
     /**
-     * @dev Event triggered when a delegate is removed.
+     * @dev Event triggered when a associatedKey is removed.
      */    
-    event DelegateRemoved(address indexed delegate);
+    event AssociatedKeyRemoved(address indexed associatedKey);
 
     /**
      * @dev Initializer for upgradeable contracts.
@@ -62,15 +62,15 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         _owner = __owner;        
         orgJsonUri = _orgJsonUri;
         created = block.number;
-        delegates.length++;
+        associatedKeys.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
         _registerInterface(
             i.owner.selector ^
             i.getOrgJsonUri.selector ^
-            i.hasDelegate.selector ^
-            i.getDelegates.selector
-            );
+            i.hasAssociatedKey.selector ^
+            i.getAssociatedKeys.selector
+        );
     }
 
     /**
@@ -101,45 +101,45 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Adds new delegate address. Only owner can call this.
-     * @param addr Delegate's Ethereum address
-     * @return {" ": "Address of the added delegate"}
+     * @dev Adds new associatedKey address. Only owner can call this.
+     * @param addr Associated Ethereum address
+     * @return {" ": "Address of the added associatedKey"}
      */
-    function addDelegate(address addr) public onlyOwner returns(address) {
-        require(addr != address(0), 'Cannot add delegate with 0x0 address');
-        require(delegatesIndex[addr] == 0, 'Cannot add delegate twice');
-        delegatesIndex[addr] = delegates.length;
-        delegates.push(addr);
-        emit DelegateAdded(addr, delegatesIndex[addr]);
+    function addAssociatedKey(address addr) public onlyOwner returns(address) {
+        require(addr != address(0), 'Cannot add associatedKey with 0x0 address');
+        require(associatedKeysIndex[addr] == 0, 'Cannot add associatedKey twice');
+        associatedKeysIndex[addr] = associatedKeys.length;
+        associatedKeys.push(addr);
+        emit AssociatedKeyAdded(addr, associatedKeysIndex[addr]);
         return addr;
     }
 
     /**
-     * @dev Removes delegate address. Only owner can call this.
-     * @param addr Delegate's Ethereum address
+     * @dev Removes associatedKey address. Only owner can call this.
+     * @param addr Associated Ethereum address
      */
-    function removeDelegate(address addr) public onlyOwner {
-        require(addr != address(0), 'Cannot remove delegate with 0x0 address');
-        require(delegatesIndex[addr] != uint(0), 'Cannot remove unknown organization');
-        delete delegates[delegatesIndex[addr]];
-        delete delegatesIndex[addr];
-        emit DelegateRemoved(addr);
+    function removeAssociatedKey(address addr) public onlyOwner {
+        require(addr != address(0), 'Cannot remove associatedKey with 0x0 address');
+        require(associatedKeysIndex[addr] != uint(0), 'Cannot remove unknown organization');
+        delete associatedKeys[associatedKeysIndex[addr]];
+        delete associatedKeysIndex[addr];
+        emit AssociatedKeyRemoved(addr);
     }
 
     /**
-     * @dev Is an address considered a delegate for this organization?
-     * @return {" ": "True if address is considered a delegate, false otherwise"}
+     * @dev Is an address considered a associatedKey for this organization?
+     * @return {" ": "True if address is considered as associatedKey, false otherwise"}
      */
-    function hasDelegate(address addr) external view returns(bool) {
-        return delegates[delegatesIndex[addr]] != address(0);
+    function hasAssociatedKey(address addr) external view returns(bool) {
+        return associatedKeys[associatedKeysIndex[addr]] != address(0);
     }
 
     /**
-     * @dev Returns all delegates associated with this organization.
-     * @return {" ": "List of delegates"}
+     * @dev Returns all associatedKeys associated with this organization.
+     * @return {" ": "List of associated keys"}
      */
-    function getDelegates() external view returns (address[] memory) {
-        return delegates;
+    function getAssociatedKeys() external view returns (address[] memory) {
+        return associatedKeys;
     }
 
     /**

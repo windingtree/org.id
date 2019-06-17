@@ -1,8 +1,9 @@
 * [OrganizationInterface](#organizationinterface)
   * [supportsInterface](#function-supportsinterface)
+  * [getAssociatedKeys](#function-getassociatedkeys)
   * [getOrgJsonUri](#function-getorgjsonuri)
-  * [hasDelegate](#function-hasdelegate)
   * [owner](#function-owner)
+  * [hasAssociatedKey](#function-hasassociatedkey)
 
 # OrganizationInterface
 
@@ -20,6 +21,20 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
+## *function* getAssociatedKeys
+
+OrganizationInterface.getAssociatedKeys() `view` `0ba11d86`
+
+> Returns all associatedKeys associated with this organization.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address[]* |  | undefined |
+
 ## *function* getOrgJsonUri
 
 OrganizationInterface.getOrgJsonUri() `view` `1d855977`
@@ -34,24 +49,6 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
-## *function* hasDelegate
-
-OrganizationInterface.hasDelegate(addr) `view` `480005cd`
-
-> Returns if an `address` is Organization's delegate. Delegates can operate on behalf of the organization, typically sign messages.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Delegate's Ethereum address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bool* |  | undefined |
-
 ## *function* owner
 
 OrganizationInterface.owner() `view` `8da5cb5b`
@@ -65,5 +62,23 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
+
+## *function* hasAssociatedKey
+
+OrganizationInterface.hasAssociatedKey(addr) `view` `f5760597`
+
+> Returns if an `address` is associated with the Organization. Associated keys can be used on behalf of the organization, typically to sign messages.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | addr | Associated Ethereum address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bool* |  | undefined |
 
 ---

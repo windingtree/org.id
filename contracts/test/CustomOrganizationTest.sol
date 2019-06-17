@@ -5,7 +5,7 @@ import "../OrganizationInterface.sol";
 
 contract CustomOrganizationTest is ERC165, OrganizationInterface {
     address _owner;
-    address[] delegates;
+    address[] associatedKeys;
 
     constructor() public {
         OrganizationInterface i;
@@ -13,8 +13,8 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
         _registerInterface(
             i.owner.selector ^
             i.getOrgJsonUri.selector ^
-            i.hasDelegate.selector ^
-            i.getDelegates.selector
+            i.hasAssociatedKey.selector ^
+            i.getAssociatedKeys.selector
         );
     }
 
@@ -26,11 +26,11 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
         return "https://super-sweet-custom-organization.com";
     }
 
-    function hasDelegate(address addr) external view returns(bool) {
+    function hasAssociatedKey(address addr) external view returns(bool) {
         return addr == _owner;
     }
 
-    function getDelegates() external view returns (address[] memory) {
-        return delegates;
+    function getAssociatedKeys() external view returns (address[] memory) {
+        return associatedKeys;
     }
 }

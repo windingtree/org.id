@@ -134,39 +134,39 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('addDelegate', async () => {
-    it('should add delegate and emit', async () => {
-      const receipt = await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+  describe('addAssociatedKey', async () => {
+    it('should add associatedKey and emit', async () => {
+      const receipt = await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(Object.keys(receipt.events).length, 1);
-      assert.equal(receipt.events.DelegateAdded.returnValues.delegate, nonOwnerAccount);
-      assert.equal(receipt.events.DelegateAdded.returnValues.index, 1);
-      assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 1);
-      assert.equal(await organization.methods.delegates(1).call(), nonOwnerAccount);
-      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), true);
+      assert.equal(receipt.events.AssociatedKeyAdded.returnValues.associatedKey, nonOwnerAccount);
+      assert.equal(receipt.events.AssociatedKeyAdded.returnValues.index, 1);
+      assert.equal(await organization.methods.associatedKeysIndex(nonOwnerAccount).call(), 1);
+      assert.equal(await organization.methods.associatedKeys(1).call(), nonOwnerAccount);
+      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), true);
     });
 
-    it('should throw when adding an existing delegate', async () => {
-      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+    it('should throw when adding an existing associatedKey', async () => {
+      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       try {
-        await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
+        await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should throw when adding a delegate with zero address', async () => {
+    it('should throw when adding a associatedKey with zero address', async () => {
       try {
-        await organization.methods.addDelegate(help.zeroAddress).send({ from: organizationOwner });
+        await organization.methods.addAssociatedKey(help.zeroAddress).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
 
-    it('should throw when adding a delegate by a non-owner', async () => {
+    it('should throw when adding a associatedKey by a non-owner', async () => {
       try {
-        await organization.methods.addDelegate(nonOwnerAccount).send({ from: nonOwnerAccount });
+        await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -174,20 +174,20 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('removeDelegate', async () => {
-    it('should remove an existing delegate and emit', async () => {
-      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
-      const receipt = await organization.methods.removeDelegate(nonOwnerAccount).send({ from: organizationOwner });
+  describe('removeAssociatedKey', async () => {
+    it('should remove an existing associatedKey and emit', async () => {
+      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
+      const receipt = await organization.methods.removeAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(Object.keys(receipt.events).length, 1);
-      assert.equal(receipt.events.DelegateRemoved.returnValues.delegate, nonOwnerAccount);
-      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), false);
-      assert.equal(await organization.methods.delegates(1).call(), help.zeroAddress);
-      assert.equal(await organization.methods.delegatesIndex(nonOwnerAccount).call(), 0);
+      assert.equal(receipt.events.AssociatedKeyRemoved.returnValues.associatedKey, nonOwnerAccount);
+      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), false);
+      assert.equal(await organization.methods.associatedKeys(1).call(), help.zeroAddress);
+      assert.equal(await organization.methods.associatedKeysIndex(nonOwnerAccount).call(), 0);
     });
 
-    it('should throw when removing a non-existing delegate', async () => {
+    it('should throw when removing a non-existing associatedKey', async () => {
       try {
-        await organization.methods.removeDelegate(nonOwnerAccount).send({ from: organizationOwner });
+        await organization.methods.removeAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -196,7 +196,7 @@ contract('Organization', (accounts) => {
 
     it('should throw when removing a zero address', async () => {
       try {
-        await organization.methods.removeDelegate(help.zeroAddress).send({ from: organizationOwner });
+        await organization.methods.removeAssociatedKey(help.zeroAddress).send({ from: organizationOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -204,22 +204,22 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('getDelegates', async () => {
-    it('should list delegates', async () => {
-      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
-      const r = await organization.methods.getDelegates().call();
+  describe('getAssociatedKeys', async () => {
+    it('should list associatedKeys', async () => {
+      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
+      const r = await organization.methods.getAssociatedKeys().call();
       assert.equal(r.length, 2);
     });
   });
 
-  describe('hasDelegate', async () => {
-    it('should return false for a non-delegate', async () => {
-      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), false);
+  describe('hasAssociatedKey', async () => {
+    it('should return false for a non-associatedKey', async () => {
+      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), false);
     });
 
-    it('should return true for a delegate', async () => {
-      await organization.methods.addDelegate(nonOwnerAccount).send({ from: organizationOwner });
-      assert.equal(await organization.methods.hasDelegate(nonOwnerAccount).call(), true);
+    it('should return true for a associatedKey', async () => {
+      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
+      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), true);
     });
   });
 });
