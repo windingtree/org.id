@@ -14,6 +14,8 @@ const OrganizationFactory = Contracts.getFromLocal('OrganizationFactory');
 const OrganizationFactoryUpgradeabilityTest = Contracts.getFromLocal('OrganizationFactoryUpgradeabilityTest');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 const AbstractOrganizationFactory = artifacts.require('AbstractOrganizationFactory');
+const SegmentDirectory = Contracts.getFromLocal('SegmentDirectory');
+const AbstractSegmentDirectory = artifacts.require('AbstractSegmentDirectory');
 
 contract('OrganizationFactory', (accounts) => {
   const organizationFactoryOwner = accounts[1];
@@ -24,6 +26,7 @@ contract('OrganizationFactory', (accounts) => {
   let organizationFactoryProxy;
   let organizationFactory;
   let abstractOrganizationFactory;
+  let abstractDirectory;
   let project;
 
   beforeEach(async () => {
@@ -33,8 +36,14 @@ contract('OrganizationFactory', (accounts) => {
       initFunction: 'initialize',
       initArgs: [organizationFactoryOwner, project.app.address],
     });
+    const segmentDirectoryProxy = await project.createProxy(SegmentDirectory, {
+      from: organizationFactoryOwner,
+      initFunction: 'initialize',
+      initArgs: [organizationFactoryOwner, 'foodtrucks', help.zeroAddress],
+    });
     organizationFactory = await OrganizationFactory.at(organizationFactoryProxy.address);
     abstractOrganizationFactory = await AbstractOrganizationFactory.at(organizationFactoryProxy.address);
+    abstractDirectory = await AbstractSegmentDirectory.at(segmentDirectoryProxy.address);
   });
 
   describe('initialize', () => {
@@ -57,7 +66,6 @@ contract('OrganizationFactory', (accounts) => {
         assert(help.isInvalidOpcodeEx(e));
       }
     });
-
   });
 
   describe('upgradeability', () => {
@@ -169,6 +177,45 @@ contract('OrganizationFactory', (accounts) => {
     it('should not create an organization with empty orgJsonUri', async () => {
       try {
         await abstractOrganizationFactory.create('', { from: organizationAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
+  describe('createAndAddToDirectory', () => {
+    it('should create and add an organization to a selected directory', async () => {
+      // First emulate the transaction, then actually run it
+      const address = await abstractOrganizationFactory.createAndAddToDirectory.call('orgJsonUri', abstractDirectory.address);
+      const receipt = await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', abstractDirectory.address, { from: organizationAccount });
+      const organization = await OrganizationInterface.at(address);
+      const info = await help.getOrganizationInfo(organization);
+      assert.equal(info.owner, organizationAccount);
+      assert.equal(info.orgJsonUri, 'orgJsonUri');
+      assert.equal(receipt.logs.length, 3);
+      assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[0].args[0], help.zeroAddress);
+      assert.equal(receipt.logs[0].args[1], abstractOrganizationFactory.address);
+      assert.equal(receipt.logs[1].event, 'OwnershipTransferred');
+      assert.equal(receipt.logs[1].args[0], abstractOrganizationFactory.address);
+      assert.equal(receipt.logs[1].args[1], organizationAccount);
+      assert.equal(receipt.logs[2].event, 'OrganizationCreated');
+      assert.equal(receipt.logs[2].args.organization, address);
+    });
+
+    it('should throw when trying to add to a zero address directory', async () => {
+      try {
+        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', help.zeroAddress, { from: organizationAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw when trying to add to an address with no directory', async () => {
+      try {
+        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', abstractOrganizationFactory.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

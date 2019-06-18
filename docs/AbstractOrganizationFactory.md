@@ -1,5 +1,6 @@
 * [AbstractOrganizationFactory](#abstractorganizationfactory)
   * [createdOrganizationsIndex](#function-createdorganizationsindex)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [getCreatedOrganizations](#function-getcreatedorganizations)
   * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
   * [owner](#function-owner)
@@ -23,6 +24,25 @@ Inputs
 |-|-|-|
 | *address* | organization | undefined |
 
+
+## *function* createAndAddToDirectory
+
+AbstractOrganizationFactory.createAndAddToDirectory(orgJsonUri, directory) `nonpayable` `1f7d8864`
+
+> Creates new 0xORG smart contract and adds it to a segment directory in the same transaction
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *address* | directory | Segment directory address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* getCreatedOrganizations
 

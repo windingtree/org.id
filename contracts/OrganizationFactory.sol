@@ -1,6 +1,8 @@
 pragma solidity ^0.5.6;
 
 import "./AbstractOrganizationFactory.sol";
+import "./AbstractSegmentDirectory.sol";
+import "./Organization.sol";
 import "zos-lib/contracts/Initializable.sol";
 import "zos-lib/contracts/application/App.sol";
 
@@ -62,6 +64,37 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      */
     function create(string calldata orgJsonUri) external returns (address) {
         return createOrganization(orgJsonUri);
+    }
+
+    /**
+     * @dev `createAndAddToDirectory` Creates the organization contract and tries to add it
+     * to a SegmentDirectory living on the passed `directory` address.
+     *
+     * We cannot reuse create call due to the Organization ownership restrictions.
+     * 
+     * @param  orgJsonUri Organization's data pointer
+     * @param  directory Segment directory's address
+     * @return {" ": "Address of the new organization."}
+     */
+    function createAndAddToDirectory(string calldata orgJsonUri, address directory) external returns (address) {
+        // TODO rewrite so that directory address gets known from entrypoint
+        require(directory != address(0), 'Cannot use directory with 0x0 address');
+        address newOrganizationAddress = address(
+            app.create(
+                "wt-contracts", 
+                "Organization", 
+                _owner, 
+                abi.encodeWithSignature("initialize(address,string)", address(this), orgJsonUri)
+            )
+        );
+        AbstractSegmentDirectory sd = AbstractSegmentDirectory(directory);
+        sd.add(newOrganizationAddress);
+        _createdOrganizationsIndex[newOrganizationAddress] = _createdOrganizations.length;
+        _createdOrganizations.push(newOrganizationAddress);
+        Organization o = Organization(newOrganizationAddress);
+        o.transferOwnership(msg.sender);
+        emit OrganizationCreated(newOrganizationAddress);
+        return newOrganizationAddress;
     }
 
     /**
