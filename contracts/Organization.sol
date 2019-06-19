@@ -6,7 +6,10 @@ import "zos-lib/contracts/Initializable.sol";
 
 /**
  * @title Organization
- * @dev A contract that represents an Organization in the Winding Tree platform.
+ * @dev A contract that represents an Organization in the Winding Tree platform,
+ * commonly referred to as 0xORG. This is a reference implementation that is
+ * created by the OrganizationFactory. You cn implement your own logic if it
+ * adheres to the `OrganizationInterface`.
  */
 contract Organization is OrganizationInterface, ERC165, Initializable {
     // Address of the contract owner
@@ -20,12 +23,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Number of a block when the Organization was created
     uint public created;
 
-    // Index of registered associatedKey addresses. These can be used
-    // to verify that signed data can be presented on behalf of this
-    // organization.
+    // Index of associated addresses. These can be used
+    // to operate on behalf of this organization, typically sign messages.
     mapping(address => uint) public associatedKeysIndex;
 
-    // List of associatedKey addresses. These addresses (i. e. public key
+    // List of associatedKeys. These addresses (i. e. public key
     // fingerprints) can be used to associate signed content with this
     // organization.
     address[] public associatedKeys;
@@ -101,7 +103,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Adds new associatedKey address. Only owner can call this.
+     * @dev Adds another associated key. Only owner can call this.
      * @param addr Associated Ethereum address
      * @return {" ": "Address of the added associatedKey"}
      */
@@ -115,7 +117,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Removes associatedKey address. Only owner can call this.
+     * @dev Removes an associated key. Only owner can call this.
      * @param addr Associated Ethereum address
      */
     function removeAssociatedKey(address addr) public onlyOwner {
@@ -127,7 +129,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Is an address considered a associatedKey for this organization?
+     * @dev Is an address considered as associated for this organization?
      * @return {" ": "True if address is considered as associatedKey, false otherwise"}
      */
     function hasAssociatedKey(address addr) external view returns(bool) {
@@ -135,7 +137,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Returns all associatedKeys associated with this organization.
+     * @dev Returns all addresses associated with this organization.
      * @return {" ": "List of associated keys"}
      */
     function getAssociatedKeys() external view returns (address[] memory) {

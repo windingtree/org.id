@@ -25,7 +25,7 @@ Inputs
 
 OrganizationInterface.getAssociatedKeys() `view` `0ba11d86`
 
-> Returns all associatedKeys associated with this organization.
+> Returns all associatedKeys belonging to this organization.
 
 
 
@@ -39,7 +39,7 @@ Outputs
 
 OrganizationInterface.getOrgJsonUri() `view` `1d855977`
 
-> Returns the URI of ORG.ID JSON file stored off-chain.
+> Returns the URI of ORG.JSON file stored off-chain.
 
 
 

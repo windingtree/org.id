@@ -5,12 +5,9 @@
   * [organizationsIndex](#function-organizationsindex)
   * [getLifToken](#function-getliftoken)
   * [owner](#function-owner)
-  * [createAndAdd](#function-createandadd)
   * [getOrganizations](#function-getorganizations)
-  * [create](#function-create)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
-  * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
   * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
@@ -22,6 +19,7 @@
 
 AbstractSegmentDirectory.add(organization) `nonpayable` `0a3b0a4f`
 
+> Adds an organization to the list
 
 Inputs
 
@@ -34,6 +32,7 @@ Inputs
 
 AbstractSegmentDirectory.getSegment() `view` `2203793c`
 
+> Returns the segment name
 
 
 
@@ -42,6 +41,7 @@ AbstractSegmentDirectory.getSegment() `view` `2203793c`
 
 AbstractSegmentDirectory.remove(organization) `nonpayable` `29092d0e`
 
+> Removes an organization from the list
 
 Inputs
 
@@ -54,6 +54,7 @@ Inputs
 
 AbstractSegmentDirectory.organizationsIndex(organization) `view` `63cd48fb`
 
+> Returns index of `organization`
 
 Inputs
 
@@ -66,6 +67,7 @@ Inputs
 
 AbstractSegmentDirectory.getLifToken() `view` `8b0728cf`
 
+> Returns the address of the associated lif token
 
 
 
@@ -74,46 +76,25 @@ AbstractSegmentDirectory.getLifToken() `view` `8b0728cf`
 
 AbstractSegmentDirectory.owner() `view` `8da5cb5b`
 
+> Returns the address of the current owner.
 
 
-
-
-## *function* createAndAdd
-
-AbstractSegmentDirectory.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizations
 
 AbstractSegmentDirectory.getOrganizations() `view` `9754a3a8`
 
+> Returns a list of added organizations. Might contain zero addresses.
 
 
-
-
-## *function* create
-
-AbstractSegmentDirectory.create(orgJsonUri) `nonpayable` `b6a46b3b`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | undefined |
 
 
 ## *function* getOrganizationsLength
 
 AbstractSegmentDirectory.getOrganizationsLength() `view` `b9306681`
 
+> Returns the number of added organizations. Might contain zero addresses (these remain after removing an organization).
 
 
 
@@ -122,22 +103,13 @@ AbstractSegmentDirectory.getOrganizationsLength() `view` `b9306681`
 
 AbstractSegmentDirectory.organizations(index) `view` `e792dd8a`
 
+> Returns organization address on `index` position.
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* | index | undefined |
-
-## *event* OrganizationCreated
-
-AbstractSegmentDirectory.OrganizationCreated(organization) `47b68893`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | organization | indexed |
 
 ## *event* OrganizationAdded
 

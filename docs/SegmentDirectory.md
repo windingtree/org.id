@@ -3,18 +3,15 @@
   * [getSegment](#function-getsegment)
   * [remove](#function-remove)
   * [organizationsIndex](#function-organizationsindex)
+  * [initialize](#function-initialize)
   * [getLifToken](#function-getliftoken)
   * [owner](#function-owner)
-  * [createAndAdd](#function-createandadd)
   * [getOrganizations](#function-getorganizations)
   * [setSegment](#function-setsegment)
-  * [create](#function-create)
-  * [initialize](#function-initialize)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
   * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
-  * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationAdded](#event-organizationadded)
   * [OrganizationRemoved](#event-organizationremoved)
   * [OwnershipTransferred](#event-ownershiptransferred)
@@ -85,6 +82,21 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
+## *function* initialize
+
+SegmentDirectory.initialize(__owner, __segment, __lifToken) `nonpayable` `7bb7c0d8`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *string* | __segment | The segment name |
+| *address* | __lifToken | The Lif Token contract address |
+
+
 ## *function* getLifToken
 
 SegmentDirectory.getLifToken() `view` `8b0728cf`
@@ -107,24 +119,6 @@ SegmentDirectory.owner() `view` `8da5cb5b`
 
 
 
-
-## *function* createAndAdd
-
-SegmentDirectory.createAndAdd(orgJsonUri) `nonpayable` `962cd2c9`
-
-> `createAndAdd` proxies and externalizes createAndAddOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* getOrganizations
 
@@ -151,40 +145,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | __segment | The new segment name |
-
-
-## *function* create
-
-SegmentDirectory.create(orgJsonUri) `nonpayable` `b6a46b3b`
-
-> `create` proxies and externalizes createOrganization
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-## *function* initialize
-
-SegmentDirectory.initialize(__owner, __segment, __lifToken, _app) `nonpayable` `b8f88d64`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *string* | __segment | The segment name |
-| *address* | __lifToken | The Lif Token contract address |
-| *address* | _app | ZeppelinOS App address |
 
 
 ## *function* getOrganizationsLength
@@ -243,16 +203,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
-
-## *event* OrganizationCreated
-
-SegmentDirectory.OrganizationCreated(organization) `47b68893`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | organization | indexed |
 
 ## *event* OrganizationAdded
 

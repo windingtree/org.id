@@ -26,7 +26,7 @@
 
 OrganizationUpgradeabilityTest.removeAssociatedKey(addr) `nonpayable` `01aedb62`
 
-> Removes associatedKey address. Only owner can call this.
+> Removes an associated key. Only owner can call this.
 
 Inputs
 
@@ -52,7 +52,7 @@ Inputs
 
 OrganizationUpgradeabilityTest.getAssociatedKeys() `view` `0ba11d86`
 
-> Returns all associatedKeys associated with this organization.
+> Returns all addresses associated with this organization.
 
 
 
@@ -116,7 +116,7 @@ OrganizationUpgradeabilityTest.orgJsonUri() `view` `3b3ba578`
 
 OrganizationUpgradeabilityTest.addAssociatedKey(addr) `nonpayable` `8d6c8ef0`
 
-> Adds new associatedKey address. Only owner can call this.
+> Adds another associated key. Only owner can call this.
 
 Inputs
 
@@ -195,7 +195,7 @@ Inputs
 
 OrganizationUpgradeabilityTest.hasAssociatedKey(addr) `view` `f5760597`
 
-> Is an address considered a associatedKey for this organization?
+> Is an address considered as associated for this organization?
 
 Inputs
 

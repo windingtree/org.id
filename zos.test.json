@@ -7,7 +7,9 @@
       "WindingTreeEntrypoint": "WindingTreeEntrypoint",
       "SegmentDirectory": "SegmentDirectory",
       "Organization": "Organization",
+      "OrganizationFactory": "OrganizationFactory",
       "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
+      "OrganizationFactoryUpgradeabilityTest": "OrganizationFactoryUpgradeabilityTest",
       "SegmentDirectoryUpgradeabilityTest": "SegmentDirectoryUpgradeabilityTest",
       "WindingTreeEntrypointUpgradeabilityTest": "WindingTreeEntrypointUpgradeabilityTest"
     }

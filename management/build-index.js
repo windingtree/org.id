@@ -3,23 +3,20 @@ const fs = require('fs'),
 
 const BASE_PATH = 'build/contracts';
 const CONTRACTS_DIR = path.resolve(__dirname, `../${BASE_PATH}`);
-const exceptions = [
-  'AdminUpgradeabilityProxy\.json',
-  'Initializable\.json',
-  'Ownable\.json',
-  'UpgradeabilityProxy\.json',
-  'Proxy\.json',
-  '.*UpgradeabilityTest\.json',
-  '.*Test\.json',
-  '.*ERC165.*\.json',
+const bundle = [
+  'OrganizationFactory\.json',
+  'Organization\.json',
+  'OrganizationInterface\.json',
+  'SegmentDirectory\.json',
+  'Entrypoint\.json',
 ]
 const files = fs.readdirSync(CONTRACTS_DIR)
-const exceptionsRegex = new RegExp(exceptions.join('|'));
+const bundleRegex = new RegExp(bundle.join('|'));
 let importStatements = [];
 let exportStatements = [];
 
 files
-  .filter((f) => !f.match(exceptionsRegex))
+  .filter((f) => f.match(bundleRegex))
   .map((f) => {
     const name = f.split('.')[0];
     importStatements.push(`const ${name}Contract = require('./${BASE_PATH}/${f}');`);
