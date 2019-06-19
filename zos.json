@@ -9,10 +9,6 @@
     "PlaygroundHotelDirectory": "SegmentDirectory",
     "PlaygroundAirlineDirectory": "SegmentDirectory",
     "PlaygroundOtaDirectory": "SegmentDirectory",
-    "DemoEntrypoint": "WindingTreeEntrypoint",
-    "DemoHotelDirectory": "SegmentDirectory",
-    "DemoAirlineDirectory": "SegmentDirectory",
-    "DemoOtaDirectory": "SegmentDirectory",
     "SegmentDirectory": "SegmentDirectory",
     "Organization": "Organization",
     "OrganizationFactory": "OrganizationFactory"

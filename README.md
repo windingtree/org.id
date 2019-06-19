@@ -176,8 +176,8 @@ for details. The zos app might differ for each deployment. You don't need a depl
 to play with this locally.
     ```bash
     > ./node_modules/.bin/zos create OrganizationFactory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0x988f24d8356bf7e3D4645BA34068a5723BF3ec6B
-    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     > ./node_modules/.bin/zos create WindingTreeEntrypoint --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x4fC9beBEE86FdA621f48a4C6537807Bae59cc3e4
+    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console. We also need to use a different account than the
@@ -199,4 +199,3 @@ truffle(development)> directory.getOrganizations()
 truffle(development)> organization = await OrganizationInterface.at('0xa8c4cbB500da540D9fEd05BE7Bef0f0f5df3e2cc')
 truffle(development)> organization.getOrgJsonUri({ from: account })
 ```
-
