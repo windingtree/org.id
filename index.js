@@ -1,21 +1,19 @@
 
-const AbstractAirlineContract = require('./build/contracts/AbstractAirline.json');
-const AbstractHotelContract = require('./build/contracts/AbstractHotel.json');
-const AbstractWTAirlineIndexContract = require('./build/contracts/AbstractWTAirlineIndex.json');
-const AbstractWTHotelIndexContract = require('./build/contracts/AbstractWTHotelIndex.json');
-const AirlineContract = require('./build/contracts/Airline.json');
-const HotelContract = require('./build/contracts/Hotel.json');
-const WTAirlineIndexContract = require('./build/contracts/WTAirlineIndex.json');
-const WTHotelIndexContract = require('./build/contracts/WTHotelIndex.json');
+const AbstractOrganizationFactoryContract = require('./build/contracts/AbstractOrganizationFactory.json');
+const AbstractSegmentDirectoryContract = require('./build/contracts/AbstractSegmentDirectory.json');
+const OrganizationContract = require('./build/contracts/Organization.json');
+const OrganizationFactoryContract = require('./build/contracts/OrganizationFactory.json');
+const OrganizationInterfaceContract = require('./build/contracts/OrganizationInterface.json');
+const SegmentDirectoryContract = require('./build/contracts/SegmentDirectory.json');
+const WindingTreeEntrypointContract = require('./build/contracts/WindingTreeEntrypoint.json');
 
 module.exports = {
-  AbstractAirlineContract: AbstractAirlineContract,
-  AbstractHotelContract: AbstractHotelContract,
-  AbstractWTAirlineIndexContract: AbstractWTAirlineIndexContract,
-  AbstractWTHotelIndexContract: AbstractWTHotelIndexContract,
-  AirlineContract: AirlineContract,
-  HotelContract: HotelContract,
-  WTAirlineIndexContract: WTAirlineIndexContract,
-  WTHotelIndexContract: WTHotelIndexContract,
+  AbstractOrganizationFactoryContract: AbstractOrganizationFactoryContract,
+  AbstractSegmentDirectoryContract: AbstractSegmentDirectoryContract,
+  OrganizationContract: OrganizationContract,
+  OrganizationFactoryContract: OrganizationFactoryContract,
+  OrganizationInterfaceContract: OrganizationInterfaceContract,
+  SegmentDirectoryContract: SegmentDirectoryContract,
+  WindingTreeEntrypointContract: WindingTreeEntrypointContract,
 };
 

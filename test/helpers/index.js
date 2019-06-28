@@ -1,17 +1,19 @@
-const hotel = require('./hotel');
-const airline = require('./airline');
 const misc = require('./misc');
-const packageFile = require('../../package');
+
+async function getOrganizationInfo (wtOrganization) {
+  // Airline Info
+  const orgJsonUri = await wtOrganization.methods.getOrgJsonUri().call();
+  const owner = await wtOrganization.methods.owner().call();
+
+  return {
+    orgJsonUri: misc.isZeroString(orgJsonUri) ? null : orgJsonUri,
+    owner: misc.isZeroAddress(owner) ? null : owner,
+  };
+}
 
 module.exports = {
-  // Current version
-  version: packageFile.version,
-
   // Hotel
-  getHotelInfo: hotel.getHotelInfo,
-
-  // Airline
-  getAirlineInfo: airline.getAirlineInfo,
+  getOrganizationInfo,
 
   // Misc
   zeroAddress: misc.zeroAddress,

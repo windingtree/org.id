@@ -1,0 +1,16 @@
+{
+    "zosversion": "2.2",
+    "name": "wt-contracts",
+    "version": "0.6.1",
+    "publish": true,
+    "contracts": {
+      "WindingTreeEntrypoint": "WindingTreeEntrypoint",
+      "SegmentDirectory": "SegmentDirectory",
+      "Organization": "Organization",
+      "OrganizationFactory": "OrganizationFactory",
+      "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
+      "OrganizationFactoryUpgradeabilityTest": "OrganizationFactoryUpgradeabilityTest",
+      "SegmentDirectoryUpgradeabilityTest": "SegmentDirectoryUpgradeabilityTest",
+      "WindingTreeEntrypointUpgradeabilityTest": "WindingTreeEntrypointUpgradeabilityTest"
+    }
+  }

@@ -1,19 +1,19 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "scripts/test.sh",
+    "test": "management/test.sh",
     "lint": "eslint test; solhint 'contracts/**/*.sol'",
-    "testrpc": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
+    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\" --account=\"0xa4605db83bb3e663f33fb92542ca38344bd8d1bf2d07cc6cc908fec87b7674d5,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
-    "soldoc": "scripts/soldoc.sh",
-    "flattener": "scripts/flattener.sh",
+    "soldoc": "management/soldoc.sh",
+    "flattener": "management/flattener.sh",
     "clean": "rimraf build",
-    "build-index": "node scripts/build-index.js > index.js",
+    "build-index": "node management/build-index.js > index.js",
     "set-zos-version": "zos bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "buildfornpm": "npm run clean && truffle compile",
     "version": "npm run set-zos-version && git add zos.json && npm run build-index && git add index.js"
@@ -35,16 +35,18 @@
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "zos-lib": "^2.2.2"
+    "openzeppelin-solidity": "^2.2.0",
+    "zos-lib": "^2.4.0"
   },
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
+    "babel-register": "^6.26.0",
     "chai": "^4.2.0",
     "coveralls": "^3.0.3",
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
     "ethereumjs-util": "^6.1.0",
@@ -61,7 +63,7 @@
     "truffle-hdwallet-provider": "^1.0.6",
     "web3": "^1.0.0-beta.48",
     "web3-utils": "^1.0.0-beta.48",
-    "zos": "^2.2.2"
+    "zos": "^2.4.0"
   },
   "engines": {
     "node": ">=10.3.0"

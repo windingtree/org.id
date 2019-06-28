@@ -1,14 +1,23 @@
 {
   "zosversion": "2.2",
   "name": "wt-contracts",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "publish": true,
   "contracts": {
-    "WTHotelIndex": "WTHotelIndex",
-    "WTAirlineIndex": "WTAirlineIndex",
-    "WTAirlineIndexDemo": "WTAirlineIndex",
-    "WTHotelIndexDemo": "WTHotelIndex",
-    "WTAirlineIndexPlayground": "WTAirlineIndex",
-    "WTHotelIndexPlayground": "WTHotelIndex"
+    "WindingTreeEntrypoint": "WindingTreeEntrypoint",
+    "PlaygroundEntrypoint": "WindingTreeEntrypoint",
+    "PlaygroundHotelDirectory": "SegmentDirectory",
+    "PlaygroundAirlineDirectory": "SegmentDirectory",
+    "PlaygroundOtaDirectory": "SegmentDirectory",
+    "SegmentDirectory": "SegmentDirectory",
+    "Organization": "Organization",
+    "OrganizationFactory": "OrganizationFactory"
+  },
+  "dependencies": {},
+  "compiler": {
+    "manager": "truffle",
+    "compilerSettings": {
+      "optimizer": {}
+    }
   }
 }
