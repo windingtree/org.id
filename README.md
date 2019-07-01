@@ -176,7 +176,7 @@ for details. The zos app might differ for each deployment. You don't need a depl
 to play with this locally.
     ```bash
     > ./node_modules/.bin/zos create OrganizationFactory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0x988f24d8356bf7e3D4645BA34068a5723BF3ec6B
-    > ./node_modules/.bin/zos create WindingTreeEntrypoint --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x4fC9beBEE86FdA621f48a4C6537807Bae59cc3e4
+    > ./node_modules/.bin/zos create WindingTreeEntrypoint --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x602a8c3F536b1a50F3b22c0C1024104265F694C6
     > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
@@ -185,8 +185,8 @@ owner of the `OrganizationFactory` to pose as the `Organization` owner
 ```bash
 > ./node_modules/.bin/truffle console --network development
 truffle(development)> account = (await web3.eth.getAccounts())[1]
-truffle(development)> entrypoint = await WindingTreeEntrypoint.at('0x08143AA1D053B0E563dC07B89a923caDb00644f1')
-truffle(development)> entrypoint.setSegment('hotels', '0x9262d0b04d29a827777b77D6b997df4dC8A431ab')
+truffle(development)> entrypoint = await WindingTreeEntrypoint.at('0x1B369F9fe2E2f6728Bf96487d0d7950c97417643')
+truffle(development)> entrypoint.setSegment('hotels', '0xde06f481353be1233d41f52bC215f337E7641976')
 truffle(development)> factory = await OrganizationFactory.at(await entrypoint.getOrganizationFactory({ from: account}))
 truffle(development)> factory.create('https://windingtree.com', { from: account })
 truffle(development)> factory.getCreatedOrganizations()
