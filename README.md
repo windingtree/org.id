@@ -130,6 +130,12 @@ The Organization Factory owner can, yes. As long as we adhere to
 [zos recommendations](https://docs.zeppelinos.org/docs/writing_contracts.html#modifying-your-contracts),
 it should be safe. The same applies for Segment Directory, Entrypoint and Factory.
 
+**Can I reclaim the proxy ownership of an Organization?**
+If your Organization is created via the Factory, the proxy is owned by the Factory `owner`
+(i. e. only the `owner` can upgrade your Organization). You can, however, ask the `owner`
+to transfer the proxy admin to a different account by calling `changeAdmin` on the Organization
+itself. The new proxy admin can then upgrade the Organization implementation.
+
 **Can I switch to the new Organization version?**
 
 If you created your Organization via Organization Factory, no. The Organization Factory

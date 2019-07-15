@@ -9,6 +9,7 @@ Contracts.setArtifactsDefaults({
   gas: 60000000,
 });
 
+const AdminUpgradeabilityProxy = Contracts.getFromLocal('AdminUpgradeabilityProxy');
 const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationFactory = Contracts.getFromLocal('OrganizationFactory');
 const OrganizationFactoryUpgradeabilityTest = Contracts.getFromLocal('OrganizationFactoryUpgradeabilityTest');
@@ -181,6 +182,15 @@ contract('OrganizationFactory', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+
+    it('should set the proxy admin to factory owner', async () => {
+      const address = await abstractOrganizationFactory.create.call('orgJsonUri');
+      await abstractOrganizationFactory.create('orgJsonUri', { from: organizationAccount });
+      const organization = await AdminUpgradeabilityProxy.at(address);
+      assert.equal(await organization.methods.admin().call({ from: organizationFactoryOwner }), organizationFactoryOwner);
+      await organization.methods.changeAdmin(nonOwnerAccount).send({ from: organizationFactoryOwner });
+      assert.equal(await organization.methods.admin().call({ from: nonOwnerAccount }), nonOwnerAccount);
     });
   });
 

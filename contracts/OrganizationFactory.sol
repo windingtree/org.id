@@ -77,7 +77,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @return {" ": "Address of the new organization."}
      */
     function createAndAddToDirectory(string calldata orgJsonUri, address directory) external returns (address) {
-        // TODO rewrite so that directory address gets known from entrypoint
+        // TODO rewrite so that directory address gets known from entrypoint #248
         require(directory != address(0), 'Cannot use directory with 0x0 address');
         address newOrganizationAddress = address(
             app.create(
