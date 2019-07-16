@@ -2,6 +2,8 @@ pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
+import "@ensdomains/ens/contracts/ENS.sol";
+import "@ensdomains/resolver/contracts/Resolver.sol";
 import "./OrganizationInterface.sol";
 import "./Organization.sol";
 import "./AbstractSegmentDirectory.sol";
@@ -25,6 +27,9 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
 
     // Address of the LifToken contract
     address _lifToken;
+
+    // hashed 'token.windingtree.eth' using eth-ens-namehash
+    bytes32 private constant tokenNamehash = 0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
     /**
      * @dev `addOrganization` Add new organization in the directory.
@@ -111,6 +116,16 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
         _segment = __segment;
     }
 
+    function resolveLifTokenFromENS(address _ENS) public onlyOwner {
+        ENS registry = ENS(_ENS);
+        address resolverAddress = registry.resolver(tokenNamehash);
+        require(resolverAddress != address(0), 'Resolver not found');
+        Resolver resolver = Resolver(resolverAddress);
+        address tokenAddress = resolver.addr(tokenNamehash);
+        require(tokenAddress != address(0), 'Token not found');
+        _lifToken = tokenAddress;
+    }
+
     /**
      * @dev `getOrganizationsLength` get the length of the `organizations` array
      * @return {" ": "Length of the organizations array. Might contain zero addresses."}
@@ -149,16 +164,6 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
     modifier onlyOwner() {
         require(msg.sender == _owner);
         _;
-    }
-
-    /**
-     * @dev `setLifToken` allows the owner of the contract to change the
-     * address of the LifToken contract. Allows to set the address to
-     * zero address
-     * @param __lifToken The new contract address
-     */
-    function setLifToken(address __lifToken) public onlyOwner {
-        _lifToken = __lifToken;
     }
 
     /**

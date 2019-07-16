@@ -30,7 +30,8 @@ contract('SegmentDirectory', (accounts) => {
   const segmentDirectoryOwner = accounts[1];
   const organizationAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
-  const tokenAddress = accounts[4];
+  const tokenFakeAddress = accounts[4];
+  let ensContract, tokenContract;
 
   let segmentDirectoryProxy;
   let segmentDirectory;
@@ -38,12 +39,18 @@ contract('SegmentDirectory', (accounts) => {
   let project;
   let organizationFactory;
 
+  before(async () => {
+    ensContract = await help.deployEnsRegistry();
+    tokenContract = await help.deployLifToken(true);
+    await help.setupEnsRegistry(ensContract, tokenContract);
+  });
+
   beforeEach(async () => {
     project = await TestHelper();
     segmentDirectoryProxy = await project.createProxy(SegmentDirectory, {
       from: segmentDirectoryOwner,
       initFunction: 'initialize',
-      initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenAddress],
+      initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenFakeAddress],
     });
     segmentDirectory = await SegmentDirectory.at(segmentDirectoryProxy.address);
     abstractSegmentDirectory = await AbstractSegmentDirectory.at(segmentDirectoryProxy.address);
@@ -60,7 +67,7 @@ contract('SegmentDirectory', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-        await segmentDirectory.methods.initialize(help.zeroAddress, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
+        await segmentDirectory.methods.initialize(help.zeroAddress, 'foodtrucks', tokenFakeAddress).send({ from: segmentDirectoryOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -69,8 +76,8 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should set liftoken and segment', async () => {
       const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-      await segmentDirectory.methods.initialize(segmentDirectoryOwner, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
-      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenAddress);
+      await segmentDirectory.methods.initialize(segmentDirectoryOwner, 'foodtrucks', tokenFakeAddress).send({ from: segmentDirectoryOwner });
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
       assert.equal(await segmentDirectory.methods.getSegment().call(), 'foodtrucks');
     });
   });
@@ -99,6 +106,34 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
+  describe('resolveLifTokenFromENS', () => {
+    it('should set lif token address from ENS', async () => {
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+      await segmentDirectory.methods.resolveLifTokenFromENS(ensContract.address).send({ from: segmentDirectoryOwner });
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenContract.address);
+    });
+
+    it('should throw if ENS cannot be read from', async () => {
+      try {
+        assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+        await segmentDirectory.methods.resolveLifTokenFromENS(tokenFakeAddress).send({ from: segmentDirectoryOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if called by non-owner', async () => {
+      try {
+        assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+        await segmentDirectory.methods.resolveLifTokenFromENS(ensContract.address).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
   describe('transferOwnership', async () => {
     it('should transfer ownership', async () => {
       await segmentDirectory.methods.transferOwnership(nonOwnerAccount).send({ from: segmentDirectoryOwner });
@@ -108,7 +143,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should not transfer ownership when initiated from a non-owner', async () => {
       try {
-        await segmentDirectory.methods.transferOwnership(tokenAddress).send({ from: nonOwnerAccount });
+        await segmentDirectory.methods.transferOwnership(tokenFakeAddress).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -129,23 +164,6 @@ contract('SegmentDirectory', (accounts) => {
     it('should report current owner', async () => {
       const owner = await segmentDirectory.methods.owner().call();
       assert.equal(owner, segmentDirectoryOwner);
-    });
-  });
-
-  describe('setLifToken', () => {
-    it('should set the LifToken address', async () => {
-      await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: segmentDirectoryOwner });
-      const setValue = await segmentDirectory.methods.getLifToken().call();
-      assert.equal(setValue, tokenAddress);
-    });
-
-    it('should throw if non-owner sets the LifToken address', async () => {
-      try {
-        await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
     });
   });
 
