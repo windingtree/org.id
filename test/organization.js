@@ -90,9 +90,11 @@ contract('Organization', (accounts) => {
     });
 
     it('should set orgJsonUri', async () => {
-      await organization.methods.changeOrgJsonUri(newOrgJsonUri).send({ from: organizationOwner });
+      const receipt = await organization.methods.changeOrgJsonUri(newOrgJsonUri).send({ from: organizationOwner });
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.orgJsonUri, newOrgJsonUri);
+      assert.isDefined(receipt.events.OrgJsonUriChanged);
+      assert.equal(receipt.events.OrgJsonUriChanged.returnValues.newOrgJsonUri, newOrgJsonUri);
     });
 
     it('should throw if not executed by organization owner', async () => {

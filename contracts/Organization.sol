@@ -40,7 +40,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when orgJsonUri of the organization is changed.
      */
-    event OrgJsonUriChanged(string indexed previousOrgJsonUri, string indexed newOrgJsonUri);
+    event OrgJsonUriChanged(string previousOrgJsonUri, string newOrgJsonUri);
 
     /**
      * @dev Event triggered when new associatedKey is added.
