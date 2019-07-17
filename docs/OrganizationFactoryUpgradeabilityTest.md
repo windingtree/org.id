@@ -1,13 +1,13 @@
 * [OrganizationFactoryUpgradeabilityTest](#organizationfactoryupgradeabilitytest)
   * [createdOrganizationsIndex](#function-createdorganizationsindex)
   * [newFunction](#function-newfunction)
-  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [getCreatedOrganizations](#function-getcreatedorganizations)
   * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
+  * [create](#function-create)
   * [initialize](#function-initialize)
   * [owner](#function-owner)
   * [createdOrganizations](#function-createdorganizations)
-  * [create](#function-create)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
   * [OwnershipTransferred](#event-ownershiptransferred)
@@ -41,25 +41,6 @@ OrganizationFactoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
 
 
 
-## *function* createAndAddToDirectory
-
-OrganizationFactoryUpgradeabilityTest.createAndAddToDirectory(orgJsonUri, directory) `nonpayable` `1f7d8864`
-
-> `createAndAddToDirectory` Creates the organization contract and tries to add it to a SegmentDirectory living on the passed `directory` address.     * We cannot reuse create call due to the Organization ownership restrictions. 
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-| *address* | directory | Segment directory's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
 ## *function* getCreatedOrganizations
 
 OrganizationFactoryUpgradeabilityTest.getCreatedOrganizations() `view` `270ca0f0`
@@ -87,6 +68,19 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* create
+
+OrganizationFactoryUpgradeabilityTest.create(orgJsonUri, orgJsonHash) `nonpayable` `3dee0c50`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | undefined |
+| *bytes32* | orgJsonHash | undefined |
+
 
 ## *function* initialize
 
@@ -129,17 +123,25 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* create
+## *function* createAndAddToDirectory
 
-OrganizationFactoryUpgradeabilityTest.create(orgJsonUri) `nonpayable` `b6a46b3b`
+OrganizationFactoryUpgradeabilityTest.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory) `nonpayable` `af276209`
 
+> `createAndAddToDirectory` Creates the organization contract and tries to add it to a SegmentDirectory living on the passed `directory` address.     * We cannot reuse create call due to the Organization ownership restrictions. 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | orgJsonUri | undefined |
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | directory | Segment directory's address |
 
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* transferOwnership
 

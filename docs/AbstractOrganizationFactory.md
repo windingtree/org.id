@@ -1,11 +1,11 @@
 * [AbstractOrganizationFactory](#abstractorganizationfactory)
   * [createdOrganizationsIndex](#function-createdorganizationsindex)
-  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [getCreatedOrganizations](#function-getcreatedorganizations)
   * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
+  * [create](#function-create)
   * [owner](#function-owner)
   * [createdOrganizations](#function-createdorganizations)
-  * [create](#function-create)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [OrganizationCreated](#event-organizationcreated)
   * [OwnershipTransferred](#event-ownershiptransferred)
 
@@ -25,25 +25,6 @@ Inputs
 | *address* | organization | undefined |
 
 
-## *function* createAndAddToDirectory
-
-AbstractOrganizationFactory.createAndAddToDirectory(orgJsonUri, directory) `nonpayable` `1f7d8864`
-
-> Creates new 0xORG smart contract and adds it to a segment directory in the same transaction
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-| *address* | directory | Segment directory address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
 ## *function* getCreatedOrganizations
 
 AbstractOrganizationFactory.getCreatedOrganizations() `view` `270ca0f0`
@@ -61,6 +42,25 @@ AbstractOrganizationFactory.getCreatedOrganizationsLength() `view` `3db297e9`
 
 
 
+
+## *function* create
+
+AbstractOrganizationFactory.create(orgJsonUri, orgJsonHash) `nonpayable` `3dee0c50`
+
+> Creates new 0xORG smart contract
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* owner
 
@@ -84,17 +84,19 @@ Inputs
 | *uint256* | index | undefined |
 
 
-## *function* create
+## *function* createAndAddToDirectory
 
-AbstractOrganizationFactory.create(orgJsonUri) `nonpayable` `b6a46b3b`
+AbstractOrganizationFactory.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory) `nonpayable` `af276209`
 
-> Creates new 0xORG smart contract
+> Creates new 0xORG smart contract and adds it to a segment directory in the same transaction
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | directory | Segment directory address |
 
 Outputs
 

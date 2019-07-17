@@ -28,7 +28,7 @@ When a producer wants to participate, they have to do the following:
         1. Deploy the custom implementation.
     1. Assisted
         1. Locate Organization Factory address from Winding Tree Entrypoint
-        1. Call `create` method on the Organization Factory with the URI of off-chain data.
+        1. Call `create` method on the Organization Factory with the URI of off-chain data and a keccak256 hash of its contents.
         Organization smart contract that belongs to the transaction sender is created.
 1. Locate the appropriate Segment Directory address
 1. Add their newly created 0xORG to the segment directory by calling the `add` method
@@ -53,6 +53,8 @@ When a consumer wants to participate, they have to do the following:
 1. Call `getOrganizations` on the Segment Directory.
 1. Call `getOrgJsonUri` on every non-zero address returned as an instance of `OrganizationInterface` and crawl the off-chain data
 for more information.
+1. Call `getOrgJsonHash` on every non-zero address returned as an instance of `OrganizationInterface` and verify that the current 
+off-chain data contents hash matches the hash published in the smart contract.
 
 If a signed message occurs somewhere in the platform, a content consumer might want to decide
 if it was signed by an account associated with the declared Organization. That's when they would 
@@ -187,14 +189,14 @@ to play with this locally.
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console. We also need to use a different account than the
-owner of the `OrganizationFactory` to pose as the `Organization` owner
+owner of the `OrganizationFactory` to pose as the `Organization` owner.
 ```bash
 > ./node_modules/.bin/truffle console --network development
 truffle(development)> account = (await web3.eth.getAccounts())[1]
 truffle(development)> entrypoint = await WindingTreeEntrypoint.at('0x1B369F9fe2E2f6728Bf96487d0d7950c97417643')
 truffle(development)> entrypoint.setSegment('hotels', '0xde06f481353be1233d41f52bC215f337E7641976')
 truffle(development)> factory = await OrganizationFactory.at(await entrypoint.getOrganizationFactory({ from: account}))
-truffle(development)> factory.create('https://windingtree.com', { from: account })
+truffle(development)> factory.create('https://windingtree.com', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: account })
 truffle(development)> factory.getCreatedOrganizations()
 truffle(development)> directory = await SegmentDirectory.at(await entrypoint.getSegment('hotels', { from: account}))
 truffle(development)> directory.getOrganizations()
@@ -204,4 +206,5 @@ truffle(development)> directory.getOrganizations()
   '0xa8c4cbB500da540D9fEd05BE7Bef0f0f5df3e2cc' ]
 truffle(development)> organization = await OrganizationInterface.at('0xa8c4cbB500da540D9fEd05BE7Bef0f0f5df3e2cc')
 truffle(development)> organization.getOrgJsonUri({ from: account })
+truffle(development)> organization.getOrgJsonHash({ from: account })
 ```
