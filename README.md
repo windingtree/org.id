@@ -159,6 +159,18 @@ via NPM (under the new version number). No data is lost.
 **How do I work with different organization versions on the client?**
 That should be possible by using an ABI of `OrganizationInterface` on the client side.
 
+### Contract upgrade process
+
+1. Run `npm version` and release on NPM. This will also bump the version in `zos.json` file.
+1. Deploy upgraded contracts with `./node_modules/.bin/zos push --network development` (use the network which you need).
+**The `Organization` implementation used by the Factory is changed in this step**.
+1. Upgrade contracts with `./node_modules/.bin/zos upgrade --network development` (use the network which you need). This
+will interactively ask you which contracts to upgrade. If you have changed the interface of Organization, make sure to
+upgrade `OrganizationFactory` as well.
+1. Upgrade Organization contracts with `node management/upgrade-organizations.js`. Make sure that its setup in a proper way.
+You can check the `Organization` implementation address in `zos.<network>.json` file. Also, use the account set as Organization
+Factory owner. Only that account can change Organizations' implementation.
+
 
 ### Local testing
 

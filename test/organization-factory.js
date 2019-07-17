@@ -1,7 +1,9 @@
 const { Contracts, ZWeb3 } = require('zos-lib');
 const assert = require('chai').assert;
+const Web3Accounts = require('web3-eth-accounts');
 const help = require('./helpers/index.js');
 const TestHelper = require('./helpers/zostest');
+const upgradeOrganizationsScript = require('../management/upgrade-organizations.js');
 
 ZWeb3.initialize(web3.currentProvider);
 // workaround for https://github.com/zeppelinos/zos/issues/704
@@ -243,6 +245,89 @@ contract('OrganizationFactory', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+  });
+
+  describe('upgrade-organizations.js', () => {
+    let factoryOwnerAccount, organizations, origImplementation, nonOwnedOrganization, newImplementation;
+
+    beforeEach(async () => {
+      const Accounts = new Web3Accounts(web3.currentProvider);
+      await abstractOrganizationFactory.create('orgJsonUri0', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      await abstractOrganizationFactory.create('orgJsonUri1', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      await abstractOrganizationFactory.create('orgJsonUri2', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      nonOwnedOrganization = await abstractOrganizationFactory.create.call('orgJsonUri3', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
+      await abstractOrganizationFactory.create('orgJsonUri3', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      await abstractOrganizationFactory.create('orgJsonUri4', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      await abstractOrganizationFactory.create('orgJsonUri5', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+      const organization = await AdminUpgradeabilityProxy.at(nonOwnedOrganization);
+      origImplementation = await organization.methods.implementation().call({ from: organizationFactoryOwner });
+      await organization.methods.changeAdmin(nonOwnerAccount).send({ from: organizationFactoryOwner });
+      factoryOwnerAccount = Accounts.privateKeyToAccount('0xed095a912033d26dc444d2675b33414f0561af170d58c33f394db8812c87a764');
+      organizations = await abstractOrganizationFactory.getCreatedOrganizations.call();
+      const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationFactoryOwner });
+      newImplementation = upgradedOrganization.address;
+    });
+
+    it('should change implementation of created organizations', async () => {
+      await upgradeOrganizationsScript.upgradeOrganizations(
+        web3.currentProvider,
+        factoryOwnerAccount,
+        organizationFactory.address,
+        newImplementation,
+        1, 5
+      );
+      for (const organization of organizations.slice(1, 5)) {
+        if (help.isZeroAddress(organization)) {
+          continue;
+        }
+        const orgProxy = await AdminUpgradeabilityProxy.at(organization);
+        if (organization !== nonOwnedOrganization) {
+          assert.equal(await orgProxy.methods.implementation().call({ from: organizationFactoryOwner }), newImplementation);
+        } else {
+          assert.equal(await orgProxy.methods.implementation().call({ from: nonOwnerAccount }), origImplementation);
+        }
+      }
+    });
+
+    it('should fail when called from a non-owner account', async () => {
+      try {
+        const Accounts = new Web3Accounts(web3.currentProvider);
+        await upgradeOrganizationsScript.upgradeOrganizations(
+          web3.currentProvider,
+          Accounts.privateKeyToAccount('0xf809d1a2969bec37e7c14628717092befa82156fb2ebf935ac5420bc522f0d29'),
+          organizationFactory.address
+        );
+      } catch (e) {
+        assert.match(e.message, /cannot work on organizationfactory/i);
+      }
+    });
+
+    it('should not fail on zero address organization', async () => {
+      await upgradeOrganizationsScript.upgradeOrganizations(
+        web3.currentProvider,
+        factoryOwnerAccount,
+        organizationFactory.address,
+        newImplementation,
+        0, 1
+      );
+      assert(true);
+    });
+
+    it('should start at given index and respect passed limit', async () => {
+      await upgradeOrganizationsScript.upgradeOrganizations(
+        web3.currentProvider,
+        factoryOwnerAccount,
+        organizationFactory.address,
+        newImplementation,
+        3, 3
+      );
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[1])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[2])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[3])).methods.implementation().call({ from: organizationFactoryOwner }), newImplementation);
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[4])).methods.implementation().call({ from: nonOwnerAccount }), origImplementation);
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[5])).methods.implementation().call({ from: organizationFactoryOwner }), newImplementation);
+      assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[6])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);
     });
   });
 });
