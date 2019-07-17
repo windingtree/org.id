@@ -19,6 +19,10 @@ module.exports = {
     return parseInt(val) === 0;
   },
 
+  isZeroBytes: function (val) {
+    return parseInt(val) === 0;
+  },
+
   isInvalidOpcodeEx: function (e) {
     if (
       e.message.search('invalid opcode') >= 0 || // ethereumjs-testrpc at least <= 4

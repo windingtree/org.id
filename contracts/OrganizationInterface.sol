@@ -29,6 +29,15 @@ contract OrganizationInterface is IERC165 {
     function getOrgJsonUri() external view returns (string memory);
 
     /**
+     * @dev Returns keccak256 hash of raw ORG.JSON contents. This should
+     * be used to verify that the contents of ORG.JSON has not been tampered
+     * with. It is a responsibility of the Organization owner to keep this
+     * hash up to date.
+     * @return {" ": "Current ORG.JSON URI."}
+     */
+    function getOrgJsonHash() external view returns (bytes32);
+
+    /**
      * @dev Returns if an `address` is associated with the Organization.
      * Associated keys can be used on behalf of the organization,
      * typically to sign messages.

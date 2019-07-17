@@ -32,6 +32,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // organization.
     address[] public associatedKeys;
 
+    // keccak256 hash of the ORG.JSON file contents. This should
+    // be used to verify that the contents of ORG.JSON has not been tampered
+    // with. It is a responsibility of the Organization owner to keep this
+    // hash up to date.
+    bytes32 public orgJsonHash;
+
     /**
      * @dev Event triggered when owner of the organization is changed.
      */
@@ -41,6 +47,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Event triggered when orgJsonUri of the organization is changed.
      */
     event OrgJsonUriChanged(string previousOrgJsonUri, string newOrgJsonUri);
+
+    /**
+     * @dev Event triggered when orgJsonHash of the organization is changed.
+     */
+    event OrgJsonHashChanged(bytes32 indexed previousOrgJsonHash, bytes32 indexed newOrgJsonHash);
 
     /**
      * @dev Event triggered when new associatedKey is added.
@@ -100,6 +111,37 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      */
     function getOrgJsonUri() external view returns (string memory) {
         return orgJsonUri;
+    }
+
+    /**
+     * @dev `changeOrgJsonHash` Allows owner to change Organization's orgJsonHash.
+     * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
+     */
+    function changeOrgJsonHash(bytes32 _orgJsonHash) public onlyOwner {
+        require(_orgJsonHash != 0, 'orgJsonHash cannot be empty');
+        emit OrgJsonHashChanged(orgJsonHash, _orgJsonHash);
+        orgJsonHash = _orgJsonHash;
+    }
+
+    /**
+     * @dev Returns keccak256 hash of raw ORG.JSON contents. This should
+     * be used to verify that the contents of ORG.JSON has not been tampered
+     * with. It is a responsibility of the Organization owner to keep this
+     * hash up to date.
+     * @return {" ": "Current ORG.JSON URI."}
+     */
+    function getOrgJsonHash() external view returns (bytes32) {
+        return orgJsonHash;
+    }
+
+    /**
+     * @dev Shorthand method to change ORG.JSON uri and hash at the same time
+     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
+     * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
+     */
+    function changeOrgJsonUriAndHash(string memory _orgJsonUri, bytes32 _orgJsonHash) public onlyOwner {
+        changeOrgJsonUri(_orgJsonUri);
+        changeOrgJsonHash(_orgJsonHash);
     }
 
     /**

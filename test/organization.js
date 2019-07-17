@@ -107,6 +107,51 @@ contract('Organization', (accounts) => {
     });
   });
 
+  describe('changeOrgJsonHash', () => {
+    const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
+    it('should not set empty orgJsonHash', async () => {
+      try {
+        await organization.methods.changeOrgJsonHash('0x0').send({ from: organizationOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should set orgJsonHash', async () => {
+      const receipt = await organization.methods.changeOrgJsonHash(newOrgJsonHash).send({ from: organizationOwner });
+      const info = await help.getOrganizationInfo(organization);
+      assert.equal(info.orgJsonHash, newOrgJsonHash);
+      assert.isDefined(receipt.events.OrgJsonHashChanged);
+      assert.equal(receipt.events.OrgJsonHashChanged.returnValues.newOrgJsonHash, newOrgJsonHash);
+    });
+
+    it('should throw if not executed by organization owner', async () => {
+      try {
+        await organization.methods.changeOrgJsonHash(newOrgJsonHash).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
+  describe('changeOrgJsonUriAndHash', () => {
+    const newOrgJsonUri = 'goo.gl/12345';
+    const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
+
+    it('should set orgJsonUri and orgJsonHash', async () => {
+      const receipt = await organization.methods.changeOrgJsonUriAndHash(newOrgJsonUri, newOrgJsonHash).send({ from: organizationOwner });
+      const info = await help.getOrganizationInfo(organization);
+      assert.equal(info.orgJsonUri, newOrgJsonUri);
+      assert.equal(info.orgJsonHash, newOrgJsonHash);
+      assert.isDefined(receipt.events.OrgJsonHashChanged);
+      assert.isDefined(receipt.events.OrgJsonUriChanged);
+      assert.equal(receipt.events.OrgJsonHashChanged.returnValues.newOrgJsonHash, newOrgJsonHash);
+      assert.equal(receipt.events.OrgJsonUriChanged.returnValues.newOrgJsonUri, newOrgJsonUri);
+    });
+  });
+
   describe('transferOwnership', () => {
     it('should transfer contract and emit OwnershipTransferred', async () => {
       const receipt = await organization.methods.transferOwnership(nonOwnerAccount).send({ from: organizationOwner });
