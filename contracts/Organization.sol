@@ -84,6 +84,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         _registerInterface(
             i.owner.selector ^
             i.getOrgJsonUri.selector ^
+            i.getOrgJsonHash.selector ^
             i.hasAssociatedKey.selector ^
             i.getAssociatedKeys.selector
         );

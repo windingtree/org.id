@@ -13,6 +13,7 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
         _registerInterface(
             i.owner.selector ^
             i.getOrgJsonUri.selector ^
+            i.getOrgJsonHash.selector ^
             i.hasAssociatedKey.selector ^
             i.getAssociatedKeys.selector
         );
