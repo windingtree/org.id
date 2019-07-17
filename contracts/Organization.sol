@@ -67,13 +67,16 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _orgJsonUri pointer to Organization data
+     * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
-    function initialize(address payable __owner, string memory _orgJsonUri) public initializer {
+    function initialize(address payable __owner, string memory _orgJsonUri, bytes32 _orgJsonHash) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
+        require(_orgJsonHash != 0, 'orgJsonHash cannot be empty');
         emit OwnershipTransferred(_owner, __owner);
         _owner = __owner;        
         orgJsonUri = _orgJsonUri;
+        orgJsonHash = _orgJsonHash;
         created = block.number;
         associatedKeys.length++;
         OrganizationInterface i;
@@ -99,8 +102,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
     function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwner {
-        bytes memory tempStringRepr = bytes(_orgJsonUri);
-        require(tempStringRepr.length != 0, 'orgJsonUri cannot be an empty string');
+        require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
         emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
         orgJsonUri = _orgJsonUri;
     }
@@ -128,7 +130,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * be used to verify that the contents of ORG.JSON has not been tampered
      * with. It is a responsibility of the Organization owner to keep this
      * hash up to date.
-     * @return {" ": "Current ORG.JSON URI."}
+     * @return {" ": "Current ORG.JSON hash."}
      */
     function getOrgJsonHash() external view returns (bytes32) {
         return orgJsonHash;

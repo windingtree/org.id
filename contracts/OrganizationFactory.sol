@@ -40,15 +40,16 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * 
      * Emits `OrganizationCreated` on success.
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @return {" ": "Address of the new organization."}
      */
-    function createOrganization(string memory orgJsonUri) internal returns (address) {
+    function createOrganization(string memory orgJsonUri, bytes32 orgJsonHash) internal returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", msg.sender, orgJsonUri)
+                abi.encodeWithSignature("initialize(address,string,bytes32)", msg.sender, orgJsonUri, orgJsonHash)
             )
         );
         emit OrganizationCreated(newOrganizationAddress);
@@ -60,10 +61,11 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     /**
      * @dev `create` proxies and externalizes createOrganization
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @return {" ": "Address of the new organization."}
      */
-    function create(string calldata orgJsonUri) external returns (address) {
-        return createOrganization(orgJsonUri);
+    function create(string calldata orgJsonUri, bytes32 orgJsonHash) external returns (address) {
+        return createOrganization(orgJsonUri, orgJsonHash);
     }
 
     /**
@@ -73,10 +75,15 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * We cannot reuse create call due to the Organization ownership restrictions.
      * 
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @param  directory Segment directory's address
      * @return {" ": "Address of the new organization."}
      */
-    function createAndAddToDirectory(string calldata orgJsonUri, address directory) external returns (address) {
+    function createAndAddToDirectory(
+        string calldata orgJsonUri,
+        bytes32 orgJsonHash,
+        address directory
+    ) external returns (address) {
         // TODO rewrite so that directory address gets known from entrypoint #248
         require(directory != address(0), 'Cannot use directory with 0x0 address');
         address newOrganizationAddress = address(
@@ -84,7 +91,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", address(this), orgJsonUri)
+                abi.encodeWithSignature("initialize(address,string,bytes32)", address(this), orgJsonUri, orgJsonHash)
             )
         );
         AbstractSegmentDirectory sd = AbstractSegmentDirectory(directory);

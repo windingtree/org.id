@@ -14,6 +14,7 @@ const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgra
 
 contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
+  const organizationHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
   const organizationOwner = accounts[1];
   const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
@@ -27,7 +28,7 @@ contract('Organization', (accounts) => {
     organizationProxy = await project.createProxy(Organization, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [organizationOwner, organizationUri],
+      initArgs: [organizationOwner, organizationUri, organizationHash],
     });
     organization = await Organization.at(organizationProxy.address);
   });
@@ -38,6 +39,7 @@ contract('Organization', (accounts) => {
       // We need callback, because getBlockNumber for some reason cannot be called with await
       assert.equal(info.owner, organizationOwner);
       assert.equal(info.orgJsonUri, organizationUri);
+      assert.equal(info.orgJsonHash, organizationHash);
     });
 
     it('should throw with zero owner', async () => {
@@ -46,7 +48,7 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: ['0x0000000000000000000000000000000000000000', 'orgJsonUri'],
+          initArgs: ['0x0000000000000000000000000000000000000000', organizationUri, organizationHash],
         });
         assert(false);
       } catch (e) {
@@ -60,7 +62,21 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, ''],
+          initArgs: [organizationOwner, '', organizationHash],
+        });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw with empty orgJsonHash', async () => {
+      try {
+        const tProject = await TestHelper();
+        await tProject.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: [organizationOwner, organizationUri, '0x0000000000000000000000000000000000000000000000000000000000000000'],
         });
         assert(false);
       } catch (e) {

@@ -33,7 +33,7 @@ contract OrganizationInterface is IERC165 {
      * be used to verify that the contents of ORG.JSON has not been tampered
      * with. It is a responsibility of the Organization owner to keep this
      * hash up to date.
-     * @return {" ": "Current ORG.JSON URI."}
+     * @return {" ": "Current ORG.JSON hash."}
      */
     function getOrgJsonHash() external view returns (bytes32);
 

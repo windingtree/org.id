@@ -72,13 +72,13 @@ contract('OrganizationFactory', (accounts) => {
   describe('upgradeability', () => {
     it('should upgrade OrganizationFactory and have new functions in directory and Organization contracts', async () => {
       // add old organization
-      await organizationFactory.methods.create('orgJsonUri').send({ from: organizationAccount });
+      await organizationFactory.methods.create('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99').send({ from: organizationAccount });
       // upgrade directory
       const upgradedDirectory = await OrganizationFactoryUpgradeabilityTest.new({ from: organizationFactoryOwner });
       await project.proxyAdmin.upgradeProxy(organizationFactoryProxy.address, upgradedDirectory.address, OrganizationFactoryUpgradeabilityTest);
       const newFactory = await OrganizationFactoryUpgradeabilityTest.at(organizationFactoryProxy.address);
       // add new organization
-      await newFactory.methods.create('orgJsonUri2').send({ from: organizationAccount });
+      await newFactory.methods.create('orgJsonUri2', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c98').send({ from: organizationAccount });
       const allOrganizations = help.filterZeroAddresses(await newFactory.methods.getCreatedOrganizations().call());
       // test values
       assert.isDefined(await newFactory.methods.createdOrganizations(1).call());
@@ -89,6 +89,8 @@ contract('OrganizationFactory', (accounts) => {
       assert.equal(await newFactory.methods.createdOrganizationsIndex(allOrganizations[1]).call(), 2);
       assert.equal(await (await OrganizationInterface.at(allOrganizations[0])).methods.getOrgJsonUri().call(), 'orgJsonUri');
       assert.equal(await (await OrganizationInterface.at(allOrganizations[1])).methods.getOrgJsonUri().call(), 'orgJsonUri2');
+      assert.equal(await (await OrganizationInterface.at(allOrganizations[0])).methods.getOrgJsonHash().call(), '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
+      assert.equal(await (await OrganizationInterface.at(allOrganizations[1])).methods.getOrgJsonHash().call(), '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c98');
       assert.equal(await (await OrganizationUpgradeabilityTest.at(allOrganizations[1])).methods.newFunction().call(), 100);
       assert.equal(await newFactory.methods.newFunction().call(), 100);
     });
@@ -133,10 +135,10 @@ contract('OrganizationFactory', (accounts) => {
       let length = await abstractOrganizationFactory.getCreatedOrganizationsLength();
       // We start with empty address on the zero organizationFactory
       assert.equal(length, 1);
-      await abstractOrganizationFactory.create('aaa', { from: organizationAccount });
+      await abstractOrganizationFactory.create('aaa', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       length = await abstractOrganizationFactory.getCreatedOrganizationsLength();
       assert.equal(length, 2);
-      await abstractOrganizationFactory.create('bbb', { from: organizationAccount });
+      await abstractOrganizationFactory.create('bbb', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       length = await abstractOrganizationFactory.getCreatedOrganizationsLength();
       assert.equal(length, 3);
     });
@@ -145,9 +147,9 @@ contract('OrganizationFactory', (accounts) => {
   describe('getCreatedOrganizations', () => {
     it('should return organizations properly', async () => {
       assert.equal(help.filterZeroAddresses(await abstractOrganizationFactory.getCreatedOrganizations()).length, 0);
-      await abstractOrganizationFactory.create('aaa', { from: organizationAccount });
+      await abstractOrganizationFactory.create('aaa', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await abstractOrganizationFactory.getCreatedOrganizations()).length, 1);
-      await abstractOrganizationFactory.create('bbb', { from: organizationAccount });
+      await abstractOrganizationFactory.create('bbb', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await abstractOrganizationFactory.getCreatedOrganizations()).length, 2);
     });
   });
@@ -155,12 +157,13 @@ contract('OrganizationFactory', (accounts) => {
   describe('create', () => {
     it('should create an Organization contract', async () => {
       // First emulate the transaction, then actually run it
-      const address = await abstractOrganizationFactory.create.call('orgJsonUri');
-      const receipt = await abstractOrganizationFactory.create('orgJsonUri', { from: organizationAccount });
+      const address = await abstractOrganizationFactory.create.call('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
+      const receipt = await abstractOrganizationFactory.create('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       const organization = await OrganizationInterface.at(address);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
       assert.equal(info.orgJsonUri, 'orgJsonUri');
+      assert.equal(info.orgJsonHash, '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
       assert.equal(receipt.logs.length, 2);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
@@ -170,14 +173,23 @@ contract('OrganizationFactory', (accounts) => {
     });
 
     it('should add the organization into createdOrganizations', async () => {
-      await abstractOrganizationFactory.create('orgJsonUri', { from: organizationAccount });
+      await abstractOrganizationFactory.create('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       const orgList = await abstractOrganizationFactory.getCreatedOrganizations();
       assert.equal(help.filterZeroAddresses(orgList).length, 1);
     });
 
     it('should not create an organization with empty orgJsonUri', async () => {
       try {
-        await abstractOrganizationFactory.create('', { from: organizationAccount });
+        await abstractOrganizationFactory.create('', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should not create an organization with empty orgJsonHash', async () => {
+      try {
+        await abstractOrganizationFactory.create('orgJsonUri', '0x0000000000000000000000000000000000000000000000000000000000000000', { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -185,8 +197,8 @@ contract('OrganizationFactory', (accounts) => {
     });
 
     it('should set the proxy admin to factory owner', async () => {
-      const address = await abstractOrganizationFactory.create.call('orgJsonUri');
-      await abstractOrganizationFactory.create('orgJsonUri', { from: organizationAccount });
+      const address = await abstractOrganizationFactory.create.call('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
+      await abstractOrganizationFactory.create('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       const organization = await AdminUpgradeabilityProxy.at(address);
       assert.equal(await organization.methods.admin().call({ from: organizationFactoryOwner }), organizationFactoryOwner);
       await organization.methods.changeAdmin(nonOwnerAccount).send({ from: organizationFactoryOwner });
@@ -197,12 +209,13 @@ contract('OrganizationFactory', (accounts) => {
   describe('createAndAddToDirectory', () => {
     it('should create and add an organization to a selected directory', async () => {
       // First emulate the transaction, then actually run it
-      const address = await abstractOrganizationFactory.createAndAddToDirectory.call('orgJsonUri', abstractDirectory.address);
-      const receipt = await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', abstractDirectory.address, { from: organizationAccount });
+      const address = await abstractOrganizationFactory.createAndAddToDirectory.call('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address);
+      const receipt = await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address, { from: organizationAccount });
       const organization = await OrganizationInterface.at(address);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
       assert.equal(info.orgJsonUri, 'orgJsonUri');
+      assert.equal(info.orgJsonHash, '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99');
       assert.equal(receipt.logs.length, 3);
       assert.equal(receipt.logs[0].event, 'OwnershipTransferred');
       assert.equal(receipt.logs[0].args[0], help.zeroAddress);
@@ -216,7 +229,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to a zero address directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', help.zeroAddress, { from: organizationAccount });
+        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -225,7 +238,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to an address with no directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', abstractOrganizationFactory.address, { from: organizationAccount });
+        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractOrganizationFactory.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
