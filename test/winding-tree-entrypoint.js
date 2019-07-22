@@ -17,18 +17,25 @@ contract('WindingTreeEntrypoint', (accounts) => {
   const windingTreeEntrypointOwner = accounts[1];
   const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
-  const tokenAddress = accounts[4];
+  const tokenFakeAddress = accounts[4];
+  let ensContract, tokenContract;
 
   let windingTreeEntrypointProxy;
   let windingTreeEntrypoint;
   let project;
+
+  before(async () => {
+    ensContract = await help.deployEnsRegistry();
+    tokenContract = await help.deployLifToken(true);
+    await help.setupEnsRegistry(ensContract, tokenContract);
+  });
 
   beforeEach(async () => {
     project = await TestHelper();
     windingTreeEntrypointProxy = await project.createProxy(WindingTreeEntrypoint, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [windingTreeEntrypointOwner, tokenAddress, help.zeroAddress],
+      initArgs: [windingTreeEntrypointOwner, tokenFakeAddress, help.zeroAddress],
     });
     windingTreeEntrypoint = await WindingTreeEntrypoint.at(windingTreeEntrypointProxy.address);
   });
@@ -54,7 +61,7 @@ contract('WindingTreeEntrypoint', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const entrypoint = await WindingTreeEntrypoint.new();
-        await entrypoint.methods.initialize(help.zeroAddress, tokenAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
+        await entrypoint.methods.initialize(help.zeroAddress, tokenFakeAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -63,20 +70,32 @@ contract('WindingTreeEntrypoint', (accounts) => {
 
     it('should set liftoken', async () => {
       const entrypoint = await WindingTreeEntrypoint.new();
-      await entrypoint.methods.initialize(windingTreeEntrypointOwner, tokenAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
-      assert.equal(await entrypoint.methods.LifToken().call(), tokenAddress);
+      await entrypoint.methods.initialize(windingTreeEntrypointOwner, tokenFakeAddress, help.zeroAddress).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await entrypoint.methods.getLifToken().call(), tokenFakeAddress);
     });
   });
 
-  describe('setLifToken', () => {
-    it('should set the LifToken address', async () => {
-      await windingTreeEntrypoint.methods.setLifToken(tokenAddress).send({ from: windingTreeEntrypointOwner });
-      assert.equal(await windingTreeEntrypoint.methods.LifToken().call(), tokenAddress);
+  describe('resolveLifTokenFromENS', () => {
+    it('should set lif token address from ENS', async () => {
+      assert.equal(await windingTreeEntrypoint.methods.getLifToken().call(), tokenFakeAddress);
+      await windingTreeEntrypoint.methods.resolveLifTokenFromENS(ensContract.address).send({ from: windingTreeEntrypointOwner });
+      assert.equal(await windingTreeEntrypoint.methods.getLifToken().call(), tokenContract.address);
     });
 
-    it('should throw if non-owner sets the LifToken address', async () => {
+    it('should throw if ENS cannot be read from', async () => {
       try {
-        await windingTreeEntrypoint.methods.setLifToken(tokenAddress).send({ from: nonOwnerAccount });
+        assert.equal(await windingTreeEntrypoint.methods.getLifToken().call(), tokenFakeAddress);
+        await windingTreeEntrypoint.methods.resolveLifTokenFromENS(tokenFakeAddress).send({ from: windingTreeEntrypointOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if called by non-owner', async () => {
+      try {
+        assert.equal(await windingTreeEntrypoint.methods.getLifToken().call(), tokenFakeAddress);
+        await windingTreeEntrypoint.methods.resolveLifTokenFromENS(ensContract.address).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));

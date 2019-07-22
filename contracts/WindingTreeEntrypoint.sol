@@ -1,6 +1,8 @@
 pragma solidity ^0.5.6;
 
 import "zos-lib/contracts/Initializable.sol";
+import "@ensdomains/ens/contracts/ENS.sol";
+import "@ensdomains/resolver/contracts/Resolver.sol";
 
 /**
  * @title WindingTreeEntrypoint
@@ -14,7 +16,7 @@ contract WindingTreeEntrypoint is Initializable {
 
     // Address of the LifToken contract
     // solhint-disable-next-line var-name-mixedcase
-    address public LifToken;
+    address public _lifToken;
 
     // Mapping of keccak256(segment) => directory address
     mapping(bytes32 => address) public directories;
@@ -27,6 +29,9 @@ contract WindingTreeEntrypoint is Initializable {
 
     // Address of Organization Factory
     address public organizationFactory;
+
+    // hashed 'token.windingtree.eth' using eth-ens-namehash
+    bytes32 private constant tokenNamehash = 0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
     /**
      * @dev Event triggered when owner of the entrypoint is changed.
@@ -46,16 +51,17 @@ contract WindingTreeEntrypoint is Initializable {
     /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
-     * @param _lifToken The LifToken contract address
+     * @param __lifToken The LifToken contract address
      * @param _organizationFactory The OrganizationFactory contract address
      */
-    function initialize(address payable __owner, address _lifToken, address _organizationFactory) public initializer {
+    function initialize(address payable __owner, address __lifToken, address _organizationFactory) public initializer {
         require(__owner != address(0), 'Cannot set owner to 0x0 address');
         _owner = __owner;
-        LifToken = _lifToken;
+        _lifToken = __lifToken;
         organizationFactory = _organizationFactory;
         segments.length++;
     }
+
     
     /**
      * @dev Throws if called by any account other than the owner.
@@ -65,14 +71,14 @@ contract WindingTreeEntrypoint is Initializable {
         _;
     }
 
-    /**
-     * @dev `setLifToken` allows the owner of the contract to change the
-     * address of the LifToken contract. Allows to set the address to
-     * zero address
-     * @param _lifToken The new contract address
-     */
-    function setLifToken(address _lifToken) public onlyOwner {
-        LifToken = _lifToken;
+    function resolveLifTokenFromENS(address _ENS) public onlyOwner {
+        ENS registry = ENS(_ENS);
+        address resolverAddress = registry.resolver(tokenNamehash);
+        require(resolverAddress != address(0), 'Resolver not found');
+        Resolver resolver = Resolver(resolverAddress);
+        address tokenAddress = resolver.addr(tokenNamehash);
+        require(tokenAddress != address(0), 'Token not found');
+        _lifToken = tokenAddress;
     }
 
     /**
@@ -187,6 +193,14 @@ contract WindingTreeEntrypoint is Initializable {
      */
     function owner() public view returns (address) {
         return _owner;
+    }
+
+    /**
+     * @dev `getLifToken` Returns address of set Lif token
+     * @return {" ": "LifToken address."}
+     */
+    function getLifToken() public view returns (address) {
+        return _lifToken;
     }
 
 }
