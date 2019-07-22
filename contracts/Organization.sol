@@ -83,9 +83,9 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
         bytes4 associatedKeysInterface = i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector; // 0xfed71811
         bytes4 orgJsonInterface = i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector; // 0x6f4826be
-        _registerInterface(i.owner.selector);
         _registerInterface(orgJsonInterface);
         _registerInterface(associatedKeysInterface);
+        _registerInterface(i.owner.selector); // 0x8da5cb5b
         _registerInterface(
             i.owner.selector ^
             orgJsonInterface ^
@@ -207,5 +207,30 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      */
     function owner() public view returns (address) {
         return _owner;
+    }
+
+
+    /**
+     * @dev A synchronization method that should be kept up to date with 
+     * the list of interfaces set during initialization. It should also be called
+     * everytime the implementation gets updated. If the interface list gets out of
+     * sync with the implementation at anytime, it is possible that some integrations
+     * will stop working. Since this method is not destructive, no access restriction
+     * is in place. It's supposed to be called by the proxy admin anyway.
+     */
+    function setInterfaces() public {
+        // OrganizationInterface i;
+        bytes4[5] memory interfaceIds = [
+            bytes4(0x01ffc9a7), // _INTERFACE_ID_ERC165
+            bytes4(0x8da5cb5b), // i.owner.selector
+            bytes4(0xfed71811), // i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector
+            bytes4(0x6f4826be), // i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector
+            bytes4(0x1c3af5f4)  // 0x8da5cb5b ^ 0xfed71811 ^ 0x6f4826be
+        ];
+        for (uint256 i = 0; i < interfaceIds.length; i++) {
+            if (!this.supportsInterface(interfaceIds[i])) {
+                _registerInterface(interfaceIds[i]);
+            }
+        }
     }
 }

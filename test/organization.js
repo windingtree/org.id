@@ -86,10 +86,15 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('interoperability', () => {
+  describe('interfaces', () => {
     it('should support IERC165 interface', async () => {
       const orgIface = await OrganizationInterface.at(organization.address);
       assert.equal(await orgIface.methods.supportsInterface('0x01ffc9a7').call(), true);
+    });
+
+    it('should support owner interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x8da5cb5b').call(), true);
     });
 
     it('should support ORG.JSON related interface', async () => {
@@ -106,14 +111,29 @@ contract('Organization', (accounts) => {
       const orgIface = await OrganizationInterface.at(organization.address);
       assert.equal(await orgIface.methods.supportsInterface('0x1c3af5f4').call(), true);
     });
+
+    it('should be possible to call sync interfaces without failure', async () => {
+      await organization.methods.setInterfaces().send({ from: organizationOwner });
+    });
   });
 
   describe('upgradeability', () => {
-    it('should upgrade Organisation and have new functions', async () => {
+    it('should upgrade Organization and have new functions', async () => {
       const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
       await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest);
       const newOrganization = await OrganizationUpgradeabilityTest.at(organizationProxy.address);
       assert.equal(await newOrganization.methods.newFunction().call(), 100);
+    });
+
+    it('should be possible to setup new interfaces', async () => {
+      const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
+      assert.equal(await upgradedOrganization.methods.supportsInterface('0x1b28d63e').call(), false);
+      await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest, 'setInterfaces', []);
+      const newOrganization = await OrganizationUpgradeabilityTest.at(organizationProxy.address);
+      assert.equal(await newOrganization.methods.newFunction().call(), 100);
+      const orgIface = await OrganizationInterface.at(newOrganization.address);
+      // test newFunction interface got added when setInterfaces was called
+      assert.equal(await orgIface.methods.supportsInterface('0x1b28d63e').call(), true);
     });
   });
 

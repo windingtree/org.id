@@ -8,15 +8,12 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
     address[] associatedKeys;
 
     constructor() public {
-        OrganizationInterface i;
         _owner = msg.sender;
-        _registerInterface(
-            i.owner.selector ^
-            i.getOrgJsonUri.selector ^
-            i.getOrgJsonHash.selector ^
-            i.hasAssociatedKey.selector ^
-            i.getAssociatedKeys.selector
-        );
+        _registerInterface(bytes4(0x01ffc9a7)); // _INTERFACE_ID_ERC165
+        _registerInterface(bytes4(0x8da5cb5b)); // i.owner.selector
+        _registerInterface(bytes4(0xfed71811)); // i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector
+        _registerInterface(bytes4(0x6f4826be)); // i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector
+        _registerInterface(bytes4(0x1c3af5f4)); // 0x8da5cb5b ^ 0xfed71811 ^ 0x6f4826be
     }
 
     function owner() public view returns (address) {
