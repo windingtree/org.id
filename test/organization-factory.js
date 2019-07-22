@@ -284,6 +284,8 @@ contract('OrganizationFactory', (accounts) => {
         const orgProxy = await AdminUpgradeabilityProxy.at(organization);
         if (organization !== nonOwnedOrganization) {
           assert.equal(await orgProxy.methods.implementation().call({ from: organizationFactoryOwner }), newImplementation);
+          const org = await OrganizationInterface.at(organization);
+          assert.equal(await org.methods.supportsInterface('0x1b28d63e').call({ from: tokenAddress }), true);
         } else {
           assert.equal(await orgProxy.methods.implementation().call({ from: nonOwnerAccount }), origImplementation);
         }

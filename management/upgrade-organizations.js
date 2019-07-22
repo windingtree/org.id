@@ -11,6 +11,7 @@ const Web3Accounts = require('web3-eth-accounts');
 const Web3Eth = require('web3-eth');
 
 const OrganizationFactoryMetadata = require('../build/contracts/OrganizationFactory.json');
+const OrganizationMetadata = require('../build/contracts/Organization.json');
 const BaseAdminUpgradeabilityProxyMetadata = require('zos-lib/build/contracts/BaseAdminUpgradeabilityProxy.json');
 
 function getInfuraNodeAddress (networkName, projectid) {
@@ -46,7 +47,7 @@ async function upgradeOrganizations (provider, account, factoryAddress, newImple
   }
   for (let index = startIndex; index < Math.min(startIndex + limit, orgLength); index++) {
     const orgAddress = await factory.createdOrganizations(index);
-    // 1. filter out zero addresses and addresses the running account is not the owner of
+    // 1. filter out everything we don't need or can't to update
     if (orgAddress === '0x0000000000000000000000000000000000000000') {
       console.log(`Cannot change admin of ${orgAddress}: No code`);
       continue;
@@ -57,27 +58,14 @@ async function upgradeOrganizations (provider, account, factoryAddress, newImple
         from: factoryOwner,
       });
       if (realAdmin !== factoryOwner) {
-        throw new Error(`Cannot work on proxy with owner ${realAdmin}`);
+        throw new Error(`Cannot work on proxy with admin ${realAdmin}`);
       }
     } catch (e) {
       console.log(`Cannot change admin of ${orgAddress}: ${e.message}`);
       continue;
     }
 
-    // 2. call upgrade on all remaining organizations
-    const data = await orgProxy.contract.methods.upgradeTo(newImplementationAddress).encodeABI({
-      from: factoryOwner,
-    });
-    const estimate = await orgProxy.contract.methods.upgradeTo(newImplementationAddress).estimateGas({
-      from: factoryOwner,
-    });
-    const txOpts = {
-      nonce: web3Eth.getTransactionCount(factoryOwner),
-      data: data,
-      from: factoryOwner,
-      to: orgAddress,
-      gas: estimate,
-    };
+    // check if organization is not already upgraded
     const origImplementation = await orgProxy.contract.methods.implementation().call({
       from: factoryOwner,
     });
@@ -86,6 +74,21 @@ async function upgradeOrganizations (provider, account, factoryAddress, newImple
       console.log(`  ${orgAddress} already upgraded, skipping...`);
       continue;
     }
+
+    // 2. call upgrade on all remaining organizations
+    const org = await (getContractWithProvider(OrganizationMetadata, provider)).at(orgAddress);
+    const setInterfacesCall = await org.contract.methods.setInterfaces().encodeABI({
+      from: factoryOwner,
+    });
+    const txData = await orgProxy.contract.methods.upgradeToAndCall(newImplementationAddress, setInterfacesCall);
+    const txOpts = {
+      nonce: web3Eth.getTransactionCount(factoryOwner),
+      data: await txData.encodeABI({ from: factoryOwner }),
+      from: factoryOwner,
+      to: orgAddress,
+      gas: await txData.estimateGas({ from: factoryOwner }),
+    };
+
     const signedTx = await account.signTransaction(txOpts);
     // we need to wait here to not create nonce gaps
     await new Promise((resolve, reject) => {
