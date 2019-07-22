@@ -10,6 +10,7 @@ Contracts.setArtifactsDefaults({
 });
 
 const Organization = Contracts.getFromLocal('Organization');
+const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 
 contract('Organization', (accounts) => {
@@ -82,6 +83,28 @@ contract('Organization', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+  });
+
+  describe('interoperability', () => {
+    it('should support IERC165 interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x01ffc9a7').call(), true);
+    });
+
+    it('should support ORG.JSON related interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x6f4826be').call(), true);
+    });
+
+    it('should support associated keys related interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0xfed71811').call(), true);
+    });
+
+    it('should support latest interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x1c3af5f4').call(), true);
     });
   });
 

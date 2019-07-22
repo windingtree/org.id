@@ -81,13 +81,16 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         associatedKeys.length++;
         OrganizationInterface i;
         _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
+        bytes4 associatedKeysInterface = i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector; // 0xfed71811
+        bytes4 orgJsonInterface = i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector; // 0x6f4826be
+        _registerInterface(i.owner.selector);
+        _registerInterface(orgJsonInterface);
+        _registerInterface(associatedKeysInterface);
         _registerInterface(
             i.owner.selector ^
-            i.getOrgJsonUri.selector ^
-            i.getOrgJsonHash.selector ^
-            i.hasAssociatedKey.selector ^
-            i.getAssociatedKeys.selector
-        );
+            orgJsonInterface ^
+            associatedKeysInterface
+        ); // 0x1c3af5f4
     }
 
     /**
