@@ -39,7 +39,7 @@
     "@ensdomains/ens": "^0.3.11",
     "@ensdomains/resolver": "^0.1.9",
     "openzeppelin-solidity": "^2.2.0",
-    "zos-lib": "^2.4.0"
+    "zos-lib": "^2.4.2"
   },
   "devDependencies": {
     "@windingtree/lif-token": "^0.1.2-erc827",
@@ -68,7 +68,7 @@
     "truffle-hdwallet-provider": "^1.0.14",
     "web3": "1.0.0-beta.37",
     "web3-utils": "1.0.0",
-    "zos": "^2.4.1"
+    "zos": "^2.4.2"
   },
   "engines": {
     "node": ">=10.3.0"
