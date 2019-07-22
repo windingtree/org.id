@@ -18,6 +18,7 @@
   * [associatedKeysIndex](#function-associatedkeysindex)
   * [transferOwnership](#function-transferownership)
   * [hasAssociatedKey](#function-hasassociatedkey)
+  * [setInterfaces](#function-setinterfaces)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
   * [OrgJsonHashChanged](#event-orgjsonhashchanged)
@@ -263,6 +264,14 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bool* |  | undefined |
+
+## *function* setInterfaces
+
+OrganizationUpgradeabilityTest.setInterfaces() `nonpayable` `fca85eb3`
+
+
+
+
 ## *event* OwnershipTransferred
 
 OrganizationUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`

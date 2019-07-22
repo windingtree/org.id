@@ -17,6 +17,7 @@
   * [associatedKeysIndex](#function-associatedkeysindex)
   * [transferOwnership](#function-transferownership)
   * [hasAssociatedKey](#function-hasassociatedkey)
+  * [setInterfaces](#function-setinterfaces)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
   * [OrgJsonHashChanged](#event-orgjsonhashchanged)
@@ -254,6 +255,15 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bool* |  | undefined |
+
+## *function* setInterfaces
+
+Organization.setInterfaces() `nonpayable` `fca85eb3`
+
+> A synchronization method that should be kept up to date with  the list of interfaces set during initialization. It should also be called everytime the implementation gets updated. If the interface list gets out of sync with the implementation at anytime, it is possible that some integrations will stop working. Since this method is not destructive, no access restriction is in place. It's supposed to be called by the proxy admin anyway.
+
+
+
 ## *event* OwnershipTransferred
 
 Organization.OwnershipTransferred(previousOwner, newOwner) `8be0079c`

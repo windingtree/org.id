@@ -37,7 +37,7 @@ The Organization created in `OrganizationFactory` uses the
 [Upgradeability Proxy pattern](https://docs.zeppelinos.org). In short, the Factory owner will keep
 the ownership of the contract logic (proxy), whereas the transaction sender will keep the ownership of the
 data. Thus the Factory owner is responsible for the code. It is possible to transfer the proxy ownership
-to another account.
+to another account if need be.
 
 In any case, every Organization can have many *associated keys*. An *associated key* is an Ethereum address
 registered in the Organization that can operate on behalf of the organization. That means
@@ -60,6 +60,40 @@ If a signed message occurs somewhere in the platform, a content consumer might w
 if it was signed by an account associated with the declared Organization. That's when they would 
 first verify the signature and obtain an address of the signer. In the next step, they have to verify
 that the actual signer is registered as an `associatedKey` with the Organization by checking its smart contract.
+
+### Working with content hashes
+
+In order to reduce the attack surface, we require a hash of the off-chain stored data. We assume that it
+will not change very frequently, so updating the hash every-so-often won't add a significant cost to the whole operation.
+So, how does the hash actually look like? It is a `keccak256` (an Ethereum flavour of `sha3`) of the stringified ORG.JSON.
+Let's try an example:
+
+```js
+const web3utils = require('web3-utils');
+const stringOrgJsonContents = `{
+  "dataFormatVersion": "0.2.3",
+  "updatedAt": "2019-06-04T11:10:00.000Z",
+  "legalEntity": {
+    "name": "Acme Corp, Inc.",
+    "address": {
+      "road": "5th Avenue",
+      "houseNumber": "123",
+      "city": "New York",
+      "countryCode": "US"
+    },
+    "contact": {
+      "email": "ceo@acmecorpz.com"
+    }
+  }
+}`;
+// It is important to work with a textual ORG.JSON and *not* a JSON-parsed and re-serialized form.
+// JSON serializers might be producing different outcomes which would result in different hashes.
+const hashedOrgJson = web3utils.soliditySha3(stringOrgJsonContents);
+console.log(`Put me into 0xORG: ${hashedOrgJson}`);
+```
+
+You can also produce `keccak256` hashes in a myriad of other tools, such as
+[this one](https://emn178.github.io/online-tools/keccak_256.html).
 
 ## Requirements
 
