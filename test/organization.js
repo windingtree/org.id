@@ -10,10 +10,12 @@ Contracts.setArtifactsDefaults({
 });
 
 const Organization = Contracts.getFromLocal('Organization');
+const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 
 contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
+  const organizationHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
   const organizationOwner = accounts[1];
   const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
@@ -27,7 +29,7 @@ contract('Organization', (accounts) => {
     organizationProxy = await project.createProxy(Organization, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [organizationOwner, organizationUri],
+      initArgs: [organizationOwner, organizationUri, organizationHash],
     });
     organization = await Organization.at(organizationProxy.address);
   });
@@ -38,6 +40,7 @@ contract('Organization', (accounts) => {
       // We need callback, because getBlockNumber for some reason cannot be called with await
       assert.equal(info.owner, organizationOwner);
       assert.equal(info.orgJsonUri, organizationUri);
+      assert.equal(info.orgJsonHash, organizationHash);
     });
 
     it('should throw with zero owner', async () => {
@@ -46,7 +49,7 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: ['0x0000000000000000000000000000000000000000', 'orgJsonUri'],
+          initArgs: ['0x0000000000000000000000000000000000000000', organizationUri, organizationHash],
         });
         assert(false);
       } catch (e) {
@@ -60,7 +63,21 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, ''],
+          initArgs: [organizationOwner, '', organizationHash],
+        });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw with empty orgJsonHash', async () => {
+      try {
+        const tProject = await TestHelper();
+        await tProject.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: [organizationOwner, organizationUri, '0x0000000000000000000000000000000000000000000000000000000000000000'],
         });
         assert(false);
       } catch (e) {
@@ -69,12 +86,54 @@ contract('Organization', (accounts) => {
     });
   });
 
+  describe('interfaces', () => {
+    it('should support IERC165 interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x01ffc9a7').call(), true);
+    });
+
+    it('should support owner interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x8da5cb5b').call(), true);
+    });
+
+    it('should support ORG.JSON related interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x6f4826be').call(), true);
+    });
+
+    it('should support associated keys related interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0xfed71811').call(), true);
+    });
+
+    it('should support latest interface', async () => {
+      const orgIface = await OrganizationInterface.at(organization.address);
+      assert.equal(await orgIface.methods.supportsInterface('0x1c3af5f4').call(), true);
+    });
+
+    it('should be possible to call sync interfaces without failure', async () => {
+      await organization.methods.setInterfaces().send({ from: organizationOwner });
+    });
+  });
+
   describe('upgradeability', () => {
-    it('should upgrade Organisation and have new functions', async () => {
+    it('should upgrade Organization and have new functions', async () => {
       const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
       await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest);
       const newOrganization = await OrganizationUpgradeabilityTest.at(organizationProxy.address);
       assert.equal(await newOrganization.methods.newFunction().call(), 100);
+    });
+
+    it('should be possible to setup new interfaces', async () => {
+      const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
+      assert.equal(await upgradedOrganization.methods.supportsInterface('0x1b28d63e').call(), false);
+      await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest, 'setInterfaces', []);
+      const newOrganization = await OrganizationUpgradeabilityTest.at(organizationProxy.address);
+      assert.equal(await newOrganization.methods.newFunction().call(), 100);
+      const orgIface = await OrganizationInterface.at(newOrganization.address);
+      // test newFunction interface got added when setInterfaces was called
+      assert.equal(await orgIface.methods.supportsInterface('0x1b28d63e').call(), true);
     });
   });
 
@@ -104,6 +163,51 @@ contract('Organization', (accounts) => {
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
       }
+    });
+  });
+
+  describe('changeOrgJsonHash', () => {
+    const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
+    it('should not set empty orgJsonHash', async () => {
+      try {
+        await organization.methods.changeOrgJsonHash('0x0').send({ from: organizationOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should set orgJsonHash', async () => {
+      const receipt = await organization.methods.changeOrgJsonHash(newOrgJsonHash).send({ from: organizationOwner });
+      const info = await help.getOrganizationInfo(organization);
+      assert.equal(info.orgJsonHash, newOrgJsonHash);
+      assert.isDefined(receipt.events.OrgJsonHashChanged);
+      assert.equal(receipt.events.OrgJsonHashChanged.returnValues.newOrgJsonHash, newOrgJsonHash);
+    });
+
+    it('should throw if not executed by organization owner', async () => {
+      try {
+        await organization.methods.changeOrgJsonHash(newOrgJsonHash).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
+  describe('changeOrgJsonUriAndHash', () => {
+    const newOrgJsonUri = 'goo.gl/12345';
+    const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
+
+    it('should set orgJsonUri and orgJsonHash', async () => {
+      const receipt = await organization.methods.changeOrgJsonUriAndHash(newOrgJsonUri, newOrgJsonHash).send({ from: organizationOwner });
+      const info = await help.getOrganizationInfo(organization);
+      assert.equal(info.orgJsonUri, newOrgJsonUri);
+      assert.equal(info.orgJsonHash, newOrgJsonHash);
+      assert.isDefined(receipt.events.OrgJsonHashChanged);
+      assert.isDefined(receipt.events.OrgJsonUriChanged);
+      assert.equal(receipt.events.OrgJsonHashChanged.returnValues.newOrgJsonHash, newOrgJsonHash);
+      assert.equal(receipt.events.OrgJsonUriChanged.returnValues.newOrgJsonUri, newOrgJsonUri);
     });
   });
 

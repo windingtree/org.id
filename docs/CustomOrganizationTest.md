@@ -2,6 +2,7 @@
   * [supportsInterface](#function-supportsinterface)
   * [getAssociatedKeys](#function-getassociatedkeys)
   * [getOrgJsonUri](#function-getorgjsonuri)
+  * [getOrgJsonHash](#function-getorgjsonhash)
   * [owner](#function-owner)
   * [hasAssociatedKey](#function-hasassociatedkey)
 
@@ -32,6 +33,14 @@ CustomOrganizationTest.getAssociatedKeys() `view` `0ba11d86`
 ## *function* getOrgJsonUri
 
 CustomOrganizationTest.getOrgJsonUri() `view` `1d855977`
+
+
+
+
+
+## *function* getOrgJsonHash
+
+CustomOrganizationTest.getOrgJsonHash() `view` `72cd7fc9`
 
 
 

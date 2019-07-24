@@ -5,16 +5,17 @@
   * [setSegment](#function-setsegment)
   * [removeSegment](#function-removesegment)
   * [directories](#function-directories)
+  * [resolveLifTokenFromENS](#function-resolveliftokenfromens)
   * [getSegmentName](#function-getsegmentname)
-  * [LifToken](#function-liftoken)
+  * [_lifToken](#function-_liftoken)
   * [organizationFactory](#function-organizationfactory)
   * [getSegmentsIndex](#function-getsegmentsindex)
+  * [getLifToken](#function-getliftoken)
   * [owner](#function-owner)
   * [segmentsIndex](#function-segmentsindex)
   * [getSegment](#function-getsegment)
   * [setOrganizationFactory](#function-setorganizationfactory)
   * [initialize](#function-initialize)
-  * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SegmentSet](#event-segmentset)
@@ -102,6 +103,18 @@ Inputs
 | *bytes32* |  | undefined |
 
 
+## *function* resolveLifTokenFromENS
+
+WindingTreeEntrypoint.resolveLifTokenFromENS(_ENS) `nonpayable` `423ba56e`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _ENS | undefined |
+
+
 ## *function* getSegmentName
 
 WindingTreeEntrypoint.getSegmentName(index) `view` `45eade19`
@@ -120,9 +133,9 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
-## *function* LifToken
+## *function* _lifToken
 
-WindingTreeEntrypoint.LifToken() `view` `554d8b37`
+WindingTreeEntrypoint._lifToken() `view` `5c8c66ee`
 
 
 
@@ -153,6 +166,20 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* getLifToken
+
+WindingTreeEntrypoint.getLifToken() `view` `8b0728cf`
+
+> `getLifToken` Returns address of set Lif token
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* owner
 
@@ -208,7 +235,7 @@ Inputs
 
 ## *function* initialize
 
-WindingTreeEntrypoint.initialize(__owner, _lifToken, _organizationFactory) `nonpayable` `c0c53b8b`
+WindingTreeEntrypoint.initialize(__owner, __lifToken, _organizationFactory) `nonpayable` `c0c53b8b`
 
 > Initializer for upgradeable contracts.
 
@@ -217,21 +244,8 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | __owner | The address of the contract owner |
-| *address* | _lifToken | The LifToken contract address |
+| *address* | __lifToken | The LifToken contract address |
 | *address* | _organizationFactory | The OrganizationFactory contract address |
-
-
-## *function* setLifToken
-
-WindingTreeEntrypoint.setLifToken(_lifToken) `nonpayable` `f2f0967b`
-
-> `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _lifToken | The new contract address |
 
 
 ## *function* transferOwnership

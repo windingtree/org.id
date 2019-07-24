@@ -4,13 +4,13 @@ import "../OrganizationFactory.sol";
 
 contract OrganizationFactoryUpgradeabilityTest is OrganizationFactory {
     
-    function create(string calldata orgJsonUri) external returns (address) {
+    function create(string calldata orgJsonUri, bytes32 orgJsonHash) external returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "OrganizationUpgradeabilityTest", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", msg.sender, orgJsonUri)
+                abi.encodeWithSignature("initialize(address,string,bytes32)", msg.sender, orgJsonUri, orgJsonHash)
             )
         );
         _createdOrganizationsIndex[newOrganizationAddress] = _createdOrganizations.length;

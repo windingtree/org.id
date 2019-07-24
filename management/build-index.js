@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs'),
   path = require('path');
 
@@ -9,11 +10,11 @@ const bundle = [
   'OrganizationInterface\.json',
   'SegmentDirectory\.json',
   'Entrypoint\.json',
-]
-const files = fs.readdirSync(CONTRACTS_DIR)
+];
+const files = fs.readdirSync(CONTRACTS_DIR);
 const bundleRegex = new RegExp(bundle.join('|'));
-let importStatements = [];
-let exportStatements = [];
+const importStatements = [];
+const exportStatements = [];
 
 files
   .filter((f) => f.match(bundleRegex))
@@ -29,6 +30,6 @@ ${importStatements.join('\n')}
 module.exports = {
 ${exportStatements.join('\n')}
 };
-`
+`;
 
 console.log(result);

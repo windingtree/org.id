@@ -64,10 +64,11 @@ async function deployLifToken () {
 async function getOrganizationInfo (wtOrganization) {
   // Airline Info
   const orgJsonUri = await wtOrganization.methods.getOrgJsonUri().call();
+  const orgJsonHash = await wtOrganization.methods.getOrgJsonHash().call();
   const owner = await wtOrganization.methods.owner().call();
-
   return {
     orgJsonUri: misc.isZeroString(orgJsonUri) ? null : orgJsonUri,
+    orgJsonHash: misc.isZeroBytes(orgJsonHash) ? null : orgJsonHash,
     owner: misc.isZeroAddress(owner) ? null : owner,
   };
 }
