@@ -1,12 +1,12 @@
 * [OrganizationFactory](#organizationfactory)
   * [createdOrganizationsIndex](#function-createdorganizationsindex)
-  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [getCreatedOrganizations](#function-getcreatedorganizations)
   * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
+  * [create](#function-create)
   * [initialize](#function-initialize)
   * [owner](#function-owner)
   * [createdOrganizations](#function-createdorganizations)
-  * [create](#function-create)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
   * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
   * [OwnershipTransferred](#event-ownershiptransferred)
@@ -31,25 +31,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* createAndAddToDirectory
-
-OrganizationFactory.createAndAddToDirectory(orgJsonUri, directory) `nonpayable` `1f7d8864`
-
-> `createAndAddToDirectory` Creates the organization contract and tries to add it to a SegmentDirectory living on the passed `directory` address.     * We cannot reuse create call due to the Organization ownership restrictions. 
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-| *address* | directory | Segment directory's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* getCreatedOrganizations
 
@@ -78,6 +59,25 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
+
+## *function* create
+
+OrganizationFactory.create(orgJsonUri, orgJsonHash) `nonpayable` `3dee0c50`
+
+> `create` proxies and externalizes createOrganization
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* initialize
 
@@ -120,17 +120,19 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
-## *function* create
+## *function* createAndAddToDirectory
 
-OrganizationFactory.create(orgJsonUri) `nonpayable` `b6a46b3b`
+OrganizationFactory.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory) `nonpayable` `af276209`
 
-> `create` proxies and externalizes createOrganization
+> `createAndAddToDirectory` Creates the organization contract and tries to add it to a SegmentDirectory living on the passed `directory` address.     * We cannot reuse create call due to the Organization ownership restrictions. 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | directory | Segment directory's address |
 
 Outputs
 

@@ -1,13 +1,14 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "management/test.sh",
-    "lint": "eslint test; solhint 'contracts/**/*.sol'",
+    "lint": "eslint test management && solhint 'contracts/**/*.sol'",
+    "lint:fix": "eslint test management --fix && solhint 'contracts/**/*.sol'",
     "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\" --account=\"0xa4605db83bb3e663f33fb92542ca38344bd8d1bf2d07cc6cc908fec87b7674d5,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
@@ -35,35 +36,40 @@
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
+    "@ensdomains/ens": "^0.3.11",
+    "@ensdomains/resolver": "^0.1.9",
     "openzeppelin-solidity": "^2.2.0",
-    "zos-lib": "^2.4.0"
+    "zos-lib": "^2.4.2"
   },
   "devDependencies": {
+    "@windingtree/lif-token": "^0.1.2-erc827",
     "babel-polyfill": "^6.23.0",
     "babel-register": "^6.26.0",
     "chai": "^4.2.0",
-    "coveralls": "^3.0.3",
+    "coveralls": "^3.0.5",
     "eslint": "^6.0.1",
-    "eslint-config-standard": "^12.0.0",
+    "eslint-config-standard": "^13.0.1",
     "eslint-plugin-import": "^2.16.0",
     "eslint-plugin-node": "^9.1.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
+    "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.1.0",
-    "ganache-cli": "^6.4.1",
-    "lodash": "^4.17.11",
+    "ethereumjs-wallet": "^0.6.3",
+    "ganache-cli": "^6.4.5",
+    "lodash": "^4.17.14",
     "rimraf": "^2.6.3",
     "solc": "^0.5.7",
     "solhint": "^2.0.0",
-    "solidity-coverage": "^0.6.0-beta.4",
+    "solidity-coverage": "^0.6.0",
     "solmd": "^0.4.0",
-    "truffle": "^5.0.10",
-    "truffle-contract": "^4.0.11",
-    "truffle-flattener": "^1.3.0",
-    "truffle-hdwallet-provider": "^1.0.6",
-    "web3": "^1.0.0-beta.48",
-    "web3-utils": "^1.0.0-beta.48",
-    "zos": "^2.4.0"
+    "truffle": "^5.0.27",
+    "truffle-contract": "^4.0.24",
+    "truffle-flattener": "^1.4.0",
+    "truffle-hdwallet-provider": "^1.0.14",
+    "web3": "^1.2.0",
+    "web3-utils": "^1.2.0",
+    "zos": "^2.4.2"
   },
   "engines": {
     "node": ">=10.3.0"

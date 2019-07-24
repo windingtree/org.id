@@ -4,17 +4,23 @@
   * [getAssociatedKeys](#function-getassociatedkeys)
   * [associatedKeys](#function-associatedkeys)
   * [getOrgJsonUri](#function-getorgjsonuri)
+  * [orgJsonHash](#function-orgjsonhash)
   * [created](#function-created)
+  * [changeOrgJsonHash](#function-changeorgjsonhash)
   * [orgJsonUri](#function-orgjsonuri)
+  * [getOrgJsonHash](#function-getorgjsonhash)
   * [addAssociatedKey](#function-addassociatedkey)
   * [owner](#function-owner)
+  * [changeOrgJsonUriAndHash](#function-changeorgjsonuriandhash)
   * [changeOrgJsonUri](#function-changeorgjsonuri)
+  * [initialize](#function-initialize)
   * [associatedKeysIndex](#function-associatedkeysindex)
   * [transferOwnership](#function-transferownership)
-  * [initialize](#function-initialize)
   * [hasAssociatedKey](#function-hasassociatedkey)
+  * [setInterfaces](#function-setinterfaces)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
+  * [OrgJsonHashChanged](#event-orgjsonhashchanged)
   * [AssociatedKeyAdded](#event-associatedkeyadded)
   * [AssociatedKeyRemoved](#event-associatedkeyremoved)
 
@@ -87,12 +93,33 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
+## *function* orgJsonHash
+
+Organization.orgJsonHash() `view` `2095005b`
+
+
+
+
+
 ## *function* created
 
 Organization.created() `view` `325a19f1`
 
 
 
+
+
+## *function* changeOrgJsonHash
+
+Organization.changeOrgJsonHash(_orgJsonHash) `nonpayable` `32fda029`
+
+> `changeOrgJsonHash` Allows owner to change Organization's orgJsonHash.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
 
 
 ## *function* orgJsonUri
@@ -102,6 +129,20 @@ Organization.orgJsonUri() `view` `3b3ba578`
 
 
 
+
+## *function* getOrgJsonHash
+
+Organization.getOrgJsonHash() `view` `72cd7fc9`
+
+> Returns keccak256 hash of raw ORG.JSON contents. This should be used to verify that the contents of ORG.JSON has not been tampered with. It is a responsibility of the Organization owner to keep this hash up to date.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* |  | undefined |
 
 ## *function* addAssociatedKey
 
@@ -130,6 +171,20 @@ Organization.owner() `view` `8da5cb5b`
 
 
 
+## *function* changeOrgJsonUriAndHash
+
+Organization.changeOrgJsonUriAndHash(_orgJsonUri, _orgJsonHash) `nonpayable` `a4e99359`
+
+> Shorthand method to change ORG.JSON uri and hash at the same time
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
+
+
 ## *function* changeOrgJsonUri
 
 Organization.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
@@ -141,6 +196,21 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
+
+
+## *function* initialize
+
+Organization.initialize(__owner, _orgJsonUri, _orgJsonHash) `nonpayable` `ca303fc7`
+
+> Initializer for upgradeable contracts.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | __owner | The address of the contract owner |
+| *string* | _orgJsonUri | pointer to Organization data |
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
 
 
 ## *function* associatedKeysIndex
@@ -168,20 +238,6 @@ Inputs
 | *address* | newOwner | The address to transfer ownership to. |
 
 
-## *function* initialize
-
-Organization.initialize(__owner, _orgJsonUri) `nonpayable` `f399e22e`
-
-> Initializer for upgradeable contracts.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | The address of the contract owner |
-| *string* | _orgJsonUri | pointer to Organization data |
-
-
 ## *function* hasAssociatedKey
 
 Organization.hasAssociatedKey(addr) `view` `f5760597`
@@ -199,6 +255,15 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bool* |  | undefined |
+
+## *function* setInterfaces
+
+Organization.setInterfaces() `nonpayable` `fca85eb3`
+
+> A synchronization method that should be kept up to date with  the list of interfaces set during initialization. It should also be called everytime the implementation gets updated. If the interface list gets out of sync with the implementation at anytime, it is possible that some integrations will stop working. Since this method is not destructive, no access restriction is in place. It's supposed to be called by the proxy admin anyway.
+
+
+
 ## *event* OwnershipTransferred
 
 Organization.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
@@ -218,8 +283,19 @@ Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | previousOrgJsonUri | indexed |
-| *string* | newOrgJsonUri | indexed |
+| *string* | previousOrgJsonUri | not indexed |
+| *string* | newOrgJsonUri | not indexed |
+
+## *event* OrgJsonHashChanged
+
+Organization.OrgJsonHashChanged(previousOrgJsonHash, newOrgJsonHash) `ccd34c96`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | previousOrgJsonHash | indexed |
+| *bytes32* | newOrgJsonHash | indexed |
 
 ## *event* AssociatedKeyAdded
 

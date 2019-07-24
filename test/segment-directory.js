@@ -17,8 +17,8 @@ const SegmentDirectoryUpgradeabilityTest = Contracts.getFromLocal('SegmentDirect
 const CustomOrganizationTest = artifacts.require('CustomOrganizationTest');
 const AbstractSegmentDirectory = artifacts.require('AbstractSegmentDirectory');
 
-const _createAndAdd = async (factory, directory, jsonOrgUri, txOpts) => {
-  const r = await factory.methods.create(jsonOrgUri).send(txOpts);
+const _createAndAdd = async (factory, directory, jsonOrgUri, jsonOrgHash, txOpts) => {
+  const r = await factory.methods.create(jsonOrgUri, jsonOrgHash).send(txOpts);
   if (directory.methods && directory.methods.add) {
     return directory.methods.add(r.events.OrganizationCreated.returnValues.organization).send(txOpts);
   } else {
@@ -30,7 +30,8 @@ contract('SegmentDirectory', (accounts) => {
   const segmentDirectoryOwner = accounts[1];
   const organizationAccount = accounts[2];
   const nonOwnerAccount = accounts[3];
-  const tokenAddress = accounts[4];
+  const tokenFakeAddress = accounts[4];
+  let ensContract, tokenContract;
 
   let segmentDirectoryProxy;
   let segmentDirectory;
@@ -38,12 +39,18 @@ contract('SegmentDirectory', (accounts) => {
   let project;
   let organizationFactory;
 
+  before(async () => {
+    ensContract = await help.deployEnsRegistry();
+    tokenContract = await help.deployLifToken(true);
+    await help.setupEnsRegistry(ensContract, tokenContract);
+  });
+
   beforeEach(async () => {
     project = await TestHelper();
     segmentDirectoryProxy = await project.createProxy(SegmentDirectory, {
       from: segmentDirectoryOwner,
       initFunction: 'initialize',
-      initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenAddress],
+      initArgs: [segmentDirectoryOwner, 'foodtrucks', tokenFakeAddress],
     });
     segmentDirectory = await SegmentDirectory.at(segmentDirectoryProxy.address);
     abstractSegmentDirectory = await AbstractSegmentDirectory.at(segmentDirectoryProxy.address);
@@ -60,7 +67,7 @@ contract('SegmentDirectory', (accounts) => {
     it('should not allow zero address owner', async () => {
       try {
         const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-        await segmentDirectory.methods.initialize(help.zeroAddress, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
+        await segmentDirectory.methods.initialize(help.zeroAddress, 'foodtrucks', tokenFakeAddress).send({ from: segmentDirectoryOwner });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -69,8 +76,8 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should set liftoken and segment', async () => {
       const segmentDirectory = await SegmentDirectory.new({ from: segmentDirectoryOwner });
-      await segmentDirectory.methods.initialize(segmentDirectoryOwner, 'foodtrucks', tokenAddress).send({ from: segmentDirectoryOwner });
-      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenAddress);
+      await segmentDirectory.methods.initialize(segmentDirectoryOwner, 'foodtrucks', tokenFakeAddress).send({ from: segmentDirectoryOwner });
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
       assert.equal(await segmentDirectory.methods.getSegment().call(), 'foodtrucks');
     });
   });
@@ -78,13 +85,13 @@ contract('SegmentDirectory', (accounts) => {
   describe('upgradeability', () => {
     it('should upgrade SegmentDirectory and have new functions in directory and Organization contracts', async () => {
       // add old organization
-      await _createAndAdd(organizationFactory, segmentDirectory, 'orgJsonUri', { from: organizationAccount });
+      await _createAndAdd(organizationFactory, segmentDirectory, 'orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       // upgrade directory
       const upgradedDirectory = await SegmentDirectoryUpgradeabilityTest.new({ from: segmentDirectoryOwner });
       await project.proxyAdmin.upgradeProxy(segmentDirectoryProxy.address, upgradedDirectory.address, SegmentDirectoryUpgradeabilityTest);
       const newDirectory = await SegmentDirectoryUpgradeabilityTest.at(segmentDirectoryProxy.address);
       // add new organization
-      await _createAndAdd(organizationFactory, newDirectory, 'orgJsonUri2', { from: organizationAccount });
+      await _createAndAdd(organizationFactory, newDirectory, 'orgJsonUri2', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       const allOrganizations = help.filterZeroAddresses(await newDirectory.methods.getOrganizations().call());
       // test values
       assert.isDefined(await newDirectory.methods.organizations(1).call());
@@ -99,6 +106,34 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
+  describe('resolveLifTokenFromENS', () => {
+    it('should set lif token address from ENS', async () => {
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+      await segmentDirectory.methods.resolveLifTokenFromENS(ensContract.address).send({ from: segmentDirectoryOwner });
+      assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenContract.address);
+    });
+
+    it('should throw if ENS cannot be read from', async () => {
+      try {
+        assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+        await segmentDirectory.methods.resolveLifTokenFromENS(tokenFakeAddress).send({ from: segmentDirectoryOwner });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+
+    it('should throw if called by non-owner', async () => {
+      try {
+        assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
+        await segmentDirectory.methods.resolveLifTokenFromENS(ensContract.address).send({ from: nonOwnerAccount });
+        assert(false);
+      } catch (e) {
+        assert(help.isInvalidOpcodeEx(e));
+      }
+    });
+  });
+
   describe('transferOwnership', async () => {
     it('should transfer ownership', async () => {
       await segmentDirectory.methods.transferOwnership(nonOwnerAccount).send({ from: segmentDirectoryOwner });
@@ -108,7 +143,7 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should not transfer ownership when initiated from a non-owner', async () => {
       try {
-        await segmentDirectory.methods.transferOwnership(tokenAddress).send({ from: nonOwnerAccount });
+        await segmentDirectory.methods.transferOwnership(tokenFakeAddress).send({ from: nonOwnerAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -129,23 +164,6 @@ contract('SegmentDirectory', (accounts) => {
     it('should report current owner', async () => {
       const owner = await segmentDirectory.methods.owner().call();
       assert.equal(owner, segmentDirectoryOwner);
-    });
-  });
-
-  describe('setLifToken', () => {
-    it('should set the LifToken address', async () => {
-      await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: segmentDirectoryOwner });
-      const setValue = await segmentDirectory.methods.getLifToken().call();
-      assert.equal(setValue, tokenAddress);
-    });
-
-    it('should throw if non-owner sets the LifToken address', async () => {
-      try {
-        await segmentDirectory.methods.setLifToken(tokenAddress).send({ from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
     });
   });
 
@@ -181,10 +199,10 @@ contract('SegmentDirectory', (accounts) => {
       let length = await abstractSegmentDirectory.getOrganizationsLength();
       // We start with empty address on the zero segmentDirectory
       assert.equal(length, 1);
-      await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', { from: organizationAccount });
+      await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       length = await abstractSegmentDirectory.getOrganizationsLength();
       assert.equal(length, 2);
-      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'bbb', { from: organizationAccount });
+      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'bbb', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       length = await abstractSegmentDirectory.getOrganizationsLength();
       assert.equal(length, 3);
       const expectedOrganizationAddress = receipt.logs[0].args.organization;
@@ -198,10 +216,10 @@ contract('SegmentDirectory', (accounts) => {
   describe('getOrganizations', () => {
     it('should return organizations properly', async () => {
       assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 0);
-      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', { from: organizationAccount });
+      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       const expectedOrganizationAddress = receipt.logs[0].args.organization;
       assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 1);
-      await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'bbb', { from: organizationAccount });
+      await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'bbb', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 2);
       await abstractSegmentDirectory.remove(expectedOrganizationAddress, { from: organizationAccount });
       assert.equal(help.filterZeroAddresses(await abstractSegmentDirectory.getOrganizations()).length, 1);
@@ -217,7 +235,7 @@ contract('SegmentDirectory', (accounts) => {
       organizationProxy = await project.createProxy(Organization, {
         from: segmentDirectoryOwner,
         initFunction: 'initialize',
-        initArgs: [organizationAccount, 'orgJsonUri'],
+        initArgs: [organizationAccount, 'orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99'],
       });
       organization = await Organization.at(organizationProxy.address);
     });
@@ -303,7 +321,7 @@ contract('SegmentDirectory', (accounts) => {
   describe('remove', () => {
     let organization;
     beforeEach(async () => {
-      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', { from: organizationAccount });
+      const receipt = await _createAndAdd(organizationFactory, abstractSegmentDirectory, 'aaa', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', { from: organizationAccount });
       organization = await Organization.at(receipt.logs[0].args.organization);
     });
 

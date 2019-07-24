@@ -40,15 +40,16 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * 
      * Emits `OrganizationCreated` on success.
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @return {" ": "Address of the new organization."}
      */
-    function createOrganization(string memory orgJsonUri) internal returns (address) {
+    function createOrganization(string memory orgJsonUri, bytes32 orgJsonHash) internal returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", msg.sender, orgJsonUri)
+                abi.encodeWithSignature("initialize(address,string,bytes32)", msg.sender, orgJsonUri, orgJsonHash)
             )
         );
         emit OrganizationCreated(newOrganizationAddress);
@@ -60,10 +61,11 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     /**
      * @dev `create` proxies and externalizes createOrganization
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @return {" ": "Address of the new organization."}
      */
-    function create(string calldata orgJsonUri) external returns (address) {
-        return createOrganization(orgJsonUri);
+    function create(string calldata orgJsonUri, bytes32 orgJsonHash) external returns (address) {
+        return createOrganization(orgJsonUri, orgJsonHash);
     }
 
     /**
@@ -73,18 +75,23 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * We cannot reuse create call due to the Organization ownership restrictions.
      * 
      * @param  orgJsonUri Organization's data pointer
+     * @param  orgJsonHash Organization's data hash
      * @param  directory Segment directory's address
      * @return {" ": "Address of the new organization."}
      */
-    function createAndAddToDirectory(string calldata orgJsonUri, address directory) external returns (address) {
-        // TODO rewrite so that directory address gets known from entrypoint
-        require(directory != address(0), 'Cannot use directory with 0x0 address');
+    function createAndAddToDirectory(
+        string calldata orgJsonUri,
+        bytes32 orgJsonHash,
+        address directory
+    ) external returns (address) {
+        // TODO rewrite so that directory address gets known from entrypoint #248
+        require(directory != address(0), 'OrganizationFactory: Cannot use directory with 0x0 address');
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string)", address(this), orgJsonUri)
+                abi.encodeWithSignature("initialize(address,string,bytes32)", address(this), orgJsonUri, orgJsonHash)
             )
         );
         AbstractSegmentDirectory sd = AbstractSegmentDirectory(directory);
@@ -103,8 +110,8 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @param _app ZeppelinOS App address
      */
     function initialize(address payable __owner, App _app) public initializer {
-        require(__owner != address(0), 'Cannot set owner to 0x0 address');
-        require(address(_app) != address(0), 'Cannot set app to 0x0 address');
+        require(__owner != address(0), 'OrganizationFactory: Cannot set owner to 0x0 address');
+        require(address(_app) != address(0), 'OrganizationFactory: Cannot set app to 0x0 address');
         _owner = __owner;
         app = _app;
         _createdOrganizations.length++;
@@ -146,7 +153,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'OrganizationFactory: Only owner can call this method');
         _;
     }
 
@@ -163,7 +170,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @param newOwner The address to transfer ownership to.
      */
     function _transferOwnership(address payable newOwner) internal {
-        require(newOwner != address(0));
+        require(newOwner != address(0), 'OrganizationFactory: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }

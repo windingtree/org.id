@@ -2,6 +2,7 @@
   * [supportsInterface](#function-supportsinterface)
   * [getAssociatedKeys](#function-getassociatedkeys)
   * [getOrgJsonUri](#function-getorgjsonuri)
+  * [getOrgJsonHash](#function-getorgjsonhash)
   * [owner](#function-owner)
   * [hasAssociatedKey](#function-hasassociatedkey)
 
@@ -48,6 +49,20 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* |  | undefined |
+
+## *function* getOrgJsonHash
+
+OrganizationInterface.getOrgJsonHash() `view` `72cd7fc9`
+
+> Returns keccak256 hash of raw ORG.JSON contents. This should be used to verify that the contents of ORG.JSON has not been tampered with. It is a responsibility of the Organization owner to keep this hash up to date.
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* |  | undefined |
 
 ## *function* owner
 

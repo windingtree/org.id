@@ -2,6 +2,7 @@
   * [add](#function-add)
   * [getSegment](#function-getsegment)
   * [remove](#function-remove)
+  * [resolveLifTokenFromENS](#function-resolveliftokenfromens)
   * [organizationsIndex](#function-organizationsindex)
   * [initialize](#function-initialize)
   * [getLifToken](#function-getliftoken)
@@ -10,7 +11,6 @@
   * [setSegment](#function-setsegment)
   * [getOrganizationsLength](#function-getorganizationslength)
   * [organizations](#function-organizations)
-  * [setLifToken](#function-setliftoken)
   * [transferOwnership](#function-transferownership)
   * [OrganizationAdded](#event-organizationadded)
   * [OrganizationRemoved](#event-organizationremoved)
@@ -62,6 +62,18 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | organization | Organization's address |
+
+
+## *function* resolveLifTokenFromENS
+
+SegmentDirectory.resolveLifTokenFromENS(_ENS) `nonpayable` `423ba56e`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | _ENS | undefined |
 
 
 ## *function* organizationsIndex
@@ -178,19 +190,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* |  | undefined |
-
-## *function* setLifToken
-
-SegmentDirectory.setLifToken(__lifToken) `nonpayable` `f2f0967b`
-
-> `setLifToken` allows the owner of the contract to change the address of the LifToken contract. Allows to set the address to zero address
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __lifToken | The new contract address |
-
 
 ## *function* transferOwnership
 
