@@ -55,7 +55,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @param _organizationFactory The OrganizationFactory contract address
      */
     function initialize(address payable __owner, address __lifToken, address _organizationFactory) public initializer {
-        require(__owner != address(0), 'Cannot set owner to 0x0 address');
+        require(__owner != address(0), 'WindingTreeEntrypoint: Cannot set owner to 0x0 address');
         _owner = __owner;
         _lifToken = __lifToken;
         organizationFactory = _organizationFactory;
@@ -67,17 +67,17 @@ contract WindingTreeEntrypoint is Initializable {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'WindingTreeEntrypoint: Only owner can call this method');
         _;
     }
 
     function resolveLifTokenFromENS(address _ENS) public onlyOwner {
         ENS registry = ENS(_ENS);
         address resolverAddress = registry.resolver(tokenNamehash);
-        require(resolverAddress != address(0), 'Resolver not found');
+        require(resolverAddress != address(0), 'WindingTreeEntrypoint: Resolver not found');
         Resolver resolver = Resolver(resolverAddress);
         address tokenAddress = resolver.addr(tokenNamehash);
-        require(tokenAddress != address(0), 'Token not found');
+        require(tokenAddress != address(0), 'WindingTreeEntrypoint: Token not found');
         _lifToken = tokenAddress;
     }
 
@@ -88,9 +88,9 @@ contract WindingTreeEntrypoint is Initializable {
      * @param addr New segment directory address
      */
     function setSegment(string memory segment, address addr) public onlyOwner {
-        require(addr != address(0), 'Cannot set segment addr to 0x0 address');
+        require(addr != address(0), 'WindingTreeEntrypoint: Cannot set segment addr to 0x0 address');
         bytes memory segmentBytes = bytes(segment);
-        require(segmentBytes.length != 0, 'Segment cannot be empty');
+        require(segmentBytes.length != 0, 'WindingTreeEntrypoint: Segment cannot be empty');
         bytes32 segmentHash = keccak256(segmentBytes);
         if (segmentsIndex[segmentHash] == 0) {
             segmentsIndex[segmentHash] = segments.length;
@@ -106,7 +106,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @param addr New organization factory address
      */
     function setOrganizationFactory(address addr) public onlyOwner {
-        require(addr != address(0), 'Cannot set factory addr to 0x0 address');
+        require(addr != address(0), 'WindingTreeEntrypoint: Cannot set factory addr to 0x0 address');
         emit OrganizationFactorySet(organizationFactory, addr);
         organizationFactory = addr;
     }
@@ -126,7 +126,7 @@ contract WindingTreeEntrypoint is Initializable {
      */
     function removeSegment(string memory segment) public onlyOwner {
         bytes memory segmentBytes = bytes(segment);
-        require(segmentBytes.length != 0, 'Segment cannot be empty');
+        require(segmentBytes.length != 0, 'WindingTreeEntrypoint: Segment cannot be empty');
         bytes32 segmentHash = keccak256(segmentBytes);
         delete segments[segmentsIndex[segmentHash]];
         delete segmentsIndex[segmentHash];
@@ -183,7 +183,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @param newOwner The address to transfer ownership to.
      */
     function transferOwnership(address payable newOwner) public onlyOwner {
-        require(newOwner != address(0));
+        require(newOwner != address(0), 'WindingTreeEntrypoint: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }

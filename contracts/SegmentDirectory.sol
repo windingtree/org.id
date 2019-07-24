@@ -41,16 +41,16 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @return {" ": "Address of the organization."}
      */
     function addOrganization(address organization) internal returns (address) {
-        require(_organizationsIndex[organization] == 0, 'Cannot add organization twice');
+        require(_organizationsIndex[organization] == 0, 'SegmentDirectory: Cannot add organization twice');
         // This is intentionally not part of the state variables as we expect it to change in time.
         // It should always be the latest xor of *all* methods in the OrganizationInterface.
         bytes4 _INTERFACE_ID_ORGANIZATION = 0x1c3af5f4;
         require(
             ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION),
-            'Organization has to support _INTERFACE_ID_ORGANIZATION'
+            'SegmentDirectory: Organization has to support _INTERFACE_ID_ORGANIZATION'
         );
         OrganizationInterface org = OrganizationInterface(organization);
-        require(org.owner() == msg.sender, 'Only organization owner can register the organization');
+        require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can add the organization');
         _organizationsIndex[organization] = _organizations.length;
         _organizations.push(organization);
         emit OrganizationAdded(
@@ -68,13 +68,13 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      */
     function removeOrganization(address organization) internal {
         // Ensure organization address is valid
-        require(organization != address(0), 'Cannot remove organization on 0x0 address');
+        require(organization != address(0), 'SegmentDirectory: Cannot remove organization on 0x0 address');
         // Ensure we know about the organization at all
-        require(_organizationsIndex[organization] != uint(0), 'Cannot remove unknown organization');
+        require(_organizationsIndex[organization] != uint(0), 'SegmentDirectory: Cannot remove unknown organization');
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
         OrganizationInterface org = OrganizationInterface(organization);
-        require(org.owner() == msg.sender);
+        require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can remove the organization');
         uint allIndex = _organizationsIndex[organization];
         delete _organizations[allIndex];
         delete _organizationsIndex[organization];
@@ -109,8 +109,8 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
         string memory __segment,
         address __lifToken)
     public initializer {
-        require(__owner != address(0), 'Cannot set owner to 0x0 address');
-        require(bytes(__segment).length != 0, 'Segment cannot be empty');
+        require(__owner != address(0), 'SegmentDirectory: Cannot set owner to 0x0 address');
+        require(bytes(__segment).length != 0, 'SegmentDirectory: Segment cannot be empty');
         _owner = __owner;
         _lifToken = __lifToken;
         _organizations.length++;
@@ -120,10 +120,10 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
     function resolveLifTokenFromENS(address _ENS) public onlyOwner {
         ENS registry = ENS(_ENS);
         address resolverAddress = registry.resolver(tokenNamehash);
-        require(resolverAddress != address(0), 'Resolver not found');
+        require(resolverAddress != address(0), 'SegmentDirectory: Resolver not found');
         Resolver resolver = Resolver(resolverAddress);
         address tokenAddress = resolver.addr(tokenNamehash);
-        require(tokenAddress != address(0), 'Token not found');
+        require(tokenAddress != address(0), 'SegmentDirectory: Token not found');
         _lifToken = tokenAddress;
     }
 
@@ -163,7 +163,7 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'SegmentDirectory: Only owner can call this method');
         _;
     }
 
@@ -181,7 +181,7 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @param __segment The new segment name
      */
     function setSegment(string memory __segment) public onlyOwner {
-        require(bytes(__segment).length != 0, 'Segment cannot be empty');
+        require(bytes(__segment).length != 0, 'SegmentDirectory: Segment cannot be empty');
         _segment = __segment;
     }
 
@@ -206,7 +206,7 @@ contract SegmentDirectory is Initializable, AbstractSegmentDirectory {
      * @param newOwner The address to transfer ownership to.
      */
     function _transferOwnership(address payable newOwner) internal {
-        require(newOwner != address(0));
+        require(newOwner != address(0), 'SegmentDirectory: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }

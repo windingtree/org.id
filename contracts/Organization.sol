@@ -70,9 +70,9 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
     function initialize(address payable __owner, string memory _orgJsonUri, bytes32 _orgJsonHash) public initializer {
-        require(__owner != address(0), 'Cannot set owner to 0x0 address');
-        require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
-        require(_orgJsonHash != 0, 'orgJsonHash cannot be empty');
+        require(__owner != address(0), 'Organization: Cannot set owner to 0x0 address');
+        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
+        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
         emit OwnershipTransferred(_owner, __owner);
         _owner = __owner;        
         orgJsonUri = _orgJsonUri;
@@ -97,7 +97,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'Organization: Only owner can call this method');
         _;
     }
 
@@ -106,7 +106,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
     function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwner {
-        require(bytes(_orgJsonUri).length != 0, 'orgJsonUri cannot be an empty string');
+        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
         emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
         orgJsonUri = _orgJsonUri;
     }
@@ -124,7 +124,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
     function changeOrgJsonHash(bytes32 _orgJsonHash) public onlyOwner {
-        require(_orgJsonHash != 0, 'orgJsonHash cannot be empty');
+        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
         emit OrgJsonHashChanged(orgJsonHash, _orgJsonHash);
         orgJsonHash = _orgJsonHash;
     }
@@ -156,8 +156,8 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @return {" ": "Address of the added associatedKey"}
      */
     function addAssociatedKey(address addr) public onlyOwner returns(address) {
-        require(addr != address(0), 'Cannot add associatedKey with 0x0 address');
-        require(associatedKeysIndex[addr] == 0, 'Cannot add associatedKey twice');
+        require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
+        require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
         associatedKeysIndex[addr] = associatedKeys.length;
         associatedKeys.push(addr);
         emit AssociatedKeyAdded(addr, associatedKeysIndex[addr]);
@@ -169,8 +169,8 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param addr Associated Ethereum address
      */
     function removeAssociatedKey(address addr) public onlyOwner {
-        require(addr != address(0), 'Cannot remove associatedKey with 0x0 address');
-        require(associatedKeysIndex[addr] != uint(0), 'Cannot remove unknown organization');
+        require(addr != address(0), 'Organization: Cannot remove associatedKey with 0x0 address');
+        require(associatedKeysIndex[addr] != uint(0), 'Organization: Cannot remove unknown organization');
         delete associatedKeys[associatedKeysIndex[addr]];
         delete associatedKeysIndex[addr];
         emit AssociatedKeyRemoved(addr);
@@ -197,7 +197,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param newOwner The address to transfer ownership to.
      */
     function transferOwnership(address payable newOwner) public onlyOwner {
-        require(newOwner != address(0));
+        require(newOwner != address(0), 'Organization: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }

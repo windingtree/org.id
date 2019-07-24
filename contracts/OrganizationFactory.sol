@@ -85,7 +85,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
         address directory
     ) external returns (address) {
         // TODO rewrite so that directory address gets known from entrypoint #248
-        require(directory != address(0), 'Cannot use directory with 0x0 address');
+        require(directory != address(0), 'OrganizationFactory: Cannot use directory with 0x0 address');
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
@@ -110,8 +110,8 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @param _app ZeppelinOS App address
      */
     function initialize(address payable __owner, App _app) public initializer {
-        require(__owner != address(0), 'Cannot set owner to 0x0 address');
-        require(address(_app) != address(0), 'Cannot set app to 0x0 address');
+        require(__owner != address(0), 'OrganizationFactory: Cannot set owner to 0x0 address');
+        require(address(_app) != address(0), 'OrganizationFactory: Cannot set app to 0x0 address');
         _owner = __owner;
         app = _app;
         _createdOrganizations.length++;
@@ -153,7 +153,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner);
+        require(msg.sender == _owner, 'OrganizationFactory: Only owner can call this method');
         _;
     }
 
@@ -170,7 +170,7 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * @param newOwner The address to transfer ownership to.
      */
     function _transferOwnership(address payable newOwner) internal {
-        require(newOwner != address(0));
+        require(newOwner != address(0), 'OrganizationFactory: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
