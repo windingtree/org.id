@@ -12,5 +12,12 @@
     "SegmentDirectory": "SegmentDirectory",
     "Organization": "Organization",
     "OrganizationFactory": "OrganizationFactory"
+  },
+  "dependencies": {},
+  "compiler": {
+    "manager": "truffle",
+    "compilerSettings": {
+      "optimizer": {}
+    }
   }
 }

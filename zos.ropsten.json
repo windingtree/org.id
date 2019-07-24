@@ -1,7 +1,523 @@
 {
   "contracts": {
+    "SegmentDirectory": {
+      "address": "0x573A4fC33007571B5b4438625FcA58A79961F8AC",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "PlaygroundOtaDirectory": {
+      "address": "0x9b366Dd36a5A441B00c995b86db3B9f3ADEB0FB3",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "WindingTreeEntrypoint": {
+      "address": "0xbEB3a7bEbd851Da5112d4F495941E7FB43645f0f",
+      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
+      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
+      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_string>": {
+          "id": "t_array:dyn<t_string>",
+          "valueType": "t_string",
+          "length": "dyn",
+          "kind": "array",
+          "label": "string[]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "_owner",
+          "astId": 1164,
+          "type": "t_address",
+          "src": "400:14:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "LifToken",
+          "astId": 1166,
+          "type": "t_address",
+          "src": "513:23:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "directories",
+          "astId": 1170,
+          "type": "t_mapping<t_address>",
+          "src": "601:46:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segmentsIndex",
+          "astId": 1174,
+          "type": "t_mapping<t_uint256>",
+          "src": "718:45:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segments",
+          "astId": 1177,
+          "type": "t_array:dyn<t_string>",
+          "src": "805:24:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "organizationFactory",
+          "astId": 1179,
+          "type": "t_address",
+          "src": "875:34:6"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
+    "PlaygroundEntrypoint": {
+      "address": "0x55795D8bBE2343261236Ac4C56A9df6D27e7D814",
+      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
+      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
+      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_string>": {
+          "id": "t_array:dyn<t_string>",
+          "valueType": "t_string",
+          "length": "dyn",
+          "kind": "array",
+          "label": "string[]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "_owner",
+          "astId": 1164,
+          "type": "t_address",
+          "src": "400:14:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "LifToken",
+          "astId": 1166,
+          "type": "t_address",
+          "src": "513:23:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "directories",
+          "astId": 1170,
+          "type": "t_mapping<t_address>",
+          "src": "601:46:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segmentsIndex",
+          "astId": 1174,
+          "type": "t_mapping<t_uint256>",
+          "src": "718:45:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segments",
+          "astId": 1177,
+          "type": "t_array:dyn<t_string>",
+          "src": "805:24:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "organizationFactory",
+          "astId": 1179,
+          "type": "t_address",
+          "src": "875:34:6"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": []
+      }
+    },
     "Organization": {
-      "address": "0x6808c71a2697e09e2CbfA63DDbCb8c9a51A009c5",
+      "address": "0x1543b8682b1B8227DC145dfA195eB3b43830bADb",
       "constructorCode": "608060405261001a6301ffc9a760e01b61001f60201b60201c565b6100ed565b7fffffffff0000000000000000000000000000000000000000000000000000000080821614156100b057604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601c60248201527f4552433136353a20696e76616c696420696e7465726661636520696400000000604482015290519081900360640190fd5b7fffffffff00000000000000000000000000000000000000000000000000000000166000908152602081905260409020805460ff19166001179055565b610f5b806100fc6000396000f3fe",
       "bodyBytecodeHash": "500ccabe111a53b3f880e7db0929746eeddbe9bcad8f794c43f4e8190de2e185",
       "localBytecodeHash": "042f58e02a30606f570148903d38b9d3e3cb2b9e5b1358a165f223e1723e7a5d",
@@ -136,8 +652,8 @@
         "uninitializedBaseContracts": []
       }
     },
-    "SegmentDirectory": {
-      "address": "0xcFb27AbaB66Dfc38135F7922EE03CBB327d688Ad",
+    "PlaygroundHotelDirectory": {
+      "address": "0xF5a38111356E1C0Dd87C68E574363FD72428Cc30",
       "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
       "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
       "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
@@ -248,400 +764,6 @@
           "astId": 811,
           "type": "t_address",
           "src": "831:17:5"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
-      }
-    },
-    "WindingTreeEntrypoint": {
-      "address": "0xf7763A4da80690d9e03A209A6693a81374Af39cC",
-      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
-      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
-      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
-      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_mapping<t_address>": {
-          "id": "t_mapping<t_address>",
-          "valueType": "t_address",
-          "label": "mapping(key => address)",
-          "kind": "mapping"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        },
-        "t_string": {
-          "id": "t_string",
-          "kind": "elementary",
-          "label": "string"
-        },
-        "t_array:dyn<t_string>": {
-          "id": "t_array:dyn<t_string>",
-          "valueType": "t_string",
-          "length": "dyn",
-          "kind": "array",
-          "label": "string[]"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1924,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1926,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1982,
-          "type": "t_array:50<t_uint256>",
-          "src": "1951:29:15"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "_owner",
-          "astId": 1164,
-          "type": "t_address",
-          "src": "400:14:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "LifToken",
-          "astId": 1166,
-          "type": "t_address",
-          "src": "513:23:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "directories",
-          "astId": 1170,
-          "type": "t_mapping<t_address>",
-          "src": "601:46:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "segmentsIndex",
-          "astId": 1174,
-          "type": "t_mapping<t_uint256>",
-          "src": "718:45:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "segments",
-          "astId": 1177,
-          "type": "t_array:dyn<t_string>",
-          "src": "805:24:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "organizationFactory",
-          "astId": 1179,
-          "type": "t_address",
-          "src": "875:34:6"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
-      }
-    },
-    "PlaygroundOtaDirectory": {
-      "address": "0x884B8f351539f8ec5674D0D022B4f495a7A0CD08",
-      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
-      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
-      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
-      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_string": {
-          "id": "t_string",
-          "kind": "elementary",
-          "label": "string"
-        },
-        "t_array:dyn<t_address>": {
-          "id": "t_array:dyn<t_address>",
-          "valueType": "t_address",
-          "length": "dyn",
-          "kind": "array",
-          "label": "address[]"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1924,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1926,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1982,
-          "type": "t_array:50<t_uint256>",
-          "src": "1951:29:15"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_owner",
-          "astId": 800,
-          "type": "t_address",
-          "src": "495:14:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_segment",
-          "astId": 802,
-          "type": "t_string",
-          "src": "558:15:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_organizations",
-          "astId": 805,
-          "type": "t_array:dyn<t_address>",
-          "src": "634:24:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_organizationsIndex",
-          "astId": 809,
-          "type": "t_mapping<t_uint256>",
-          "src": "740:44:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_lifToken",
-          "astId": 811,
-          "type": "t_address",
-          "src": "831:17:5"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
-      }
-    },
-    "PlaygroundEntrypoint": {
-      "address": "0xB30BD07A0fE77485b6BDb00C06fddDE99b4b0e52",
-      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
-      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
-      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
-      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_mapping<t_address>": {
-          "id": "t_mapping<t_address>",
-          "valueType": "t_address",
-          "label": "mapping(key => address)",
-          "kind": "mapping"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        },
-        "t_string": {
-          "id": "t_string",
-          "kind": "elementary",
-          "label": "string"
-        },
-        "t_array:dyn<t_string>": {
-          "id": "t_array:dyn<t_string>",
-          "valueType": "t_string",
-          "length": "dyn",
-          "kind": "array",
-          "label": "string[]"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1924,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1926,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1982,
-          "type": "t_array:50<t_uint256>",
-          "src": "1951:29:15"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "_owner",
-          "astId": 1164,
-          "type": "t_address",
-          "src": "400:14:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "LifToken",
-          "astId": 1166,
-          "type": "t_address",
-          "src": "513:23:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "directories",
-          "astId": 1170,
-          "type": "t_mapping<t_address>",
-          "src": "601:46:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "segmentsIndex",
-          "astId": 1174,
-          "type": "t_mapping<t_uint256>",
-          "src": "718:45:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "segments",
-          "astId": 1177,
-          "type": "t_array:dyn<t_string>",
-          "src": "805:24:6"
-        },
-        {
-          "contract": "WindingTreeEntrypoint",
-          "path": "contracts/WindingTreeEntrypoint.sol",
-          "label": "organizationFactory",
-          "astId": 1179,
-          "type": "t_address",
-          "src": "875:34:6"
         }
       ],
       "warnings": {
@@ -653,129 +775,7 @@
       }
     },
     "PlaygroundAirlineDirectory": {
-      "address": "0x37C6A40bf6721267a3384eBD1D6B6A230494d28F",
-      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
-      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
-      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
-      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
-      "types": {
-        "t_bool": {
-          "id": "t_bool",
-          "kind": "elementary",
-          "label": "bool"
-        },
-        "t_uint256": {
-          "id": "t_uint256",
-          "kind": "elementary",
-          "label": "uint256"
-        },
-        "t_array:50<t_uint256>": {
-          "id": "t_array:50<t_uint256>",
-          "valueType": "t_uint256",
-          "length": "50",
-          "kind": "array",
-          "label": "uint256[50]"
-        },
-        "t_address": {
-          "id": "t_address",
-          "kind": "elementary",
-          "label": "address"
-        },
-        "t_string": {
-          "id": "t_string",
-          "kind": "elementary",
-          "label": "string"
-        },
-        "t_array:dyn<t_address>": {
-          "id": "t_array:dyn<t_address>",
-          "valueType": "t_address",
-          "length": "dyn",
-          "kind": "array",
-          "label": "address[]"
-        },
-        "t_mapping<t_uint256>": {
-          "id": "t_mapping<t_uint256>",
-          "valueType": "t_uint256",
-          "label": "mapping(key => uint256)",
-          "kind": "mapping"
-        }
-      },
-      "storage": [
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initialized",
-          "astId": 1924,
-          "type": "t_bool",
-          "src": "757:24:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "initializing",
-          "astId": 1926,
-          "type": "t_bool",
-          "src": "876:25:15"
-        },
-        {
-          "contract": "Initializable",
-          "path": "zos-lib/contracts/Initializable.sol",
-          "label": "______gap",
-          "astId": 1982,
-          "type": "t_array:50<t_uint256>",
-          "src": "1951:29:15"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_owner",
-          "astId": 800,
-          "type": "t_address",
-          "src": "495:14:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_segment",
-          "astId": 802,
-          "type": "t_string",
-          "src": "558:15:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_organizations",
-          "astId": 805,
-          "type": "t_array:dyn<t_address>",
-          "src": "634:24:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_organizationsIndex",
-          "astId": 809,
-          "type": "t_mapping<t_uint256>",
-          "src": "740:44:5"
-        },
-        {
-          "contract": "SegmentDirectory",
-          "path": "contracts/SegmentDirectory.sol",
-          "label": "_lifToken",
-          "astId": 811,
-          "type": "t_address",
-          "src": "831:17:5"
-        }
-      ],
-      "warnings": {
-        "hasConstructor": false,
-        "hasSelfDestruct": false,
-        "hasDelegateCall": false,
-        "hasInitialValuesInDeclarations": false,
-        "uninitializedBaseContracts": []
-      }
-    },
-    "PlaygroundHotelDirectory": {
-      "address": "0xe1e08ab8a4cb1259ab991e5Ef3b2568B51d185cA",
+      "address": "0xB72cb607CACF8384381522fe0Bd4fFB24BA41AF1",
       "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
       "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
       "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
@@ -897,7 +897,7 @@
       }
     },
     "OrganizationFactory": {
-      "address": "0x9611c9d381A6c818912d74164F95A4c030DED8c8",
+      "address": "0xA32D0BeE82f079cc3C7c321b5ab084f660a69d7A",
       "constructorCode": "608060405234801561001057600080fd5b50610cb3806100206000396000f3fe",
       "bodyBytecodeHash": "a05f757cb009d8f9e1592fafdf36662bc30117b44aab3f96d4504ffc83b2b086",
       "localBytecodeHash": "60c2778c5ea44eabc7a4d4d832c5aa64bf7cdf3d58b21382c56abb6f88824854",
@@ -1010,49 +1010,45 @@
   "proxies": {
     "wt-contracts/OrganizationFactory": [
       {
-        "address": "0x7FD1DDC3A9E473e5f3ce31ebf81099712Bb21Fd9",
-        "version": "0.7.0",
-        "implementation": "0x9611c9d381A6c818912d74164F95A4c030DED8c8"
+        "address": "0x8E6463ea056d812094Ed514455Ab3C88fc23D59C",
+        "version": "0.7.1",
+        "implementation": "0xA32D0BeE82f079cc3C7c321b5ab084f660a69d7A",
+        "admin": "0x9fE877173933C7CD97848285412858422068c76E",
+        "kind": "Upgradeable"
       }
     ],
     "wt-contracts/WindingTreeEntrypoint": [
       {
-        "address": "0xe769e1fB1f150Dd31De66C4F8a177623D68a34e3",
-        "version": "0.7.0",
-        "implementation": "0xf7763A4da80690d9e03A209A6693a81374Af39cC",
-        "admin": "0x4D79CFd715BEBd89F7991B5662122f2491eb5cB3"
-      }
-    ],
-    "wt-contracts/SegmentDirectory": [
-      {
-        "address": "0x6d9Fc98CE0A35F34B4bc365a7BEf276eDDB09FF3",
-        "version": "0.7.0",
-        "implementation": "0xcFb27AbaB66Dfc38135F7922EE03CBB327d688Ad",
-        "admin": "0x4D79CFd715BEBd89F7991B5662122f2491eb5cB3"
+        "address": "0xa268937c2573e2AB274BF6d96e88FfE0827F0D4D",
+        "version": "0.7.1",
+        "implementation": "0xbEB3a7bEbd851Da5112d4F495941E7FB43645f0f",
+        "admin": "0x9fE877173933C7CD97848285412858422068c76E",
+        "kind": "Upgradeable"
       }
     ],
     "wt-contracts/PlaygroundHotelDirectory": [
       {
-        "address": "0xd787b887215f9a246774da140aD67794bdC2E049",
-        "version": "0.7.0",
-        "implementation": "0xe1e08ab8a4cb1259ab991e5Ef3b2568B51d185cA",
-        "admin": "0x4D79CFd715BEBd89F7991B5662122f2491eb5cB3"
+        "address": "0x2c29c421d7fd7be4cc2bfb6d1a44426e43021914",
+        "version": "0.7.1",
+        "implementation": "0xF5a38111356E1C0Dd87C68E574363FD72428Cc30",
+        "admin": "0x9fE877173933C7CD97848285412858422068c76E",
+        "kind": "Upgradeable"
       }
     ]
   },
   "zosversion": "2.2",
   "frozen": false,
   "app": {
-    "address": "0xdE6174FB23D5BDf003F6e90E863f4F5a69C7C60D"
+    "address": "0x8eF6AD826A9A8D6EAD0aE8f094a7C2D58c102528"
   },
   "package": {
-    "address": "0xd05D087ce85802da7b94fe65fA98F43325cCc42A"
+    "address": "0xE206BaaB842C54d62aCb0BE00a503801125bbEd1"
   },
   "provider": {
-    "address": "0x9237FBA5Cc0BB86Fa68283706Cd7Fa656060d77D"
+    "address": "0xf3Fa2a5f54837fEb15a513b226Eb4504a9dD2a11"
   },
-  "version": "0.7.0",
+  "version": "0.7.1",
   "proxyAdmin": {
-    "address": "0x4D79CFd715BEBd89F7991B5662122f2491eb5cB3"
+    "address": "0x9fE877173933C7CD97848285412858422068c76E"
   }
 }
