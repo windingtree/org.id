@@ -1,0 +1,1081 @@
+{
+  "contracts": {
+    "WindingTreeEntrypoint": {
+      "address": "0x4e98d051820bA15c0fdE68cD312b95Ee86225e56",
+      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
+      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
+      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_string>": {
+          "id": "t_array:dyn<t_string>",
+          "valueType": "t_string",
+          "length": "dyn",
+          "kind": "array",
+          "label": "string[]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "_owner",
+          "astId": 1164,
+          "type": "t_address",
+          "src": "400:14:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "LifToken",
+          "astId": 1166,
+          "type": "t_address",
+          "src": "513:23:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "directories",
+          "astId": 1170,
+          "type": "t_mapping<t_address>",
+          "src": "601:46:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segmentsIndex",
+          "astId": 1174,
+          "type": "t_mapping<t_uint256>",
+          "src": "718:45:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segments",
+          "astId": 1177,
+          "type": "t_array:dyn<t_string>",
+          "src": "805:24:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "organizationFactory",
+          "astId": 1179,
+          "type": "t_address",
+          "src": "875:34:6"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "PlaygroundEntrypoint": {
+      "address": "0x8D253a9da687fD39B18E9f3e6f369C9b68Fc24b5",
+      "constructorCode": "608060405234801561001057600080fd5b50610f19806100206000396000f3fe",
+      "bodyBytecodeHash": "cbf401acad2088d07c0ac40d9156806d8cd6df941dfaaa66c70b2b604bd2f549",
+      "localBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "deployedBytecodeHash": "13ec41d878ca531a8a4969768b4a84937de840c0ae76bdca35a6fa3883fd6823",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_mapping<t_address>": {
+          "id": "t_mapping<t_address>",
+          "valueType": "t_address",
+          "label": "mapping(key => address)",
+          "kind": "mapping"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_string>": {
+          "id": "t_array:dyn<t_string>",
+          "valueType": "t_string",
+          "length": "dyn",
+          "kind": "array",
+          "label": "string[]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "_owner",
+          "astId": 1164,
+          "type": "t_address",
+          "src": "400:14:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "LifToken",
+          "astId": 1166,
+          "type": "t_address",
+          "src": "513:23:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "directories",
+          "astId": 1170,
+          "type": "t_mapping<t_address>",
+          "src": "601:46:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segmentsIndex",
+          "astId": 1174,
+          "type": "t_mapping<t_uint256>",
+          "src": "718:45:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "segments",
+          "astId": 1177,
+          "type": "t_array:dyn<t_string>",
+          "src": "805:24:6"
+        },
+        {
+          "contract": "WindingTreeEntrypoint",
+          "path": "contracts/WindingTreeEntrypoint.sol",
+          "label": "organizationFactory",
+          "astId": 1179,
+          "type": "t_address",
+          "src": "875:34:6"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "PlaygroundHotelDirectory": {
+      "address": "0x7e2C420E83395d6f11fE8Aae829297c587175059",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "PlaygroundAirlineDirectory": {
+      "address": "0xd43Ec78f36F58A21228a1Be0C33D1e48baA3D1b7",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "PlaygroundOtaDirectory": {
+      "address": "0x7e7F40b5A8300cd984848e08708Ab8E52d60F8d7",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "SegmentDirectory": {
+      "address": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
+      "constructorCode": "608060405234801561001057600080fd5b50610f39806100206000396000f3fe",
+      "bodyBytecodeHash": "59cebe23c84ac10314ed713b6977671aecb38548055b94a676f70fc55606b447",
+      "localBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "deployedBytecodeHash": "354d6eaecced205238e77f0a291defb7ada8d0678909e78dc388496cb1aa0a69",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_owner",
+          "astId": 800,
+          "type": "t_address",
+          "src": "495:14:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_segment",
+          "astId": 802,
+          "type": "t_string",
+          "src": "558:15:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizations",
+          "astId": 805,
+          "type": "t_array:dyn<t_address>",
+          "src": "634:24:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_organizationsIndex",
+          "astId": 809,
+          "type": "t_mapping<t_uint256>",
+          "src": "740:44:5"
+        },
+        {
+          "contract": "SegmentDirectory",
+          "path": "contracts/SegmentDirectory.sol",
+          "label": "_lifToken",
+          "astId": 811,
+          "type": "t_address",
+          "src": "831:17:5"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "Organization": {
+      "address": "0x83f64339E20469ddC593cF9253A4983766170e14",
+      "constructorCode": "608060405261001a6301ffc9a760e01b61001f60201b60201c565b6100ed565b7fffffffff0000000000000000000000000000000000000000000000000000000080821614156100b057604080517f08c379a000000000000000000000000000000000000000000000000000000000815260206004820152601c60248201527f4552433136353a20696e76616c696420696e7465726661636520696400000000604482015290519081900360640190fd5b7fffffffff00000000000000000000000000000000000000000000000000000000166000908152602081905260409020805460ff19166001179055565b610f5b806100fc6000396000f3fe",
+      "bodyBytecodeHash": "500ccabe111a53b3f880e7db0929746eeddbe9bcad8f794c43f4e8190de2e185",
+      "localBytecodeHash": "042f58e02a30606f570148903d38b9d3e3cb2b9e5b1358a165f223e1723e7a5d",
+      "deployedBytecodeHash": "042f58e02a30606f570148903d38b9d3e3cb2b9e5b1358a165f223e1723e7a5d",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_mapping<t_bool>": {
+          "id": "t_mapping<t_bool>",
+          "valueType": "t_bool",
+          "label": "mapping(key => bool)",
+          "kind": "mapping"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_string": {
+          "id": "t_string",
+          "kind": "elementary",
+          "label": "string"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        }
+      },
+      "storage": [
+        {
+          "contract": "ERC165",
+          "path": "openzeppelin-solidity/contracts/introspection/ERC165.sol",
+          "label": "_supportedInterfaces",
+          "astId": 1733,
+          "type": "t_mapping<t_bool>",
+          "src": "489:52:12"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "Organization",
+          "path": "contracts/Organization.sol",
+          "label": "_owner",
+          "astId": 142,
+          "type": "t_address",
+          "src": "599:14:2"
+        },
+        {
+          "contract": "Organization",
+          "path": "contracts/Organization.sol",
+          "label": "orgJsonUri",
+          "astId": 144,
+          "type": "t_string",
+          "src": "793:24:2"
+        },
+        {
+          "contract": "Organization",
+          "path": "contracts/Organization.sol",
+          "label": "created",
+          "astId": 146,
+          "type": "t_uint256",
+          "src": "883:19:2"
+        },
+        {
+          "contract": "Organization",
+          "path": "contracts/Organization.sol",
+          "label": "associatedKeysIndex",
+          "astId": 150,
+          "type": "t_mapping<t_uint256>",
+          "src": "1040:51:2"
+        },
+        {
+          "contract": "Organization",
+          "path": "contracts/Organization.sol",
+          "label": "associatedKeys",
+          "astId": 153,
+          "type": "t_array:dyn<t_address>",
+          "src": "1255:31:2"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    },
+    "OrganizationFactory": {
+      "address": "0xc2C10d80bebB3185381d40b7C371f5387F81c986",
+      "constructorCode": "608060405234801561001057600080fd5b50610cb3806100206000396000f3fe",
+      "bodyBytecodeHash": "a05f757cb009d8f9e1592fafdf36662bc30117b44aab3f96d4504ffc83b2b086",
+      "localBytecodeHash": "60c2778c5ea44eabc7a4d4d832c5aa64bf7cdf3d58b21382c56abb6f88824854",
+      "deployedBytecodeHash": "60c2778c5ea44eabc7a4d4d832c5aa64bf7cdf3d58b21382c56abb6f88824854",
+      "types": {
+        "t_bool": {
+          "id": "t_bool",
+          "kind": "elementary",
+          "label": "bool"
+        },
+        "t_uint256": {
+          "id": "t_uint256",
+          "kind": "elementary",
+          "label": "uint256"
+        },
+        "t_array:50<t_uint256>": {
+          "id": "t_array:50<t_uint256>",
+          "valueType": "t_uint256",
+          "length": "50",
+          "kind": "array",
+          "label": "uint256[50]"
+        },
+        "t_address": {
+          "id": "t_address",
+          "kind": "elementary",
+          "label": "address"
+        },
+        "t_array:dyn<t_address>": {
+          "id": "t_array:dyn<t_address>",
+          "valueType": "t_address",
+          "length": "dyn",
+          "kind": "array",
+          "label": "address[]"
+        },
+        "t_mapping<t_uint256>": {
+          "id": "t_mapping<t_uint256>",
+          "valueType": "t_uint256",
+          "label": "mapping(key => uint256)",
+          "kind": "mapping"
+        }
+      },
+      "storage": [
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initialized",
+          "astId": 1924,
+          "type": "t_bool",
+          "src": "757:24:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "initializing",
+          "astId": 1926,
+          "type": "t_bool",
+          "src": "876:25:15"
+        },
+        {
+          "contract": "Initializable",
+          "path": "zos-lib/contracts/Initializable.sol",
+          "label": "______gap",
+          "astId": 1982,
+          "type": "t_array:50<t_uint256>",
+          "src": "1951:29:15"
+        },
+        {
+          "contract": "OrganizationFactory",
+          "path": "contracts/OrganizationFactory.sol",
+          "label": "app",
+          "astId": 470,
+          "type": "t_address",
+          "src": "569:16:3"
+        },
+        {
+          "contract": "OrganizationFactory",
+          "path": "contracts/OrganizationFactory.sol",
+          "label": "_owner",
+          "astId": 472,
+          "type": "t_address",
+          "src": "629:14:3"
+        },
+        {
+          "contract": "OrganizationFactory",
+          "path": "contracts/OrganizationFactory.sol",
+          "label": "_createdOrganizations",
+          "astId": 475,
+          "type": "t_array:dyn<t_address>",
+          "src": "933:31:3"
+        },
+        {
+          "contract": "OrganizationFactory",
+          "path": "contracts/OrganizationFactory.sol",
+          "label": "_createdOrganizationsIndex",
+          "astId": 479,
+          "type": "t_mapping<t_uint256>",
+          "src": "1054:51:3"
+        }
+      ],
+      "warnings": {
+        "hasConstructor": false,
+        "hasSelfDestruct": false,
+        "hasDelegateCall": false,
+        "hasInitialValuesInDeclarations": false,
+        "uninitializedBaseContracts": [],
+        "storageUncheckedVars": [],
+        "storageDiff": []
+      }
+    }
+  },
+  "solidityLibs": {},
+  "proxies": {
+    "wt-contracts/OrganizationFactory": [
+      {
+        "address": "0x0EF40ED88A2FeCC129154B9aE3c62e7a1fB6Be67",
+        "version": "0.8.1",
+        "implementation": "0xc2C10d80bebB3185381d40b7C371f5387F81c986"
+      }
+    ],
+    "wt-contracts/WindingTreeEntrypoint": [
+      {
+        "address": "0xefC87a66bDD18F3953B31fF60F47708B7690022b",
+        "version": "0.8.1",
+        "implementation": "0x4e98d051820bA15c0fdE68cD312b95Ee86225e56",
+        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+      }
+    ],
+    "wt-contracts/SegmentDirectory": [
+      {
+        "segmentName": "hotels",
+        "address": "0x2D315E8C8E897410A82fDFd615d4C0808e99ff94",
+        "version": "0.8.1",
+        "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
+        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+      },
+      {
+        "segmentName": "airlines",
+        "address": "0x512299e6b71D6B9C9F1686b962A3EA4096b4413C",
+        "version": "0.8.1",
+        "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
+        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+      },
+      {
+        "segmentName": "otas",
+        "address": "0xD56148CF74971863af984E27213B534dC790783F",
+        "version": "0.8.1",
+        "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
+        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+      }
+    ]
+  },
+  "zosversion": "2.2",
+  "frozen": false,
+  "app": {
+    "address": "0x129c7Bc1502dc8C8Bf4D333975Ec83C78D4091df"
+  },
+  "package": {
+    "address": "0x24F95f6677e1279711a3232aCc28277AA879def9"
+  },
+  "provider": {
+    "address": "0xE8b5e7791e9aaD0ef1C227e55e1c96495aDD3110"
+  },
+  "version": "0.8.1",
+  "proxyAdmin": {
+    "address": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+  }
+}
