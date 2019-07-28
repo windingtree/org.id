@@ -53,11 +53,11 @@ When a consumer wants to participate, they have to do the following:
 1. Call `getOrganizations` on the Segment Directory.
 1. Call `getOrgJsonUri` on every non-zero address returned as an instance of `OrganizationInterface` and crawl the off-chain data
 for more information.
-1. Call `getOrgJsonHash` on every non-zero address returned as an instance of `OrganizationInterface` and verify that the current 
+1. Call `getOrgJsonHash` on every non-zero address returned as an instance of `OrganizationInterface` and verify that the current
 off-chain data contents hash matches the hash published in the smart contract.
 
 If a signed message occurs somewhere in the platform, a content consumer might want to decide
-if it was signed by an account associated with the declared Organization. That's when they would 
+if it was signed by an account associated with the declared Organization. That's when they would
 first verify the signature and obtain an address of the signer. In the next step, they have to verify
 that the actual signer is registered as an `associatedKey` with the Organization by checking its smart contract.
 
@@ -136,15 +136,15 @@ or [securify.ch](https://securify.ch/).
 
 ## Deployment
 
-We are using the upgradeability proxy from [zos](https://docs.zeppelinos.org/)
+We are using the upgradeability proxy from [openzeppelin](https://docs.openzeppelin.com/)
 and the deployment pipeline is using their system as well. You can read more
-about the [publishing process](https://docs.zeppelinos.org/docs/deploying) and
-[upgrading](https://docs.zeppelinos.org/docs/upgrading.html) in `zos`
+about the [publishing process](hhttps://docs.openzeppelin.com/sdk/2.5/publish) and
+[upgrading](https://docs.openzeppelin.com/sdk/2.5/api/upgrades) in `openzeppelin`
 documentation.
 
 In order to interact with "real" networks such as `mainnet`, `ropsten` or others,
 you need to setup a `keys.json` file used by [truffle](https://truffleframework.com/)
-that does the heavy lifting for zos.
+that does the heavy lifting for openzeppelin.
 
 ```json
 {
@@ -163,7 +163,7 @@ public address the same and **without touching any data**.
 **Can you change the Organization data structure?**
 
 The Organization Factory owner can, yes. As long as we adhere to
-[zos recommendations](https://docs.zeppelinos.org/docs/writing_contracts.html#modifying-your-contracts),
+[openzeppelin recommendations](https://docs.openzeppelin.com/sdk/2.5/writing-contracts),
 it should be safe. The same applies for Segment Directory, Entrypoint and Factory.
 
 **Can I reclaim the proxy ownership of an Organization?**
@@ -181,7 +181,7 @@ smart contract implementation, then no.
 
 **Why do I keep getting "revert Cannot call fallback function from the proxy admin" when interacting with Organization?**
 
-This is a documented behaviour of [zos upgradeability](https://docs.zeppelinos.org/docs/faq.html#why-are-my-getting-the-error-cannot-call-fallback-function-from-the-proxy-admin).
+This is a documented behaviour of [openzeppelin upgradeability](https://docs.openzeppelin.com/sdk/2.5/faq#why-are-my-getting-the-error-cannot-call-fallback-function-from-the-proxy-admin).
 You need to call the proxied Organization contract from a different account than is the proxy owner.
 
 **What happens when you upgrade a Segment Directory?**
@@ -196,9 +196,9 @@ That should be possible by using an ABI of `OrganizationInterface` on the client
 ### Contract upgrade process
 
 1. Run `npm version` and release on NPM. This will also bump the version in `zos.json` file.
-1. Deploy upgraded contracts with `./node_modules/.bin/zos push --network development` (use the network which you need).
+1. Deploy upgraded contracts with `./node_modules/.bin/openzeppelin push --network development` (use the network which you need).
 **The `Organization` implementation used by the Factory is changed in this step**.
-1. Upgrade contracts with `./node_modules/.bin/zos upgrade --network development` (use the network which you need). This
+1. Upgrade contracts with `./node_modules/.bin/openzeppelin upgrade --network development` (use the network which you need). This
 will interactively ask you which contracts to upgrade. If you have changed the interface of Organization, make sure to
 upgrade `OrganizationFactory` as well.
 1. Upgrade Organization contracts with `node management/upgrade-organizations.js`. Make sure that its setup in a proper way.
@@ -215,23 +215,23 @@ with the contracts.
     ```bash
     > npm run dev-net
     ```
-2. Start a zos session.
+2. Start a openzeppelin session.
     ```bash
-    > ./node_modules/.bin/zos session --network development --from 0x87265a62c60247f862b9149423061b36b460f4BB --expires 3600
+    > ./node_modules/.bin/openzeppelin session --network development --from 0x87265a62c60247f862b9149423061b36b460f4BB --expires 3600
     ```
 3. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
 interacted with.
     ```bash
-    > ./node_modules/.bin/zos push --network development
+    > ./node_modules/.bin/openzeppelin push --network development
     ```
 4. Create the proxy instances of deployed contracts you can interact with. The `args`
 attribute is passed to the initializer function. See documentation of the appropriate contracts
-for details. The zos app might differ for each deployment. You don't need a deployed Lif token
+for details. The openzeppelin app might differ for each deployment. You don't need a deployed Lif token
 to play with this locally.
     ```bash
-    > ./node_modules/.bin/zos create OrganizationFactory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0x988f24d8356bf7e3D4645BA34068a5723BF3ec6B
-    > ./node_modules/.bin/zos create WindingTreeEntrypoint --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x602a8c3F536b1a50F3b22c0C1024104265F694C6
-    > ./node_modules/.bin/zos create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
+    > ./node_modules/.bin/openzeppelin create OrganizationFactory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0x988f24d8356bf7e3D4645BA34068a5723BF3ec6B
+    > ./node_modules/.bin/openzeppelin create WindingTreeEntrypoint --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,0xB6e225194a1C892770c43D4B529841C99b3DA1d7,0x602a8c3F536b1a50F3b22c0C1024104265F694C6
+    > ./node_modules/.bin/openzeppelin create SegmentDirectory --network development --init initialize --args 0x87265a62c60247f862b9149423061b36b460f4BB,hotels,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
     ```
 These commands will return a network address where you can actually interact with the contracts.
 For a quick test, you can use the truffle console. We also need to use a different account than the
