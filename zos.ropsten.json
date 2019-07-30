@@ -1047,6 +1047,15 @@
         "admin": "0x9fE877173933C7CD97848285412858422068c76E",
         "kind": "Upgradeable"
       }
+    ],
+    "wt-contracts/PlaygroundAirlineDirectory": [
+      {
+        "address": "0x7d3Ce0d422D381971Eb2bD9615b58f2df5C9f047",
+        "version": "0.8.1",
+        "implementation": "0xf74326819469Ac025E4c24FE7c619Bf528B522aa",
+        "admin": "0x9fE877173933C7CD97848285412858422068c76E",
+        "kind": "Upgradeable"
+      }
     ]
   },
   "zosversion": "2.2",
