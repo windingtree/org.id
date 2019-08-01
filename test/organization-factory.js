@@ -1,4 +1,4 @@
-const { Contracts, ZWeb3 } = require('zos-lib');
+const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
 const assert = require('chai').assert;
 const Web3Accounts = require('web3-eth-accounts');
 const help = require('./helpers/index.js');

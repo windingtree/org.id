@@ -1,6 +1,6 @@
 pragma solidity ^0.5.6;
 
-import "zos-lib/contracts/Initializable.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@ensdomains/ens/contracts/ENS.sol";
 import "@ensdomains/resolver/contracts/Resolver.sol";
 
