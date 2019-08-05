@@ -1028,7 +1028,8 @@
       {
         "address": "0x0EF40ED88A2FeCC129154B9aE3c62e7a1fB6Be67",
         "version": "0.8.1",
-        "implementation": "0xc2C10d80bebB3185381d40b7C371f5387F81c986"
+        "implementation": "0xc2C10d80bebB3185381d40b7C371f5387F81c986",
+        "admin": "0x0458bd87B70fC61fbF92d9D6De469BF81189Ecb1"
       }
     ],
     "wt-contracts/WindingTreeEntrypoint": [
@@ -1036,7 +1037,7 @@
         "address": "0xefC87a66bDD18F3953B31fF60F47708B7690022b",
         "version": "0.8.1",
         "implementation": "0x4e98d051820bA15c0fdE68cD312b95Ee86225e56",
-        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+        "admin": "0x0458bd87B70fC61fbF92d9D6De469BF81189Ecb1"
       }
     ],
     "wt-contracts/SegmentDirectory": [
@@ -1045,21 +1046,21 @@
         "address": "0x2D315E8C8E897410A82fDFd615d4C0808e99ff94",
         "version": "0.8.1",
         "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
-        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+        "admin": "0x0458bd87B70fC61fbF92d9D6De469BF81189Ecb1"
       },
       {
         "segmentName": "airlines",
         "address": "0x512299e6b71D6B9C9F1686b962A3EA4096b4413C",
         "version": "0.8.1",
         "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
-        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+        "admin": "0x0458bd87B70fC61fbF92d9D6De469BF81189Ecb1"
       },
       {
         "segmentName": "otas",
         "address": "0xD56148CF74971863af984E27213B534dC790783F",
         "version": "0.8.1",
         "implementation": "0xB1A1f9Ca5198d60fd8a37C065568984e40250Fad",
-        "admin": "0xa378E6a57815cA5DCB279EB4D8D6505838BbC237"
+        "admin": "0x0458bd87B70fC61fbF92d9D6De469BF81189Ecb1"
       }
     ]
   },

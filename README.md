@@ -5,7 +5,6 @@
 
 Smart contracts of the Winding Tree platform.
 
-
 ## Documentation
 
 ![](https://raw.githubusercontent.com/windingtree/wt-contracts/8fddef99ef09d099f3fd3721680f54129fd742d1/assets/contracts-schema.png)
@@ -159,6 +158,12 @@ that does the heavy lifting for openzeppelin.
 
 We can update the logic of Entrypoint, Segment Directory or Organization while keeping their
 public address the same and **without touching any data**.
+
+**Who is the proxy admin on mainnet?**
+The proxies are administered by a 2/5 multisignature wallet, the ENS address is [proxyowner.windingtree.eth](https://etherscan.io/enslookup?q=proxyowner.windingtree.eth).
+
+**Who is the owner wt contracts deployed on mainnet?**
+The WindingTreeEntrypoint, OrganizationFactory and Segments are owned by a 3/5 multisignature wallet, the ENS address is [windingtree.eth](https://etherscan.io/enslookup?q=windingtree.eth).
 
 **Can you change the Organization data structure?**
 
