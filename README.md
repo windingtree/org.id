@@ -136,9 +136,9 @@ or [securify.ch](https://securify.ch/).
 
 ## Deployment
 
-We are using the upgradeability proxy from [openzeppelin](https://docs.openzeppelin.com/)
+We are using the upgradeability proxy from [openzeppelin](https://docs.openzeppelin.com/sdk/2.5/)
 and the deployment pipeline is using their system as well. You can read more
-about the [publishing process](hhttps://docs.openzeppelin.com/sdk/2.5/publish) and
+about the [publishing process](https://docs.openzeppelin.com/sdk/2.5/publish) and
 [upgrading](https://docs.openzeppelin.com/sdk/2.5/api/upgrades) in `openzeppelin`
 documentation.
 
