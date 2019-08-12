@@ -3,8 +3,8 @@ pragma solidity ^0.5.6;
 import "./AbstractOrganizationFactory.sol";
 import "./AbstractSegmentDirectory.sol";
 import "./Organization.sol";
-import "zos-lib/contracts/Initializable.sol";
-import "zos-lib/contracts/application/App.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "@openzeppelin/upgrades/contracts/application/App.sol";
 
 /**
  * @title OrganizationFactory

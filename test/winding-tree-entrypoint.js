@@ -1,5 +1,5 @@
 const TestHelper = require('./helpers/zostest');
-const { Contracts, ZWeb3 } = require('zos-lib');
+const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
 const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const web3Utils = require('web3-utils');

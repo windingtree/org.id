@@ -2,7 +2,7 @@ pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 import "./OrganizationInterface.sol";
-import "zos-lib/contracts/Initializable.sol";
+import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
 /**
  * @title Organization
