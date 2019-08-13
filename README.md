@@ -214,48 +214,50 @@ Factory owner. Only that account can change Organizations' implementation.
 ### Local testing
 
 1. You need to run `npm run dev-net` and you will have an output of your addresses and private keys ready to use like this:
-  ```
-  Available Accounts
-  ==================
-  (0) 0xbbc04b7c97846af2dac2d0c115f06d6cdab188d8 (~100 ETH)
-  (1) 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f (~100 ETH)
-  (2) 0x14f016e73a18c5a68c475d2dff17af38f85db6b7 (~100 ETH)
-  (3) 0x3e083ef62949f90a6f5f46cd314797fed7fa9468 (~100 ETH)
-  (4) 0x994d319557cd049b13de8b78c00d97c5aefec192 (~100 ETH)
-  (5) 0x6c44a1706d7e4866fc5fbfc8e7547f0682aa8756 (~100 ETH)
-  (6) 0x06a99bd405aec473af091454e93a48fa45d8df85 (~100 ETH)
-  (7) 0x2e0bcd1841dafdc2f740a4dfcdbb882be21a383a (~100 ETH)
-  (8) 0xb34287e5520e3ae9430c53b624830021eff110db (~100 ETH)
-  (9) 0x9d112ca960b447d9046816505ca869e06708759b (~100 ETH)
-  ```
-In this example we will use the 0 index account for proxy ownership, the 1 index account for contract ownership and the 2 index account for organization creation and ownership.
-The LifToken address will be 0x0, we dont need it to test locally.
-2. Start a openzeppelin session.
+    ```
+    Available Accounts
+    ==================
+    (0) 0xbbc04b7c97846af2dac2d0c115f06d6cdab188d8 (~100 ETH)
+    (1) 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f (~100 ETH)
+    (2) 0x14f016e73a18c5a68c475d2dff17af38f85db6b7 (~100 ETH)
+    (3) 0x3e083ef62949f90a6f5f46cd314797fed7fa9468 (~100 ETH)
+    (4) 0x994d319557cd049b13de8b78c00d97c5aefec192 (~100 ETH)
+    (5) 0x6c44a1706d7e4866fc5fbfc8e7547f0682aa8756 (~100 ETH)
+    (6) 0x06a99bd405aec473af091454e93a48fa45d8df85 (~100 ETH)
+    (7) 0x2e0bcd1841dafdc2f740a4dfcdbb882be21a383a (~100 ETH)
+    (8) 0xb34287e5520e3ae9430c53b624830021eff110db (~100 ETH)
+    (9) 0x9d112ca960b447d9046816505ca869e06708759b (~100 ETH)
+    ```
+
+    In this example we will use the 0 index account for proxy ownership, the 1 index account for contract ownership and the 2 index account for organization creation and ownership.
+    The LifToken address will be 0x0, we dont need it to test locally.
+1. Start an openzeppelin session.
     ```bash
     > ./node_modules/.bin/openzeppelin session --network development --from 0xbbc04b7c97846af2dac2d0c115f06d6cdab188d8 --expires 3600
     ```
-3. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
+1. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
 interacted with.
     ```bash
     > ./node_modules/.bin/openzeppelin push --network development
     ```
-4. Create the proxy instances of deployed contracts you can interact with. The `args`
+1. Create the proxy instances of deployed contracts you can interact with. The `args`
 attribute is passed to the initializer function. See documentation of the appropriate contracts
 for details. The openzeppelin app might differ for each deployment. You don't need a deployed Lif token
-to play with this locally. You can get the ZOS_APP_ADDRESS from the zos dev file inside the .openzeppelin folder.
+to play with this locally. You can get the ZOS_APP_ADDRESS from the zos dev file inside the .openzeppelin (or root) folder.
     ```bash
     > ./node_modules/.bin/openzeppelin create OrganizationFactory --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,ZOS_APP_ADDRESS
     > ./node_modules/.bin/openzeppelin create WindingTreeEntrypoint --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,0x0000000000000000000000000000000000000000,ORG_FACTORY_PROXY_ADDRESS
     > ./node_modules/.bin/openzeppelin create SegmentDirectory --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,hotels,0x0000000000000000000000000000000000000000
     ```
-These commands will return a network address where you can actually interact with the contracts.
-For a quick test, you can use the openzeppelin sdk, you can get all addresses from the zos file that was created.
-```bash
-> ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setSegment --args 'hotels',SEGMENTHOTEL_PROXY_ADDRESS --from 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f
-> ./node_modules/.bin/openzeppelin send-tx --network development --to ORGFACTORY_PROXY_ADDRESS --method create --args 'https://windingtree.com','0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99'
---from 0x14f016e73a18c5a68c475d2dff17af38f85db6b7
-> ./node_modules/.bin/openzeppelin call --network development --to SEGMENTHOTEL_PROXY_ADDRESS --method getOrganizations
-> ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
-> ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
-```
-With these commands we have deployed the Winding Tree core contracts, and register and organization in our local network.
+
+    These commands will return a network address where you can actually interact with the contracts.
+    For a quick test, you can use the openzeppelin sdk, you can get all addresses from the zos file that was created.
+    ```bash
+    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setSegment --args 'hotels',SEGMENTHOTEL_PROXY_ADDRESS --from 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f
+    > ./node_modules/.bin/openzeppelin send-tx --network development --to ORGFACTORY_PROXY_ADDRESS --method create --args 'https://windingtree.com','0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99' --from 0x14f016e73a18c5a68c475d2dff17af38f85db6b7
+    > ./node_modules/.bin/openzeppelin call --network development --to SEGMENTHOTEL_PROXY_ADDRESS --method getOrganizations
+    > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
+    > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
+    ```
+
+    With these commands we have deployed the Winding Tree core contracts, and register and organization in our local network.

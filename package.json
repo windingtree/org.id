@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
@@ -15,7 +15,7 @@
     "flattener": "management/flattener.sh",
     "clean": "rimraf build",
     "build-index": "node management/build-index.js > index.js",
-    "set-zos-version": "zos bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
+    "set-zos-version": "openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "buildfornpm": "npm run clean && truffle compile",
     "version": "npm run set-zos-version && git add zos.json && npm run build-index && git add index.js"
   },
