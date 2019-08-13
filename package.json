@@ -9,7 +9,7 @@
     "test": "management/test.sh",
     "lint": "eslint test management && solhint 'contracts/**/*.sol'",
     "lint:fix": "eslint test management --fix && solhint 'contracts/**/*.sol'",
-    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff --deterministic --port 8545 --account=\"0xe8280389ca1303a2712a874707fdd5d8ae0437fab9918f845d26fd9919af5a92,10000000000000000000000000000000000000000000000000000000000000000000000000000000\" --account=\"0xa4605db83bb3e663f33fb92542ca38344bd8d1bf2d07cc6cc908fec87b7674d5,10000000000000000000000000000000000000000000000000000000000000000000000000000000\"",
+    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
     "flattener": "management/flattener.sh",
@@ -38,10 +38,10 @@
   "dependencies": {
     "@ensdomains/ens": "^0.3.11",
     "@ensdomains/resolver": "^0.1.9",
-    "openzeppelin-solidity": "^2.2.0",
-    "zos-lib": "^2.4.2"
+    "openzeppelin-solidity": "^2.2.0"
   },
   "devDependencies": {
+    "@openzeppelin/cli": "^2.5.1",
     "@windingtree/lif-token": "^0.1.2-erc827",
     "babel-polyfill": "^6.23.0",
     "babel-register": "^6.26.0",
@@ -63,13 +63,12 @@
     "solhint": "^2.0.0",
     "solidity-coverage": "^0.6.0",
     "solmd": "^0.4.0",
-    "truffle": "^5.0.27",
-    "truffle-contract": "^4.0.24",
+    "truffle": "^5.0.29",
+    "truffle-contract": "^4.0.26",
     "truffle-flattener": "^1.4.0",
-    "truffle-hdwallet-provider": "^1.0.14",
+    "truffle-hdwallet-provider": "^1.0.15",
     "web3": "^1.2.0",
-    "web3-utils": "^1.2.0",
-    "zos": "^2.4.2"
+    "web3-utils": "^1.2.0"
   },
   "engines": {
     "node": ">=10.3.0"

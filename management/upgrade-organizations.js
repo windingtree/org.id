@@ -12,7 +12,7 @@ const Web3Eth = require('web3-eth');
 
 const OrganizationFactoryMetadata = require('../build/contracts/OrganizationFactory.json');
 const OrganizationMetadata = require('../build/contracts/Organization.json');
-const BaseAdminUpgradeabilityProxyMetadata = require('zos-lib/build/contracts/BaseAdminUpgradeabilityProxy.json');
+const BaseAdminUpgradeabilityProxyMetadata = require('@openzeppelin/upgrades/build/contracts/BaseAdminUpgradeabilityProxy.json');
 
 function getInfuraNodeAddress (networkName, projectid) {
   return `https://${networkName}.infura.io/v3/${projectid}`;
