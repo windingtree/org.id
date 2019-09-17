@@ -253,8 +253,9 @@ to play with this locally. You can get the ZOS_APP_ADDRESS from the zos dev file
     These commands will return a network address where you can actually interact with the contracts.
     For a quick test, you can use the openzeppelin sdk, you can get all addresses from the zos file that was created.
     ```bash
-    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setSegment --args 'hotels',SEGMENTHOTEL_PROXY_ADDRESS --from 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f
-    > ./node_modules/.bin/openzeppelin send-tx --network development --to ORGFACTORY_PROXY_ADDRESS --method create --args 'https://windingtree.com','0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99' --from 0x14f016e73a18c5a68c475d2dff17af38f85db6b7
+    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setOrganizationFactory --args ORG_FACTORY_PROXY_ADDRESS --from WT_OWNER
+    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setSegment --args 'hotels',SEGMENTHOTEL_PROXY_ADDRESS --from 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f --from WT_OWNER
+    > ./node_modules/.bin/openzeppelin send-tx --network development --to ORGFACTORY_PROXY_ADDRESS --method createAndAddToDirectory --args 'https://windingtree.com','0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',SEGMENTHOTEL_PROXY_ADDRESS --from 0x14f016e73a18c5a68c475d2dff17af38f85db6b7
     > ./node_modules/.bin/openzeppelin call --network development --to SEGMENTHOTEL_PROXY_ADDRESS --method getOrganizations
     > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
     > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
