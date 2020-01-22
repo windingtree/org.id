@@ -535,9 +535,44 @@ contract('Organization', (accounts) => {
 
     describe('toggleSubsidiary(address)', () => {
 
-      it('should throw if wrong subsidiary organization address has been provided', async () => {});
+      it('should throw if wrong subsidiary organization address has been provided', async () => {
+        // zero-address
+        await assertRevert(
+          organization.methods['toggleSubsidiary(address)'](help.zeroAddress).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid subsidiary address'
+        );
 
-      it('should toggle subsidiary organization state', async () => {});
+        // non contract address
+        await assertRevert(
+          organization.methods['toggleSubsidiary(address)'](help.notExistedAddress).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid subsidiary address'
+        );
+      });
+
+      it('should throw if called by not an owner', async () => {
+        await assertRevert(
+          organization.methods['toggleSubsidiary(address)'](subsidiaryAddress).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Only owner can call this method'
+        );
+      });
+
+      it('should toggle subsidiary organization state', async () => {
+        await toggleSubsidiary(
+          subsidiaryAddress
+        );
+      });
     });
 
     describe('changeOrgJsonUri(string)', () => {

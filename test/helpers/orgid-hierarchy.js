@@ -1,4 +1,5 @@
 const { assertEvent } = require('./assertions');
+const { zeroAddress } = require('./index');
 const { Contracts } = require('@openzeppelin/upgrades');
 const Organization = Contracts.getFromLocal('Organization');
 
@@ -53,13 +54,13 @@ module.exports.toggleSubsidiary = async (
   subsidiaryAddress
 ) => {
   const subsidiary = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
-  const oldState = subsidiary.state;
+  const oldState = subsidiary.state;// bool
   const result = await organization.methods['toggleSubsidiary(address)'](subsidiary.address).send(
     {
       from: organizationOwner
     }
   );
-  assertEvent(result, 'SubsidiaryCreated', [
+  assertEvent(result, 'SubsidiaryToggled', [
     [
       'subsidiary',
       p => (p).should.equal(subsidiaryAddress)
@@ -92,7 +93,7 @@ module.exports.confirmSubsidiaryDirectorOwnership = async (
       from: entityDirectorAccount
     }
   );
-  assertEvent(result, 'SubsidiaryDirectorOwnership', [
+  assertEvent(result, 'DirectorOwnershipConfirmed', [
     [
       'subsidiary',
       p => (p).should.equal(subsidiaryAddress)
@@ -143,23 +144,28 @@ module.exports.transferOwnership = async (
 
 /**
  * Transfer subsidiary director ownership to the new director
- * @param {Object} subsidiary Subsidiary organization instance
+ * @param {Object} subsidiaryAddress Subsidiary organization address
  * @param {string} organizationOwner Organization owner
  * @param {string} newDirectorAccount New subsidiary director account address
  * @returns {Promise}
  */
 module.exports.transferDirectorOwnership = async (
-  subsidiary,
+  subsidiaryAddress,
   organizationOwner,
   newDirectorAccount
 ) => {
+  const subsidiary = await Organization.at(subsidiaryAddress);
   const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
   const result = await subsidiary.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
     {
       from: organizationOwner
     }
   );
-  assertEvent(result, 'OwnershipTransferred', [
+  assertEvent(result, 'DirectorOwnershipTransferred', [
+    [
+      'subsidiary',
+      p => (p).should.equal(subsidiaryAddress)
+    ],
     [
       'previousDirector',
       p => (p).should.equal(initialDirector)
