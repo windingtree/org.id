@@ -1,5 +1,4 @@
 const { assertEvent } = require('./assertions');
-const { zeroAddress } = require('./index');
 const { Contracts } = require('@openzeppelin/upgrades');
 const Organization = Contracts.getFromLocal('Organization');
 
@@ -66,7 +65,7 @@ module.exports.toggleSubsidiary = async (
       p => (p).should.equal(subsidiaryAddress)
     ],
     [
-      'oldState',
+      'previousState',
       p => (p).should.equal(oldState)
     ],
     [

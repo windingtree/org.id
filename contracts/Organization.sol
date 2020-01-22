@@ -64,6 +64,26 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     event AssociatedKeyRemoved(address indexed associatedKey);
 
     /**
+     * @dev Event triggered when new subsidiary has been created
+     */
+    event SubsidiaryCreated(address indexed owner, address indexed director, address indexed subsidiary);
+
+    /**
+     * @dev Event triggered when a subsidiary state has been toggled
+     */
+    event SubsidiaryToggled(address indexed subsidiary, bool previousState, bool newState);
+
+    /**
+     * @dev Event triggered when entitiy director ownership has been confirmed
+     */
+    event DirectorOwnershipConfirmed(address indexed subsidiary, address indexed director);
+
+    /**
+     * @dev Event triggered when entity director ownership has been transferred
+     */
+    event DirectorOwnershipTransferred(address indexed subsidiary, address indexed previousDirector, address indexed newDirector);
+
+    /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _orgJsonUri pointer to Organization data
