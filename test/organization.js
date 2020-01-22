@@ -577,6 +577,8 @@ contract('Organization', (accounts) => {
 
       it('should toggle subsidiary organization state', async () => {
         await toggleSubsidiary(
+          organization,
+          organizationOwner,
           subsidiaryAddress
         );
       });
@@ -682,38 +684,159 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe('getSubsidiaries()', () => {
+    describe('Subsidiary getters', () => {
 
-      it('should return an empty array if no subsidiaries has been created', async () => {});
-
-      it('should not return subsidiaries that has not confirmed ownership by the director', async () => {});
-
-      it('should return subsidiaries array', async () => {});
-    });
-
-    describe('getSubsidiary(address)', () => {
-
-      it('should throw if wrong organization address has been provided', async () => {
-        // zero-address
-
-        // not a contract address
+      beforeEach(async () => {
+        organizationProxy = await project.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: [organizationOwner, organizationUri, organizationHash],
+        });
+        organization = await Organization.at(organizationProxy.address);
       });
 
-      it('should return subsidiary organization params', async () => {});
-    });
+      describe('getSubsidiaries()', () => {
 
-    describe('getParentEntity()', () => {
+        it('should return an empty array if no subsidiaries has been created', async () => {
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
 
-      it('should return zero address if entity is master organization', async () => {});
+        it('should return an empty array if subsidiary has been created by disabled', async () => {
+          // Create a subsidiary
+          const subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          // Confirm director ownership
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          // and disable this subsidiary
+          await toggleSubsidiary(
+            organization,
+            organizationOwner,
+            subsidiaryAddress
+          );
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
+  
+        it('should not return subsidiaries that has not confirmed ownership by the director', async () => {
+          await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
+  
+        it('should return subsidiaries list', async () => {
+          // First subsidiary
+          const subsidiaryAddress1 = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress1,
+            entityDirectorAccount
+          );
+          // Second subsidiary
+          const subsidiaryAddress2 = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress2,
+            entityDirectorAccount
+          );
+          // Get subsidiaries
+          const subsidiaries = await organization.methods['getSubsidiaries()']().call();
+          (subsidiaries.length).should.equal(2);
+          (subsidiaries).should.to.be.an('array').that.include(subsidiaryAddress1);
+          (subsidiaries).should.to.be.an('array').that.include(subsidiaryAddress2);
+        });
+      });
+  
+      describe('getSubsidiary(address)', () => {
+        
+        beforeEach(async () => {
+          subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          subsidiary = await Organization.at(subsidiaryAddress);
+        });
+  
+        it('should throw if wrong organization address has been provided', async () => {
+          // zero-address
+          await assertRevert(
+            subsidiary.methods['getSubsidiary(address)'](help.zeroAddress).call(),
+            'Organization: Invalid subsidiary address'
+          );
+  
+          // not a contract address
+          await assertRevert(
+            subsidiary.methods['getSubsidiary(address)'](help.notExistedAddress).call(),
+            'Organization: Invalid subsidiary address'
+          );
+        });
+  
+        it('should return subsidiary organization params', async () => {
+          const subsidiaryParams = await subsidiary.methods['getSubsidiary(address)'](help.notExistedAddress).call();
+          (subsidiaryParams.id).should.equal(subsidiaryAddress);
+          (subsidiaryParams.director).should.equal(entityDirectorAccount);
+          (subsidiaryParams.state).should.be.true;
+          (subsidiaryParams.confirmed).should.be.true;
+        });
+      });
+  
+      describe('getParentEntity()', () => {
 
-      it('should return parent entity address', async () => {});
-    });
-
-    describe('getEntityDirector()', () => {
-
-      it('should return zero address if entity is master organization', async () => {});
-
-      it('should return entity director address', async () => {});
+        beforeEach(async () => {
+          subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          subsidiary = await Organization.at(subsidiaryAddress);
+        });
+  
+        it('should return zero address if entity has no parents', async () => {
+          (await organization.methods['getParentEntity()']().call()).should.equal(help.zeroAddress);
+        });
+  
+        it('should return parent entity address', async () => {
+          (await subsidiary.methods['getParentEntity()']().call()).should.equal(organization.address);
+        });
+      });
+  
+      describe('getEntityDirector()', () => {
+  
+        it('should return zero address if entity has no parents', async () => {
+          (await organization.methods['getEntityDirector()']().call()).should.equal(help.zeroAddress);
+        });
+  
+        it('should return entity director address', async () => {
+          (await subsidiary.methods['getEntityDirector()']().call()).should.equal(entityDirectorAccount);
+        });
+      });
     });
   });
 });
