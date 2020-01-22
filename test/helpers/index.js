@@ -79,6 +79,7 @@ module.exports = {
 
   // Misc
   zeroAddress: misc.zeroAddress,
+  notExistedAddress: misc.notExistedAddress,
   isZeroAddress: misc.isZeroAddress,
   isInvalidOpcodeEx: misc.isInvalidOpcodeEx,
   filterZeroAddresses: misc.filterZeroAddresses,
@@ -87,5 +88,5 @@ module.exports = {
   determineAddress: misc.determineAddress,
   deployLifToken,
   deployEnsRegistry,
-  setupEnsRegistry,
+  setupEnsRegistry
 };

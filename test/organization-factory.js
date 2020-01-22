@@ -275,7 +275,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        1, 5
+        1, 5,
       );
       for (const organization of organizations.slice(1, 5)) {
         if (help.isZeroAddress(organization)) {
@@ -298,7 +298,7 @@ contract('OrganizationFactory', (accounts) => {
         await upgradeOrganizationsScript.upgradeOrganizations(
           web3.currentProvider,
           Accounts.privateKeyToAccount('0xf809d1a2969bec37e7c14628717092befa82156fb2ebf935ac5420bc522f0d29'),
-          organizationFactory.address
+          organizationFactory.address,
         );
       } catch (e) {
         assert.match(e.message, /cannot work on organizationfactory/i);
@@ -311,7 +311,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        0, 1
+        0, 1,
       );
       assert(true);
     });
@@ -322,7 +322,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        3, 3
+        3, 3,
       );
       assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[1])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);
       assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[2])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);

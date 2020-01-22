@@ -37,7 +37,7 @@
   "license": "GPL-3.0-only",
   "dependencies": {
     "@ensdomains/ens": "^0.3.11",
-    "@ensdomains/resolver": "^0.1.9",
+    "@ensdomains/resolver": "0.1.9",
     "openzeppelin-solidity": "^2.2.0"
   },
   "devDependencies": {
@@ -48,17 +48,17 @@
     "chai": "^4.2.0",
     "coveralls": "^3.0.5",
     "eslint": "^6.0.1",
-    "eslint-config-standard": "^13.0.1",
+    "eslint-config-standard": "^14.1.0",
     "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-node": "^10.0.0",
     "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
     "eth-ens-namehash": "^2.0.8",
     "ethereumjs-util": "^6.1.0",
     "ethereumjs-wallet": "^0.6.3",
-    "ganache-cli": "^6.4.5",
+    "ganache-cli": "6.5.0",
     "lodash": "^4.17.14",
-    "rimraf": "^2.6.3",
+    "rimraf": "^3.0.0",
     "solc": "^0.5.7",
     "solhint": "^2.0.0",
     "solidity-coverage": "^0.6.0",
@@ -68,7 +68,7 @@
     "truffle-flattener": "^1.4.0",
     "truffle-hdwallet-provider": "^1.0.15",
     "web3": "^1.2.0",
-    "web3-utils": "^1.2.0"
+    "web3-utils": "^1.2.2"
   },
   "engines": {
     "node": ">=10.3.0"

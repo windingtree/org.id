@@ -127,7 +127,7 @@ if (require.main === module) {
         '0x78D1548E03660093B51159De0E615ea8F6B9eaF9', // factory address
         '0x1AF488913899D05293a678dc84a7096aE4F1b316', // new implementation address
         1, // starting index in createdOrganizations in factory
-        1 // how many organizations should be upgraded
+        1, // how many organizations should be upgraded
       );
       process.exit(0);
     } catch (e) {
