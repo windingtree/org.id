@@ -7,18 +7,27 @@ const Organization = Contracts.getFromLocal('Organization');
  * @param {Object} organization Organization instance
  * @param {string} organizationOwner Owner account address
  * @param {string} entityDirectorAccount Entity director account address
+ * @param {string} organizationUri Subsidiary Json Uri
+ * @param {string} organizationHash Subsidiary Json hash
  * @returns {Promise<{string}>} Promise that resolved with subsidiary instance address
  */
 module.exports.createSubsidiary = async (
   organization,
   organizationOwner,
-  entityDirectorAccount
+  entityDirectorAccount,
+  organizationUri,
+  organizationHash
 ) => {
-  const result = await organization.methods['createSubsidiary(address)'](entityDirectorAccount).send(
+  const result = await organization.methods['createSubsidiary(string,bytes32,address)'](
+    organizationUri,
+    organizationHash,
+    entityDirectorAccount
+  ).send(
     {
       from: organizationOwner
     }
   );
+
   let subsidiaryAddress;
   assertEvent(result, 'SubsidiaryCreated', [
     [
@@ -37,6 +46,13 @@ module.exports.createSubsidiary = async (
       }
     ]
   ]);
+
+  const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
+  (subsidiaryParams.id).should.equal(subsidiaryAddress);
+  (subsidiaryParams.director).should.equal(entityDirectorAccount);
+  (subsidiaryParams.state).should.be.true;
+  (subsidiaryParams.confirmed).should.be.false;
+
   return subsidiaryAddress;
 };
 
@@ -52,9 +68,9 @@ module.exports.toggleSubsidiary = async (
   organizationOwner,
   subsidiaryAddress
 ) => {
-  const subsidiary = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
-  const oldState = subsidiary.state;// bool
-  const result = await organization.methods['toggleSubsidiary(address)'](subsidiary.address).send(
+  const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
+  const oldState = subsidiaryParams.state;// bool
+  const result = await organization.methods['toggleSubsidiary(address)'](subsidiaryAddress).send(
     {
       from: organizationOwner
     }
@@ -143,19 +159,22 @@ module.exports.transferOwnership = async (
 
 /**
  * Transfer subsidiary director ownership to the new director
- * @param {Object} subsidiaryAddress Subsidiary organization address
+ * @param {string} organizationAddress Master organization address
+ * @param {string} subsidiaryAddress Subsidiary organization address
  * @param {string} organizationOwner Organization owner
  * @param {string} newDirectorAccount New subsidiary director account address
  * @returns {Promise}
  */
-module.exports.transferDirectorOwnership = async (
+module.exports.transferSubsidiaryDirectorOwnership = async (
+  organizationAddress,
   subsidiaryAddress,
   organizationOwner,
   newDirectorAccount
 ) => {
-  const subsidiary = await Organization.at(subsidiaryAddress);
+  const organization = await Organization.at(organizationAddress);
+  const subsidiary = await Organization.at(organizationAddress);
   const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
-  const result = await subsidiary.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
+  const result = await organization.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
     {
       from: organizationOwner
     }
@@ -175,6 +194,41 @@ module.exports.transferDirectorOwnership = async (
     ]
   ]);
 };
+
+// /**
+//  * Change entity director
+//  * @param {string} subsidiaryAddress Subsidiary organization address
+//  * @param {string} organizationOwner Organization owner
+//  * @param {string} newDirectorAccount New subsidiary director account address
+//  * @returns {Promise}
+//  */
+// module.exports.changeEntityDirector = async (
+//   subsidiaryAddress,
+//   organizationOwner,
+//   newDirectorAccount
+// ) => {
+//   const subsidiary = await Organization.at(subsidiaryAddress);
+//   const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
+//   const result = await subsidiary.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
+//     {
+//       from: organizationOwner
+//     }
+//   );
+//   assertEvent(result, 'DirectorOwnershipTransferred', [
+//     [
+//       'subsidiary',
+//       p => (p).should.equal(subsidiaryAddress)
+//     ],
+//     [
+//       'previousDirector',
+//       p => (p).should.equal(initialDirector)
+//     ],
+//     [
+//       'newDirector',
+//       p => (p).should.equal(newDirectorAccount)
+//     ]
+//   ]);
+// };
 
 /**
  * Change ORG.ID JSON URI

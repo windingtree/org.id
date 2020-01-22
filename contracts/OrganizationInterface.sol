@@ -16,6 +16,15 @@ import "openzeppelin-solidity/contracts/introspection/IERC165.sol";
  * intentionally omitted. It can be used only for reading data.
  */
 contract OrganizationInterface is IERC165 {
+
+    /// @dev Subsidiary organization configuration structure
+    struct Subsidiary {
+        address id;
+        bool state;
+        bool confirmed;
+        address director;
+    }
+
     /**
      * @dev Returns the address of the current owner.
      * @return {" ": "Current owner address."}

@@ -29,6 +29,21 @@ contract AbstractOrganizationFactory {
     function create(string calldata orgJsonUri, bytes32 orgJsonHash) external returns (address);
 
     /**
+     * @dev Creates new subsidiary 0xORG smart contract
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param parentAddress Parent organization address
+     * @param subsidiaryDirector Subsidiary director address
+     * @return {" ": "Address of the new organization."}
+     */
+    function create(
+        string calldata orgJsonUri, 
+        bytes32 orgJsonHash,
+        address parentAddress,
+        address subsidiaryDirector
+    ) external returns (address);
+
+    /**
      * @dev Creates new 0xORG smart contract and adds it to a segment directory
      * in the same transaction
      * @param  orgJsonUri Organization's data pointer
