@@ -480,7 +480,8 @@ contract('Organization', (accounts) => {
             {
               from: entityDirectorAccount
             }
-          )
+          ),
+          'Organization: Only owner can call this method'
         );
       });
 
@@ -501,7 +502,8 @@ contract('Organization', (accounts) => {
             {
               from: organizationOwner
             }
-          )
+          ),
+          'Organization: Invalid entity director address'
         );
 
         // unknown address
@@ -510,7 +512,8 @@ contract('Organization', (accounts) => {
             {
               from: organizationOwner
             }
-          )
+          ),
+          'Organization: Invalid entity director address'
         );
       });
 
@@ -520,7 +523,8 @@ contract('Organization', (accounts) => {
             {
               from: nonOwnerAccount
             }
-          )
+          ),
+          'Organization: Only owner can call this method'
         );
       });
 
