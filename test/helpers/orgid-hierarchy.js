@@ -1,4 +1,5 @@
 const { assertEvent } = require('./assertions');
+const { Contracts } = require('@openzeppelin/upgrades');
 const Organization = Contracts.getFromLocal('Organization');
 
 /**
@@ -135,7 +136,37 @@ module.exports.transferOwnership = async (
   const subsidiaries = await organization.methods['getSubsidiaries()']().call();
 
   for (let i = 0; i < subsidiaries.length; i++) {
-    let subsidiary = await Organization.at(subsidiaries[i]);
+    const subsidiary = await Organization.at(subsidiaries[i]);
     (await subsidiary.methods['owner()']().call()).should.equal(newOwnerAccount);
   }
+};
+
+/**
+ * Transfer subsidiary director ownership to the new director
+ * @param {Object} subsidiary Subsidiary organization instance
+ * @param {string} organizationOwner Organization owner
+ * @param {string} newDirectorAccount New subsidiary director account address
+ * @returns {Promise}
+ */
+module.exports.transferDirectorOwnership = async (
+  subsidiary,
+  organizationOwner,
+  newDirectorAccount
+) => {
+  const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
+  const result = await subsidiary.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
+    {
+      from: organizationOwner
+    }
+  );
+  assertEvent(result, 'OwnershipTransferred', [
+    [
+      'previousDirector',
+      p => (p).should.equal(initialDirector)
+    ],
+    [
+      'newDirector',
+      p => (p).should.equal(newDirectorAccount)
+    ]
+  ]);
 };

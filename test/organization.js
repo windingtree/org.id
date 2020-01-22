@@ -7,7 +7,8 @@ const {
   createSubsidiary,
   toggleSubsidiary,
   confirmSubsidiaryDirectorOwnership,
-  transferOwnership
+  transferOwnership,
+  transferDirectorOwnership
 } = require('./helpers/orgid-hierarchy');
 
 ZWeb3.initialize(web3.currentProvider);
@@ -338,6 +339,17 @@ contract('Organization', (accounts) => {
   });
 
   describe('ORG.ID Hierarchy', () => {
+    let subsidiaryAddress;
+    let subsidiary;
+
+    beforeEach(async () => {
+      subsidiaryAddress = await createSubsidiary(
+        organization,
+        organizationOwner,
+        entityDirectorAccount
+      );
+      subsidiary = await Organization.at(subsidiaryAddress);
+    });
 
     describe('createSubsidiary(address)', () => {
 
@@ -373,16 +385,7 @@ contract('Organization', (accounts) => {
     });
 
     describe('toggleSubsidiary(address)', () => {
-      let subsidiaryAddress;
-
-      beforeEach(async () => {
-        subsidiaryAddress = await createSubsidiary(
-          organization,
-          organizationOwner,
-          entityDirectorAccount
-        );
-      });
-
+      
       it('should throw if wrong organization address has been provided', async () => {
         // zero-address
         await assertRevert(
@@ -415,16 +418,7 @@ contract('Organization', (accounts) => {
     });
 
     describe('confirmSubsidiaryDirectorOwnership(address)', () => {
-      let subsidiaryAddress;
-
-      beforeEach(async () => {
-        subsidiaryAddress = await createSubsidiary(
-          organization,
-          organizationOwner,
-          entityDirectorAccount
-        );
-      });
-
+      
       it('should throw if wrong organization address has been provided', async () => {
         // zero-address
         await assertRevert(
@@ -500,14 +494,46 @@ contract('Organization', (accounts) => {
 
     describe('transferDirectorOwnership(address)', () => {
 
-      it('should throw if unknown director address has been provided', async () => {});
+      it('should throw if wrong director address has been provided', async () => {
+        // zero-address
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address)'](help.zeroAddress).send(
+            {
+              from: organizationOwner
+            }
+          )
+        );
 
-      it('should throw if called not by owner of parent entity', async () => {});
+        // unknown address
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address)'](help.notExistedAddress).send(
+            {
+              from: organizationOwner
+            }
+          )
+        );
+      });
 
-      it('should transfer subsidiary ownership', () => {});
+      it('should throw if called not by owner of parent entity', async () => {
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address)'](entityDirectorAccount).send(
+            {
+              from: nonOwnerAccount
+            }
+          )
+        );
+      });
+
+      it('should transfer subsidiary ownership', async () => {
+        await transferDirectorOwnership(
+          subsidiary,
+          organizationOwner,
+          nonOwnerAccount
+        );
+      });
     });
 
-    describe('toggleSubsidiary(address)', async () => {
+    describe('toggleSubsidiary(address)', () => {
 
       it('should throw if wrong subsidiary organization address has been provided', async () => {});
 
