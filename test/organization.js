@@ -452,7 +452,7 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('confirmSubsidiaryDirectorOwnership(address)', () => {
+    describe('confirmSubsidiaryDirectorOwnership(address)', () => {
       
       it('should throw if wrong organization address has been provided', async () => {
         // zero-address
@@ -465,25 +465,32 @@ contract('Organization', (accounts) => {
           'Organization: Invalid subsidiary address'
         );
 
-        // not a contract address
+        // unknown address
         await assertRevert(
           organization.methods['confirmSubsidiaryDirectorOwnership(address)'](help.notExistedAddress).send(
             {
               from: entityDirectorAccount
             }
           ),
-          'Organization: Invalid subsidiary address'
+          'Organization: Subsidiary not found'
         );
       });
 
       it('should throw if director trying to confirm not own subsidiary', async () => {
+        const anotherSubsidiaryAddress = await createSubsidiary(
+          organization,
+          organizationOwner,
+          nonOwnerAccount,
+          organizationUri,
+          organizationHash
+        );
         await assertRevert(
-          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](subsidiaryAddress).send(
+          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](anotherSubsidiaryAddress).send(
             {
               from: entityDirectorAccount
             }
           ),
-          'Organization: Not a subsidiary director'
+          'Organization: Only subsidiary director can call this method'
         );
       });
 
@@ -494,7 +501,7 @@ contract('Organization', (accounts) => {
               from: nonOwnerAccount
             }
           ),
-          'Organization: Invalid subsidiary director address'
+          'Organization: Only subsidiary director can call this method'
         );
       });
 
@@ -649,50 +656,6 @@ contract('Organization', (accounts) => {
       //     nonOwnerAccount
       //   );
       // });
-    });
-
-    describe.skip('toggleSubsidiary(address)', () => {
-
-      it('should throw if wrong subsidiary organization address has been provided', async () => {
-        // zero-address
-        await assertRevert(
-          organization.methods['toggleSubsidiary(address)'](help.zeroAddress).send(
-            {
-              from: organizationOwner
-            }
-          ),
-          'Organization: Invalid subsidiary address'
-        );
-
-        // non contract address
-        await assertRevert(
-          organization.methods['toggleSubsidiary(address)'](help.notExistedAddress).send(
-            {
-              from: organizationOwner
-            }
-          ),
-          'Organization: Invalid subsidiary address'
-        );
-      });
-
-      it('should throw if called by not an owner', async () => {
-        await assertRevert(
-          organization.methods['toggleSubsidiary(address)'](subsidiaryAddress).send(
-            {
-              from: entityDirectorAccount
-            }
-          ),
-          'Organization: Only owner can call this method'
-        );
-      });
-
-      it('should toggle subsidiary organization state', async () => {
-        await toggleSubsidiary(
-          organization,
-          organizationOwner,
-          subsidiaryAddress
-        );
-      });
     });
 
     describe.skip('ORG.ID changes', () => {

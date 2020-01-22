@@ -222,6 +222,18 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
+     * @dev Confirm subsidiary director ownership
+     * @param subsidiaryAddress Subsidiary organization address
+     */
+    function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) external {
+        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
+        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(subsidiaries[subsidiaryAddress].director == msg.sender, "Organization: Only subsidiary director can call this method");
+        subsidiaries[subsidiaryAddress].confirmed = true;
+        emit DirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
+    }
+
+    /**
      * @dev Return subsidiary organization parmeters
      * @param subsidiaryAddress Subsidiary organization address
      * @return address id Subsidiary address

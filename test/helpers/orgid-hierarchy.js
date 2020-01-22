@@ -103,7 +103,7 @@ module.exports.confirmSubsidiaryDirectorOwnership = async (
   subsidiaryAddress,
   entityDirectorAccount
 ) => {
-  const result = await organization.methods['toggleSubsidiary(address)'](subsidiary.address).send(
+  const result = await organization.methods['confirmSubsidiaryDirectorOwnership(address)'](subsidiaryAddress).send(
     {
       from: entityDirectorAccount
     }
