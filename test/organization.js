@@ -8,7 +8,10 @@ const {
   toggleSubsidiary,
   confirmSubsidiaryDirectorOwnership,
   transferOwnership,
-  transferDirectorOwnership
+  transferDirectorOwnership,
+  changeOrgJsonUri,
+  changeOrgJsonHash,
+  changeOrgJsonUriAndHash
 } = require('./helpers/orgid-hierarchy');
 
 ZWeb3.initialize(web3.currentProvider);
@@ -579,25 +582,104 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe('changeOrgJsonUri(string)', () => {
+    describe('ORG.ID changes', () => {
+      const newOrgJsonUri = 'goo.gl/12345';
+      const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
 
-      it('should throw if called by not an entity director', async () => {});
-
-      it('should change OrgJsonUri', async () => {});
-    });
-
-    describe('changeOrgJsonHash(bytes32)', () => {
-
-      it('should throw if called by not an entity director', async () => {});
-
-      it('should change OrgJsonHash', async () => {});
-    });
-
-    describe('changeOrgJsonUriAndHash(string,bytes32)', () => {
-
-      it('should throw if called by not an entity director', async () => {});
-
-      it('should change OrgJsonUri and OrgJsonHash', async () => {});
+      describe('changeOrgJsonUri(string)', () => {
+      
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonUri(string)'](newOrgJsonUri).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          // By the director
+          await changeOrgJsonUri(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonUri
+          );
+          
+          // By the owner
+          await changeOrgJsonUri(
+            subsidiary,
+            organizationOwner,
+            newOrgJsonUri
+          );
+        });
+      });
+  
+      describe('changeOrgJsonHash(bytes32)', () => {
+  
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonHash(bytes32)'](newOrgJsonHash).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          // By the director
+          await changeOrgJsonHash(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonHash
+          );
+          
+          // By the owner
+          await changeOrgJsonHash(
+            subsidiary,
+            organizationOwner,
+            newOrgJsonHash
+          );
+        });
+      });
+  
+      describe('changeOrgJsonUriAndHash(string,bytes32)', () => {
+  
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonUriAndHash(string,bytes32)'](
+              newOrgJsonUri,
+              newOrgJsonHash
+            ).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          // By the director
+          await changeOrgJsonUriAndHash(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonUri,
+            newOrgJsonHash
+          );
+          
+          // By the owner
+          await changeOrgJsonUriAndHash(
+            subsidiary,
+            organizationOwner,
+            newOrgJsonUri,
+            newOrgJsonHash
+          );
+        });
+      });
     });
 
     describe('getSubsidiaries()', () => {

@@ -176,3 +176,109 @@ module.exports.transferDirectorOwnership = async (
     ]
   ]);
 };
+
+/**
+ * Change ORG.ID JSON URI
+ * @param {Object} entity Organization instance
+ * @param {string} ownerOrDirectorAccount Organization owner or director account
+ * @param {string} newOrgJsonUri New json URI
+ * @returns {Promise}
+ */
+module.exports.changeOrgJsonUri = async (
+  entity,
+  ownerOrDirectorAccount,
+  newOrgJsonUri
+) => {
+  const initialUri = await entity.methods['getOrgJsonUri()']().call();
+  const result = await entity.methods['changeOrgJsonUri(string)'](newOrgJsonUri).send(
+    {
+      from: ownerOrDirectorAccount
+    }
+  );
+  assertEvent(result, 'OrgJsonUriChanged', [
+    [
+      'previousOrgJsonUri',
+      p => (p).should.equal(initialUri)
+    ],
+    [
+      'newOrgJsonUri',
+      p => (p).should.equal(newOrgJsonUri)
+    ]
+  ]);
+};
+
+/**
+ * Change ORG.ID JSON hash
+ * @param {Object} entity Organization instance
+ * @param {string} ownerOrDirectorAccount Organization owner or director account
+ * @param {string} newOrgJsonHash New json hash
+ * @returns {Promise}
+ */
+module.exports.changeOrgJsonHash = async (
+  entity,
+  ownerOrDirectorAccount,
+  newOrgJsonHash
+) => {
+  const initialHash = await entity.methods['getOrgJsonHash()']().call();
+  const result = await entity.methods['changeOrgJsonHash(bytes32)'](newOrgJsonHash).send(
+    {
+      from: ownerOrDirectorAccount
+    }
+  );
+  assertEvent(result, 'OrgJsonHashChanged', [
+    [
+      'previousOrgJsonHash',
+      p => (p).should.equal(initialHash)
+    ],
+    [
+      'newOrgJsonHash',
+      p => (p).should.equal(newOrgJsonHash)
+    ]
+  ]);
+};
+
+/**
+ * Change ORG.ID JSON URI and hash
+ * @param {Object} entity Organization instance
+ * @param {string} ownerOrDirectorAccount Organization owner or director account
+ * @param {string} newOrgJsonUri New json URI
+ * @param {string} newOrgJsonHash New json hash
+ * @returns {Promise}
+ */
+module.exports.changeOrgJsonUriAndHash = async (
+  entity,
+  ownerOrDirectorAccount,
+  newOrgJsonUri,
+  newOrgJsonHash
+) => {
+  const initialUri = await entity.methods['getOrgJsonUri()']().call();
+  const initialHash = await entity.methods['getOrgJsonHash()']().call();
+  const result = await entity.methods['changeOrgJsonUriAndHash(string,bytes32)'](
+    newOrgJsonUri,
+    newOrgJsonHash
+  ).send(
+    {
+      from: ownerOrDirectorAccount
+    }
+  );
+  assertEvent(result, 'OrgJsonUriChanged', [
+    [
+      'previousOrgJsonUri',
+      p => (p).should.equal(initialUri)
+    ],
+    [
+      'newOrgJsonUri',
+      p => (p).should.equal(newOrgJsonUri)
+    ]
+  ]);
+  assertEvent(result, 'OrgJsonHashChanged', [
+    [
+      'previousOrgJsonHash',
+      p => (p).should.equal(initialHash)
+    ],
+    [
+      'newOrgJsonHash',
+      p => (p).should.equal(newOrgJsonHash)
+    ]
+  ]);
+};
