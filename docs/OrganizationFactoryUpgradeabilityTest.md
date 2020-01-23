@@ -1,19 +1,136 @@
 * [OrganizationFactoryUpgradeabilityTest](#organizationfactoryupgradeabilitytest)
-  * [createdOrganizationsIndex](#function-createdorganizationsindex)
-  * [newFunction](#function-newfunction)
-  * [getCreatedOrganizations](#function-getcreatedorganizations)
-  * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
-  * [create](#function-create)
-  * [initialize](#function-initialize)
-  * [owner](#function-owner)
-  * [createdOrganizations](#function-createdorganizations)
-  * [createAndAddToDirectory](#function-createandaddtodirectory)
-  * [transferOwnership](#function-transferownership)
   * [OrganizationCreated](#event-organizationcreated)
   * [OwnershipTransferred](#event-ownershiptransferred)
+  * [create](#function-create)
+  * [create](#function-create)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
+  * [createAndAddToDirectory](#function-createandaddtodirectory)
+  * [createdOrganizations](#function-createdorganizations)
+  * [createdOrganizationsIndex](#function-createdorganizationsindex)
+  * [getCreatedOrganizations](#function-getcreatedorganizations)
+  * [getCreatedOrganizationsLength](#function-getcreatedorganizationslength)
+  * [initialize](#function-initialize)
+  * [newFunction](#function-newfunction)
+  * [owner](#function-owner)
+  * [transferOwnership](#function-transferownership)
 
 # OrganizationFactoryUpgradeabilityTest
 
+## *event* OrganizationCreated
+
+OrganizationFactoryUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | indexed |
+
+## *event* OwnershipTransferred
+
+OrganizationFactoryUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | previousOwner | indexed |
+| *address* | newOwner | indexed |
+
+
+## *function* create
+
+OrganizationFactoryUpgradeabilityTest.create(orgJsonUri, orgJsonHash) `nonpayable` `3dee0c50`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | undefined |
+| *bytes32* | orgJsonHash | undefined |
+
+
+## *function* create
+
+OrganizationFactoryUpgradeabilityTest.create(orgJsonUri, orgJsonHash, parentEntity, entityDirector) `nonpayable` `a6dd857e`
+
+> This version of 'create' is dedicated to creation of subsidiaries
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | parentEntity | Parent organization address |
+| *address* | entityDirector | Subsidiary director address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* createAndAddToDirectory
+
+OrganizationFactoryUpgradeabilityTest.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory, parentEntity, entityDirector) `nonpayable` `00a5a6a3`
+
+> This version of 'createAndAddToDirectory' is dedicated to creation of subsidiary and add it to a SegmentDirectory living on the passed `directory` address.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | directory | Segment directory's address |
+| *address* | parentEntity | Parent organization address |
+| *address* | entityDirector | Subsidiary director address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* createAndAddToDirectory
+
+OrganizationFactoryUpgradeabilityTest.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory) `nonpayable` `af276209`
+
+> `createAndAddToDirectory` proxies and externalizes create organization and add it to a SegmentDirectory living on the passed `directory` address.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | orgJsonUri | Organization's data pointer |
+| *bytes32* | orgJsonHash | Organization's data hash |
+| *address* | directory | Segment directory's address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
+
+## *function* createdOrganizations
+
+OrganizationFactoryUpgradeabilityTest.createdOrganizations(index) `view` `9e356f4c`
+
+> `createdOrganizations` get Organization address on an index
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* | index | undefined |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* |  | undefined |
 
 ## *function* createdOrganizationsIndex
 
@@ -32,14 +149,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* |  | undefined |
-
-## *function* newFunction
-
-OrganizationFactoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
-
-
-
-
 
 ## *function* getCreatedOrganizations
 
@@ -69,19 +178,6 @@ Outputs
 |-|-|-|
 | *uint256* |  | undefined |
 
-## *function* create
-
-OrganizationFactoryUpgradeabilityTest.create(orgJsonUri, orgJsonHash) `nonpayable` `3dee0c50`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | undefined |
-| *bytes32* | orgJsonHash | undefined |
-
-
 ## *function* initialize
 
 OrganizationFactoryUpgradeabilityTest.initialize(__owner, _app) `nonpayable` `485cc955`
@@ -96,6 +192,14 @@ Inputs
 | *address* | _app | ZeppelinOS App address |
 
 
+## *function* newFunction
+
+OrganizationFactoryUpgradeabilityTest.newFunction() `pure` `1b28d63e`
+
+
+
+
+
 ## *function* owner
 
 OrganizationFactoryUpgradeabilityTest.owner() `view` `8da5cb5b`
@@ -104,44 +208,6 @@ OrganizationFactoryUpgradeabilityTest.owner() `view` `8da5cb5b`
 
 
 
-
-## *function* createdOrganizations
-
-OrganizationFactoryUpgradeabilityTest.createdOrganizations(index) `view` `9e356f4c`
-
-> `createdOrganizations` get Organization address on an index
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | index | undefined |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-## *function* createAndAddToDirectory
-
-OrganizationFactoryUpgradeabilityTest.createAndAddToDirectory(orgJsonUri, orgJsonHash, directory) `nonpayable` `af276209`
-
-> `createAndAddToDirectory` Creates the organization contract and tries to add it to a SegmentDirectory living on the passed `directory` address.     * We cannot reuse create call due to the Organization ownership restrictions. 
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | orgJsonUri | Organization's data pointer |
-| *bytes32* | orgJsonHash | Organization's data hash |
-| *address* | directory | Segment directory's address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 ## *function* transferOwnership
 
@@ -154,27 +220,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
-
-## *event* OrganizationCreated
-
-OrganizationFactoryUpgradeabilityTest.OrganizationCreated(organization) `47b68893`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | organization | indexed |
-
-## *event* OwnershipTransferred
-
-OrganizationFactoryUpgradeabilityTest.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousOwner | indexed |
-| *address* | newOwner | indexed |
 
 
 ---

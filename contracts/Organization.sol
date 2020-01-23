@@ -177,15 +177,17 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
-     * @return address
+     * @return {
+         "subsidiaryAddress": "Created subsidiary address"
+       }
      */
     function createSubsidiary(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector
-    ) external onlyOwnerOrDirector returns (address) {
+    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
+        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
             _orgJsonUri,
             _orgJsonHash,
             address(this),
@@ -196,8 +198,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             true,
             false,
             subsidiaryDirector
-        );        
-        return subsidiaryAddress;
+        );
     }
 
     /**
@@ -206,16 +207,18 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
      * @param directory Segment directory address
-     * @return address
+     * @return {
+         "subsidiaryAddress": "Created subsidiary address"
+       }
      */
     function createSubsidiaryAndAddToDirectory(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector,
         address directory
-    ) external onlyOwnerOrDirector returns (address) {
+    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
+        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
             _orgJsonUri,
             _orgJsonHash,
             directory,
@@ -228,7 +231,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             false,
             subsidiaryDirector
         );
-        return subsidiaryAddress;
     }
 
     /**
@@ -297,10 +299,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Return subsidiary organization parmeters
      * @param subsidiaryAddress Subsidiary organization address
-     * @return address id Subsidiary address
-     * @return bool state Subsidiary state
-     * @return bool confirmed Subsidiary director ownership confirmation state
-     * @return address director Entity director address
+     * @return {
+        "id": "Subsidiary address",
+        "state": "Subsidiary state",
+        "confirmed": "Subsidiary director ownership confirmation state",
+        "director": "Entity director address"
+     }     
      */
     function getSubsidiary(address subsidiaryAddress) external view returns (
         address id,
@@ -318,10 +322,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
 
     /**
      * @dev Return an array of subsidiaries addresses
-     * @return address[]
+     * @return {
+         "subsidiariesList": "Array of active subsidiaries"
+     }
      */
-    function getSubsidiaries() external view returns (address[] memory) {
-        address[] memory subsidiariesList = new address[](getConfirmedSubsidiariesCount());
+    function getSubsidiaries() external view returns (address[] memory subsidiariesList) {
+        subsidiariesList = new address[](getConfirmedSubsidiariesCount());
         uint256 index;
 
         for (uint256 i = 0; i < subsidiariesIndex.length; i++) {
@@ -333,8 +339,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
                 index += 1;
             }
         }
-
-        return subsidiariesList;
     }
 
     /**
@@ -494,11 +498,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
 
     /**
      * @dev Get count of confirmed subsidiaries
-     * @return uint256
+     * @return {
+         "count": "Count of active and confirmed subsidiaries"
+     }
      */
-    function getConfirmedSubsidiariesCount() internal view returns(uint256) {
-        uint256 count;
-
+    function getConfirmedSubsidiariesCount() internal view returns(uint256 count) {
+        
         for (uint256 i = 0; i < subsidiariesIndex.length; i++) {
 
             if (subsidiaries[subsidiariesIndex[i]].state && 
@@ -507,7 +512,5 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
                 count += 1;
             }
         }
-
-        return count;
     }
 }
