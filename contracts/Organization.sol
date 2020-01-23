@@ -306,7 +306,20 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @return address[]
      */
     function getSubsidiaries() external view returns (address[] memory) {
-        return subsidiariesIndex;
+        address[] memory subsidiariesList = new address[](getConfirmedSubsidiariesCount());
+        uint256 index;
+
+        for (uint256 i = 0; i < subsidiariesIndex.length; i++) {
+
+            if (subsidiaries[subsidiariesIndex[i]].state && 
+                subsidiaries[subsidiariesIndex[i]].confirmed) {
+                    
+                subsidiariesList[index] = subsidiaries[subsidiariesIndex[i]].id;
+                index += 1;
+            }
+        }
+
+        return subsidiariesList;
     }
 
     /**
@@ -462,5 +475,24 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         );
         subsidiariesIndex.push(subsidiaryAddress);
         emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
+    }
+
+    /**
+     * @dev Get count of confirmed subsidiaries
+     * @return uint256
+     */
+    function getConfirmedSubsidiariesCount() internal view returns(uint256) {
+        uint256 count;
+
+        for (uint256 i = 0; i < subsidiariesIndex.length; i++) {
+
+            if (subsidiaries[subsidiariesIndex[i]].state && 
+                subsidiaries[subsidiariesIndex[i]].confirmed) {
+                
+                count += 1;
+            }
+        }
+
+        return count;
     }
 }

@@ -1,7 +1,5 @@
-require('chai').should();
 const TestHelper = require('./helpers/zostest');
 const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
-const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const { assertRevert } = require('./helpers/assertions');
 const {
@@ -25,6 +23,9 @@ const Organization = Contracts.getFromLocal('Organization');
 const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
 const OrganizationFactory = Contracts.getFromLocal('OrganizationFactory');
+
+const { assert, should } = require('chai');
+should();
 
 contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
@@ -63,7 +64,7 @@ contract('Organization', (accounts) => {
     organization = await Organization.at(organizationProxy.address);
   });
 
-  describe.skip('Constructor', () => {
+  describe('Constructor', () => {
     it('should be initialised with the correct data', async () => {
       const info = await help.getOrganizationInfo(organization);
       // We need callback, because getBlockNumber for some reason cannot be called with await
@@ -78,7 +79,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: ['0x0000000000000000000000000000000000000000', organizationUri, organizationHash],
+          initArgs: [
+            help.zeroAddress,
+            organizationUri,
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -92,7 +100,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, '', organizationHash],
+          initArgs: [
+            organizationOwner,
+            '',
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -106,7 +121,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, organizationUri, '0x0000000000000000000000000000000000000000000000000000000000000000'],
+          initArgs: [
+            organizationOwner,
+            organizationUri,
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -115,7 +137,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('interfaces', () => {
+  describe('interfaces', () => {
     it('should support IERC165 interface', async () => {
       const orgIface = await OrganizationInterface.at(organization.address);
       assert.equal(await orgIface.methods.supportsInterface('0x01ffc9a7').call(), true);
@@ -146,7 +168,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('upgradeability', () => {
+  describe('upgradeability', () => {
     it('should upgrade Organization and have new functions', async () => {
       const upgradedOrganization = await OrganizationUpgradeabilityTest.new({ from: organizationOwner });
       await project.proxyAdmin.upgradeProxy(organizationProxy.address, upgradedOrganization.address, OrganizationUpgradeabilityTest);
@@ -166,7 +188,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('changeOrgJsonUri', () => {
+  describe('changeOrgJsonUri', () => {
     const newOrgJsonUri = 'goo.gl/12345';
     it('should not set empty orgJsonUri', async () => {
       try {
@@ -195,7 +217,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('changeOrgJsonHash', () => {
+  describe('changeOrgJsonHash', () => {
     const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
     it('should not set empty orgJsonHash', async () => {
       try {
@@ -224,7 +246,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('changeOrgJsonUriAndHash', () => {
+  describe('changeOrgJsonUriAndHash', () => {
     const newOrgJsonUri = 'goo.gl/12345';
     const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
 
@@ -240,7 +262,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('transferOwnership', () => {
+  describe('transferOwnership', () => {
     it('should transfer contract and emit OwnershipTransferred', async () => {
       const receipt = await organization.methods.transferOwnership(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(Object.keys(receipt.events).length, 1);
@@ -269,7 +291,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('addAssociatedKey', async () => {
+  describe('addAssociatedKey', async () => {
     it('should add associatedKey and emit', async () => {
       const receipt = await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(Object.keys(receipt.events).length, 1);
@@ -309,7 +331,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('removeAssociatedKey', async () => {
+  describe('removeAssociatedKey', async () => {
     it('should remove an existing associatedKey and emit', async () => {
       await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       const receipt = await organization.methods.removeAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
@@ -339,7 +361,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('getAssociatedKeys', async () => {
+  describe('getAssociatedKeys', async () => {
     it('should list associatedKeys', async () => {
       await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       const r = await organization.methods.getAssociatedKeys().call();
@@ -347,7 +369,7 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe.skip('hasAssociatedKey', async () => {
+  describe('hasAssociatedKey', async () => {
     it('should return false for a non-associatedKey', async () => {
       assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), false);
     });
@@ -694,18 +716,25 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('Subsidiary getters', () => {
+    describe('Subsidiary getters', () => {
 
       beforeEach(async () => {
         organizationProxy = await project.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, organizationUri, organizationHash],
+          initArgs: [
+            organizationOwner,
+            organizationUri,
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         organization = await Organization.at(organizationProxy.address);
       });
 
-      describe.skip('getSubsidiaries()', () => {
+      describe('getSubsidiaries()', () => {
 
         it('should return an empty array if no subsidiaries has been created', async () => {
           ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
@@ -781,7 +810,7 @@ contract('Organization', (accounts) => {
         });
       });
   
-      describe.skip('getSubsidiary(address)', () => {
+      describe('getSubsidiary(address)', () => {
         
         beforeEach(async () => {
           subsidiaryAddress = await createSubsidiary(
@@ -806,10 +835,10 @@ contract('Organization', (accounts) => {
             'Organization: Invalid subsidiary address'
           );
   
-          // not a contract address
+          // unknown address
           await assertRevert(
             organization.methods['getSubsidiary(address)'](help.notExistedAddress).call(),
-            'Organization: Invalid subsidiary address'
+            'Organization: Subsidiary not found'
           );
         });
   
@@ -822,7 +851,7 @@ contract('Organization', (accounts) => {
         });
       });
   
-      describe.skip('getParentEntity()', () => {
+      describe('parentEntity()', () => {
 
         beforeEach(async () => {
           subsidiaryAddress = await createSubsidiary(
@@ -841,22 +870,22 @@ contract('Organization', (accounts) => {
         });
   
         it('should return zero address if entity has no parents', async () => {
-          (await organization.methods['getParentEntity()']().call()).should.equal(help.zeroAddress);
+          (await organization.methods['parentEntity()']().call()).should.equal(help.zeroAddress);
         });
   
         it('should return parent entity address', async () => {
-          (await subsidiary.methods['getParentEntity()']().call()).should.equal(organization.address);
+          (await subsidiary.methods['parentEntity()']().call()).should.equal(organization.address);
         });
       });
   
-      describe.skip('getEntityDirector()', () => {
+      describe('entityDirector()', () => {
   
         it('should return zero address if entity has no parents', async () => {
-          (await organization.methods['getEntityDirector()']().call()).should.equal(help.zeroAddress);
+          (await organization.methods['entityDirector()']().call()).should.equal(help.zeroAddress);
         });
   
         it('should return entity director address', async () => {
-          (await subsidiary.methods['getEntityDirector()']().call()).should.equal(entityDirectorAccount);
+          (await subsidiary.methods['entityDirector()']().call()).should.equal(entityDirectorAccount);
         });
       });
     });
