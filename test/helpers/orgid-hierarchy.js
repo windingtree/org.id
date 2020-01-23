@@ -117,7 +117,7 @@ module.exports.confirmSubsidiaryDirectorOwnership = async (
       from: entityDirectorAccount
     }
   );
-  assertEvent(result, 'DirectorOwnershipConfirmed', [
+  assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
     [
       'subsidiary',
       p => (p).should.equal(subsidiaryAddress)
@@ -146,14 +146,17 @@ module.exports.transferSubsidiaryDirectorOwnership = async (
   newDirectorAccount
 ) => {
   const organization = await Organization.at(organizationAddress);
-  const subsidiary = await Organization.at(organizationAddress);
-  const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
-  const result = await organization.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
+  const subsidiary = await Organization.at(subsidiaryAddress);
+  const initialDirector = await subsidiary.methods['entityDirector()']().call();
+  const result = await organization.methods['transferDirectorOwnership(address,address)'](
+    subsidiaryAddress,
+    newDirectorAccount
+  ).send(
     {
       from: organizationOwner
     }
   );
-  assertEvent(result, 'DirectorOwnershipTransferred', [
+  assertEvent(result, 'SubsidiaryDirectorOwnershipTransferred', [
     [
       'subsidiary',
       p => (p).should.equal(subsidiaryAddress)

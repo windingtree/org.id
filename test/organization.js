@@ -537,7 +537,7 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('transferDirectorOwnership(address,address)', () => {
+    describe('transferDirectorOwnership(address,address)', () => {
 
       it('should throw if wrong subsidiary address has been provided', async () => {
         // zero subsidiary address
@@ -563,12 +563,11 @@ contract('Organization', (accounts) => {
               from: organizationOwner
             }
           ),
-          'Organization: Invalid subsidiary address'
+          'Organization: Subsidiary not found'
         );
       });
 
       it('should throw if wrong director address has been provided', async () => {
-        // zero subsidiary address
         await assertRevert(
           organization.methods['transferDirectorOwnership(address,address)'](
             subsidiaryAddress,
@@ -580,24 +579,14 @@ contract('Organization', (accounts) => {
           ),
           'Organization: Invalid subsidiary director address'
         );
+      });
 
-        // unknown subsidiary address
+      it('should throw if called not by owner', async () => {
         await assertRevert(
           organization.methods['transferDirectorOwnership(address,address)'](
             subsidiaryAddress,
-            help.notExistedAddress
+            nonOwnerAccount
           ).send(
-            {
-              from: organizationOwner
-            }
-          ),
-          'Organization: Invalid subsidiary director address'
-        );
-      });
-
-      it('should throw if called not by owner of parent entity', async () => {
-        await assertRevert(
-          organization.methods['transferDirectorOwnership(address,address)'](entityDirectorAccount).send(
             {
               from: nonOwnerAccount
             }
@@ -616,7 +605,7 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('changeEntityDirector(address)', () => {
+    describe('changeEntityDirector(address)', () => {
 
       it('should throw if called by not a parent entity', async () => {
         await assertRevert(
@@ -625,39 +614,9 @@ contract('Organization', (accounts) => {
               from: entityDirectorAccount
             }
           ),
-          'Organization: Only parent entity can call this method'
+          'Organization: Only owner can call this method'
         );
       });
-
-      // it('should throw if wrong director address has been provided', async () => {
-      //   // zero address
-      //   await assertRevert(
-      //     organization.methods['changeEntityDirector(address)'](help.zeroAddress).send(
-      //       {
-      //         from: organizationOwner
-      //       }
-      //     ),
-      //     'Organization: Invalid entity director address'
-      //   );
-
-      //   // unknown address
-      //   await assertRevert(
-      //     organization.methods['changeEntityDirector(address)'](help.notExistedAddress).send(
-      //       {
-      //         from: organizationOwner
-      //       }
-      //     ),
-      //     'Organization: Invalid entity director address'
-      //   );
-      // });
-
-      // it('should change entity director address', async () => {
-      //   await changeEntityDirector(
-      //     subsidiaryAddress,
-      //     organizationOwner,
-      //     nonOwnerAccount
-      //   );
-      // });
     });
 
     describe.skip('ORG.ID changes', () => {

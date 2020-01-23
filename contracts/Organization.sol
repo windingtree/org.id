@@ -95,12 +95,17 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when entitiy director ownership has been confirmed
      */
-    event DirectorOwnershipConfirmed(address indexed subsidiary, address indexed director);
+    event SubsidiaryDirectorOwnershipConfirmed(address indexed subsidiary, address indexed director);
+
+    /**
+     * @dev Event triggered when subsidiary director ownership has been transferred
+     */
+    event SubsidiaryDirectorOwnershipTransferred(address indexed subsidiary, address indexed previousDirector, address indexed newDirector);
 
     /**
      * @dev Event triggered when entity director ownership has been transferred
      */
-    event DirectorOwnershipTransferred(address indexed subsidiary, address indexed previousDirector, address indexed newDirector);
+    event EntityDirectorOwnershipChanged(address indexed previousDirector, address indexed newDirector);    
 
     /**
      * @dev Register subsidiary in the storage
@@ -284,7 +289,35 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
         require(subsidiaries[subsidiaryAddress].director == msg.sender, "Organization: Only subsidiary director can call this method");
         subsidiaries[subsidiaryAddress].confirmed = true;
-        emit DirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
+        emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
+    }
+
+    /**
+     * @dev Change entity director
+     * @param newEntityDirectorAddress New entity director address
+     */
+    function changeEntityDirector(address newEntityDirectorAddress) external onlyOwner {
+        require(newEntityDirectorAddress != address(0), "Organization: Invalid entity director address");
+        emit EntityDirectorOwnershipChanged(entityDirector, newEntityDirectorAddress);
+        entityDirector = newEntityDirectorAddress;
+    }
+
+    /**
+     * @dev Transfer subsidiary director ownership
+     * @param subsidiaryAddress Subsidiary organization address
+     * @param newSubsidiaryDirector New subsidiary director address
+     */
+    function transferDirectorOwnership(
+        address subsidiaryAddress,
+        address newSubsidiaryDirector
+    ) external onlyOwner {
+        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
+        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(newSubsidiaryDirector != address(0), "Organization: Invalid subsidiary director address");
+        emit SubsidiaryDirectorOwnershipTransferred(subsidiaryAddress, subsidiaries[subsidiaryAddress].director, newSubsidiaryDirector);
+        subsidiaries[subsidiaryAddress].director = newSubsidiaryDirector;
+        subsidiaries[subsidiaryAddress].confirmed = false;
+        OrganizationInterface(subsidiaryAddress).changeEntityDirector(newSubsidiaryDirector);
     }
 
     /**

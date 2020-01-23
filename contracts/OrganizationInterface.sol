@@ -32,10 +32,10 @@ contract OrganizationInterface is IERC165 {
     function owner() public view returns (address);
 
     /**
-     * @dev Allows the current owner to transfer control of the contract to a newOwner.
-     * @param newOwner The address to transfer ownership to.
+     * @dev Change entity director
+     * @param newEntityDirectorAddress New entity director address
      */
-    function transferOwnership(address payable newOwner) public;
+    function changeEntityDirector(address newEntityDirectorAddress) external;
 
     /**
      * @dev Returns the URI of ORG.JSON file stored off-chain.
