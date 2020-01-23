@@ -8,7 +8,6 @@ const {
   createSubsidiary,
   toggleSubsidiary,
   confirmSubsidiaryDirectorOwnership,
-  transferOwnership,
   transferSubsidiaryDirectorOwnership,
   // changeEntityDirector,
   changeOrgJsonUri,
@@ -419,6 +418,8 @@ contract('Organization', (accounts) => {
       });
     });
 
+    // @todo Add test cases for the #createSubsidiaryAndAddToDirectory
+
     describe('toggleSubsidiary(address)', () => {
       
       it('should throw if wrong organization address has been provided', async () => {
@@ -514,23 +515,24 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('transferOwnership(address)', () => {
+    describe('transferOwnership(address)', () => {
+
+      beforeEach(async () => {
+        await confirmSubsidiaryDirectorOwnership(
+          organization,
+          subsidiaryAddress,
+          entityDirectorAccount
+        );
+      });
 
       it('should throw if called by an entity director', async () => {
         await assertRevert(
-          organization.methods['transferOwnership(address)'](nonOwnerAccount).send(
+          subsidiary.methods['transferOwnership(address)'](nonOwnerAccount).send(
             {
               from: entityDirectorAccount
             }
           ),
           'Organization: Only owner can call this method'
-        );
-      });
-
-      it('should transfer ownership of organization and all subsidiaries', async () => {
-        await transferOwnership(
-          organization,
-          nonOwnerAccount
         );
       });
     });

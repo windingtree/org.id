@@ -54,6 +54,9 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // List of subsidiaries 
     mapping (address => Subsidiary) internal subsidiaries;
 
+    // Subsidiaries addresses index (for iteration purposes)
+    address[] public subsidiariesIndex;
+
     /**
      * @dev Event triggered when owner of the organization is changed.
      */
@@ -118,6 +121,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             confirmed,
             director
         );
+        subsidiariesIndex.push(subsidiaryAddress);
         emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
     }
 
@@ -223,7 +227,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             true,
             false,
             subsidiaryDirector
-        );
+        );        
     }
 
     /**
@@ -303,6 +307,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         state = subsidiaries[subsidiaryAddress].state;
         confirmed = subsidiaries[subsidiaryAddress].confirmed;
         director = subsidiaries[subsidiaryAddress].director;
+    }
+
+    /**
+     * @dev Return an array of subsidiaries addresses
+     * @return address[]
+     */
+    function getSubsidiaries() external view returns (address[] memory) {
+        return subsidiariesIndex;
     }
 
     /**

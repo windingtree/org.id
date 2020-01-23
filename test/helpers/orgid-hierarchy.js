@@ -1,5 +1,11 @@
 const { assertEvent } = require('./assertions');
-const { Contracts } = require('@openzeppelin/upgrades');
+const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
+
+ZWeb3.initialize(web3.currentProvider);
+// workaround for https://github.com/zeppelinos/zos/issues/704
+Contracts.setArtifactsDefaults({
+  gas: 60000000,
+});
 const Organization = Contracts.getFromLocal('Organization');
 
 /**
@@ -52,6 +58,9 @@ module.exports.createSubsidiary = async (
   (subsidiaryParams.director).should.equal(entityDirectorAccount);
   (subsidiaryParams.state).should.be.true;
   (subsidiaryParams.confirmed).should.be.false;
+
+  const subsidiary = await Organization.at(subsidiaryAddress);
+  (await subsidiary.methods['owner()']().call()).should.equal(organization.address);
 
   return subsidiaryAddress;
 };
@@ -120,41 +129,6 @@ module.exports.confirmSubsidiaryDirectorOwnership = async (
   ]);
   const subsidiary = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
   (subsidiary.confirmed).should.be.true;
-};
-
-/**
- * Transfer organization ownership to the new owner
- * @param {Object} organization Organization instance
- * @param {string} organizationOwner Organization owner
- * @param {string} newOwnerAccount New organization owner account address
- * @returns {Promise}
- */
-module.exports.transferOwnership = async (
-  organization,
-  organizationOwner,
-  newOwnerAccount
-) => {
-  const result = await organization.methods['transferOwnership(address)'](newOwnerAccount).send(
-    {
-      from: organizationOwner
-    }
-  );
-  assertEvent(result, 'OwnershipTransferred', [
-    [
-      'previousOwner',
-      p => (p).should.equal(organizationOwner)
-    ],
-    [
-      'newOwner',
-      p => (p).should.equal(newOwnerAccount)
-    ]
-  ]);
-  const subsidiaries = await organization.methods['getSubsidiaries()']().call();
-
-  for (let i = 0; i < subsidiaries.length; i++) {
-    const subsidiary = await Organization.at(subsidiaries[i]);
-    (await subsidiary.methods['owner()']().call()).should.equal(newOwnerAccount);
-  }
 };
 
 /**
