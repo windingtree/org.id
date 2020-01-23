@@ -29,7 +29,7 @@ contract OrganizationInterface is IERC165 {
      * @dev Returns the address of the current owner.
      * @return {" ": "Current owner address."}
      */
-    function owner() public view returns (address);
+    function owner() external view returns (address);
 
     /**
      * @dev Change entity director

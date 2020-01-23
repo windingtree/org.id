@@ -619,11 +619,11 @@ contract('Organization', (accounts) => {
       });
     });
 
-    describe.skip('ORG.ID changes', () => {
+    describe('ORG.ID changes', () => {
       const newOrgJsonUri = 'goo.gl/12345';
       const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
 
-      describe.skip('changeOrgJsonUri(string)', () => {
+      describe('changeOrgJsonUri(string)', () => {
       
         it('should throw if called by not an owner or entity director', async () => {
           await assertRevert(
@@ -637,23 +637,15 @@ contract('Organization', (accounts) => {
         });
   
         it('should change OrgJsonUri', async () => {
-          // By the director
           await changeOrgJsonUri(
             subsidiary,
             entityDirectorAccount,
             newOrgJsonUri
           );
-          
-          // By the owner
-          await changeOrgJsonUri(
-            subsidiary,
-            organizationOwner,
-            newOrgJsonUri
-          );
         });
       });
   
-      describe.skip('changeOrgJsonHash(bytes32)', () => {
+      describe('changeOrgJsonHash(bytes32)', () => {
   
         it('should throw if called by not an owner or entity director', async () => {
           await assertRevert(
@@ -667,23 +659,15 @@ contract('Organization', (accounts) => {
         });
   
         it('should change OrgJsonUri', async () => {
-          // By the director
           await changeOrgJsonHash(
             subsidiary,
             entityDirectorAccount,
             newOrgJsonHash
           );
-          
-          // By the owner
-          await changeOrgJsonHash(
-            subsidiary,
-            organizationOwner,
-            newOrgJsonHash
-          );
         });
       });
   
-      describe.skip('changeOrgJsonUriAndHash(string,bytes32)', () => {
+      describe('changeOrgJsonUriAndHash(string,bytes32)', () => {
   
         it('should throw if called by not an owner or entity director', async () => {
           await assertRevert(
@@ -700,18 +684,9 @@ contract('Organization', (accounts) => {
         });
   
         it('should change OrgJsonUri', async () => {
-          // By the director
           await changeOrgJsonUriAndHash(
             subsidiary,
             entityDirectorAccount,
-            newOrgJsonUri,
-            newOrgJsonHash
-          );
-          
-          // By the owner
-          await changeOrgJsonUriAndHash(
-            subsidiary,
-            organizationOwner,
             newOrgJsonUri,
             newOrgJsonHash
           );

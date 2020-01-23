@@ -108,29 +108,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     event EntityDirectorOwnershipChanged(address indexed previousDirector, address indexed newDirector);    
 
     /**
-     * @dev Register subsidiary in the storage
-     * @param subsidiaryAddress Subsidiary organization address
-     * @param state Subsidiary state
-     * @param confirmed Subsidiary director ownership confirmation status
-     * @param director Subsidiary director address
-     */
-    function registerSubsidiary(
-        address subsidiaryAddress,
-        bool state,
-        bool confirmed,
-        address director
-    ) internal {
-        subsidiaries[subsidiaryAddress] = Subsidiary(
-            subsidiaryAddress,
-            state,
-            confirmed,
-            director
-        );
-        subsidiariesIndex.push(subsidiaryAddress);
-        emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
-    }
-
-    /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _orgJsonUri pointer to Organization data
@@ -182,31 +159,13 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
-     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
+     * @dev Throws if called by any account other than the owner or entity director.
      */
-    function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwner {
-        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
-        emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
-        orgJsonUri = _orgJsonUri;
-    }
-
-    /**
-     * @dev Returns current orgJsonUri
-     * @return {" ": "Current orgJsonUri."}
-     */
-    function getOrgJsonUri() external view returns (string memory) {
-        return orgJsonUri;
-    }
-
-    /**
-     * @dev `changeOrgJsonHash` Allows owner to change Organization's orgJsonHash.
-     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents.
-     */
-    function changeOrgJsonHash(bytes32 _orgJsonHash) public onlyOwner {
-        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
-        emit OrgJsonHashChanged(orgJsonHash, _orgJsonHash);
-        orgJsonHash = _orgJsonHash;
+    modifier onlyOwnerOrDirector() {
+        require(
+            msg.sender == _owner || msg.sender == entityDirector, 
+            'Organization: Only owner or entity director can call this method');
+        _;
     }
 
     /**
@@ -351,6 +310,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
+     * @dev Returns current orgJsonUri
+     * @return {" ": "Current orgJsonUri."}
+     */
+    function getOrgJsonUri() external view returns (string memory) {
+        return orgJsonUri;
+    }
+
+    /**
      * @dev Returns keccak256 hash of raw ORG.JSON contents. This should
      * be used to verify that the contents of ORG.JSON has not been tampered
      * with. It is a responsibility of the Organization owner to keep this
@@ -366,7 +333,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
-    function changeOrgJsonUriAndHash(string memory _orgJsonUri, bytes32 _orgJsonHash) public onlyOwner {
+    function changeOrgJsonUriAndHash(string calldata _orgJsonUri, bytes32 _orgJsonHash) external onlyOwnerOrDirector {
         changeOrgJsonUri(_orgJsonUri);
         changeOrgJsonHash(_orgJsonHash);
     }
@@ -376,7 +343,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param addr Associated Ethereum address
      * @return {" ": "Address of the added associatedKey"}
      */
-    function addAssociatedKey(address addr) public onlyOwner returns(address) {
+    function addAssociatedKey(address addr) external onlyOwner returns(address) {
         require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
         associatedKeysIndex[addr] = associatedKeys.length;
@@ -389,7 +356,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Removes an associated key. Only owner can call this.
      * @param addr Associated Ethereum address
      */
-    function removeAssociatedKey(address addr) public onlyOwner {
+    function removeAssociatedKey(address addr) external onlyOwner {
         require(addr != address(0), 'Organization: Cannot remove associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] != uint(0), 'Organization: Cannot remove unknown organization');
         delete associatedKeys[associatedKeysIndex[addr]];
@@ -417,7 +384,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Allows the current owner to transfer control of the contract to a newOwner.
      * @param newOwner The address to transfer ownership to.
      */
-    function transferOwnership(address payable newOwner) public onlyOwner {
+    function transferOwnership(address payable newOwner) external onlyOwner {
         require(newOwner != address(0), 'Organization: Cannot transfer to 0x0 address');
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
@@ -426,10 +393,29 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Returns the address of the current owner.
      */
-    function owner() public view returns (address) {
+    function owner() external view returns (address) {
         return _owner;
     }
 
+    /**
+     * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
+     */
+    function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwnerOrDirector {
+        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
+        emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
+        orgJsonUri = _orgJsonUri;
+    }
+
+    /**
+     * @dev `changeOrgJsonHash` Allows owner to change Organization's orgJsonHash.
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents.
+     */
+    function changeOrgJsonHash(bytes32 _orgJsonHash) public onlyOwnerOrDirector {
+        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
+        emit OrgJsonHashChanged(orgJsonHash, _orgJsonHash);
+        orgJsonHash = _orgJsonHash;
+    }
 
     /**
      * @dev A synchronization method that should be kept up to date with 
@@ -453,5 +439,28 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
                 _registerInterface(interfaceIds[i]);
             }
         }
+    }
+
+    /**
+     * @dev Register subsidiary in the storage
+     * @param subsidiaryAddress Subsidiary organization address
+     * @param state Subsidiary state
+     * @param confirmed Subsidiary director ownership confirmation status
+     * @param director Subsidiary director address
+     */
+    function registerSubsidiary(
+        address subsidiaryAddress,
+        bool state,
+        bool confirmed,
+        address director
+    ) internal {
+        subsidiaries[subsidiaryAddress] = Subsidiary(
+            subsidiaryAddress,
+            state,
+            confirmed,
+            director
+        );
+        subsidiariesIndex.push(subsidiaryAddress);
+        emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
     }
 }
