@@ -20,6 +20,8 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
         return _owner;
     }
 
+    function changeEntityDirector(address newEntityDirectorAddress) external {}
+
     function getOrgJsonUri() external view returns (string memory) {
         return "https://super-sweet-custom-organization.com";
     }

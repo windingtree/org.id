@@ -235,7 +235,14 @@ contract('SegmentDirectory', (accounts) => {
       organizationProxy = await project.createProxy(Organization, {
         from: segmentDirectoryOwner,
         initFunction: 'initialize',
-        initArgs: [organizationAccount, 'orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99'],
+        initArgs: [
+          organizationAccount,
+          'orgJsonUri',
+          '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
+          organizationFactory.address,
+          help.zeroAddress,
+          help.zeroAddress
+        ],
       });
       organization = await Organization.at(organizationProxy.address);
     });
