@@ -100,7 +100,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when subsidiary director ownership has been transferred
      */
-    event SubsidiaryDirectorOwnershipTransferred(address indexed subsidiary, address indexed previousDirector, address indexed newDirector);
+    event SubsidiaryDirectorOwnershipTransferred(
+        address indexed subsidiary,
+        address indexed previousDirector,
+        address indexed newDirector
+    );
 
     /**
      * @dev Event triggered when entity director ownership has been transferred
@@ -246,7 +250,10 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) external {
         require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
         require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
-        require(subsidiaries[subsidiaryAddress].director == msg.sender, "Organization: Only subsidiary director can call this method");
+        require(
+            subsidiaries[subsidiaryAddress].director == msg.sender,
+            "Organization: Only subsidiary director can call this method"
+        );
         subsidiaries[subsidiaryAddress].confirmed = true;
         emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
     }
@@ -273,7 +280,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
         require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
         require(newSubsidiaryDirector != address(0), "Organization: Invalid subsidiary director address");
-        emit SubsidiaryDirectorOwnershipTransferred(subsidiaryAddress, subsidiaries[subsidiaryAddress].director, newSubsidiaryDirector);
+        emit SubsidiaryDirectorOwnershipTransferred(
+            subsidiaryAddress,
+            subsidiaries[subsidiaryAddress].director,
+            newSubsidiaryDirector
+        );
         subsidiaries[subsidiaryAddress].director = newSubsidiaryDirector;
         subsidiaries[subsidiaryAddress].confirmed = false;
         OrganizationInterface(subsidiaryAddress).changeEntityDirector(newSubsidiaryDirector);
