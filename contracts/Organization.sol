@@ -182,7 +182,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector
-    ) external onlyOwner {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
         address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
             _orgJsonUri,
@@ -210,7 +210,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         bytes32 _orgJsonHash,
         address subsidiaryDirector,
         address directory
-    ) external onlyOwner {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
         address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
             _orgJsonUri,

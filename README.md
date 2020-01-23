@@ -196,7 +196,7 @@ interact with the Directory only with the updated ABI which is distributed
 via NPM (under the new version number). No data is lost.
 
 **How do I work with different organization versions on the client?**
-That should be possible by using an ABI of `OrganizationInterface` on the client side.
+That should be possible by using an ABI of `OrganizationInterface` on the client side.  
 
 ### Contract upgrade process
 

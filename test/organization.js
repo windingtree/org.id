@@ -412,7 +412,7 @@ contract('Organization', (accounts) => {
         );
       });
 
-      it('shoudl throw if called by not an organization owner', async () => {
+      it('shoudl throw if called by not an organization owner or director', async () => {
         await assertRevert(
           organization.methods['createSubsidiary(string,bytes32,address)'](
             organizationUri,
@@ -423,17 +423,28 @@ contract('Organization', (accounts) => {
               from: nonOwnerAccount
             }
           ),
-          'Organization: Only owner can call this method'
+          'Organization: Only owner or entity director can call this method'
         );
       });
 
       // @todo Add test-case for 'empty Uri and Hash'
 
       it('should create a new subsidiary', async () => {
-        await createSubsidiary(
+        // By owner
+        const subsidiaryAddress = await createSubsidiary(
           organization,
           organizationOwner,
           entityDirectorAccount,
+          organizationUri,
+          organizationHash
+        );
+        const subsidiary = await Organization.at(subsidiaryAddress);
+        
+        // By director
+        await createSubsidiary(
+          subsidiary,
+          entityDirectorAccount,
+          nonOwnerAccount,
           organizationUri,
           organizationHash
         );
