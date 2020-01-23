@@ -211,8 +211,17 @@ contract('OrganizationFactory', (accounts) => {
   describe('createAndAddToDirectory', () => {
     it('should create and add an organization to a selected directory', async () => {
       // First emulate the transaction, then actually run it
-      const address = await abstractOrganizationFactory.createAndAddToDirectory.call('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address);
-      const receipt = await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address, { from: organizationAccount });
+      const address = await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)'].call(
+        'orgJsonUri',
+        '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
+        abstractDirectory.address
+      );
+      const receipt = await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)'](
+        'orgJsonUri',
+        '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
+        abstractDirectory.address,
+        { from: organizationAccount }
+      );
       const organization = await OrganizationInterface.at(address);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
@@ -231,7 +240,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to a zero address directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', help.zeroAddress, { from: organizationAccount });
+        await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)']('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -240,7 +249,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to an address with no directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractOrganizationFactory.address, { from: organizationAccount });
+        await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)']('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractOrganizationFactory.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
