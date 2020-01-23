@@ -100,6 +100,28 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     event DirectorOwnershipTransferred(address indexed subsidiary, address indexed previousDirector, address indexed newDirector);
 
     /**
+     * @dev Register subsidiary in the storage
+     * @param subsidiaryAddress Subsidiary organization address
+     * @param state Subsidiary state
+     * @param confirmed Subsidiary director ownership confirmation status
+     * @param director Subsidiary director address
+     */
+    function registerSubsidiary(
+        address subsidiaryAddress,
+        bool state,
+        bool confirmed,
+        address director
+    ) internal {
+        subsidiaries[subsidiaryAddress] = Subsidiary(
+            subsidiaryAddress,
+            state,
+            confirmed,
+            director
+        );
+        emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
+    }
+
+    /**
      * @dev Initializer for upgradeable contracts.
      * @param __owner The address of the contract owner
      * @param _orgJsonUri pointer to Organization data
@@ -196,13 +218,41 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             address(this),
             subsidiaryDirector
         );
-        subsidiaries[subsidiaryAddress] = Subsidiary(
+        registerSubsidiary(
             subsidiaryAddress,
             true,
             false,
             subsidiaryDirector
         );
-        emit SubsidiaryCreated(msg.sender, subsidiaryDirector, subsidiaryAddress);
+    }
+
+    /**
+     * @dev Create subsidiary and add it to a segment directory
+     * @param _orgJsonUri orgJsonUri pointer
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param subsidiaryDirector Subsidiary director address
+     * @param directory Segment directory address
+     */
+    function createSubsidiaryAndAddToDirectory(
+        string calldata _orgJsonUri,
+        bytes32 _orgJsonHash,
+        address subsidiaryDirector,
+        address directory
+    ) external onlyOwner {
+        require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
+        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
+            _orgJsonUri,
+            _orgJsonHash,
+            directory,
+            address(this),
+            subsidiaryDirector
+        );
+        registerSubsidiary(
+            subsidiaryAddress,
+            true,
+            false,
+            subsidiaryDirector
+        );
     }
 
     /**
