@@ -367,7 +367,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param addr Associated Ethereum address
      * @return {" ": "Address of the added associatedKey"}
      */
-    function addAssociatedKey(address addr) external onlyOwner returns(address) {
+    function addAssociatedKey(address addr) external onlyOwnerOrDirector returns(address) {
         require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
         associatedKeysIndex[addr] = associatedKeys.length;
@@ -380,7 +380,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Removes an associated key. Only owner can call this.
      * @param addr Associated Ethereum address
      */
-    function removeAssociatedKey(address addr) external onlyOwner {
+    function removeAssociatedKey(address addr) external onlyOwnerOrDirector {
         require(addr != address(0), 'Organization: Cannot remove associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] != uint(0), 'Organization: Cannot remove unknown organization');
         delete associatedKeys[associatedKeysIndex[addr]];
