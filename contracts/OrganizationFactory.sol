@@ -39,17 +39,32 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
      * See the reasoning on https://github.com/windingtree/wt-contracts/pull/241#issuecomment-501726595
      * 
      * Emits `OrganizationCreated` on success.
-     * @param  orgJsonUri Organization's data pointer
-     * @param  orgJsonHash Organization's data hash
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param parentEntity Parent organization address
+     * @param entityDirector Subsidiary director address
      * @return {" ": "Address of the new organization."}
      */
-    function createOrganization(string memory orgJsonUri, bytes32 orgJsonHash) internal returns (address) {
+    function createOrganization(
+        string memory orgJsonUri, 
+        bytes32 orgJsonHash,
+        address parentEntity,
+        address entityDirector
+    ) internal returns (address) {
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string,bytes32)", msg.sender, orgJsonUri, orgJsonHash)
+                abi.encodeWithSignature(
+                    "initialize(address,string,bytes32,address,address,address)",
+                    msg.sender,
+                    orgJsonUri,
+                    orgJsonHash,
+                    address(this),
+                    parentEntity,
+                    entityDirector
+                )
             )
         );
         emit OrganizationCreated(newOrganizationAddress);
@@ -59,39 +74,42 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
     }
 
     /**
-     * @dev `create` proxies and externalizes createOrganization
-     * @param  orgJsonUri Organization's data pointer
-     * @param  orgJsonHash Organization's data hash
-     * @return {" ": "Address of the new organization."}
-     */
-    function create(string calldata orgJsonUri, bytes32 orgJsonHash) external returns (address) {
-        return createOrganization(orgJsonUri, orgJsonHash);
-    }
-
-    /**
-     * @dev `createAndAddToDirectory` Creates the organization contract and tries to add it
+     * @dev `createOrganizationAndAddToDirectory` Creates the organization contract and tries to add it
      * to a SegmentDirectory living on the passed `directory` address.
      *
      * We cannot reuse create call due to the Organization ownership restrictions.
      * 
-     * @param  orgJsonUri Organization's data pointer
-     * @param  orgJsonHash Organization's data hash
-     * @param  directory Segment directory's address
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param directory Segment directory's address
+     * @param parentEntity Parent organization address
+     * @param entityDirector Subsidiary director address
      * @return {" ": "Address of the new organization."}
      */
-    function createAndAddToDirectory(
-        string calldata orgJsonUri,
+    function createOrganizationAndAddToDirectory(
+        string memory orgJsonUri,
         bytes32 orgJsonHash,
-        address directory
-    ) external returns (address) {
-        // TODO rewrite so that directory address gets known from entrypoint #248
+        address directory,
+        address parentEntity,
+        address entityDirector
+    ) internal returns (address) {
+        // @todo rewrite so that directory address gets known from entrypoint #248
+        // see https://github.com/windingtree/wt-contracts/issues/248
         require(directory != address(0), 'OrganizationFactory: Cannot use directory with 0x0 address');
         address newOrganizationAddress = address(
             app.create(
                 "wt-contracts", 
                 "Organization", 
                 _owner, 
-                abi.encodeWithSignature("initialize(address,string,bytes32)", address(this), orgJsonUri, orgJsonHash)
+                abi.encodeWithSignature(
+                    "initialize(address,string,bytes32,address,address,address)", 
+                    address(this), 
+                    orgJsonUri, 
+                    orgJsonHash,
+                    address(this),
+                    parentEntity,
+                    entityDirector
+                )
             )
         );
         AbstractSegmentDirectory sd = AbstractSegmentDirectory(directory);
@@ -102,6 +120,89 @@ contract OrganizationFactory is Initializable, AbstractOrganizationFactory {
         o.transferOwnership(msg.sender);
         emit OrganizationCreated(newOrganizationAddress);
         return newOrganizationAddress;
+    }
+
+    /**
+     * @dev `create` proxies and externalizes createOrganization
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @return {" ": "Address of the new organization."}
+     */
+    function create(
+        string calldata orgJsonUri, 
+        bytes32 orgJsonHash
+    ) external returns (address) {
+        return createOrganization(orgJsonUri, orgJsonHash, address(0), address(0));
+    }
+
+    /**
+     * @dev This version of 'create' is dedicated to creation of subsidiaries
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param parentEntity Parent organization address
+     * @param entityDirector Subsidiary director address
+     * @return {" ": "Address of the new organization."}
+     */
+    function create(
+        string calldata orgJsonUri, 
+        bytes32 orgJsonHash,
+        address parentEntity,
+        address entityDirector
+    ) external returns (address) {
+        return createOrganization(
+            orgJsonUri, 
+            orgJsonHash, 
+            parentEntity, 
+            entityDirector
+        );
+    }
+
+    /**
+     * @dev `createAndAddToDirectory` proxies and externalizes create organization and add it
+     * to a SegmentDirectory living on the passed `directory` address.
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param directory Segment directory's address
+     * @return {" ": "Address of the new organization."}
+     */
+    function createAndAddToDirectory(
+        string calldata orgJsonUri, 
+        bytes32 orgJsonHash,
+        address directory
+    ) external returns (address) {
+        return createOrganizationAndAddToDirectory(
+            orgJsonUri, 
+            orgJsonHash, 
+            directory,
+            address(0), 
+            address(0)
+        );
+    }
+
+    /**
+     * @dev This version of 'createAndAddToDirectory' is dedicated to creation of subsidiary and add it
+     * to a SegmentDirectory living on the passed `directory` address.
+     * @param orgJsonUri Organization's data pointer
+     * @param orgJsonHash Organization's data hash
+     * @param directory Segment directory's address
+     * @param parentEntity Parent organization address
+     * @param entityDirector Subsidiary director address
+     * @return {" ": "Address of the new organization."}
+     */
+    function createAndAddToDirectory(
+        string calldata orgJsonUri, 
+        bytes32 orgJsonHash,
+        address directory,
+        address parentEntity,
+        address entityDirector
+    ) external returns (address) {
+        return createOrganizationAndAddToDirectory(
+            orgJsonUri, 
+            orgJsonHash, 
+            directory,
+            parentEntity, 
+            entityDirector
+        );
     }
 
     /**

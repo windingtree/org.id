@@ -196,7 +196,28 @@ interact with the Directory only with the updated ABI which is distributed
 via NPM (under the new version number). No data is lost.
 
 **How do I work with different organization versions on the client?**
-That should be possible by using an ABI of `OrganizationInterface` on the client side.
+That should be possible by using an ABI of `OrganizationInterface` on the client side.  
+
+### Organizations hierarchy
+
+Organizations can have subsidiaries. The subsidiary is like a regular organization but linked with a parent organization and can be managed by a special role - `entityDirector`. This director can use the following methods: `changeOrgJsonUri`, `changeOrgJsonHash`, `changeOrgJsonUriAndHash`, `addAssociatedKey`, `removeAssociatedKey` but cannot transfer organization ownership. Organization ownership transferring, enabling or disabling subsidiaries, changing of the subsidiary director are available only for a parent organization owner (via parent organization interface).  
+
+For the creation of a new subsidiary owner of the organization (or its entity director) should use the following functions of `Organization` contract:
+- `createSubsidiary` with parameters: `orgJsonUri` (string type), `orgJsonHash` (bytes32 type), `subsidiaryDirector` (address type). 
+- `createSubsidiaryAndAddToDirectory` with parameters: `orgJsonUri` (string type), `orgJsonHash` (bytes32 type), `subsidiaryDirector` (address type), `directory` (address type). This function also will add a new subsidiary organization to the provided directory.  
+As a result of the function execution, will be obtained an address of the subsidiary organization.   
+
+The director of the subsidiary has to confirm his ownership using the function `confirmSubsidiaryDirectorOwnership` with parameter `subsidiaryAddress` (address type). Subsidiaries, where the director does not confirm his ownership rights, are not shown in the public list of subsidiaries that available via getter `getSubsisiaries`.  
+
+For the change of the subsidiary status (enabled/disabled) owner of the parent organization can use the function:  
+- `toggleSubsidiary` with parameter `subsidiaryAddress` (address type).  
+Disabled subsidiaries are not shown in the public subsidiaries list available via getter `getSubsidiaries`.  
+
+For getting the address of the parent organization can be used public getter `parentEntity`.   
+
+For getting the account address of the director can be used public getter  `entityDirector`.  
+
+For getting current information about the subsidiary can be used function `getSubsidiary` with parameter `subsidiaryAddress` (address type). This function will return the following options: `id` - subsidiary address (address type), `state` - subsidiary state (boolean type), `confirmed` - director ownership confirmation status, `director` - account address of the director.  
 
 ### Contract upgrade process
 

@@ -3,9 +3,11 @@ const _ = require('lodash');
 const ethJsUtil = require('ethereumjs-util');
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
+const notExistedAddress = '0x6C12f4A31A1A4b4257fFB77f553156165B827822';
 
 module.exports = {
   zeroAddress: zeroAddress,
+  notExistedAddress: notExistedAddress,
 
   isZeroAddress: function (val) {
     return val === zeroAddress;
@@ -40,8 +42,8 @@ module.exports = {
     return web3utils.toChecksumAddress(
       ethJsUtil.bufferToHex(ethJsUtil.generateAddress(
         sender,
-        nonce
-      )
+        nonce,
+      ),
       ));
   },
 

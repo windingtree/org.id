@@ -211,8 +211,17 @@ contract('OrganizationFactory', (accounts) => {
   describe('createAndAddToDirectory', () => {
     it('should create and add an organization to a selected directory', async () => {
       // First emulate the transaction, then actually run it
-      const address = await abstractOrganizationFactory.createAndAddToDirectory.call('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address);
-      const receipt = await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractDirectory.address, { from: organizationAccount });
+      const address = await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)'].call(
+        'orgJsonUri',
+        '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
+        abstractDirectory.address
+      );
+      const receipt = await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)'](
+        'orgJsonUri',
+        '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
+        abstractDirectory.address,
+        { from: organizationAccount }
+      );
       const organization = await OrganizationInterface.at(address);
       const info = await help.getOrganizationInfo(organization);
       assert.equal(info.owner, organizationAccount);
@@ -231,7 +240,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to a zero address directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', help.zeroAddress, { from: organizationAccount });
+        await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)']('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', help.zeroAddress, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -240,7 +249,7 @@ contract('OrganizationFactory', (accounts) => {
 
     it('should throw when trying to add to an address with no directory', async () => {
       try {
-        await abstractOrganizationFactory.createAndAddToDirectory('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractOrganizationFactory.address, { from: organizationAccount });
+        await abstractOrganizationFactory.methods['createAndAddToDirectory(string,bytes32,address)']('orgJsonUri', '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99', abstractOrganizationFactory.address, { from: organizationAccount });
         assert(false);
       } catch (e) {
         assert(help.isInvalidOpcodeEx(e));
@@ -275,7 +284,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        1, 5
+        1, 5,
       );
       for (const organization of organizations.slice(1, 5)) {
         if (help.isZeroAddress(organization)) {
@@ -298,7 +307,7 @@ contract('OrganizationFactory', (accounts) => {
         await upgradeOrganizationsScript.upgradeOrganizations(
           web3.currentProvider,
           Accounts.privateKeyToAccount('0xf809d1a2969bec37e7c14628717092befa82156fb2ebf935ac5420bc522f0d29'),
-          organizationFactory.address
+          organizationFactory.address,
         );
       } catch (e) {
         assert.match(e.message, /cannot work on organizationfactory/i);
@@ -311,7 +320,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        0, 1
+        0, 1,
       );
       assert(true);
     });
@@ -322,7 +331,7 @@ contract('OrganizationFactory', (accounts) => {
         factoryOwnerAccount,
         organizationFactory.address,
         newImplementation,
-        3, 3
+        3, 3,
       );
       assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[1])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);
       assert.equal(await (await AdminUpgradeabilityProxy.at(organizations[2])).methods.implementation().call({ from: organizationFactoryOwner }), origImplementation);

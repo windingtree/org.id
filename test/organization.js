@@ -1,7 +1,17 @@
 const TestHelper = require('./helpers/zostest');
 const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
-const assert = require('chai').assert;
 const help = require('./helpers/index.js');
+const { assertRevert } = require('./helpers/assertions');
+const {
+  createSubsidiary,
+  toggleSubsidiary,
+  confirmSubsidiaryDirectorOwnership,
+  transferSubsidiaryDirectorOwnership,
+  // changeEntityDirector,
+  changeOrgJsonUri,
+  changeOrgJsonHash,
+  changeOrgJsonUriAndHash
+} = require('./helpers/orgid-hierarchy');
 
 ZWeb3.initialize(web3.currentProvider);
 // workaround for https://github.com/zeppelinos/zos/issues/704
@@ -12,24 +22,44 @@ Contracts.setArtifactsDefaults({
 const Organization = Contracts.getFromLocal('Organization');
 const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
+const OrganizationFactory = Contracts.getFromLocal('OrganizationFactory');
+
+const { assert, should } = require('chai');
+should();
 
 contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
   const organizationHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
   const organizationOwner = accounts[1];
-  const proxyOwner = accounts[2];
-  const nonOwnerAccount = accounts[3];
-
+  const organizationFactoryOwner = accounts[2];
+  const proxyOwner = accounts[3];
+  const nonOwnerAccount = accounts[4];
+  const entityDirectorAccount = accounts[5];
+  
   let organizationProxy;
   let organization;
+  let organizationFactory;
   let project;
 
   beforeEach(async () => {
     project = await TestHelper();
+    const organizationFactoryProxy = await project.createProxy(OrganizationFactory, {
+      from: organizationFactoryOwner,
+      initFunction: 'initialize',
+      initArgs: [organizationFactoryOwner, project.app.address],
+    });
+    organizationFactory = await OrganizationFactory.at(organizationFactoryProxy.address);
     organizationProxy = await project.createProxy(Organization, {
       from: proxyOwner,
       initFunction: 'initialize',
-      initArgs: [organizationOwner, organizationUri, organizationHash],
+      initArgs: [
+        organizationOwner,
+        organizationUri,
+        organizationHash,
+        organizationFactory.address,
+        help.zeroAddress,
+        help.zeroAddress
+      ],
     });
     organization = await Organization.at(organizationProxy.address);
   });
@@ -49,7 +79,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: ['0x0000000000000000000000000000000000000000', organizationUri, organizationHash],
+          initArgs: [
+            help.zeroAddress,
+            organizationUri,
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -63,7 +100,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, '', organizationHash],
+          initArgs: [
+            organizationOwner,
+            '',
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -77,7 +121,14 @@ contract('Organization', (accounts) => {
         await tProject.createProxy(Organization, {
           from: proxyOwner,
           initFunction: 'initialize',
-          initArgs: [organizationOwner, organizationUri, '0x0000000000000000000000000000000000000000000000000000000000000000'],
+          initArgs: [
+            organizationOwner,
+            organizationUri,
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
         });
         assert(false);
       } catch (e) {
@@ -326,6 +377,528 @@ contract('Organization', (accounts) => {
     it('should return true for a associatedKey', async () => {
       await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
       assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), true);
+    });
+  });
+
+  describe('ORG.ID Hierarchy', () => {
+    let subsidiaryAddress;
+    let subsidiary;
+
+    beforeEach(async () => {
+      subsidiaryAddress = await createSubsidiary(
+        organization,
+        organizationOwner,
+        entityDirectorAccount,
+        organizationUri,
+        organizationHash
+      );
+      subsidiary = await Organization.at(subsidiaryAddress);
+    });
+
+    describe('createSubsidiary(string,bytes32,address)', () => {
+
+      it('should throw if zero address of the entity director has been provided', async () => {
+        await assertRevert(
+          organization.methods['createSubsidiary(string,bytes32,address)'](
+            organizationUri,
+            organizationHash,
+            help.zeroAddress
+          ).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid entity director address'
+        );
+      });
+
+      it('shoudl throw if called by not an organization owner or director', async () => {
+        await assertRevert(
+          organization.methods['createSubsidiary(string,bytes32,address)'](
+            organizationUri,
+            organizationHash,
+            entityDirectorAccount
+          ).send(
+            {
+              from: nonOwnerAccount
+            }
+          ),
+          'Organization: Only owner or entity director can call this method'
+        );
+      });
+
+      // @todo Add test-case for 'empty Uri and Hash'
+
+      it('should create a new subsidiary', async () => {
+        // By owner
+        const subsidiaryAddress = await createSubsidiary(
+          organization,
+          organizationOwner,
+          entityDirectorAccount,
+          organizationUri,
+          organizationHash
+        );
+        const subsidiary = await Organization.at(subsidiaryAddress);
+        
+        // By director
+        await createSubsidiary(
+          subsidiary,
+          entityDirectorAccount,
+          nonOwnerAccount,
+          organizationUri,
+          organizationHash
+        );
+      });
+    });
+
+    // @todo Add test cases for the #createSubsidiaryAndAddToDirectory
+
+    describe('toggleSubsidiary(address)', () => {
+      
+      it('should throw if wrong organization address has been provided', async () => {
+        // zero-address
+        await assertRevert(
+          organization.methods['toggleSubsidiary(address)'](help.zeroAddress).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid subsidiary address'
+        );
+
+        // unknown address
+        await assertRevert(
+          organization.methods['toggleSubsidiary(address)'](help.notExistedAddress).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Subsidiary not found'
+        );
+      });
+
+      it('should toggle subsidiary organization state', async () => {
+        await toggleSubsidiary(
+          organization,
+          organizationOwner,
+          subsidiaryAddress
+        );
+      });
+    });
+
+    describe('confirmSubsidiaryDirectorOwnership(address)', () => {
+      
+      it('should throw if wrong organization address has been provided', async () => {
+        // zero-address
+        await assertRevert(
+          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](help.zeroAddress).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Invalid subsidiary address'
+        );
+
+        // unknown address
+        await assertRevert(
+          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](help.notExistedAddress).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Subsidiary not found'
+        );
+      });
+
+      it('should throw if director trying to confirm not own subsidiary', async () => {
+        const anotherSubsidiaryAddress = await createSubsidiary(
+          organization,
+          organizationOwner,
+          nonOwnerAccount,
+          organizationUri,
+          organizationHash
+        );
+        await assertRevert(
+          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](anotherSubsidiaryAddress).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Only subsidiary director can call this method'
+        );
+      });
+
+      it('should throw if called by unknown director address', async () => {
+        await assertRevert(
+          organization.methods['confirmSubsidiaryDirectorOwnership(address)'](subsidiaryAddress).send(
+            {
+              from: nonOwnerAccount
+            }
+          ),
+          'Organization: Only subsidiary director can call this method'
+        );
+      });
+
+      it('should confirm subsidiary director ownership', async () => {
+        await confirmSubsidiaryDirectorOwnership(
+          organization,
+          subsidiaryAddress,
+          entityDirectorAccount
+        );
+      });
+    });
+
+    describe('transferOwnership(address)', () => {
+
+      beforeEach(async () => {
+        await confirmSubsidiaryDirectorOwnership(
+          organization,
+          subsidiaryAddress,
+          entityDirectorAccount
+        );
+      });
+
+      it('should throw if called by an entity director', async () => {
+        await assertRevert(
+          subsidiary.methods['transferOwnership(address)'](nonOwnerAccount).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Only owner can call this method'
+        );
+      });
+    });
+
+    describe('transferDirectorOwnership(address,address)', () => {
+
+      it('should throw if wrong subsidiary address has been provided', async () => {
+        // zero subsidiary address
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address,address)'](
+            help.zeroAddress,
+            nonOwnerAccount
+          ).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid subsidiary address'
+        );
+
+        // unknown subsidiary address
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address,address)'](
+            help.notExistedAddress,
+            nonOwnerAccount
+          ).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Subsidiary not found'
+        );
+      });
+
+      it('should throw if wrong director address has been provided', async () => {
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address,address)'](
+            subsidiaryAddress,
+            help.zeroAddress
+          ).send(
+            {
+              from: organizationOwner
+            }
+          ),
+          'Organization: Invalid subsidiary director address'
+        );
+      });
+
+      it('should throw if called not by owner', async () => {
+        await assertRevert(
+          organization.methods['transferDirectorOwnership(address,address)'](
+            subsidiaryAddress,
+            nonOwnerAccount
+          ).send(
+            {
+              from: nonOwnerAccount
+            }
+          ),
+          'Organization: Only owner can call this method'
+        );
+      });
+
+      it('should transfer subsidiary ownership', async () => {
+        await transferSubsidiaryDirectorOwnership(
+          organization.address,
+          subsidiaryAddress,
+          organizationOwner,
+          nonOwnerAccount
+        );
+      });
+    });
+
+    describe('changeEntityDirector(address)', () => {
+
+      it('should throw if called by not a parent entity', async () => {
+        await assertRevert(
+          organization.methods['changeEntityDirector(address)'](nonOwnerAccount).send(
+            {
+              from: entityDirectorAccount
+            }
+          ),
+          'Organization: Only owner can call this method'
+        );
+      });
+    });
+
+    describe('ORG.ID changes', () => {
+      const newOrgJsonUri = 'goo.gl/12345';
+      const newOrgJsonHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
+
+      describe('changeOrgJsonUri(string)', () => {
+      
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonUri(string)'](newOrgJsonUri).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          await changeOrgJsonUri(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonUri
+          );
+        });
+      });
+  
+      describe('changeOrgJsonHash(bytes32)', () => {
+  
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonHash(bytes32)'](newOrgJsonHash).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          await changeOrgJsonHash(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonHash
+          );
+        });
+      });
+  
+      describe('changeOrgJsonUriAndHash(string,bytes32)', () => {
+  
+        it('should throw if called by not an owner or entity director', async () => {
+          await assertRevert(
+            subsidiary.methods['changeOrgJsonUriAndHash(string,bytes32)'](
+              newOrgJsonUri,
+              newOrgJsonHash
+            ).send(
+              {
+                from: nonOwnerAccount
+              }
+            ),
+            'Organization: Only owner or entity director can call this method'
+          );
+        });
+  
+        it('should change OrgJsonUri', async () => {
+          await changeOrgJsonUriAndHash(
+            subsidiary,
+            entityDirectorAccount,
+            newOrgJsonUri,
+            newOrgJsonHash
+          );
+        });
+      });
+    });
+
+    describe('Subsidiary getters', () => {
+
+      beforeEach(async () => {
+        organizationProxy = await project.createProxy(Organization, {
+          from: proxyOwner,
+          initFunction: 'initialize',
+          initArgs: [
+            organizationOwner,
+            organizationUri,
+            organizationHash,
+            organizationFactory.address,
+            help.zeroAddress,
+            help.zeroAddress
+          ],
+        });
+        organization = await Organization.at(organizationProxy.address);
+      });
+
+      describe('getSubsidiaries()', () => {
+
+        it('should return an empty array if no subsidiaries has been created', async () => {
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
+
+        it('should return an empty array if subsidiary has been created by disabled', async () => {
+          // Create a subsidiary
+          const subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          // Confirm director ownership
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          // and disable this subsidiary
+          await toggleSubsidiary(
+            organization,
+            organizationOwner,
+            subsidiaryAddress
+          );
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
+  
+        it('should not return subsidiaries that has not confirmed ownership by the director', async () => {
+          await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          ((await organization.methods['getSubsidiaries()']().call()).length).should.equal(0);
+        });
+  
+        it('should return subsidiaries list', async () => {
+          // First subsidiary
+          const subsidiaryAddress1 = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress1,
+            entityDirectorAccount
+          );
+          // Second subsidiary
+          const subsidiaryAddress2 = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress2,
+            entityDirectorAccount
+          );
+          // Get subsidiaries
+          const subsidiaries = await organization.methods['getSubsidiaries()']().call();
+          (subsidiaries.length).should.equal(2);
+          (subsidiaries).should.to.be.an('array').that.include(subsidiaryAddress1);
+          (subsidiaries).should.to.be.an('array').that.include(subsidiaryAddress2);
+        });
+      });
+  
+      describe('getSubsidiary(address)', () => {
+        
+        beforeEach(async () => {
+          subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          subsidiary = await Organization.at(subsidiaryAddress);
+        });
+  
+        it('should throw if wrong organization address has been provided', async () => {
+          // zero-address
+          await assertRevert(
+            organization.methods['getSubsidiary(address)'](help.zeroAddress).call(),
+            'Organization: Invalid subsidiary address'
+          );
+  
+          // unknown address
+          await assertRevert(
+            organization.methods['getSubsidiary(address)'](help.notExistedAddress).call(),
+            'Organization: Subsidiary not found'
+          );
+        });
+  
+        it('should return subsidiary organization params', async () => {
+          const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
+          (subsidiaryParams.id).should.equal(subsidiaryAddress);
+          (subsidiaryParams.director).should.equal(entityDirectorAccount);
+          (subsidiaryParams.state).should.be.true;
+          (subsidiaryParams.confirmed).should.be.true;
+        });
+      });
+  
+      describe('parentEntity()', () => {
+
+        beforeEach(async () => {
+          subsidiaryAddress = await createSubsidiary(
+            organization,
+            organizationOwner,
+            entityDirectorAccount,
+            organizationUri,
+            organizationHash
+          );
+          await confirmSubsidiaryDirectorOwnership(
+            organization,
+            subsidiaryAddress,
+            entityDirectorAccount
+          );
+          subsidiary = await Organization.at(subsidiaryAddress);
+        });
+  
+        it('should return zero address if entity has no parents', async () => {
+          (await organization.methods['parentEntity()']().call()).should.equal(help.zeroAddress);
+        });
+  
+        it('should return parent entity address', async () => {
+          (await subsidiary.methods['parentEntity()']().call()).should.equal(organization.address);
+        });
+      });
+  
+      describe('entityDirector()', () => {
+  
+        it('should return zero address if entity has no parents', async () => {
+          (await organization.methods['entityDirector()']().call()).should.equal(help.zeroAddress);
+        });
+  
+        it('should return entity director address', async () => {
+          (await subsidiary.methods['entityDirector()']().call()).should.equal(entityDirectorAccount);
+        });
+      });
     });
   });
 });

@@ -24,7 +24,7 @@ module.exports = {
     "strict": [2, "global"],
 
     // Code style
-    "indent": [2, 2],
+    "indent": ["warn", 2],
     "quotes": [2, "single"],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", "always"],
@@ -37,7 +37,7 @@ module.exports = {
     "comma-spacing": [2, {"before": false, "after": true}],
     "camelcase": [2, {"properties": "always"}],
     "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
-    "comma-dangle": [1, "always-multiline"],
+    "comma-dangle": [1, "only-multiline"],
     "no-dupe-args": 2,
     "no-dupe-keys": 2,
     "no-debugger": 0,
@@ -46,6 +46,8 @@ module.exports = {
     "object-curly-spacing": [2, "always"],
     "generator-star-spacing": ["error", "before"],
     "promise/avoid-new": 0,
-    "promise/always-return": 0
+    "promise/always-return": 0,
+    "padded-blocks": 0,
+    "no-unused-expressions": 0
   }
 };

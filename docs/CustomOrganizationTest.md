@@ -1,38 +1,31 @@
 * [CustomOrganizationTest](#customorganizationtest)
-  * [supportsInterface](#function-supportsinterface)
+  * [changeEntityDirector](#function-changeentitydirector)
   * [getAssociatedKeys](#function-getassociatedkeys)
-  * [getOrgJsonUri](#function-getorgjsonuri)
   * [getOrgJsonHash](#function-getorgjsonhash)
-  * [owner](#function-owner)
+  * [getOrgJsonUri](#function-getorgjsonuri)
   * [hasAssociatedKey](#function-hasassociatedkey)
+  * [owner](#function-owner)
+  * [supportsInterface](#function-supportsinterface)
 
 # CustomOrganizationTest
 
 
-## *function* supportsInterface
 
-CustomOrganizationTest.supportsInterface(interfaceId) `view` `01ffc9a7`
+## *function* changeEntityDirector
 
-> See `IERC165.supportsInterface`.     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
+CustomOrganizationTest.changeEntityDirector(newEntityDirectorAddress) `nonpayable` `b1b53517`
+
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes4* | interfaceId | undefined |
+| *address* | newEntityDirectorAddress | undefined |
 
 
 ## *function* getAssociatedKeys
 
 CustomOrganizationTest.getAssociatedKeys() `view` `0ba11d86`
-
-
-
-
-
-## *function* getOrgJsonUri
-
-CustomOrganizationTest.getOrgJsonUri() `view` `1d855977`
 
 
 
@@ -46,9 +39,9 @@ CustomOrganizationTest.getOrgJsonHash() `view` `72cd7fc9`
 
 
 
-## *function* owner
+## *function* getOrgJsonUri
 
-CustomOrganizationTest.owner() `view` `8da5cb5b`
+CustomOrganizationTest.getOrgJsonUri() `view` `1d855977`
 
 
 
@@ -65,6 +58,26 @@ Inputs
 |-|-|-|
 | *address* | addr | undefined |
 
+
+## *function* owner
+
+CustomOrganizationTest.owner() `view` `8da5cb5b`
+
+
+
+
+
+## *function* supportsInterface
+
+CustomOrganizationTest.supportsInterface(interfaceId) `view` `01ffc9a7`
+
+> See {IERC165-supportsInterface}.     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes4* | interfaceId | undefined |
 
 
 ---
