@@ -177,17 +177,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
-     * @return {
-         "subsidiaryAddress": "Created subsidiary address"
-       }
      */
     function createSubsidiary(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector
-    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
+        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
             _orgJsonUri,
             _orgJsonHash,
             address(this),
@@ -207,18 +204,15 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
      * @param directory Segment directory address
-     * @return {
-         "subsidiaryAddress": "Created subsidiary address"
-       }
      */
     function createSubsidiaryAndAddToDirectory(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector,
         address directory
-    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
+        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
             _orgJsonUri,
             _orgJsonHash,
             directory,
