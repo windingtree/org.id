@@ -53,11 +53,24 @@ module.exports.createSubsidiary = async (
     ]
   ]);
 
+  if (organizationOwner === entityDirectorAccount) {
+    assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
+      [
+        'subsidiary',
+        p => (p).should.equal(subsidiaryAddress)
+      ],
+      [
+        'director',
+        p => (p).should.equal(entityDirectorAccount)
+      ]
+    ]);
+  }
+
   const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
   (subsidiaryParams.id).should.equal(subsidiaryAddress);
   (subsidiaryParams.director).should.equal(entityDirectorAccount);
   (subsidiaryParams.state).should.be.true;
-  (subsidiaryParams.confirmed).should.be.false;
+  (subsidiaryParams.confirmed).should.equal(organizationOwner === entityDirectorAccount);
 
   const subsidiary = await Organization.at(subsidiaryAddress);
   (await subsidiary.methods['owner()']().call()).should.equal(organization.address);
@@ -171,41 +184,6 @@ module.exports.transferSubsidiaryDirectorOwnership = async (
     ]
   ]);
 };
-
-// /**
-//  * Change entity director
-//  * @param {string} subsidiaryAddress Subsidiary organization address
-//  * @param {string} organizationOwner Organization owner
-//  * @param {string} newDirectorAccount New subsidiary director account address
-//  * @returns {Promise}
-//  */
-// module.exports.changeEntityDirector = async (
-//   subsidiaryAddress,
-//   organizationOwner,
-//   newDirectorAccount
-// ) => {
-//   const subsidiary = await Organization.at(subsidiaryAddress);
-//   const initialDirector = await subsidiary.methods['getEntityDirector()']().call();
-//   const result = await subsidiary.methods['transferDirectorOwnership(address)'](newDirectorAccount).send(
-//     {
-//       from: organizationOwner
-//     }
-//   );
-//   assertEvent(result, 'DirectorOwnershipTransferred', [
-//     [
-//       'subsidiary',
-//       p => (p).should.equal(subsidiaryAddress)
-//     ],
-//     [
-//       'previousDirector',
-//       p => (p).should.equal(initialDirector)
-//     ],
-//     [
-//       'newDirector',
-//       p => (p).should.equal(newDirectorAccount)
-//     ]
-//   ]);
-// };
 
 /**
  * Change ORG.ID JSON URI

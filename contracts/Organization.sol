@@ -193,7 +193,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         registerSubsidiary(
             subsidiaryAddress,
             true,
-            false,
+            subsidiaryDirector == msg.sender,
             subsidiaryDirector
         );
     }
@@ -222,7 +222,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         registerSubsidiary(
             subsidiaryAddress,
             true,
-            false,
+            subsidiaryDirector == msg.sender,
             subsidiaryDirector
         );
     }
@@ -241,21 +241,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             newState
         );
         subsidiaries[subsidiaryAddress].state = newState;        
-    }
-
-    /**
-     * @dev Confirm subsidiary director ownership
-     * @param subsidiaryAddress Subsidiary organization address
-     */
-    function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) external {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
-        require(
-            subsidiaries[subsidiaryAddress].director == msg.sender,
-            "Organization: Only subsidiary director can call this method"
-        );
-        subsidiaries[subsidiaryAddress].confirmed = true;
-        emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
     }
 
     /**
@@ -424,6 +409,21 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
+     * @dev Confirm subsidiary director ownership
+     * @param subsidiaryAddress Subsidiary organization address
+     */
+    function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) public {
+        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
+        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(
+            subsidiaries[subsidiaryAddress].director == msg.sender,
+            "Organization: Only subsidiary director can call this method"
+        );
+        subsidiaries[subsidiaryAddress].confirmed = true;
+        emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
+    }
+
+    /**
      * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
      * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
@@ -488,6 +488,10 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         );
         subsidiariesIndex.push(subsidiaryAddress);
         emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
+
+        if (confirmed) {
+            confirmSubsidiaryDirectorOwnership(subsidiaryAddress);
+        }
     }
 
     /**

@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
