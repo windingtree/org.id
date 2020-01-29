@@ -24,7 +24,7 @@ module.exports = {
     "strict": [2, "global"],
 
     // Code style
-    "indent": ["warn", 2],
+    "indent": [2, 2],
     "quotes": [2, "single"],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", "always"],
