@@ -352,15 +352,13 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Adds another associated key. Only owner can call this.
      * @param addr Associated Ethereum address
-     * @return {" ": "Address of the added associatedKey"}
      */
-    function addAssociatedKey(address addr) external onlyOwnerOrDirector returns(address) {
+    function addAssociatedKey(address addr) external onlyOwnerOrDirector {
         require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
         associatedKeysIndex[addr] = associatedKeys.length;
         associatedKeys.push(addr);
         emit AssociatedKeyAdded(addr, associatedKeysIndex[addr]);
-        return addr;
     }
 
     /**
