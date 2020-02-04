@@ -1,7 +1,7 @@
 {
   "zosversion": "2.2",
   "name": "wt-contracts",
-  "version": "0.8.2",
+  "version": "0.9.0",
   "publish": true,
   "contracts": {
     "WindingTreeEntrypoint": "WindingTreeEntrypoint",

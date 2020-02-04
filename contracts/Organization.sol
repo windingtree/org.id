@@ -177,17 +177,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
-     * @return {
-         "subsidiaryAddress": "Created subsidiary address"
-       }
      */
     function createSubsidiary(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector
-    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
+        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
             _orgJsonUri,
             _orgJsonHash,
             address(this),
@@ -196,7 +193,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         registerSubsidiary(
             subsidiaryAddress,
             true,
-            false,
+            subsidiaryDirector == msg.sender,
             subsidiaryDirector
         );
     }
@@ -207,18 +204,15 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
      * @param directory Segment directory address
-     * @return {
-         "subsidiaryAddress": "Created subsidiary address"
-       }
      */
     function createSubsidiaryAndAddToDirectory(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector,
         address directory
-    ) external onlyOwnerOrDirector returns (address subsidiaryAddress) {
+    ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
+        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
             _orgJsonUri,
             _orgJsonHash,
             directory,
@@ -228,7 +222,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         registerSubsidiary(
             subsidiaryAddress,
             true,
-            false,
+            subsidiaryDirector == msg.sender,
             subsidiaryDirector
         );
     }
@@ -247,21 +241,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             newState
         );
         subsidiaries[subsidiaryAddress].state = newState;        
-    }
-
-    /**
-     * @dev Confirm subsidiary director ownership
-     * @param subsidiaryAddress Subsidiary organization address
-     */
-    function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) external {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
-        require(
-            subsidiaries[subsidiaryAddress].director == msg.sender,
-            "Organization: Only subsidiary director can call this method"
-        );
-        subsidiaries[subsidiaryAddress].confirmed = true;
-        emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
     }
 
     /**
@@ -373,15 +352,13 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Adds another associated key. Only owner can call this.
      * @param addr Associated Ethereum address
-     * @return {" ": "Address of the added associatedKey"}
      */
-    function addAssociatedKey(address addr) external onlyOwnerOrDirector returns(address) {
+    function addAssociatedKey(address addr) external onlyOwnerOrDirector {
         require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
         require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
         associatedKeysIndex[addr] = associatedKeys.length;
         associatedKeys.push(addr);
         emit AssociatedKeyAdded(addr, associatedKeysIndex[addr]);
-        return addr;
     }
 
     /**
@@ -427,6 +404,21 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      */
     function owner() external view returns (address) {
         return _owner;
+    }
+
+    /**
+     * @dev Confirm subsidiary director ownership
+     * @param subsidiaryAddress Subsidiary organization address
+     */
+    function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) public {
+        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
+        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(
+            subsidiaries[subsidiaryAddress].director == msg.sender,
+            "Organization: Only subsidiary director can call this method"
+        );
+        subsidiaries[subsidiaryAddress].confirmed = true;
+        emit SubsidiaryDirectorOwnershipConfirmed(subsidiaryAddress, msg.sender);
     }
 
     /**
@@ -494,6 +486,10 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         );
         subsidiariesIndex.push(subsidiaryAddress);
         emit SubsidiaryCreated(msg.sender, director, subsidiaryAddress);
+
+        if (confirmed) {
+            confirmSubsidiaryDirectorOwnership(subsidiaryAddress);
+        }
     }
 
     /**

@@ -278,11 +278,6 @@ Inputs
 | *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents |
 | *address* | subsidiaryDirector | Subsidiary director address |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | subsidiaryAddress | Created subsidiary address |
 
 ## *function* createSubsidiaryAndAddToDirectory
 
@@ -299,11 +294,6 @@ Inputs
 | *address* | subsidiaryDirector | Subsidiary director address |
 | *address* | directory | Segment directory address |
 
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | subsidiaryAddress | Created subsidiary address |
 
 ## *function* created
 

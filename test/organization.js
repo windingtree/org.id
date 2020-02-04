@@ -7,7 +7,6 @@ const {
   toggleSubsidiary,
   confirmSubsidiaryDirectorOwnership,
   transferSubsidiaryDirectorOwnership,
-  // changeEntityDirector,
   changeOrgJsonUri,
   changeOrgJsonHash,
   changeOrgJsonUriAndHash
@@ -428,6 +427,18 @@ contract('Organization', (accounts) => {
       });
 
       // @todo Add test-case for 'empty Uri and Hash'
+
+      it('should automatically confirm director ownership if the director is equal to the organization owner', async () => {
+        const subsidiaryAddress = await createSubsidiary(
+          organization,
+          organizationOwner,
+          organizationOwner,
+          organizationUri,
+          organizationHash
+        );
+        const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
+        (subsidiaryParams.confirmed).should.be.true;
+      });
 
       it('should create a new subsidiary', async () => {
         // By owner
