@@ -27,9 +27,6 @@ contract WindingTreeEntrypoint is Initializable {
     // List of registered segments
     string[] public segments;
 
-    // Address of Organization Factory
-    address public organizationFactory;
-
     // hashed 'token.windingtree.eth' using eth-ens-namehash
     bytes32 private constant tokenNamehash = 0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
@@ -44,26 +41,6 @@ contract WindingTreeEntrypoint is Initializable {
     event SegmentSet(bytes32 indexed segment, address indexed oldAddress, address indexed newAddress);
 
     /**
-     * @dev Event triggered when the organization factory address is changed.
-     */
-    event OrganizationFactorySet(address indexed oldAddress, address indexed newAddress);
-
-    /**
-     * @dev Initializer for upgradeable contracts.
-     * @param __owner The address of the contract owner
-     * @param __lifToken The LifToken contract address
-     * @param _organizationFactory The OrganizationFactory contract address
-     */
-    function initialize(address payable __owner, address __lifToken, address _organizationFactory) public initializer {
-        require(__owner != address(0), 'WindingTreeEntrypoint: Cannot set owner to 0x0 address');
-        _owner = __owner;
-        _lifToken = __lifToken;
-        organizationFactory = _organizationFactory;
-        segments.length++;
-    }
-
-    
-    /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
@@ -71,7 +48,19 @@ contract WindingTreeEntrypoint is Initializable {
         _;
     }
 
-    function resolveLifTokenFromENS(address _ENS) public onlyOwner {
+    /**
+     * @dev Initializer for upgradeable contracts.
+     * @param __owner The address of the contract owner
+     * @param __lifToken The LifToken contract address
+     */
+    function initialize(address payable __owner, address __lifToken) external initializer {
+        require(__owner != address(0), 'WindingTreeEntrypoint: Cannot set owner to 0x0 address');
+        _owner = __owner;
+        _lifToken = __lifToken;
+        segments.length++;
+    }
+
+    function resolveLifTokenFromENS(address _ENS) external onlyOwner {
         ENS registry = ENS(_ENS);
         address resolverAddress = registry.resolver(tokenNamehash);
         require(resolverAddress != address(0), 'WindingTreeEntrypoint: Resolver not found');
@@ -87,7 +76,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @param segment Segment name
      * @param addr New segment directory address
      */
-    function setSegment(string memory segment, address addr) public onlyOwner {
+    function setSegment(string calldata segment, address addr) external onlyOwner {
         require(addr != address(0), 'WindingTreeEntrypoint: Cannot set segment addr to 0x0 address');
         bytes memory segmentBytes = bytes(segment);
         require(segmentBytes.length != 0, 'WindingTreeEntrypoint: Segment cannot be empty');
@@ -101,30 +90,11 @@ contract WindingTreeEntrypoint is Initializable {
     }
 
     /**
-     * @dev Sets an address for the organization factory. Overwrites existing
-     * value. Can be called only by the contract owner.
-     * @param addr New organization factory address
-     */
-    function setOrganizationFactory(address addr) public onlyOwner {
-        require(addr != address(0), 'WindingTreeEntrypoint: Cannot set factory addr to 0x0 address');
-        emit OrganizationFactorySet(organizationFactory, addr);
-        organizationFactory = addr;
-    }
-
-    /**
-     * @dev Returns Organization Factory address.
-     * @return {" ": "Address of the organization factory"}
-     */
-    function getOrganizationFactory() public view returns(address) {
-        return organizationFactory;
-    }
-
-    /**
      * @dev Sets an address for a segment to 0x0 address. Can be called
      * only by the contract owner
      * @param segment Segment name
      */
-    function removeSegment(string memory segment) public onlyOwner {
+    function removeSegment(string calldata segment) external onlyOwner {
         bytes memory segmentBytes = bytes(segment);
         require(segmentBytes.length != 0, 'WindingTreeEntrypoint: Segment cannot be empty');
         bytes32 segmentHash = keccak256(segmentBytes);
@@ -135,12 +105,22 @@ contract WindingTreeEntrypoint is Initializable {
     }
 
     /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address payable newOwner) external onlyOwner {
+        require(newOwner != address(0), 'WindingTreeEntrypoint: Cannot transfer to 0x0 address');
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+    }
+
+    /**
      * @dev `getSegment` Returns address of a segment or a 0x0 address if segment
      * is unknown.
      * @param segment Segment name
      * @return {" ": "Address of a segment"}
      */
-    function getSegment(string memory segment) public view returns(address) {
+    function getSegment(string calldata segment) external view returns(address) {
         bytes memory segmentBytes = bytes(segment);
         if(segmentBytes.length == 0) {
             return address(0);
@@ -153,7 +133,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @dev `getSegmentsLength` get the length of the `segments` array
      * @return {" ": "Length of the segments array. Might contain removed segments."}
      */
-    function getSegmentsLength() public view returns(uint) {
+    function getSegmentsLength() external view returns(uint) {
         return segments.length;
     }
 
@@ -163,7 +143,7 @@ contract WindingTreeEntrypoint is Initializable {
      * @param segment Segment name
      * @return {" ": "Index of the segment in segments array."}
      */
-    function getSegmentsIndex(string memory segment) public view returns(uint) {
+    function getSegmentsIndex(string calldata segment) external view returns(uint) {
         bytes memory segmentBytes = bytes(segment);
         bytes32 segmentHash = keccak256(segmentBytes);
         return segmentsIndex[segmentHash];
@@ -174,33 +154,22 @@ contract WindingTreeEntrypoint is Initializable {
      * @param index Segment index
      * @return {" ": "Segment name."}
      */
-    function getSegmentName(uint index) public view returns(string memory) {
+    function getSegmentName(uint index) external view returns(string memory) {
         return segments[index];
-    }
-
-    /**
-     * @dev Allows the current owner to transfer control of the contract to a newOwner.
-     * @param newOwner The address to transfer ownership to.
-     */
-    function transferOwnership(address payable newOwner) public onlyOwner {
-        require(newOwner != address(0), 'WindingTreeEntrypoint: Cannot transfer to 0x0 address');
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address) {
-        return _owner;
     }
 
     /**
      * @dev `getLifToken` Returns address of set Lif token
      * @return {" ": "LifToken address."}
      */
-    function getLifToken() public view returns (address) {
+    function getLifToken() external view returns (address) {
         return _lifToken;
     }
 
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() external view returns (address) {
+        return _owner;
+    }
 }
