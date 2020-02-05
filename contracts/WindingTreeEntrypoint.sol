@@ -60,6 +60,10 @@ contract WindingTreeEntrypoint is Initializable {
         segments.length++;
     }
 
+    /**
+     * @dev Updating the _lifToken link from the ENS registry
+     * @param _ENS The address of the ENS registry
+     */
     function resolveLifTokenFromENS(address _ENS) external onlyOwner {
         ENS registry = ENS(_ENS);
         address resolverAddress = registry.resolver(tokenNamehash);
