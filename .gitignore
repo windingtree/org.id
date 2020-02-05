@@ -24,3 +24,5 @@ keys.json
 .openzeppelin
 .zos.session
 zos.dev-*
+
+.openzeppelin/.session
