@@ -437,4 +437,71 @@ contract('SegmentDirectory', (accounts) => {
       }
     });
   });
+
+  describe('Interfaces', () => {
+
+    it('should support ERC165 interface', async () => {
+      assert.equal(await segmentDirectory.methods.supportsInterface('0x01ffc9a7').call(), true);
+    });
+
+    it('should support ownable interface', async () => {
+      assert.equal(await segmentDirectory.methods.supportsInterface('0x7f5828d0').call(), true);
+    });
+
+    it('should support reportable interface', async () => {
+      assert.equal(await segmentDirectory.methods.supportsInterface('0xe4f00d44').call(), true);
+    });
+
+    it('should support directory interface', async () => {
+      assert.equal(await segmentDirectory.methods.supportsInterface('0x031b57cf').call(), true);
+    });
+  });
+
+  describe('Organization update reports', () => {
+
+    it('should link organization after the adding to the directory', async () => {
+      await segmentDirectory.methods['add(address)'](organization.address).send({ from: organizationOwner });
+      const events = await organization.getPastEvents('DirectoryLinked');
+      const directoryLinked = events.filter(e => e.event === 'DirectoryLinked');
+      assert.equal(directoryLinked.length, 1);
+      assert.equal(directoryLinked[0].returnValues.directory, segmentDirectory.address);
+    });
+
+    it('should unlink organization after the removing from the directory', async () => {
+      await segmentDirectory.methods['add(address)'](organization.address).send({ from: organizationOwner });
+      await segmentDirectory.methods['remove(address)'](organization.address).send({ from: organizationOwner });
+      const events = await organization.getPastEvents('DirectoryUnlinked');
+      const directoryUnlinked = events.filter(e => e.event === 'DirectoryUnlinked');
+      assert.equal(directoryUnlinked.length, 1);
+      assert.equal(directoryUnlinked[0].returnValues.directory, segmentDirectory.address);
+    });
+
+    it('should emit update event if organization reporting', async () => {
+      await segmentDirectory.methods['add(address)'](organization.address).send({ from: organizationOwner });
+      const blockNumber = await web3.eth.getBlockNumber();
+      await organization.methods['changeOrgJsonUri(string)']('https://example.com/test').send({
+        from: organizationOwner
+      });
+      const events = await segmentDirectory.getPastEvents('OrganizationUpdated', {
+        fromBlock: blockNumber
+      });
+      const organizationUpdated = events.filter(e => e.event === 'OrganizationUpdated');
+      assert.equal(organizationUpdated.length, 1);
+      assert.equal(organizationUpdated[0].returnValues.organization, organization.address);
+    });
+
+    it('should not emit update eevent if organization has been removed from the directory', async () => {
+      await segmentDirectory.methods['add(address)'](organization.address).send({ from: organizationOwner });
+      await segmentDirectory.methods['remove(address)'](organization.address).send({ from: organizationOwner });
+      const blockNumber = await web3.eth.getBlockNumber();
+      await organization.methods['changeOrgJsonUri(string)']('https://example.com/test').send({
+        from: organizationOwner
+      });
+      const events = await segmentDirectory.getPastEvents('OrganizationUpdated', {
+        fromBlock: blockNumber
+      });
+      const organizationUpdated = events.filter(e => e.event === 'OrganizationUpdated');
+      assert.equal(organizationUpdated.length, 0);
+    });
+  });
 });
