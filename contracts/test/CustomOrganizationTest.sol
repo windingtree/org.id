@@ -3,7 +3,7 @@ pragma solidity ^0.5.6;
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 import "../OrganizationInterface.sol";
 
-contract CustomOrganizationTest is ERC165, OrganizationInterface {
+contract CustomOrganizationTest is ERC165 {
     address _owner;
 
     constructor() public {
@@ -19,11 +19,11 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
 
     function changeOrgJsonHash(bytes32 _orgJsonHash) public {}
 
-    function getOrgJsonUri() external view returns (string memory) {
+    function getOrgJsonUri() external pure returns (string memory) {
         return "https://super-sweet-custom-organization.com";
     }
 
-    function getOrgJsonHash() external view returns (bytes32) {
+    function getOrgJsonHash() external pure returns (bytes32) {
         return 0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99;
     }
 
@@ -47,9 +47,7 @@ contract CustomOrganizationTest is ERC165, OrganizationInterface {
             bytes4(0x1b28d63e)
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
-            if (!this.supportsInterface(interfaceIds[i])) {
-                _registerInterface(interfaceIds[i]);
-            }
+            _registerInterface(interfaceIds[i]);
         }
     }
 }

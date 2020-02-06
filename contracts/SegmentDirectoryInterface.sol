@@ -34,32 +34,32 @@ contract SegmentDirectoryInterface {
      * @dev Returns the number of added organizations. Might contain zero
      * addresses (these remain after removing an organization).
      */
-    function getOrganizationsLength() public view returns (uint);
+    function getOrganizationsLength() external view returns (uint256);
 
     /**
      * @dev Returns a list of added organizations. Might contain zero addresses.
      */
-    function getOrganizations() public view returns (address[] memory);
+    function getOrganizations() external view returns (address[] memory);
 
     /**
      * @dev Returns index of `organization`
      */
-    function organizationsIndex(address organization) public view returns (uint);
+    function organizationsIndex(address organization) external view returns (uint256);
 
     /**
      * @dev Returns organization address on `index` position.
      */
-    function organizations(uint index) public view returns (address);
+    function organizations(uint256 index) external view returns (address);
 
     /**
      * @dev Returns the address of the associated lif token
      */
-    function getLifToken() public view returns (address);
+    function getLifToken() external view returns (address);
 
     /**
      * @dev Returns the segment name
      */
-    function getSegment() public view returns (string memory);
+    function getSegment() external view returns (string memory);
 
     /**
      * @dev Returns the address of the current owner.

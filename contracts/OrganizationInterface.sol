@@ -17,6 +17,14 @@ import "openzeppelin-solidity/contracts/introspection/IERC165.sol";
  */
 contract OrganizationInterface is IERC165 {
 
+    // Address of the parent organization.
+    // Should be set if the organization is subsidiary 
+    address public parentEntity;
+
+    // Address of the director account.
+    // Should be set if the organization is subsidiary
+    address public entityDirector;
+
     /**
      * @dev Returns the address of the current owner.
      * @return {" ": "Current owner address."}

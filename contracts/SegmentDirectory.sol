@@ -35,7 +35,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
     /**
      * @dev Event triggered every time organization is added.
      */
-    event OrganizationAdded(address indexed organization, uint index);
+    event OrganizationAdded(address indexed organization, uint256 index);
 
     /**
      * @dev Event triggered every time organization is removed.
@@ -127,7 +127,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
      * @dev `getOrganizationsLength` get the length of the `organizations` array
      * @return {" ": "Length of the organizations array. Might contain zero addresses."}
      */
-    function getOrganizationsLength() external view returns (uint) {
+    function getOrganizationsLength() external view returns (uint256) {
         return _organizations.length;
     }
 
@@ -143,7 +143,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
      * @dev `organizationsIndex` get index of Organization
      * @return {" ": "Organization index."}
      */
-    function organizationsIndex(address organization) external view returns (uint) {
+    function organizationsIndex(address organization) external view returns (uint256) {
         return _organizationsIndex[organization];
     }
 
@@ -151,7 +151,7 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
      * @dev `organizations` get Organization address on an index
      * @return {" ": "Organization address."}
      */
-    function organizations(uint index) external view returns (address) {
+    function organizations(uint256 index) external view returns (address) {
         return _organizations[index];
     }
 
@@ -207,13 +207,21 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
             'SegmentDirectory: Organization has to support _INTERFACE_ID_ORGANIZATION'
         );
         OrganizationInterface org = OrganizationInterface(organization);
-        require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can add the organization');
+
+        if (org.parentEntity() == address(0)) {
+            require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can add the organization');
+        } else {
+            address entityDirector = org.entityDirector();
+            require(org.owner() == msg.sender || entityDirector == msg.sender, 'SegmentDirectory: Only organization owner or entity director can add the organization');
+        }
+        
         _organizationsIndex[organization] = _organizations.length;
         _organizations.push(organization);
         emit OrganizationAdded(
             organization,
             _organizationsIndex[organization]
         );
+
         return organization;
     }
 
@@ -231,8 +239,15 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
         // Ensure that the caller is the organization's rightful owner
         // Organization might have changed hands without the index taking notice
         OrganizationInterface org = OrganizationInterface(organization);
-        require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can remove the organization');
-        uint allIndex = _organizationsIndex[organization];
+
+        if (org.parentEntity() == address(0)) {
+            require(org.owner() == msg.sender, 'SegmentDirectory: Only organization owner can remove the organization');
+        } else {
+            address entityDirector = org.entityDirector();
+            require(org.owner() == msg.sender || entityDirector == msg.sender, 'SegmentDirectory: Only organization owner or entity director can remove the organization');
+        }
+
+        uint256 allIndex = _organizationsIndex[organization];
         delete _organizations[allIndex];
         delete _organizationsIndex[organization];
         emit OrganizationRemoved(organization);
