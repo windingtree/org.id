@@ -201,11 +201,26 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
         require(_organizationsIndex[organization] == 0, 'SegmentDirectory: Cannot add organization twice');
         // This is intentionally not part of the state variables as we expect it to change in time.
         // It should always be the latest xor of *all* methods in the OrganizationInterface.
-        bytes4 _INTERFACE_ID_ORGANIZATION = 0xe9e17278;
+        
+        // This interface required for the organization to be compatible 
+        // with other organizations in the directory
         require(
-            ERC165Checker._supportsInterface(organization, _INTERFACE_ID_ORGANIZATION),
-            'SegmentDirectory: Organization has to support _INTERFACE_ID_ORGANIZATION'
+            ERC165Checker._supportsInterface(organization, 0xe9e17278),
+            'SegmentDirectory: Organization has to support organization interface'
         );
+
+        // This interface required for getting information about organization owner
+        require(
+            ERC165Checker._supportsInterface(organization, 0x7f5828d0),
+            'SegmentDirectory: Organization has to support ownable interface'
+        );
+
+        // This interface required for getting information about organization hierarchy relations
+        require(
+            ERC165Checker._supportsInterface(organization, 0xc501232e),
+            'SegmentDirectory: Organization has to support hierarchy interface'
+        );
+        
         OrganizationInterface org = OrganizationInterface(organization);
 
         if (org.parentEntity() == address(0)) {
@@ -235,9 +250,21 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface {
         // Ensure organization address is valid
         require(organization != address(0), 'SegmentDirectory: Cannot remove organization on 0x0 address');
         // Ensure we know about the organization at all
-        require(_organizationsIndex[organization] != uint(0), 'SegmentDirectory: Cannot remove unknown organization');
-        // Ensure that the caller is the organization's rightful owner
-        // Organization might have changed hands without the index taking notice
+        require(_organizationsIndex[organization] != uint256(0), 'SegmentDirectory: Cannot remove unknown organization');
+        
+        // This interface required for the organization to be compatible 
+        // with other organizations in the directory
+        require(
+            ERC165Checker._supportsInterface(organization, 0x7f5828d0),
+            'SegmentDirectory: Organization has to support ownable interface'
+        );
+
+        // This interface required for getting information about organization hierarchy relations
+        require(
+            ERC165Checker._supportsInterface(organization, 0xc501232e),
+            'SegmentDirectory: Organization has to support hierarchy interface'
+        );
+        
         OrganizationInterface org = OrganizationInterface(organization);
 
         if (org.parentEntity() == address(0)) {

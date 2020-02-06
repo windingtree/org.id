@@ -366,7 +366,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      */
     function setInterfaces() public {
         OrganizationInterface org;
-        bytes4[4] memory interfaceIds = [
+        bytes4[5] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
 
@@ -378,13 +378,17 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             org.changeOrgJsonUri.selector ^ 
             org.changeOrgJsonHash.selector ^ 
             org.getOrgJsonUri.selector ^ 
-            org.getOrgJsonHash.selector, 
+            org.getOrgJsonHash.selector,
+
+            // hierarchy interface: 0xc501232e
+            org.entityDirector.selector ^ 
+            org.parentEntity.selector, 
 
             // subsidiary interface: 0x9ff6f0b0
             org.createSubsidiary.selector ^ 
             org.toggleSubsidiary.selector ^ 
-            this.entityDirector.selector ^ 
-            this.parentEntity.selector ^
+            org.entityDirector.selector ^ 
+            org.parentEntity.selector ^
             org.changeEntityDirector.selector ^ 
             org.getSubsidiary.selector ^ 
             org.getSubsidiaries.selector ^ 

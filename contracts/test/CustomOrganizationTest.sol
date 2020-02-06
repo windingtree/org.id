@@ -5,6 +5,8 @@ import "../OrganizationInterface.sol";
 
 contract CustomOrganizationTest is ERC165 {
     address _owner;
+    address public parentEntity;
+    address public entityDirector;
 
     constructor() public {
         _owner = msg.sender;
@@ -33,15 +35,23 @@ contract CustomOrganizationTest is ERC165 {
 
     function setInterfaces() public {
         OrganizationInterface org;
-        bytes4[3] memory interfaceIds = [
+        bytes4[5] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
+
+            // ownable interface: 0x7f5828d0
+            org.owner.selector ^ 
+            org.transferOwnership.selector, 
             
             // organization interface: 0xe9e17278
             org.changeOrgJsonUri.selector ^ 
             org.changeOrgJsonHash.selector ^ 
             org.getOrgJsonUri.selector ^ 
             org.getOrgJsonHash.selector,
+
+            // hierarchy interface: 0xc501232e
+            org.entityDirector.selector ^ 
+            org.parentEntity.selector,
 
             // custom interface org.newFunction.selector
             bytes4(0x1b28d63e)

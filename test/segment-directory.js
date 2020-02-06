@@ -375,10 +375,6 @@ contract('SegmentDirectory', (accounts) => {
 
     it('should add a custom organization contract', async () => {
       const customOrg = await CustomOrganizationTest.new({ from: organizationOwner });
-      console.log('!!!', [
-        organizationOwner,
-        await customOrg.owner()
-      ]);
       const receipt = await segmentDirectory.methods['add(address)'](customOrg.address).send({ from: organizationOwner });
       assertEvent(receipt, 'OrganizationAdded', [
         [
@@ -391,7 +387,7 @@ contract('SegmentDirectory', (accounts) => {
         ]
       ]);
       const allOrganizations = await help.jsArrayFromSolidityArray(
-        segmentDirectory.organizations,
+        segmentDirectory.methods['organizations(uint256)'],
         await segmentDirectory.methods['getOrganizationsLength()']().call(),
         help.isZeroAddress,
       );
