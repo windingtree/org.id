@@ -72,7 +72,7 @@ contract('SegmentDirectory', (accounts) => {
     organization = await Organization.at(organizationProxy.address);
   });
 
-  describe('initialize', () => {
+  describe('#initialize', () => {
 
     it('should not allow zero address owner', async () => {
       try {
@@ -114,7 +114,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('upgradeability', () => {
+  describe('Upgradeability', () => {
 
     it(`should upgrade SegmentDirectory and have new functions in directory 
     and Organization contracts`, async () => {
@@ -181,7 +181,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('resolveLifTokenFromENS', () => {
+  describe('#resolveLifTokenFromENS', () => {
 
     it('should set lif token address from ENS', async () => {
       assert.equal(
@@ -229,7 +229,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('transferOwnership', async () => {
+  describe('#transferOwnership', async () => {
 
     it('should transfer ownership', async () => {
       await segmentDirectory.methods.transferOwnership(nonOwnerAccount).send({
@@ -281,7 +281,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('setSegment', () => {
+  describe('#setSegment', () => {
 
     it('should set the segment', async () => {
       await segmentDirectory.methods.setSegment('hotels').send({
@@ -314,7 +314,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('getOrganizationsLength', () => {
+  describe('#getOrganizationsLength', () => {
 
     it('should count organizations properly', async () => {
       // length is a bignumber
@@ -356,7 +356,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('getOrganizations', () => {
+  describe('#getOrganizations', () => {
 
     it('should return organizations properly', async () => {
       assert.equal(
@@ -407,7 +407,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('add', () => {
+  describe('#add', () => {
 
     it('should add the organization to the registry', async () => {
       const receipt = await segmentDirectory
@@ -528,7 +528,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('remove', () => {
+  describe('#remove', () => {
     let subOrganization;
 
     beforeEach(async () => {
