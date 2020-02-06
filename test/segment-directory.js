@@ -3,9 +3,7 @@ const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
 
 const help = require('./helpers/index.js');
 const { assertEvent } = require('./helpers/assertions');
-const {
-  createSubsidiary
-} = require('./helpers/orgid-hierarchy');
+const { createOrganizationAndAddToDir } = require('./helpers/orgid-directory');
 
 ZWeb3.initialize(web3.currentProvider);
 // workaround for https://github.com/zeppelinos/zos/issues/704
@@ -21,42 +19,6 @@ const CustomOrganizationTest = artifacts.require('CustomOrganizationTest');
 
 const { assert, should } = require('chai');
 should();
-
-const createOrganizationAndAddToDir = async (
-  organization,
-  organizationOwner,
-  subsidiaryDirector,
-  directory,
-  jsonOrgUri,
-  jsonOrgHash,
-  txOpts
-) => {
-  // Subsidiaries are usually added to the directory
-  const subsidiaryAddress = await createSubsidiary(
-    organization,
-    organizationOwner,
-    subsidiaryDirector,
-    jsonOrgUri,
-    jsonOrgHash
-  );
-  const length = await directory.methods['getOrganizationsLength()']().call();
-  const result = await directory.methods['add(address)'](subsidiaryAddress).send(
-    {
-      from: subsidiaryDirector
-    }
-  );
-  assertEvent(result, 'OrganizationAdded', [
-    [
-      'organization',
-      p => (p).should.equal(subsidiaryAddress)
-    ],
-    [
-      'index',
-      p => (p).should.equal(length)
-    ]
-  ]);
-  return subsidiaryAddress;
-};
 
 contract('SegmentDirectory', (accounts) => {
   const organizationUri = 'bzz://something';
