@@ -1,5 +1,6 @@
-const TestHelper = require('./helpers/zostest');
+const { TestHelper } = require('@openzeppelin/cli');
 const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
+
 const help = require('./helpers/index.js');
 const { assertRevert } = require('./helpers/assertions');
 const {
@@ -21,7 +22,6 @@ Contracts.setArtifactsDefaults({
 const Organization = Contracts.getFromLocal('Organization');
 const OrganizationInterface = Contracts.getFromLocal('OrganizationInterface');
 const OrganizationUpgradeabilityTest = Contracts.getFromLocal('OrganizationUpgradeabilityTest');
-const OrganizationFactory = Contracts.getFromLocal('OrganizationFactory');
 
 const { assert, should } = require('chai');
 should();
@@ -30,32 +30,27 @@ contract('Organization', (accounts) => {
   const organizationUri = 'bzz://something';
   const organizationHash = '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99';
   const organizationOwner = accounts[1];
-  const organizationFactoryOwner = accounts[2];
-  const proxyOwner = accounts[3];
-  const nonOwnerAccount = accounts[4];
-  const entityDirectorAccount = accounts[5];
+  const nonOwnerAccount = accounts[2];
+  const entityDirectorAccount = accounts[3];
+  const entityDirectorAccount2 = accounts[4];
+  const entityDirectorAccount3 = accounts[5];
   
+  let projectAppAddress;
   let organizationProxy;
   let organization;
-  let organizationFactory;
   let project;
 
   beforeEach(async () => {
     project = await TestHelper();
-    const organizationFactoryProxy = await project.createProxy(OrganizationFactory, {
-      from: organizationFactoryOwner,
-      initFunction: 'initialize',
-      initArgs: [organizationFactoryOwner, project.app.address],
-    });
-    organizationFactory = await OrganizationFactory.at(organizationFactoryProxy.address);
+    projectAppAddress = project.app.address;
     organizationProxy = await project.createProxy(Organization, {
-      from: proxyOwner,
+      from: organizationOwner,
       initFunction: 'initialize',
       initArgs: [
         organizationOwner,
         organizationUri,
         organizationHash,
-        organizationFactory.address,
+        projectAppAddress,
         help.zeroAddress,
         help.zeroAddress
       ],
@@ -64,6 +59,7 @@ contract('Organization', (accounts) => {
   });
 
   describe('Constructor', () => {
+    
     it('should be initialised with the correct data', async () => {
       const info = await help.getOrganizationInfo(organization);
       // We need callback, because getBlockNumber for some reason cannot be called with await
@@ -76,13 +72,13 @@ contract('Organization', (accounts) => {
       try {
         const tProject = await TestHelper();
         await tProject.createProxy(Organization, {
-          from: proxyOwner,
+          from: organizationOwner,
           initFunction: 'initialize',
           initArgs: [
             help.zeroAddress,
             organizationUri,
             organizationHash,
-            organizationFactory.address,
+            tProject.app.address,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -97,13 +93,13 @@ contract('Organization', (accounts) => {
       try {
         const tProject = await TestHelper();
         await tProject.createProxy(Organization, {
-          from: proxyOwner,
+          from: organizationOwner,
           initFunction: 'initialize',
           initArgs: [
             organizationOwner,
             '',
             organizationHash,
-            organizationFactory.address,
+            tProject.app.address,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -118,13 +114,13 @@ contract('Organization', (accounts) => {
       try {
         const tProject = await TestHelper();
         await tProject.createProxy(Organization, {
-          from: proxyOwner,
+          from: organizationOwner,
           initFunction: 'initialize',
           initArgs: [
             organizationOwner,
             organizationUri,
             '0x0000000000000000000000000000000000000000000000000000000000000000',
-            organizationFactory.address,
+            tProject.app.address,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -142,28 +138,19 @@ contract('Organization', (accounts) => {
       assert.equal(await orgIface.methods.supportsInterface('0x01ffc9a7').call(), true);
     });
 
-    it('should support owner interface', async () => {
+    it('should support ownable interface', async () => {
       const orgIface = await OrganizationInterface.at(organization.address);
-      assert.equal(await orgIface.methods.supportsInterface('0x8da5cb5b').call(), true);
+      assert.equal(await orgIface.methods.supportsInterface('0x7f5828d0').call(), true);
     });
 
     it('should support ORG.JSON related interface', async () => {
       const orgIface = await OrganizationInterface.at(organization.address);
-      assert.equal(await orgIface.methods.supportsInterface('0x6f4826be').call(), true);
+      assert.equal(await orgIface.methods.supportsInterface('0xe9e17278').call(), true);
     });
 
-    it('should support associated keys related interface', async () => {
+    it('should support subsidiaries interface', async () => {
       const orgIface = await OrganizationInterface.at(organization.address);
-      assert.equal(await orgIface.methods.supportsInterface('0xfed71811').call(), true);
-    });
-
-    it('should support latest interface', async () => {
-      const orgIface = await OrganizationInterface.at(organization.address);
-      assert.equal(await orgIface.methods.supportsInterface('0x1c3af5f4').call(), true);
-    });
-
-    it('should be possible to call sync interfaces without failure', async () => {
-      await organization.methods.setInterfaces().send({ from: organizationOwner });
+      assert.equal(await orgIface.methods.supportsInterface('0x9ff6f0b0').call(), true);
     });
   });
 
@@ -290,95 +277,6 @@ contract('Organization', (accounts) => {
     });
   });
 
-  describe('addAssociatedKey', async () => {
-    it('should add associatedKey and emit', async () => {
-      const receipt = await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      assert.equal(Object.keys(receipt.events).length, 1);
-      assert.equal(receipt.events.AssociatedKeyAdded.returnValues.associatedKey, nonOwnerAccount);
-      assert.equal(receipt.events.AssociatedKeyAdded.returnValues.index, 1);
-      assert.equal(await organization.methods.associatedKeysIndex(nonOwnerAccount).call(), 1);
-      assert.equal(await organization.methods.associatedKeys(1).call(), nonOwnerAccount);
-      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), true);
-    });
-
-    it('should throw when adding an existing associatedKey', async () => {
-      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      try {
-        await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw when adding a associatedKey with zero address', async () => {
-      try {
-        await organization.methods.addAssociatedKey(help.zeroAddress).send({ from: organizationOwner });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw when adding a associatedKey by a non-owner', async () => {
-      try {
-        await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: nonOwnerAccount });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
-
-  describe('removeAssociatedKey', async () => {
-    it('should remove an existing associatedKey and emit', async () => {
-      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      const receipt = await organization.methods.removeAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      assert.equal(Object.keys(receipt.events).length, 1);
-      assert.equal(receipt.events.AssociatedKeyRemoved.returnValues.associatedKey, nonOwnerAccount);
-      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), false);
-      assert.equal(await organization.methods.associatedKeys(1).call(), help.zeroAddress);
-      assert.equal(await organization.methods.associatedKeysIndex(nonOwnerAccount).call(), 0);
-    });
-
-    it('should throw when removing a non-existing associatedKey', async () => {
-      try {
-        await organization.methods.removeAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw when removing a zero address', async () => {
-      try {
-        await organization.methods.removeAssociatedKey(help.zeroAddress).send({ from: organizationOwner });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
-
-  describe('getAssociatedKeys', async () => {
-    it('should list associatedKeys', async () => {
-      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      const r = await organization.methods.getAssociatedKeys().call();
-      assert.equal(r.length, 2);
-    });
-  });
-
-  describe('hasAssociatedKey', async () => {
-    it('should return false for a non-associatedKey', async () => {
-      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), false);
-    });
-
-    it('should return true for a associatedKey', async () => {
-      await organization.methods.addAssociatedKey(nonOwnerAccount).send({ from: organizationOwner });
-      assert.equal(await organization.methods.hasAssociatedKey(nonOwnerAccount).call(), true);
-    });
-  });
-
   describe('ORG.ID Hierarchy', () => {
     let subsidiaryAddress;
     let subsidiary;
@@ -394,14 +292,16 @@ contract('Organization', (accounts) => {
       subsidiary = await Organization.at(subsidiaryAddress);
     });
 
-    describe('createSubsidiary(string,bytes32,address)', () => {
+    describe('createSubsidiary(string,bytes32,address,string,string)', () => {
 
       it('should throw if zero address of the entity director has been provided', async () => {
         await assertRevert(
-          organization.methods['createSubsidiary(string,bytes32,address)'](
+          organization.methods['createSubsidiary(string,bytes32,address,string,string)'](
             organizationUri,
             organizationHash,
-            help.zeroAddress
+            help.zeroAddress,
+            '',
+            ''
           ).send(
             {
               from: organizationOwner
@@ -413,10 +313,12 @@ contract('Organization', (accounts) => {
 
       it('shoudl throw if called by not an organization owner or director', async () => {
         await assertRevert(
-          organization.methods['createSubsidiary(string,bytes32,address)'](
+          organization.methods['createSubsidiary(string,bytes32,address,string,string)'](
             organizationUri,
             organizationHash,
-            entityDirectorAccount
+            entityDirectorAccount,
+            '',
+            ''
           ).send(
             {
               from: nonOwnerAccount
@@ -441,28 +343,39 @@ contract('Organization', (accounts) => {
       });
 
       it('should create a new subsidiary', async () => {
+        let subsidiaryAddress;
+        let subsidiary;
+
         // By owner
-        const subsidiaryAddress = await createSubsidiary(
+        subsidiaryAddress = await createSubsidiary(
           organization,
           organizationOwner,
           entityDirectorAccount,
           organizationUri,
           organizationHash
         );
-        const subsidiary = await Organization.at(subsidiaryAddress);
+        subsidiary = await Organization.at(subsidiaryAddress);
         
         // By director
-        await createSubsidiary(
+        subsidiaryAddress = await createSubsidiary(
           subsidiary,
           entityDirectorAccount,
-          nonOwnerAccount,
+          entityDirectorAccount2,
+          organizationUri,
+          organizationHash
+        );
+        subsidiary = await Organization.at(subsidiaryAddress);
+
+        // Third level
+        await createSubsidiary(
+          subsidiary,
+          entityDirectorAccount2,
+          entityDirectorAccount3,
           organizationUri,
           organizationHash
         );
       });
     });
-
-    // @todo Add test cases for the #createSubsidiaryAndAddToDirectory
 
     describe('toggleSubsidiary(address)', () => {
       
@@ -742,13 +655,13 @@ contract('Organization', (accounts) => {
 
       beforeEach(async () => {
         organizationProxy = await project.createProxy(Organization, {
-          from: proxyOwner,
+          from: organizationOwner,
           initFunction: 'initialize',
           initArgs: [
             organizationOwner,
             organizationUri,
             organizationHash,
-            organizationFactory.address,
+            projectAppAddress,
             help.zeroAddress,
             help.zeroAddress
           ],

@@ -2,7 +2,6 @@ pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 import "./OrganizationInterface.sol";
-import "./AbstractOrganizationFactory.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "@openzeppelin/upgrades/contracts/application/App.sol";
 
@@ -14,11 +13,20 @@ import "@openzeppelin/upgrades/contracts/application/App.sol";
  * adheres to the `OrganizationInterface`.
  */
 contract Organization is OrganizationInterface, ERC165, Initializable {
+
+    /// @dev Subsidiary organization configuration structure
+    struct Subsidiary {
+        address id;
+        bool state;
+        bool confirmed;
+        address director;
+    }
+
     // Address of the contract owner
     address _owner;
 
     // ZeppelinOS App instance
-    App internal app;
+    App public app;
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -27,15 +35,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
 
     // Number of a block when the Organization was created
     uint public created;
-
-    // Index of associated addresses. These can be used
-    // to operate on behalf of this organization, typically sign messages.
-    mapping(address => uint) public associatedKeysIndex;
-
-    // List of associatedKeys. These addresses (i. e. public key
-    // fingerprints) can be used to associate signed content with this
-    // organization.
-    address[] public associatedKeys;
 
     // keccak256 hash of the ORG.JSON file contents. This should
     // be used to verify that the contents of ORG.JSON has not been tampered
@@ -47,7 +46,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Should be set if the organization is subsidiary 
     address public parentEntity;
 
-    // Address of th director account.
+    // Address of the director account.
     // Should be set if the organization is subsidiary
     address public entityDirector;
 
@@ -71,16 +70,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @dev Event triggered when orgJsonHash of the organization is changed.
      */
     event OrgJsonHashChanged(bytes32 indexed previousOrgJsonHash, bytes32 indexed newOrgJsonHash);
-
-    /**
-     * @dev Event triggered when new associatedKey is added.
-     */
-    event AssociatedKeyAdded(address indexed associatedKey, uint index);
-
-    /**
-     * @dev Event triggered when a associatedKey is removed.
-     */    
-    event AssociatedKeyRemoved(address indexed associatedKey);
 
     /**
      * @dev Event triggered when new subsidiary has been created
@@ -142,7 +131,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         address payable __owner, 
         string memory _orgJsonUri, 
         bytes32 _orgJsonHash, 
-        App _app,
+        address _app,
         address _parentEntity,
         address _entityDirector
     ) public initializer {
@@ -154,23 +143,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         _owner = __owner;        
         orgJsonUri = _orgJsonUri;
         orgJsonHash = _orgJsonHash;
-        app = _app;
+        app = App(_app);
         parentEntity = _parentEntity;
         entityDirector = _entityDirector;
         created = block.number;
-        associatedKeys.length++;
-        OrganizationInterface i;
-        _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        bytes4 associatedKeysInterface = i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector; // 0xfed71811
-        bytes4 orgJsonInterface = i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector; // 0x6f4826be
-        _registerInterface(orgJsonInterface);
-        _registerInterface(associatedKeysInterface);
-        _registerInterface(i.owner.selector); // 0x8da5cb5b
-        _registerInterface(
-            i.owner.selector ^
-            orgJsonInterface ^
-            associatedKeysInterface
-        ); // 0x1c3af5f4
+        setInterfaces(); 
     }
 
     /**
@@ -199,21 +176,13 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         string calldata contractName
     ) external onlyOwnerOrDirector {
         require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        address subsidiaryAddress = address(
-            app.create(
-                bytes(packageName).length == 0 ? "wt-contracts" : packageName, 
-                bytes(contractName).length == 0 ? "Organization": contractName, 
-                _owner, 
-                abi.encodeWithSignature(
-                    "initialize(address,string,bytes32,address,address,address)",
-                    msg.sender,
-                    _orgJsonUri,
-                    _orgJsonHash,
-                    address(app),
-                    address(this),
-                    subsidiaryDirector
-                )
-            )
+        address subsidiaryAddress = createOrganization(
+            _owner,
+            _orgJsonUri,
+            _orgJsonHash,
+            subsidiaryDirector,
+            packageName,
+            contractName
         );
         registerSubsidiary(
             subsidiaryAddress,
@@ -396,19 +365,69 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * is in place. It's supposed to be called by the proxy admin anyway.
      */
     function setInterfaces() public {
-        // OrganizationInterface i;
-        bytes4[5] memory interfaceIds = [
-            bytes4(0x01ffc9a7), // _INTERFACE_ID_ERC165
-            bytes4(0x8da5cb5b), // i.owner.selector
-            bytes4(0xfed71811), // i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector
-            bytes4(0x6f4826be), // i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector
-            bytes4(0x1c3af5f4)  // 0x8da5cb5b ^ 0xfed71811 ^ 0x6f4826be
+        OrganizationInterface org;
+        bytes4[4] memory interfaceIds = [
+            // ERC165 interface: 0x01ffc9a7
+            bytes4(0x01ffc9a7),
+
+            // ownable interface: 0x7f5828d0
+            org.owner.selector ^ 
+            org.transferOwnership.selector, 
+
+            // organization interface: 0xe9e17278
+            org.changeOrgJsonUri.selector ^ 
+            org.changeOrgJsonHash.selector ^ 
+            org.getOrgJsonUri.selector ^ 
+            org.getOrgJsonHash.selector, 
+
+            // subsidiary interface: 0x9ff6f0b0
+            org.createSubsidiary.selector ^ 
+            org.toggleSubsidiary.selector ^ 
+            this.entityDirector.selector ^ 
+            this.parentEntity.selector ^
+            org.changeEntityDirector.selector ^ 
+            org.getSubsidiary.selector ^ 
+            org.getSubsidiaries.selector ^ 
+            org.transferDirectorOwnership.selector 
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
-            if (!this.supportsInterface(interfaceIds[i])) {
-                _registerInterface(interfaceIds[i]);
-            }
+            _registerInterface(interfaceIds[i]);
         }
+    }
+
+    /**
+     * @dev Organization factory
+     * @param organizationOwner The address of the organization owner
+     * @param _orgJsonUri orgJsonUri pointer
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param subsidiaryDirector Subsidiary director address
+     * @param packageName Name of the package where the contract is contained. Will be "wt-contracts" if empty string provided
+     * @param contractName Name of the organization contract. Will be "Organization" if empty string provided
+     */
+    function createOrganization(
+        address organizationOwner,
+        string memory _orgJsonUri,
+        bytes32 _orgJsonHash,
+        address subsidiaryDirector,
+        string memory packageName,
+        string memory contractName
+    ) internal returns (address) {
+        return address(
+            app.create(
+                bytes(packageName).length == 0 ? "wt-contracts" : packageName, 
+                bytes(contractName).length == 0 ? "Organization": contractName, 
+                organizationOwner, // Owner of the current organization will be the owner of the created proxy
+                abi.encodeWithSignature(
+                    "initialize(address,string,bytes32,address,address,address)",
+                    address(this),
+                    _orgJsonUri,
+                    _orgJsonHash,
+                    address(app),
+                    address(this),
+                    subsidiaryDirector
+                )
+            )
+        );
     }
 
     /**

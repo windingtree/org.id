@@ -15,6 +15,8 @@ const Organization = Contracts.getFromLocal('Organization');
  * @param {string} entityDirectorAccount Entity director account address
  * @param {string} organizationUri Subsidiary Json Uri
  * @param {string} organizationHash Subsidiary Json hash
+ * @param {string} packageName OZ App package name
+ * @param {string} contractName Name of the contract (from the package) to use as implementation
  * @returns {Promise<{string}>} Promise that resolved with subsidiary instance address
  */
 module.exports.createSubsidiary = async (
@@ -22,12 +24,16 @@ module.exports.createSubsidiary = async (
   organizationOwner,
   entityDirectorAccount,
   organizationUri,
-  organizationHash
+  organizationHash,
+  packageName = 'wt-contracts',
+  contractName = 'Organization'
 ) => {
-  const result = await organization.methods['createSubsidiary(string,bytes32,address)'](
+  const result = await organization.methods['createSubsidiary(string,bytes32,address,string,string)'](
     organizationUri,
     organizationHash,
-    entityDirectorAccount
+    entityDirectorAccount,
+    packageName,
+    contractName
   ).send(
     {
       from: organizationOwner

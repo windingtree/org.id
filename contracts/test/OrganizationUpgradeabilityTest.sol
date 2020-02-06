@@ -2,20 +2,43 @@ pragma solidity ^0.5.6;
 
 import "../Organization.sol";
 
-contract OrganizationUpgradeabilityTest is Organization {
+contract CustomInterface {
+    function newFunction() external pure returns(uint256);
+}
+
+contract OrganizationUpgradeabilityTest is Organization, CustomInterface {
 
     function newFunction() public pure returns(uint) {
         return 100;
     }
 
     function setInterfaces() public {
-        // OrganizationInterface i;
-        bytes4[6] memory interfaceIds = [
-            bytes4(0x01ffc9a7), // _INTERFACE_ID_ERC165
-            bytes4(0x8da5cb5b), // i.owner.selector
-            bytes4(0xfed71811), // i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector
-            bytes4(0x6f4826be), // i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector
-            bytes4(0x1c3af5f4),  // 0x8da5cb5b ^ 0xfed71811 ^ 0x6f4826be
+        OrganizationInterface org;
+        bytes4[5] memory interfaceIds = [
+            // ERC165 interface: 0x01ffc9a7
+            bytes4(0x01ffc9a7),
+            
+            // ownable interface: 0x7f5828d0
+            org.owner.selector ^ 
+            org.transferOwnership.selector, 
+
+            // organization interface: 0xe9e17278
+            org.changeOrgJsonUri.selector ^ 
+            org.changeOrgJsonHash.selector ^ 
+            org.getOrgJsonUri.selector ^ 
+            org.getOrgJsonHash.selector, 
+
+            // subsidiary interface: 0x9ff6f0b0
+            org.createSubsidiary.selector ^ 
+            org.toggleSubsidiary.selector ^ 
+            this.entityDirector.selector ^ 
+            this.parentEntity.selector ^
+            org.changeEntityDirector.selector ^ 
+            org.getSubsidiary.selector ^ 
+            org.getSubsidiaries.selector ^ 
+            org.transferDirectorOwnership.selector,
+
+            // custom interface: 0x1b28d63e
             this.newFunction.selector
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
@@ -24,5 +47,4 @@ contract OrganizationUpgradeabilityTest is Organization {
             }
         }
     }
-
 }
