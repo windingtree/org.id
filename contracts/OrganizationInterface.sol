@@ -101,6 +101,18 @@ contract OrganizationInterface is IERC165 {
     ) external;
 
     /**
+     * @dev Liking with SegmentDirectory. 
+     * This function have to be called by SegmentDirectory contract only
+     */
+    function linkDirectory() external;
+
+    /**
+     * @dev Removes a link with SegmentDirectory. 
+     * This function have to be called by SegmentDirectory contract only
+     */
+    function unlinkDirectory() external;
+
+    /**
      * @dev Returns the URI of ORG.JSON file stored off-chain.
      * @return {" ": "Current ORG.JSON URI."}
      */

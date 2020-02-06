@@ -31,6 +31,12 @@ contract SegmentDirectoryInterface {
     function transferOwnership(address payable newOwner) external;
 
     /**
+     * @dev This function is dedicated to receiving signals 
+     * about updates from registered organizations
+     */
+    function reportUpdate() external;
+
+    /**
      * @dev Returns the number of added organizations. Might contain zero
      * addresses (these remain after removing an organization).
      */

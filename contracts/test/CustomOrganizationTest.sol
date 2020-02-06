@@ -29,13 +29,17 @@ contract CustomOrganizationTest is ERC165 {
         return 0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99;
     }
 
+    function linkDirectory() external pure {}
+
+    function unlinkDirectory() external pure {}
+
     function newFunction() external pure returns(uint256) {
         return 100;
     }
 
     function setInterfaces() public {
         OrganizationInterface org;
-        bytes4[5] memory interfaceIds = [
+        bytes4[6] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
 
@@ -52,6 +56,10 @@ contract CustomOrganizationTest is ERC165 {
             // hierarchy interface: 0xc501232e
             org.entityDirector.selector ^ 
             org.parentEntity.selector,
+
+            // linkable interface: 0xfa282a77
+            org.linkDirectory.selector ^ 
+            org.unlinkDirectory.selector,
 
             // custom interface org.newFunction.selector
             bytes4(0x1b28d63e)
