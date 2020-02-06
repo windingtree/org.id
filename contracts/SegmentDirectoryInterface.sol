@@ -2,41 +2,17 @@ pragma solidity ^0.5.6;
 
 /**
  * @title AbstractSegmentDirectory
- * 
  * @dev Usable in libraries. Segment Directory is essentially a list
  * of 0xORG smart contracts that share a common segment - hotels, airlines, otas.
  */
-contract AbstractSegmentDirectory {
+contract SegmentDirectoryInterface {
 
     /**
-     * @dev Event triggered every time organization is added.
+     * @dev `setSegment` allows the owner of the contract to change the
+     * segment name.
+     * @param __segment The new segment name
      */
-    event OrganizationAdded(address indexed organization, uint index);
-
-    /**
-     * @dev Event triggered every time organization is removed.
-     */
-    event OrganizationRemoved(address indexed organization);
-
-    /**
-     * @dev Event triggered when owner of the directory is changed.
-     */
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address);
-
-    /**
-     * @dev Returns the segment name
-     */
-    function getSegment() public view returns (string memory);
-
-    /**
-     * @dev Returns the address of the associated lif token
-     */
-    function getLifToken() public view returns (address);
+    function setSegment(string calldata __segment) external;
 
     /**
      * @dev Adds an organization to the list
@@ -47,6 +23,12 @@ contract AbstractSegmentDirectory {
      * @dev Removes an organization from the list
      */
     function remove(address organization) external;
+
+    /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address payable newOwner) external;
 
     /**
      * @dev Returns the number of added organizations. Might contain zero
@@ -68,4 +50,19 @@ contract AbstractSegmentDirectory {
      * @dev Returns organization address on `index` position.
      */
     function organizations(uint index) public view returns (address);
+
+    /**
+     * @dev Returns the address of the associated lif token
+     */
+    function getLifToken() public view returns (address);
+
+    /**
+     * @dev Returns the segment name
+     */
+    function getSegment() public view returns (string memory);
+
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view returns (address);
 }

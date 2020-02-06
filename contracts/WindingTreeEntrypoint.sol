@@ -84,6 +84,7 @@ contract WindingTreeEntrypoint is Initializable {
         require(addr != address(0), 'WindingTreeEntrypoint: Cannot set segment addr to 0x0 address');
         bytes memory segmentBytes = bytes(segment);
         require(segmentBytes.length != 0, 'WindingTreeEntrypoint: Segment cannot be empty');
+        // @todo Add condition about equality of Lif token addresses. 
         bytes32 segmentHash = keccak256(segmentBytes);
         if (segmentsIndex[segmentHash] == 0) {
             segmentsIndex[segmentHash] = segments.length;
