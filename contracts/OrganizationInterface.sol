@@ -42,8 +42,10 @@ contract OrganizationInterface is IERC165 {
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
-     * @param packageName Name of the package where the contract is contained. Will be "wt-contracts" if empty string provided
-     * @param contractName Name of the organization contract. Will be "Organization" if empty string provided
+     * @param packageName Name of the package where the contract is contained. 
+     * Will be "wt-contracts" if empty string provided
+     * @param contractName Name of the organization contract. 
+     * Will be "Organization" if empty string provided
      */
     function createSubsidiary(
         string calldata _orgJsonUri,
@@ -88,7 +90,9 @@ contract OrganizationInterface is IERC165 {
          "subsidiariesList": "Array of active subsidiaries"
      }
      */
-    function getSubsidiaries() external view returns (address[] memory subsidiariesList);
+    function getSubsidiaries() external view returns (
+        address[] memory subsidiariesList
+    );
 
     /**
      * @dev Transfer subsidiary director ownership

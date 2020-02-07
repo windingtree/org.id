@@ -273,7 +273,7 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('owner', async () => {
+  describe('#owner', async () => {
 
     it('should report current owner', async () => {
       const owner = await segmentDirectory.methods.owner().call();

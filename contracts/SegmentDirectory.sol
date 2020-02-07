@@ -31,7 +31,8 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
     address _lifToken;
 
     // hashed "token.windingtree.eth" using eth-ens-namehash
-    bytes32 private constant tokenNamehash = 0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
+    bytes32 private constant tokenNamehash =
+        0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
     /**
      * @dev Event triggered every time organization is added.
@@ -46,7 +47,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
     /**
      * @dev Event triggered when owner of the directory is changed.
      */
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev The event will be emitted when an organization reporting about their updates
@@ -57,7 +61,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner, "SegmentDirectory: Only owner can call this method");
+        require(
+            msg.sender == _owner,
+            "SegmentDirectory: Only owner can call this method"
+        );
         _;
     }
 
@@ -65,7 +72,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      * @dev Throws if called by any account other than the registered organization
      */
     modifier onlyOrganization() {
-        require(_organizationsIndex[msg.sender] != 0, "SegmentDirectory: Only registered organization can call this method");
+        require(
+            _organizationsIndex[msg.sender] != 0,
+            "SegmentDirectory: Only registered organization can call this method"
+        );
         _;
     }
 
@@ -80,8 +90,14 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
         string memory __segment,
         address __lifToken)
     public initializer {
-        require(__owner != address(0), "SegmentDirectory: Cannot set owner to 0x0 address");
-        require(bytes(__segment).length != 0, "SegmentDirectory: Segment cannot be empty");
+        require(
+            __owner != address(0),
+            "SegmentDirectory: Cannot set owner to 0x0 address"
+        );
+        require(
+            bytes(__segment).length != 0,
+            "SegmentDirectory: Segment cannot be empty"
+        );
         _owner = __owner;
         _lifToken = __lifToken;
         _organizations.length++;
@@ -96,10 +112,16 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
     function resolveLifTokenFromENS(address _ENS) external onlyOwner {
         ENS registry = ENS(_ENS);
         address resolverAddress = registry.resolver(tokenNamehash);
-        require(resolverAddress != address(0), "SegmentDirectory: Resolver not found");
+        require(
+            resolverAddress != address(0),
+            "SegmentDirectory: Resolver not found"
+        );
         Resolver resolver = Resolver(resolverAddress);
         address tokenAddress = resolver.addr(tokenNamehash);
-        require(tokenAddress != address(0), "SegmentDirectory: Token not found");
+        require(
+            tokenAddress != address(0),
+            "SegmentDirectory: Token not found"
+        );
         _lifToken = tokenAddress;
     }
 
@@ -109,7 +131,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      * @param __segment The new segment name
      */
     function setSegment(string calldata __segment) external onlyOwner {
-        require(bytes(__segment).length != 0, "SegmentDirectory: Segment cannot be empty");
+        require(
+            bytes(__segment).length != 0,
+            "SegmentDirectory: Segment cannot be empty"
+        );
         _segment = __segment;
     }
 
@@ -243,7 +268,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      * @param newOwner The address to transfer ownership to.
      */
     function _transferOwnership(address payable newOwner) internal {
-        require(newOwner != address(0), "SegmentDirectory: Cannot transfer to 0x0 address");
+        require(
+            newOwner != address(0),
+            "SegmentDirectory: Cannot transfer to 0x0 address"
+        );
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
@@ -258,7 +286,10 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      * @return {" ": "Address of the organization."}
      */
     function addOrganization(address organization) internal returns (address) {
-        require(_organizationsIndex[organization] == 0, "SegmentDirectory: Cannot add organization twice");
+        require(
+            _organizationsIndex[organization] == 0,
+            "SegmentDirectory: Cannot add organization twice"
+        );
         // This is intentionally not part of the state variables as we expect it to change in time.
         // It should always be the latest xor of *all* methods in the OrganizationInterface.
         
@@ -291,10 +322,16 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
         OrganizationInterface org = OrganizationInterface(organization);
 
         if (org.parentEntity() == address(0)) {
-            require(org.owner() == msg.sender, "SegmentDirectory: Only organization owner can add the organization");
+            require(
+                org.owner() == msg.sender,
+                "SegmentDirectory: Only organization owner can add the organization"
+            );
         } else {
             address entityDirector = org.entityDirector();
-            require(org.owner() == msg.sender || entityDirector == msg.sender, "SegmentDirectory: Only organization owner or entity director can add the organization");
+            require(
+                org.owner() == msg.sender || entityDirector == msg.sender,
+                "SegmentDirectory: Only organization owner or entity director can add the organization"
+            );
         }
         
         _organizationsIndex[organization] = _organizations.length;
@@ -317,9 +354,15 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
      */
     function removeOrganization(address organization) internal {
         // Ensure organization address is valid
-        require(organization != address(0), "SegmentDirectory: Cannot remove organization on 0x0 address");
+        require(
+            organization != address(0),
+            "SegmentDirectory: Cannot remove organization on 0x0 address"
+        );
         // Ensure we know about the organization at all
-        require(_organizationsIndex[organization] != uint256(0), "SegmentDirectory: Cannot remove unknown organization");
+        require(
+            _organizationsIndex[organization] != uint256(0),
+            "SegmentDirectory: Cannot remove unknown organization"
+        );
         
         // This interface required for the organization to be compatible 
         // with other organizations in the directory
@@ -343,10 +386,16 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
         OrganizationInterface org = OrganizationInterface(organization);
 
         if (org.parentEntity() == address(0)) {
-            require(org.owner() == msg.sender, "SegmentDirectory: Only organization owner can remove the organization");
+            require(
+                org.owner() == msg.sender,
+                "SegmentDirectory: Only organization owner can remove the organization"
+            );
         } else {
             address entityDirector = org.entityDirector();
-            require(org.owner() == msg.sender || entityDirector == msg.sender, "SegmentDirectory: Only organization owner or entity director can remove the organization");
+            require(
+                org.owner() == msg.sender || entityDirector == msg.sender,
+                "SegmentDirectory: Only organization owner or entity director can remove the organization"
+            );
         }
 
         uint256 allIndex = _organizationsIndex[organization];
