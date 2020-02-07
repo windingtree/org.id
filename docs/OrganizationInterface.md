@@ -1,11 +1,21 @@
 * [OrganizationInterface](#organizationinterface)
   * [changeEntityDirector](#function-changeentitydirector)
-  * [getAssociatedKeys](#function-getassociatedkeys)
+  * [changeOrgJsonHash](#function-changeorgjsonhash)
+  * [changeOrgJsonUri](#function-changeorgjsonuri)
+  * [createSubsidiary](#function-createsubsidiary)
+  * [entityDirector](#function-entitydirector)
   * [getOrgJsonHash](#function-getorgjsonhash)
   * [getOrgJsonUri](#function-getorgjsonuri)
-  * [hasAssociatedKey](#function-hasassociatedkey)
+  * [getSubsidiaries](#function-getsubsidiaries)
+  * [getSubsidiary](#function-getsubsidiary)
+  * [linkDirectory](#function-linkdirectory)
   * [owner](#function-owner)
+  * [parentEntity](#function-parententity)
   * [supportsInterface](#function-supportsinterface)
+  * [toggleSubsidiary](#function-togglesubsidiary)
+  * [transferDirectorOwnership](#function-transferdirectorownership)
+  * [transferOwnership](#function-transferownership)
+  * [unlinkDirectory](#function-unlinkdirectory)
 
 # OrganizationInterface
 
@@ -23,19 +33,56 @@ Inputs
 | *address* | newEntityDirectorAddress | New entity director address |
 
 
-## *function* getAssociatedKeys
+## *function* changeOrgJsonHash
 
-OrganizationInterface.getAssociatedKeys() `view` `0ba11d86`
+OrganizationInterface.changeOrgJsonHash(_orgJsonHash) `nonpayable` `32fda029`
 
-> Returns all associatedKeys belonging to this organization.
+> `changeOrgJsonHash` Allows owner to change Organization's orgJsonHash.
 
-
-
-Outputs
+Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address[]* |  | undefined |
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
+
+
+## *function* changeOrgJsonUri
+
+OrganizationInterface.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
+
+> `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | New orgJsonUri pointer of this Organization |
+
+
+## *function* createSubsidiary
+
+OrganizationInterface.createSubsidiary(_orgJsonUri, _orgJsonHash, subsidiaryDirector, packageName, contractName) `nonpayable` `3ba2e931`
+
+> Create subsidiary
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | orgJsonUri pointer |
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents |
+| *address* | subsidiaryDirector | Subsidiary director address |
+| *string* | packageName | Name of the package where the contract is contained.  Will be "wt-contracts" if empty string provided |
+| *string* | contractName | Name of the organization contract.  Will be "Organization" if empty string provided |
+
+
+## *function* entityDirector
+
+OrganizationInterface.entityDirector() `view` `dcfa1cdc`
+
+
+
+
 
 ## *function* getOrgJsonHash
 
@@ -65,23 +112,49 @@ Outputs
 |-|-|-|
 | *string* |  | undefined |
 
-## *function* hasAssociatedKey
+## *function* getSubsidiaries
 
-OrganizationInterface.hasAssociatedKey(addr) `view` `f5760597`
+OrganizationInterface.getSubsidiaries() `view` `fadc2569`
 
-> Returns if an `address` is associated with the Organization. Associated keys can be used on behalf of the organization, typically to sign messages.
+> Return an array of subsidiaries addresses
 
-Inputs
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Associated Ethereum address |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bool* |  | undefined |
+| *address[]* | subsidiariesList | Array of active subsidiaries |
+
+## *function* getSubsidiary
+
+OrganizationInterface.getSubsidiary(subsidiaryAddress) `view` `b2a1e312`
+
+> Return subsidiary organization parmeters
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | subsidiaryAddress | Subsidiary organization address |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | id | Subsidiary address |
+| *bool* | state | Subsidiary state |
+| *bool* | confirmed | Subsidiary director ownership confirmation state |
+| *address* | director | Entity director address |
+
+## *function* linkDirectory
+
+OrganizationInterface.linkDirectory() `nonpayable` `8335ad14`
+
+> Liking with SegmentDirectory.  This function have to be called by SegmentDirectory contract only
+
+
+
 
 ## *function* owner
 
@@ -97,6 +170,14 @@ Outputs
 |-|-|-|
 | *address* |  | undefined |
 
+## *function* parentEntity
+
+OrganizationInterface.parentEntity() `view` `19fb3ff2`
+
+
+
+
+
 ## *function* supportsInterface
 
 OrganizationInterface.supportsInterface(interfaceId) `view` `01ffc9a7`
@@ -108,6 +189,55 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes4* | interfaceId | undefined |
+
+
+## *function* toggleSubsidiary
+
+OrganizationInterface.toggleSubsidiary(subsidiaryAddress) `nonpayable` `6df2e446`
+
+> Toggle subsidiary state
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | subsidiaryAddress | Subsidiary organization address |
+
+
+## *function* transferDirectorOwnership
+
+OrganizationInterface.transferDirectorOwnership(subsidiaryAddress, newSubsidiaryDirector) `nonpayable` `f56f2d85`
+
+> Transfer subsidiary director ownership
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | subsidiaryAddress | Subsidiary organization address |
+| *address* | newSubsidiaryDirector | New subsidiary director address |
+
+
+## *function* transferOwnership
+
+OrganizationInterface.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+
+> Allows the current owner to transfer control of the contract to a newOwner.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | newOwner | The address to transfer ownership to. |
+
+
+## *function* unlinkDirectory
+
+OrganizationInterface.unlinkDirectory() `nonpayable` `791d8763`
+
+> Removes a link with SegmentDirectory.  This function have to be called by SegmentDirectory contract only
+
+
 
 
 ---

@@ -1,12 +1,24 @@
-mkdir docs .flattened
-rm docs/*.md
-rm .flattened/*
+#!/usr/bin/env bash
+
+# Exit script as soon as a command fails.
+set -o errexit
+
+# Executes cleanup function at script exit.
+trap cleanup EXIT
+
+cleanup() {
+  rm -rf .flattened
+}
+
+rm -rf .flattened
+mkdir .flattened
+rm -f docs/*.md
+
 for f in $(find contracts -name *.sol)
   do if [ `basename $f` != "Migrations.sol" ]; then
     file=`basename $f`
     filename="${file%.*}"
-    node_modules/.bin/truffle-flattener "$f" > .flattened/"$file"
-    node_modules/.bin/solmd .flattened/"$file" --dest docs/"$filename".md
+    npx truffle-flattener "$f" > .flattened/"$file"
+    npx solmd .flattened/"$file" --dest docs/"$filename".md
   fi
 done
-rm -r .flattened

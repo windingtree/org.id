@@ -221,7 +221,7 @@ For getting current information about the subsidiary can be used function `getSu
 
 ### Contract upgrade process
 
-1. Run `npm version` and release on NPM. This will also bump the version in `zos.json` file.
+1. Run `npm run version` and release on NPM. This will also bump the version in `.openzeppelin/project.json` file.
 1. Deploy upgraded contracts with `./node_modules/.bin/openzeppelin push --network development` (use the network which you need).
 **The `Organization` implementation used by the Factory is changed in this step**.
 1. Upgrade contracts with `./node_modules/.bin/openzeppelin upgrade --network development` (use the network which you need). This
