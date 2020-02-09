@@ -38,6 +38,7 @@ contract('SegmentDirectory', (accounts) => {
   let segmentDirectoryProxy;
   let segmentDirectory;
   let projectAppAddress;
+  let proxyAdmin;
   let organization;
   let project;
 
@@ -57,6 +58,7 @@ contract('SegmentDirectory', (accounts) => {
     segmentDirectory = await SegmentDirectory.at(segmentDirectoryProxy.address);
 
     projectAppAddress = project.app.address;
+    proxyAdmin = await project.getAdminAddress() || (await project.ensureProxyAdmin()).address;
     const organizationProxy = await project.createProxy(Organization, {
       from: organizationOwner,
       initFunction: 'initialize',
@@ -65,6 +67,7 @@ contract('SegmentDirectory', (accounts) => {
         organizationUri,
         organizationHash,
         projectAppAddress,
+        proxyAdmin,
         help.zeroAddress,
         help.zeroAddress
       ],

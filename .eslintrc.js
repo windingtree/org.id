@@ -24,7 +24,7 @@ module.exports = {
     "strict": [2, "global"],
 
     // Code style
-    "indent": [2, 2],
+    "indent": [2],
     "quotes": [2, "single"],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", "always"],
@@ -47,6 +47,7 @@ module.exports = {
     "generator-star-spacing": ["error", "before"],
     "promise/avoid-new": 0,
     "promise/always-return": 0,
+    "promise/no-callback-in-promise": 0,
     "padded-blocks": 0,
     "no-unused-expressions": 0
   }

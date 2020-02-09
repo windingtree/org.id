@@ -9,7 +9,7 @@
     "test": "management/test.sh",
     "lint": "eslint test management && solhint 'contracts/**/*.sol'",
     "lint:fix": "eslint test management --fix && solhint 'contracts/**/*.sol'",
-    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545",
+    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
     "flattener": "management/flattener.sh",

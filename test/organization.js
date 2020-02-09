@@ -39,6 +39,7 @@ contract('Organization', (accounts) => {
   const entityDirectorAccount3 = accounts[5];
   
   let projectAppAddress;
+  let proxyAdmin;
   let organizationProxy;
   let organization;
   let project;
@@ -46,6 +47,7 @@ contract('Organization', (accounts) => {
   beforeEach(async () => {
     project = await TestHelper();
     projectAppAddress = project.app.address;
+    proxyAdmin = await project.getAdminAddress() || (await project.ensureProxyAdmin()).address;
     organizationProxy = await project.createProxy(Organization, {
       from: organizationOwner,
       initFunction: 'initialize',
@@ -54,6 +56,7 @@ contract('Organization', (accounts) => {
         organizationUri,
         organizationHash,
         projectAppAddress,
+        proxyAdmin,
         help.zeroAddress,
         help.zeroAddress
       ],
@@ -73,6 +76,7 @@ contract('Organization', (accounts) => {
     it('should throw with zero owner', async () => {
       try {
         const tProject = await TestHelper();
+        const proxyAdmin = await tProject.getAdminAddress() || (await tProject.ensureProxyAdmin()).address;
         await tProject.createProxy(Organization, {
           from: organizationOwner,
           initFunction: 'initialize',
@@ -81,6 +85,7 @@ contract('Organization', (accounts) => {
             organizationUri,
             organizationHash,
             tProject.app.address,
+            proxyAdmin,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -94,6 +99,7 @@ contract('Organization', (accounts) => {
     it('should throw with empty orgJsonUri', async () => {
       try {
         const tProject = await TestHelper();
+        const proxyAdmin = await project.getAdminAddress() || (await tProject.ensureProxyAdmin()).address;
         await tProject.createProxy(Organization, {
           from: organizationOwner,
           initFunction: 'initialize',
@@ -102,6 +108,7 @@ contract('Organization', (accounts) => {
             '',
             organizationHash,
             tProject.app.address,
+            proxyAdmin,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -115,6 +122,7 @@ contract('Organization', (accounts) => {
     it('should throw with empty orgJsonHash', async () => {
       try {
         const tProject = await TestHelper();
+        const proxyAdmin = await project.getAdminAddress() || (await tProject.ensureProxyAdmin()).address;
         await tProject.createProxy(Organization, {
           from: organizationOwner,
           initFunction: 'initialize',
@@ -123,6 +131,7 @@ contract('Organization', (accounts) => {
             organizationUri,
             '0x0000000000000000000000000000000000000000000000000000000000000000',
             tProject.app.address,
+            proxyAdmin,
             help.zeroAddress,
             help.zeroAddress
           ],
@@ -739,6 +748,7 @@ contract('Organization', (accounts) => {
             organizationUri,
             organizationHash,
             projectAppAddress,
+            proxyAdmin,
             help.zeroAddress,
             help.zeroAddress
           ],

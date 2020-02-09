@@ -35,8 +35,11 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Address of the contract owner
     address _owner;
 
-    // ZeppelinOS App instance
+    // OpenZeppelin App instance
     App public app;
+
+    // OpenZeppelin App proxyAdmin
+    address public proxyAdmin;
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -172,11 +175,12 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Initializer for upgradeable contracts.
+     * @dev Initializer for upgradeable contracts
      * @param __owner The address of the contract owner
      * @param _orgJsonUri pointer to Organization data
-     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents.
-     * @param _app ZeppelinOS App address
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param _app OpenZeppelin App address
+     * @param _proxyAdmin OpenZeppelin proxyAdmin address
      * @param _parentEntity Parent organization address
      * @param _entityDirector Entity director address
      */
@@ -185,6 +189,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         string memory _orgJsonUri, 
         bytes32 _orgJsonHash, 
         address _app,
+        address _proxyAdmin,
         address _parentEntity,
         address _entityDirector
     ) public initializer {
@@ -195,6 +200,10 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         require(
             address(_app) != address(0),
             "Organization: Cannot set app to 0x0 address"
+        );
+        require(
+            address(_proxyAdmin) != address(0),
+            "Organization: Cannot set proxyAdmin to 0x0 address"
         );
         require(
             bytes(_orgJsonUri).length != 0,
@@ -209,6 +218,7 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         orgJsonUri = _orgJsonUri;
         orgJsonHash = _orgJsonHash;
         app = App(_app);
+        proxyAdmin = _proxyAdmin;
         parentEntity = _parentEntity;
         entityDirector = _entityDirector;
         created = block.number;
@@ -251,7 +261,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
             "Organization: Invalid entity director address"
         );
         address subsidiaryAddress = createOrganization(
-            _owner,
             _orgJsonUri,
             _orgJsonHash,
             subsidiaryDirector,
@@ -609,7 +618,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
 
     /**
      * @dev Organization factory
-     * @param organizationOwner The address of the organization owner
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
@@ -619,7 +627,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * Will be "Organization" if empty string provided
      */
     function createOrganization(
-        address organizationOwner,
         string memory _orgJsonUri,
         bytes32 _orgJsonHash,
         address subsidiaryDirector,
@@ -628,16 +635,16 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     ) internal returns (address) {
         return address(
             app.create(
-                bytes(packageName).length == 0 ? "wt-contracts" : packageName, 
+                bytes(packageName).length == 0 ? "Organization" : packageName, 
                 bytes(contractName).length == 0 ? "Organization": contractName, 
-                organizationOwner, // Owner of the current organization 
-                                   // will be the owner of the created proxy
+                proxyAdmin,
                 abi.encodeWithSignature(
-                    "initialize(address,string,bytes32,address,address,address)",
+                    "initialize(address,string,bytes32,address,address,address,address)",
                     address(this),
                     _orgJsonUri,
                     _orgJsonHash,
                     address(app),
+                    proxyAdmin,
                     address(this),
                     subsidiaryDirector
                 )
