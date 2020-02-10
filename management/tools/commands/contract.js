@@ -68,8 +68,11 @@ module.exports = async (options) => {
 
   const ContractSchema = Contracts.getFromLocal(name);
   const network = await web3.eth.net.getNetworkType();
+  const truffleConfig = truffleJs.networks[network === 'private' ? 'development' : network];
   const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
-    from
+    from,
+    gas: truffleConfig.gas || 8000000,
+    gasPrice: truffleJs.gasPrice || 10000000000
   });
   const configFile = path.join(
     __dirname,

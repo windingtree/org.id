@@ -1,6 +1,7 @@
 const { title, log } = require('../utils/stdout');
 const { parseParams, parseCallResult } = require('../utils/cli');
 const expect = require('../utils/expect');
+const truffleJs = require('../../../truffle');
 
 const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
 
@@ -43,8 +44,12 @@ module.exports = async (options) => {
   ZWeb3.initialize(web3.currentProvider);
 
   const ContractSchema = Contracts.getFromLocal(name);
+  const network = await web3.eth.net.getNetworkType();
+  const truffleConfig = truffleJs.networks[network === 'private' ? 'development' : network];
   const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
-    from
+    from,
+    gas: truffleConfig.gas || 8000000,
+    gasPrice: truffleJs.gasPrice || 10000000000
   });
   const contract = ContractSchema.at(address);
 
