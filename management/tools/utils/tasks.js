@@ -17,7 +17,7 @@ module.exports.buildTaskOptions = (properties, resultsScope) => {
   const parseProperty = (property) => {
 
     if (property.match(/^\[TASK:/g)) {
-      const parts = property.replace(/[\[\]']+/g, '').split(':');
+      const parts = property.replace(/[\[\]']+/g, '').split(':'); // eslint-disable-line no-useless-escape
       const result = resultsScope[Number(parts[1])];
       return deepValue(result, parts[2]);
     }
