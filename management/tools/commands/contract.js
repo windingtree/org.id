@@ -266,4 +266,6 @@ module.exports = async (options) => {
   fs.writeFileSync(configFile, JSON.stringify(config, null, 2), {
     encoding: 'utf8'
   });
+
+  return config;
 };

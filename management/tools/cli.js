@@ -2,11 +2,14 @@ global.web3 = web3;
 const { parseArgv } = require('./utils/cli');
 
 // Commands modules
-const version = require('./commands/version');
-const contract = require('./commands/contract');
-const makehash = require('./commands/makehash');
-const call = require('./commands/call');
-const tx = require('./commands/tx');
+const {
+  version,
+  contract,
+  makehash,
+  call,
+  tx,
+  task
+} = require('./commands');
 
 // Truffle script body
 const main = async () => {
@@ -29,6 +32,10 @@ const main = async () => {
 
     case 'tx':
       await tx(args);
+      break;
+
+    case 'task':
+      await task(args);
       break;
 
     default:

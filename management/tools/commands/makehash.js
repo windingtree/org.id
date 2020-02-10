@@ -20,8 +20,13 @@ module.exports = async (options) => {
   try {
     const orgidJsonString = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
     const orgidJson = JSON.parse(orgidJsonString);
+    const hash = web3utils.soliditySha3(orgidJsonString);
     log('DID', orgidJson.id);
-    log('Sha3 Hash', web3utils.soliditySha3(orgidJsonString));
+    log('Sha3 Hash', hash);
+
+    return {
+      hash
+    };
   } catch (e) {
     log('Unable to read ORG.ID JSON file due to error', e.message);
   }

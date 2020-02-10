@@ -5,5 +5,7 @@ module.exports = async () => {
   title('WindingTree Command Line Interface');
   log('Version', packageJson.version);
 
-  return packageJson.version;
+  return {
+    version: packageJson.version
+  };
 };
