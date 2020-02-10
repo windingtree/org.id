@@ -1,6 +1,6 @@
-module.exports.title = (...args) => print.apply(null, [true, ...args]);
+module.exports.title = (...args) => print.apply(null, [true, ...args]);// eslint-disable-line no-useless-call
 
-module.exports.log = (...args) => print.apply(null, [false, ...args]);
+module.exports.log = (...args) => print.apply(null, [false, ...args]);// eslint-disable-line no-useless-call
 
 const print = (isTitle = false, label, text, divided = false) => {
 
@@ -14,7 +14,7 @@ const print = (isTitle = false, label, text, divided = false) => {
 
   console.log(
     label ? `${isTitle ? '\x1b[32m' : '\x1b[36m'}${label}${text ? ':' : ''} \x1b[0m` : '',
-    text ? text : ''
+    text ? text : ''// eslint-disable-line no-unneeded-ternary
   );
 };
 module.exports.print = print;
