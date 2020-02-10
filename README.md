@@ -51,54 +51,27 @@ that the actual signer is registered as an `associatedKey` with the Organization
 
 ### Working with content hashes
 
-In order to reduce the attack surface, we require a hash of the off-chain stored data. We assume that it
-will not change very frequently, so updating the hash every-so-often won't add a significant cost to the whole operation.
+In order to reduce the attack surface, we require a hash of the off-chain stored data. We assume that it will not change very frequently, so updating the hash every-so-often won't add a significant cost to the whole operation.
 So, how does the hash actually look like? It is a `keccak256` (an Ethereum flavour of `sha3`) of the stringified ORG.JSON.
-Let's try an example:
 
-```js
-const web3utils = require('web3-utils');
-const stringOrgJsonContents = `{
-    "@context": "https://windingtree.com/ns/did/v1",
-    "id": "did:orgid:0xB4Caa470E33A4cE899C16e6C7E125eA03956e95D",
-    "created": "2019-01-01T13:10:02.251Z",
-    "updated": "2019-06-03T13:20:06.398Z",
-    "publicKey": [...],
-    "service": [...],
-    "trust": {...},
-    "legalEntity": {
-        "legalName": "Acme, Corp.",
-        "alternativeName": "Acme",
-        "legalIdentifier": "US12345567",
-        "identifiers": [
-            {
-                "type": "IATA",
-                "value": "123456"
-            },
-            {...}
-        ],
-        "legalType": "GmBH",
-        "registeredAddress": {...},
-        "locations": [...],
-        "contacts": [
-            {
-                "function": "Customer Service",
-                "name": "John Smith",
-                "phone": "+1234567890",
-                "email": "email@spam.com"
-            },
-            {...}
-        ]
-    }
-}`;
-// It is important to work with a textual ORG.JSON and *not* a JSON-parsed and re-serialized form.
-// JSON serializers might be producing different outcomes which would result in different hashes.
-const hashedOrgJson = web3utils.soliditySha3(stringOrgJsonContents);
-console.log(`Put me into 0xORG: ${hashedOrgJson}`);
+You can produce `keccak256` hashes in a myriad of other tools, such as
+[this one](https://emn178.github.io/online-tools/keccak_256.html).
+
+Also, you can use [our own CLI tools](./management/tools/README.md) to generate a hash. Here the example of the command that generates a hash of given json file:
+
+```bash
+./management/tools/index.js --network development cmd=makehash file=./relative/path/to/file.json
 ```
 
-You can also produce `keccak256` hashes in a myriad of other tools, such as
-[this one](https://emn178.github.io/online-tools/keccak_256.html).
+Execution of the command results with:
+```bash
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+ORG.JSON JSON hash  
+DID:  did:orgid:0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959
+Sha3 Hash:  0x91d6fc816cffa960aeb3a610607e37ed735f05718b9a72d1c0223396dab50626
+```
 
 ## Requirements
 
@@ -139,13 +112,7 @@ or [securify.ch](https://securify.ch/).
 
 ## Deployment
 
-We are using the upgradeability proxy from [openzeppelin](https://docs.openzeppelin.com/sdk/2.5/)
-and the deployment pipeline is using their system as well. You can read more
-about the [publishing process](https://docs.openzeppelin.com/sdk/2.5/publish) and
-[upgrading](https://docs.openzeppelin.com/sdk/2.5/api/upgrades) in `openzeppelin`
-documentation.
-
-If you want to deploy just an `Organization` or `SegmentDirectory` contract separately you will need to use our scripts that can be found in the [./management](./management) folder of this repository [TODO]
+We are recommending to manage the deployment and upgrades of contracts using our CLI tools. These tools allowing to manage each contract as a separate upgradeable project. More about WindingTree CLI tools you can [read here](./management/tools/README.md).
 
 In order to interact with "real" networks such as `mainnet`, `ropsten` or others,
 you need to setup a `keys.json` file used by [truffle](https://truffleframework.com/)
