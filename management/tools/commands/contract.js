@@ -1,12 +1,13 @@
 const path = require('path');
 const fs = require('fs');
 const { title, log } = require('../utils/stdout');
+const { parseParams, applyArgs } = require('../utils/cli');
 const expect = require('../utils/expect');
 const packageJson = require('../../../package.json');
 const truffleJs = require('../../../truffle');
 
 const { commands } = require('@openzeppelin/cli');
-const { Semver, Transactions, Contracts, App, AppProject, ZWeb3 } = require('@openzeppelin/upgrades');
+const { Semver, Contracts, App, AppProject, ZWeb3 } = require('@openzeppelin/upgrades');
 const zeroAddress = '0x0000000000000000000000000000000000000000';
 
 module.exports = async (options) => {
@@ -17,24 +18,54 @@ module.exports = async (options) => {
     from: {
       type: 'address'
     },
+    initMethod: {
+      type: 'string',
+      required: false
+    },
+    initArgs: {
+      type: 'string',
+      required: false
+    },
+    upgradeMethod: {
+      type: 'string',
+      required: false
+    },
+    upgradeArgs: {
+      type: 'string',
+      required: false
+    },
+    upgradeProxies: {
+      type: 'string',
+      required: false
+    },
     dao: {
       type: 'address',
       required: false
     }
   });
 
-  const { name, from, dao } = options;
+  const {
+    name,
+    from,
+    initMethod,
+    initArgs,
+    upgradeMethod,
+    upgradeArgs,
+    upgradeProxies,
+    dao
+  } = options;
 
   log('Contract name', name);
 
   ZWeb3.initialize(web3.currentProvider);
 
-  // Using compiler setting from truffle.js
+  // Using compiler settings from the truffle.js
   await commands.compile.action({
     solcVersion: truffleJs.compilers.solc.version,
     optimizer: truffleJs.compilers.solc.settings.optimizer.enabled,
     optimizerRuns: truffleJs.compilers.solc.settings.optimizer.runs
   });
+
   const ContractSchema = Contracts.getFromLocal(name);
   const network = await web3.eth.net.getNetworkType();
   const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
@@ -46,6 +77,8 @@ module.exports = async (options) => {
     __dirname,
     `../../../.openzeppelin/${network}-${name}.json`
   );
+
+  // Config template
   let config = {
     version: packageJson.version,
     contract: {
@@ -60,6 +93,26 @@ module.exports = async (options) => {
     package: null,
     blockNumber: 0
   };
+
+  // Parse transaction arguments
+  let initArgsParsed = [];
+  let upgradeArgsParsed = [];
+
+  if (initArgs) {
+    initArgsParsed = parseParams(initArgs);
+  }
+
+  if (upgradeArgs) {
+    upgradeArgsParsed = parseParams(upgradeArgs);
+  }
+
+  // Parse list of instances to upgrade
+  let upgradeProxiesParsed = [];
+
+  if (upgradeProxies) {
+    upgradeProxiesParsed = parseParams(upgradeProxies);
+  }
+
   let app;
   let isDeployment = false;
   let isUpgrade = false;
@@ -71,7 +124,10 @@ module.exports = async (options) => {
     const currentBlock = await web3.eth.getBlockNumber();
 
     if (config.blockNumber > currentBlock) {
-      log('Outdated configuration file detected', `Current block number "${currentBlock}" is less than saved`);
+      log(
+        'Outdated configuration file detected',
+        `Current block number "${currentBlock}" is less than saved`
+      );
       return;
     }
   } catch (e) {}
@@ -97,7 +153,7 @@ module.exports = async (options) => {
 
         if (dao) {
           log('Creating upgrade proposal to the Dao [Not implemented yet]');
-          // Creation of the proposal
+          // @todo Creation of the proposal
 
         } else {
           isUpgrade = true;
@@ -108,6 +164,7 @@ module.exports = async (options) => {
     isDeployment = true;
   }
 
+  // Initialize AppProject
   const project = await AppProject.fetchOrDeploy(
     config.contract.name,
     config.version,
@@ -131,6 +188,7 @@ module.exports = async (options) => {
   appPackage = await project.app.getPackage(name);
   config.package = appPackage.package.address;
 
+  // Deployment of very first implementation
   if (implementationAddress === zeroAddress) {
     deployedImplementation = await project.setImplementation(ContractSchema, name);
     config.contract.implementation = deployedImplementation.address;
@@ -141,21 +199,24 @@ module.exports = async (options) => {
 
     title('New deployment');
     
-    const deployedProxy = await project.createProxy(ContractSchema, {
-      initArgs: [
-        from,
-        'test',
-        '0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',
-        config.app,
-        config.proxyAdmin,
-        zeroAddress,
-        zeroAddress
-      ]
-    });
+    const deployedProxy = await project.createProxy(
+      ContractSchema,
+      Object.assign(
+        {},
+        initMethod ? { initMethod } : {},
+        {
+          initArgs: applyArgs(initArgsParsed, {
+            '[APP]': config.app,
+            '[PROXY_ADMIN]': config.proxyAdmin
+          })
+        }
+      )
+    );
     config.contract.proxy = deployedProxy.address;
     config.version = packageJson.version;
 
     log('Contract proxy', deployedProxy.address);
+
   } else if (isUpgrade) {
 
     title('Upgrading of the contract to version', packageJson.version);
@@ -164,9 +225,32 @@ module.exports = async (options) => {
     deployedImplementation = await project.setImplementation(ContractSchema, name);
     config.contract.implementation = deployedImplementation.address;
     log('New implementation of the contract', deployedImplementation.address);
+
+    upgradeProxiesParsed.unshift[config.contract.proxy];
     
-    const upgradedContract = await project.upgradeProxy(config.contract.proxy, ContractSchema);
-    log('Contract upgraded at address', upgradedContract.address);
+    const upgradedContracts = await Promise.all(upgradeProxiesParsed.map(
+      i => project.upgradeProxy(
+        i,
+        ContractSchema,
+        Object.assign({},
+          upgradeMethod ? {
+            initMethod
+          } : {},
+          upgradeArgsParsed.length > 0 ? {
+            initArgs: applyArgs(upgradeArgsParsed, {
+              '[APP]': config.app,
+              '[PROXY_ADMIN]': config.proxyAdmin
+            })
+          } : {}
+        )
+      )
+    ));
+    
+    log('Contract upgraded at address', upgradedContracts[0].address);
+
+    if (upgradedContracts.length > 1) {
+      log('Upgraded proxies', upgradedContracts.map(p => p.address).join(', '));
+    }
 
     config.version = packageJson.version;
   }

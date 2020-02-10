@@ -5,6 +5,10 @@ const { spawn } = require('child_process');
 const args = ['truffle', 'exec', './management/tools/cli.js'];
 Array.prototype.push.apply(args, process.argv.slice(2));
 
+if (!args.includes('--network')) {
+  throw new Error('"--network" parameter is required');
+}
+
 const cmd = spawn('npx', args);
 
 cmd.stdout.on('data', data => {
