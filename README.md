@@ -216,67 +216,350 @@ For getting the account address of the director can be used public getter  `enti
 
 For getting current information about the subsidiary can be used function `getSubsidiary` with parameter `subsidiaryAddress` (address type). This function will return the following options: `id` - subsidiary address (address type), `state` - subsidiary state (boolean type), `confirmed` - director ownership confirmation status, `director` - account address of the director.  
 
-### Contract upgrade process [TODO]
+### Contracts deployment and upgrade process
 
-1. Run `npm run version` and release on NPM. This will also bump the version in `.openzeppelin/project.json` file.
-1. Deploy upgraded contracts with `npx openzeppelin push --network development` (use the network which you need).
-**The `Organization` implementation used by the Factory is changed in this step**.
-1. Upgrade contracts with `./node_modules/.bin/openzeppelin upgrade --network development` (use the network which you need). This
-will interactively ask you which contracts to upgrade. If you have changed the interface of Organization, make sure to
-upgrade `OrganizationFactory` as well.
-1. Upgrade Organization contracts with `node management/upgrade-organizations.js`. Make sure that its setup in a proper way.
-You can check the `Organization` implementation address in `zos.<network>.json` file. Also, use the account set as Organization
-Factory owner. Only that account can change Organizations' implementation.
+- All contracts in this repository can be managed as separate upgradability projects (recommended). For these purposes, you can use `OpenZeppelin CLI` or our simplified tool `WindingRree CLI` that can be found in the folder `./management/tools`.  
+- All initial contracts deployments are will be based on the version that pointed in the `package.json` file.  
+- After an initial deployment project configuration file will be created in the folder `./openzeppelin` automatically. Name of this file should have the following format `[network_Type]-[Contract_Name].json` (e.g. `private-Contract.json`). The local development network type is named as `private`, all other networks will have its own regular names like `ropsten`, `rinkeby` or `mainnet`.  
 
+> Here the example of the project configuration:  
 
-### Local testing [TODO]
+```json
+{
+  "version": "0.9.0",
+  "contract": {
+    "name": "Organization",
+    "implementation": "0x630589690929E9cdEFDeF0734717a9eF3Ec7Fcfe",
+    "proxy": "0xDb56f2e9369E0D7bD191099125a3f6C370F8ed15"
+  },
+  "owner": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+  "app": "0x0290FB167208Af455bB137780163b7B7a9a10C16",
+  "proxyAdmin": "0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec",
+  "implementationDirectory": "0x67B5656d60a809915323Bf2C40A8bEF15A152e3e",
+  "package": "0x9b1f7F645351AF3631a656421eD2e40f2802E6c0",
+  "blockNumber": 18
+}
+```
 
-1. You need to run `npm run dev-net` and you will have an output of your addresses and private keys ready to use like this:
-    ```
-    Available Accounts
-    ==================
-    (0) 0xbbc04b7c97846af2dac2d0c115f06d6cdab188d8 (~100 ETH)
-    (1) 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f (~100 ETH)
-    (2) 0x14f016e73a18c5a68c475d2dff17af38f85db6b7 (~100 ETH)
-    (3) 0x3e083ef62949f90a6f5f46cd314797fed7fa9468 (~100 ETH)
-    (4) 0x994d319557cd049b13de8b78c00d97c5aefec192 (~100 ETH)
-    (5) 0x6c44a1706d7e4866fc5fbfc8e7547f0682aa8756 (~100 ETH)
-    (6) 0x06a99bd405aec473af091454e93a48fa45d8df85 (~100 ETH)
-    (7) 0x2e0bcd1841dafdc2f740a4dfcdbb882be21a383a (~100 ETH)
-    (8) 0xb34287e5520e3ae9430c53b624830021eff110db (~100 ETH)
-    (9) 0x9d112ca960b447d9046816505ca869e06708759b (~100 ETH)
-    ```
+- To instantiate new contract on the network you should run the following command:  
 
-    In this example we will use the 0 index account for proxy ownership, the 1 index account for contract ownership and the 2 index account for organization creation and ownership.
-    The LifToken address will be 0x0, we dont need it to test locally.
-1. Start an openzeppelin session.
-    ```bash
-    > ./node_modules/.bin/openzeppelin session --network development --from 0xbbc04b7c97846af2dac2d0c115f06d6cdab188d8 --expires 3600
-    ```
-1. Deploy your contracts. This only uploads the logic, the contracts are not meant to be directly
-interacted with.
-    ```bash
-    > ./node_modules/.bin/openzeppelin push --network development
-    ```
-1. Create the proxy instances of deployed contracts you can interact with. The `args`
-attribute is passed to the initializer function. See documentation of the appropriate contracts
-for details. The openzeppelin app might differ for each deployment. You don't need a deployed Lif token
-to play with this locally. You can get the ZOS_APP_ADDRESS from the zos dev file inside the .openzeppelin (or root) folder.
-    ```bash
-    > ./node_modules/.bin/openzeppelin create OrganizationFactory --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,ZOS_APP_ADDRESS
-    > ./node_modules/.bin/openzeppelin create WindingTreeEntrypoint --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,0x0000000000000000000000000000000000000000,ORG_FACTORY_PROXY_ADDRESS
-    > ./node_modules/.bin/openzeppelin create SegmentDirectory --network development --init initialize --args 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f,hotels,0x0000000000000000000000000000000000000000
-    ```
+```bash
+./management/tools/index.js --network development cmd=contract name=Organization from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 initArgs=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,https://gist.githubusercontent.com/[username]/3bde88a0e8248c73c68c1aed2ca4b9be/raw/c3b4ebfe4af22832fb468393032a416b2482e99a/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,[APP],[PROXY_ADMIN],0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000
+```
+> Command parameters explanation:  
+> - `--network development`: network from the `truffle.js` configuration file. Required
+> - `cmd-contract`: command type. This type is allowing making new deployments or upgrades. Type is required
+> - `from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1`: transaction sender address. Required
+> - `initArgs=[ARG_1],[ARG_2],[ARG_3]`: initial deployment initializer arguments. Optional. initial deployment initializer arguments. Optional. Arguments can have, also templates like `[APP]` and `[PROXY_ADMIN]`. These templates will be replaced with their actual values during the deployment (or upgrade).
 
-    These commands will return a network address where you can actually interact with the contracts.
-    For a quick test, you can use the openzeppelin sdk, you can get all addresses from the zos file that was created.
-    ```bash
-    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setOrganizationFactory --args ORG_FACTORY_PROXY_ADDRESS --from WT_OWNER
-    > ./node_modules/.bin/openzeppelin send-tx --network development --to WINDINGTREEENTRYPOINT_PROXY_ADDRESS --method setSegment --args 'hotels',SEGMENTHOTEL_PROXY_ADDRESS --from 0xeb3d7449df1453ac074492a9fc73f6aebdfe9b2f --from WT_OWNER
-    > ./node_modules/.bin/openzeppelin send-tx --network development --to ORGFACTORY_PROXY_ADDRESS --method createAndAddToDirectory --args 'https://windingtree.com','0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99',SEGMENTHOTEL_PROXY_ADDRESS --from 0x14f016e73a18c5a68c475d2dff17af38f85db6b7
-    > ./node_modules/.bin/openzeppelin call --network development --to SEGMENTHOTEL_PROXY_ADDRESS --method getOrganizations
-    > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
-    > ./node_modules/.bin/openzeppelin call --network development --to ORGANIZATION_ADDRESS --method getOrgJsonUri
-    ```
+The result of this command execution should looks like:  
 
-    With these commands we have deployed the Winding Tree core contracts, and register and organization in our local network.
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0                // <-- tool version
+Contract name:  Organization   // <-- Contract name
+Actual version:  0.9.0         // <-- Current repository version
+Last known version:  0.9.0     // <-- Previouisly deployed version
+App address:  0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab
+Proxy admin:  0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb
+Contract implementation:  0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7
+================================================================================ 
+New deployment  
+Contract proxy:  0x59d3631c86BbE35EF041872d502F218A39FBa150
+
+```
+
+- Contract upgrade  
+
+> CLI tool will detect upgrade need automatically from the difference of previous and current version number.
+
+```bash
+./management/tools/index.js --network development cmd=contract name=Organization from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 upgradeProxies=0x7e664541678C4997aD9dBDb9978C6E2B5A9445bE,0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7
+```
+
+> `upgradeProxies=[PROXY_ADDRESS],[PROXY_ADDRESS][...]`: optional parameter. If you want to upgrade your subsidiary organizations then using `upgradeProxies` parameter you should list their address
+
+> If your upgraded contract requiring running of its own initialization method then you can define it using parameter `upgradeMethod` and its arguments can be listed as `upgradeArgs`  
+
+## Local testing 
+
+You need to run `npm run dev-net` and you will have an output of your addresses and private keys ready to use like this:
+
+```
+Available Accounts
+==================
+(0) 0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 (~100 ETH)
+(1) 0xffcf8fdee72ac11b5c542428b35eef5769c409f0 (~100 ETH)
+(2) 0x22d491bde2303f2f43325b2108d26f1eaba1e32b (~100 ETH)
+(3) 0xe11ba2b4d45eaed5996cd0823791e0c93114882d (~100 ETH)
+(4) 0xd03ea8624c8c5987235048901fb614fdca89b117 (~100 ETH)
+(5) 0x95ced938f7991cd0dfcb48f0a06a40fa1af46ebc (~100 ETH)
+(6) 0x3e5e9111ae8eb78fe1cc3bb8915d5d461f3ef9a9 (~100 ETH)
+(7) 0x28a8746e75304c0780e011bed21c72cd78cd535e (~100 ETH)
+(8) 0xaca94ef8bd5ffee41947b4585a84bda5a3d3da6e (~100 ETH)
+(9) 0x1df62f291b2e969fb0849d99d9ce41e2f137006e (~100 ETH)
+```
+
+> You can instantiate your own local `ganache-cli` configuration. We will use accounts shown above just for example purposes, you will need to use your owns.  
+
+- Deployment of the `WindingTreeEntrypoint`
+
+```bash
+./management/tools/index.js --network development cmd=contract name=WindingTreeEntrypoint from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 initArgs=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,0x0000000000000000000000000000000000000000
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+Contract name:  WindingTreeEntrypoint
+Actual version:  0.9.0
+Last known version:  0.9.0
+App address:  0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab
+Proxy admin:  0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb
+Contract implementation:  0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7
+================================================================================ 
+New deployment  
+Contract proxy:  0x59d3631c86BbE35EF041872d502F218A39FBa150
+```
+
+- Deployment of the `SegmentDirectory`
+
+```bash
+./management/tools/index.js --network development cmd=contract name=SegmentDirectory from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 initArgs=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,hotels,0x0000000000000000000000000000000000000000
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+Contract name:  SegmentDirectory
+Actual version:  0.9.0
+Last known version:  0.9.0
+App address:  0x0290FB167208Af455bB137780163b7B7a9a10C16
+Proxy admin:  0x26b4AFb60d6C903165150C6F0AA14F8016bE4aec
+Contract implementation:  0x630589690929E9cdEFDeF0734717a9eF3Ec7Fcfe
+================================================================================ 
+New deployment  
+Contract proxy:  0xDb56f2e9369E0D7bD191099125a3f6C370F8ed15
+```
+
+- Adding of new directory to the EntryPoint  
+
+```bash
+./management/tools/index.js --network development cmd=tx name=WindingTreeEntrypoint address=0x59d3631c86BbE35EF041872d502F218A39FBa150 from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 method='setSegment(string,address)' args=hotels,0xDb56f2e9369E0D7bD191099125a3f6C370F8ed15
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+Sending a transaction to contract  
+Contract name:  WindingTreeEntrypoint
+Method:  setSegment(string,address)
+Arguments:  hotels,0xDb56f2e9369E0D7bD191099125a3f6C370F8ed15
+Result:  { transactionHash:
+   ...,
+  events:
+   { SegmentSet:
+      { logIndex: '0',
+        transactionIndex: '0',
+        transactionHash:
+         '0xb4f11f24e2614699bf540ed264c6c175293a61ef31c5e4627f9f94a0e73e49fb',
+        blockHash:
+         '0xe7f4ab504fbcca80ba0548920cf2956fabcee56f7dd487d2b5ad085163056c8c',
+        blockNumber: '19',
+        address: '0x59d3631c86BbE35EF041872d502F218A39FBa150',
+        type: 'mined',
+        id: 'log_71b8a880',
+        returnValues: [Result],
+        event: 'SegmentSet',
+        signature:
+         '0x1e5616724a154b534b96005ebef3069bc0b088cacf14dd358fab72fd52604a42',
+        raw: [Object] } } }
+```
+
+> `tx` command type properties:
+> - `cmd=tx` command type
+> - `name=WindingTreeEntrypoint` name of the contract 
+> - `address=0x59d3631c86BbE35EF041872d502F218A39FBa150` address of the contract on the network
+> - `method='setSegment(string,address)'` name of the method to send transaction
+> - `args=hotels,0xDb56f2e9369E0D7bD191099125a3f6C370F8ed15`
+
+- Deployment of the Organization
+
+```bash
+./management/tools/index.js --network development cmd=contract name=Organization from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 initArgs=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,https://gist.githubusercontent.com/[username]/3bde88a0e8248c73c68c1aed2ca4b9be/raw/c3b4ebfe4af22832fb468393032a416b2482e99a/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,[APP],[PROXY_ADMIN],0x0000000000000000000000000000000000000000,0x0000000000000000000000000000000000000000
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+Contract name:  Organization
+Actual version:  0.9.0
+Last known version:  0.9.0
+App address:  0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC
+Proxy admin:  0xD86C8F0327494034F60e25074420BcCF560D5610
+Contract implementation:  0x4bf749ec68270027C5910220CEAB30Cc284c7BA2
+================================================================================ 
+New deployment  
+Contract proxy:  0x7C728214be9A0049e6a86f2137ec61030D0AA964
+```
+
+> Properties of this command has been described above in the previous chapter.
+
+- Creation of the subsidiary organization 
+
+```bash
+./management/tools/index.js --network development cmd=tx name=Organization address=0x7C728214be9A0049e6a86f2137ec61030D0AA964 from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 method='createSubsidiary(string,bytes32,address,string,string)' args=https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,'',''
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+Sending a transaction to contract  
+Contract name:  Organization
+Method:  createSubsidiary(string,bytes32,address,string,string)
+Arguments:  https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,,
+Error: Invalid number of parameters for "createSubsidiary". Got 4 expected 5!
+    at Object.InvalidNumberOfParams (/home/kostysh/dev/wt-contracts-local/node_modules/web3-core-helpers/src/errors.js:32:16)
+    at Object._createTxObject (/home/kostysh/dev/wt-contracts-local/node_modules/web3-eth-contract/src/index.js:705:22)
+    at module.exports (/home/kostysh/dev/wt-contracts-local/management/tools/commands/tx.js:53:56)
+    at process._tickCallback (internal/process/next_tick.js:68:7)
+Truffle v5.0.29 (core: 5.0.29)
+Node v10.16.0
+kostysh@mindsaur:~/dev/wt-contracts-local$ ./management/tools/index.js --network development cmd=tx name=Organization address=0x7C728214be9A0049e6a86f2137ec61030D0AA964 from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 method='createSubsidiary(string,bytes32,address,string,string)' args=https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,'',''
+Using network 'development'.
+
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+Sending a transaction to contract  
+Contract name:  Organization
+Method:  createSubsidiary(string,bytes32,address,string,string)
+Arguments:  https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,,
+Result:  { transactionHash:
+   ...,
+  events:
+   { '0':
+      { logIndex: '1',
+        transactionIndex: '0',
+        transactionHash:
+         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+        blockHash:
+         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
+        blockNumber: '29',
+        address: '0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC',
+        type: 'mined',
+        id: 'log_cc9cc0f2',
+        returnValues: Result {},
+        event: undefined,
+        signature: null,
+        raw: [Object] },
+     OwnershipTransferred:
+      { logIndex: '0',
+        transactionIndex: '0',
+        transactionHash:
+         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+        blockHash:
+         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
+        blockNumber: '29',
+        address: '0x067805E69e62E8bE56e8D13f4EBf53372D3dD02e',
+        type: 'mined',
+        id: 'log_795e278b',
+        returnValues: [Result],
+        event: 'OwnershipTransferred',
+        signature:
+         '0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0',
+        raw: [Object] },
+     SubsidiaryCreated:
+      { logIndex: '2',
+        transactionIndex: '0',
+        transactionHash:
+         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+        blockHash:
+         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
+        blockNumber: '29',
+        address: '0x7C728214be9A0049e6a86f2137ec61030D0AA964',
+        type: 'mined',
+        id: 'log_16683862',
+        returnValues: [Result],
+        event: 'SubsidiaryCreated',
+        signature:
+         '0x1d19959a9df12178565ee79ed0f54483da27fb2be079d78a0728f5ac11c06795',
+        raw: [Object] },
+     SubsidiaryDirectorOwnershipConfirmed:
+      { logIndex: '3',
+        transactionIndex: '0',
+        transactionHash:
+         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+        blockHash:
+         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
+        blockNumber: '29',
+        address: '0x7C728214be9A0049e6a86f2137ec61030D0AA964',
+        type: 'mined',
+        id: 'log_4e8591b6',
+        returnValues: [Result],
+        event: 'SubsidiaryDirectorOwnershipConfirmed',
+        signature:
+         '0xcaea9a4e47c93c447fb88037cab74d00f477961a7231c8ae7a94881b661929f5',
+        raw: [Object] } } }
+```
+
+- Creation of ORG.ID JSON hash
+
+> Examples of ORG.ID JSON files can be found in the directory `./assets`
+
+```bash
+./management/tools/index.js --network development cmd=makehash file=./assets/orgid-unit.json
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+ORG.JSON JSON hash  
+DID:  did:orgid:0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959
+Sha3 Hash:  0x91d6fc816cffa960aeb3a610607e37ed735f05718b9a72d1c0223396dab50626
+```
+
+> You should generate (and update in the contract) ORG.ID hash every time you change json file content
+
+- Getting the list of subsidiaries
+
+```bash
+./management/tools/index.js --network development cmd=call name=Organization address=0x7C728214be9A0049e6a86f2137ec61030D0AA964 method='getSubsidiaries()'
+```
+
+Results with:
+
+```
+================================================================================ 
+WindingTree Command Line Interface  
+Version:  0.9.0
+================================================================================ 
+Contract method call  
+Contract name:  Organization
+Method:  getSubsidiaries()
+Arguments:  []
+Result:  [ '0x067805E69e62E8bE56e8D13f4EBf53372D3dD02e' ]
+```

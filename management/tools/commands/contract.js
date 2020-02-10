@@ -38,6 +38,10 @@ module.exports = async (options) => {
       type: 'string',
       required: false
     },
+    gasPrice: {
+      type: 'string',
+      required: false
+    },
     dao: {
       type: 'address',
       required: false
@@ -52,6 +56,7 @@ module.exports = async (options) => {
     upgradeMethod,
     upgradeArgs,
     upgradeProxies,
+    gasPrice,
     dao
   } = options;
 
@@ -70,8 +75,8 @@ module.exports = async (options) => {
   const network = await web3.eth.net.getNetworkType();
   const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
     from,
-    gas: 60000000,
-    gasPrice: await web3.eth.getGasPrice() * 1.2
+    gas: 8000000,
+    gasPrice: gasPrice || parseInt(await web3.eth.getGasPrice() * 2)
   });
   const configFile = path.join(
     __dirname,

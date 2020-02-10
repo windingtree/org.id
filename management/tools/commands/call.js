@@ -35,7 +35,7 @@ module.exports = async (options) => {
     argsParsed = parseParams(args);
   }
 
-  log('Arguments', `[${args}]`);
+  log('Arguments', `[${args || ''}]`);
 
   ZWeb3.initialize(web3.currentProvider);
 
