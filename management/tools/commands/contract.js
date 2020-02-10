@@ -74,9 +74,7 @@ module.exports = async (options) => {
   const ContractSchema = Contracts.getFromLocal(name);
   const network = await web3.eth.net.getNetworkType();
   const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
-    from,
-    gas: 8000000,
-    gasPrice: gasPrice || parseInt(await web3.eth.getGasPrice() * 2)
+    from
   });
   const configFile = path.join(
     __dirname,
