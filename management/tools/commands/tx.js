@@ -24,14 +24,10 @@ module.exports = async (options) => {
     args: {
       type: 'string',
       required: false
-    },
-    gasPrice: {
-      type: 'string',
-      required: false
     }
   });
 
-  const { name, address, from, method, args, gasPrice } = options;
+  const { name, address, from, method, args } = options;
 
   log('Contract name', name);
   log('Method', method);

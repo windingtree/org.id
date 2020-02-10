@@ -38,10 +38,6 @@ module.exports = async (options) => {
       type: 'string',
       required: false
     },
-    gasPrice: {
-      type: 'string',
-      required: false
-    },
     dao: {
       type: 'address',
       required: false
@@ -56,7 +52,6 @@ module.exports = async (options) => {
     upgradeMethod,
     upgradeArgs,
     upgradeProxies,
-    gasPrice,
     dao
   } = options;
 
