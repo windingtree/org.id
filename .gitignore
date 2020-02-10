@@ -21,6 +21,8 @@ scTopics
 # ETH keys
 keys.json
 
-.openzeppelin
+# OpenZeppelin SDK
 .zos.session
 zos.dev-*
+.openzeppelin/*
+!.openzeppelin/project.json

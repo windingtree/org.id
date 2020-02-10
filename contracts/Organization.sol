@@ -1,9 +1,12 @@
 pragma solidity ^0.5.6;
 
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
-import "./OrganizationInterface.sol";
-import "./AbstractOrganizationFactory.sol";
+import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
+import "openzeppelin-solidity/contracts/utils/Address.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "@openzeppelin/upgrades/contracts/application/App.sol";
+import "./OrganizationInterface.sol";
+import "./SegmentDirectoryInterface.sol";
 
 /**
  * @title Organization
@@ -13,8 +16,30 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
  * adheres to the `OrganizationInterface`.
  */
 contract Organization is OrganizationInterface, ERC165, Initializable {
+
+    /// @dev Subsidiary organization configuration structure
+    struct Subsidiary {
+        address id;
+        bool state;
+        bool confirmed;
+        address director;
+    }
+
+    /// @dev Linked directory structure
+    struct Directory {
+        address directory;
+        bool linked;
+        uint256 index;
+    }
+
     // Address of the contract owner
     address _owner;
+
+    // OpenZeppelin App instance
+    App public app;
+
+    // OpenZeppelin App proxyAdmin
+    address public proxyAdmin;
 
     // Arbitrary locator of the off-chain stored Organization data
     // This might be an HTTPS resource, IPFS hash, Swarm address...
@@ -24,30 +49,17 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Number of a block when the Organization was created
     uint public created;
 
-    // Index of associated addresses. These can be used
-    // to operate on behalf of this organization, typically sign messages.
-    mapping(address => uint) public associatedKeysIndex;
-
-    // List of associatedKeys. These addresses (i. e. public key
-    // fingerprints) can be used to associate signed content with this
-    // organization.
-    address[] public associatedKeys;
-
     // keccak256 hash of the ORG.JSON file contents. This should
     // be used to verify that the contents of ORG.JSON has not been tampered
     // with. It is a responsibility of the Organization owner to keep this
     // hash up to date.
     bytes32 public orgJsonHash;
 
-    // Address of the organization factory.
-    // Can be used for creating of upgradable instances of organizations
-    address public organizationFactory;
-
     // Address of the parent organization.
     // Should be set if the organization is subsidiary 
     address public parentEntity;
 
-    // Address of th director account.
+    // Address of the director account.
     // Should be set if the organization is subsidiary
     address public entityDirector;
 
@@ -57,10 +69,19 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     // Subsidiaries addresses index (for iteration purposes)
     address[] public subsidiariesIndex;
 
+    // Linked directories list
+    mapping (address => Directory) directories;
+
+    // Linked directories list (for iteration purposes)
+    address[] public directoriesIndex;
+
     /**
      * @dev Event triggered when owner of the organization is changed.
      */
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Event triggered when orgJsonUri of the organization is changed.
@@ -70,35 +91,40 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when orgJsonHash of the organization is changed.
      */
-    event OrgJsonHashChanged(bytes32 indexed previousOrgJsonHash, bytes32 indexed newOrgJsonHash);
-
-    /**
-     * @dev Event triggered when new associatedKey is added.
-     */
-    event AssociatedKeyAdded(address indexed associatedKey, uint index);
-
-    /**
-     * @dev Event triggered when a associatedKey is removed.
-     */    
-    event AssociatedKeyRemoved(address indexed associatedKey);
+    event OrgJsonHashChanged(
+        bytes32 indexed previousOrgJsonHash,
+        bytes32 indexed newOrgJsonHash
+    );
 
     /**
      * @dev Event triggered when new subsidiary has been created
      */
-    event SubsidiaryCreated(address indexed owner, address indexed director, address indexed subsidiary);
+    event SubsidiaryCreated(
+        address indexed owner,
+        address indexed director,
+        address indexed subsidiary
+    );
 
     /**
      * @dev Event triggered when a subsidiary state has been toggled
      */
-    event SubsidiaryToggled(address indexed subsidiary, bool previousState, bool newState);
+    event SubsidiaryToggled(
+        address indexed subsidiary,
+        bool previousState,
+        bool newState
+    );
 
     /**
      * @dev Event triggered when entitiy director ownership has been confirmed
      */
-    event SubsidiaryDirectorOwnershipConfirmed(address indexed subsidiary, address indexed director);
+    event SubsidiaryDirectorOwnershipConfirmed(
+        address indexed subsidiary,
+        address indexed director
+    );
 
     /**
-     * @dev Event triggered when subsidiary director ownership has been transferred
+     * @dev Event triggered when subsidiary director ownership 
+     * has been transferred
      */
     event SubsidiaryDirectorOwnershipTransferred(
         address indexed subsidiary,
@@ -109,56 +135,31 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when entity director ownership has been transferred
      */
-    event EntityDirectorOwnershipChanged(address indexed previousDirector, address indexed newDirector);    
+    event EntityDirectorOwnershipChanged(
+        address indexed previousDirector,
+        address indexed newDirector
+    );
 
     /**
-     * @dev Initializer for upgradeable contracts.
-     * @param __owner The address of the contract owner
-     * @param _orgJsonUri pointer to Organization data
-     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents.
-     * @param _organizationFactory Organizations factory address
-     * @param _parentEntity Parent organization address
-     * @param _entityDirector Entity director address
+     * @dev The event will be emitted when SegmentDirectory is 
+     * linked with the organization
      */
-    function initialize(
-        address payable __owner, 
-        string memory _orgJsonUri, 
-        bytes32 _orgJsonHash, 
-        address _organizationFactory,
-        address _parentEntity,
-        address _entityDirector
-    ) public initializer {
-        require(__owner != address(0), 'Organization: Cannot set owner to 0x0 address');
-        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
-        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
-        emit OwnershipTransferred(_owner, __owner);
-        _owner = __owner;        
-        orgJsonUri = _orgJsonUri;
-        orgJsonHash = _orgJsonHash;
-        organizationFactory = _organizationFactory;
-        parentEntity = _parentEntity;
-        entityDirector = _entityDirector;
-        created = block.number;
-        associatedKeys.length++;
-        OrganizationInterface i;
-        _registerInterface(0x01ffc9a7);//_INTERFACE_ID_ERC165
-        bytes4 associatedKeysInterface = i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector; // 0xfed71811
-        bytes4 orgJsonInterface = i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector; // 0x6f4826be
-        _registerInterface(orgJsonInterface);
-        _registerInterface(associatedKeysInterface);
-        _registerInterface(i.owner.selector); // 0x8da5cb5b
-        _registerInterface(
-            i.owner.selector ^
-            orgJsonInterface ^
-            associatedKeysInterface
-        ); // 0x1c3af5f4
-    }
+    event DirectoryLinked(address indexed directory);
 
+    /**
+     * @dev The event will be emitted when SegmentDirectory is 
+     * unlinked from the organization
+     */
+    event DirectoryUnlinked(address indexed directory);
+    
     /**
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(msg.sender == _owner, 'Organization: Only owner can call this method');
+        require(
+            msg.sender == _owner,
+            "Organization: Only owner can call this method"
+        );
         _;
     }
 
@@ -168,8 +169,74 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     modifier onlyOwnerOrDirector() {
         require(
             msg.sender == _owner || msg.sender == entityDirector, 
-            'Organization: Only owner or entity director can call this method');
+            "Organization: Only owner or entity director can call this method"
+        );
         _;
+    }
+
+    /**
+     * @dev Initializer for upgradeable contracts
+     * @param __owner The address of the contract owner
+     * @param _orgJsonUri pointer to Organization data
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param _app OpenZeppelin App address
+     * @param _proxyAdmin OpenZeppelin proxyAdmin address
+     * @param _parentEntity Parent organization address
+     * @param _entityDirector Entity director address
+     */
+    function initialize(
+        address payable __owner, 
+        string memory _orgJsonUri, 
+        bytes32 _orgJsonHash, 
+        address _app,
+        address _proxyAdmin,
+        address _parentEntity,
+        address _entityDirector
+    ) public initializer {
+        require(
+            __owner != address(0),
+            "Organization: Cannot set owner to 0x0 address"
+        );
+        require(
+            address(_app) != address(0),
+            "Organization: Cannot set app to 0x0 address"
+        );
+        require(
+            address(_proxyAdmin) != address(0),
+            "Organization: Cannot set proxyAdmin to 0x0 address"
+        );
+        require(
+            bytes(_orgJsonUri).length != 0,
+            "Organization: orgJsonUri cannot be an empty string"
+        );
+        require(
+            _orgJsonHash != 0,
+            "Organization: orgJsonHash cannot be empty"
+        );
+        emit OwnershipTransferred(_owner, __owner);
+        _owner = __owner;        
+        orgJsonUri = _orgJsonUri;
+        orgJsonHash = _orgJsonHash;
+        app = App(_app);
+        proxyAdmin = _proxyAdmin;
+        parentEntity = _parentEntity;
+        entityDirector = _entityDirector;
+        created = block.number;
+        setInterfaces(); 
+    }
+
+    /**
+     * @dev Shorthand method to change ORG.JSON uri and hash at the same time
+     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
+     * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
+     */
+    function changeOrgJsonUriAndHash(
+        string calldata _orgJsonUri,
+        bytes32 _orgJsonHash
+    ) external onlyOwnerOrDirector {
+        changeOrgJsonUri(_orgJsonUri);
+        changeOrgJsonHash(_orgJsonHash);
+        sendUpdateReport();
     }
 
     /**
@@ -177,47 +244,28 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonUri orgJsonUri pointer
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @param subsidiaryDirector Subsidiary director address
+     * @param packageName Name of the package where the contract is contained. 
+     * Will be "wt-contracts" if empty string provided
+     * @param contractName Name of the organization contract. 
+     * Will be "Organization" if empty string provided
      */
     function createSubsidiary(
         string calldata _orgJsonUri,
         bytes32 _orgJsonHash,
-        address subsidiaryDirector
-    ) external onlyOwnerOrDirector {
-        require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).create(
-            _orgJsonUri,
-            _orgJsonHash,
-            address(this),
-            subsidiaryDirector
-        );
-        registerSubsidiary(
-            subsidiaryAddress,
-            true,
-            subsidiaryDirector == msg.sender,
-            subsidiaryDirector
-        );
-    }
-
-    /**
-     * @dev Create subsidiary and add it to a segment directory
-     * @param _orgJsonUri orgJsonUri pointer
-     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
-     * @param subsidiaryDirector Subsidiary director address
-     * @param directory Segment directory address
-     */
-    function createSubsidiaryAndAddToDirectory(
-        string calldata _orgJsonUri,
-        bytes32 _orgJsonHash,
         address subsidiaryDirector,
-        address directory
+        string calldata packageName,
+        string calldata contractName
     ) external onlyOwnerOrDirector {
-        require(subsidiaryDirector != address(0), "Organization: Invalid entity director address");
-        address subsidiaryAddress = AbstractOrganizationFactory(organizationFactory).createAndAddToDirectory(
+        require(
+            subsidiaryDirector != address(0),
+            "Organization: Invalid entity director address"
+        );
+        address subsidiaryAddress = createOrganization(
             _orgJsonUri,
             _orgJsonHash,
-            directory,
-            address(this),
-            subsidiaryDirector
+            subsidiaryDirector,
+            packageName,
+            contractName
         );
         registerSubsidiary(
             subsidiaryAddress,
@@ -232,25 +280,41 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param subsidiaryAddress Subsidiary organization address
      */
     function toggleSubsidiary(address subsidiaryAddress) external onlyOwner {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(
+            subsidiaryAddress != address(0),
+            "Organization: Invalid subsidiary address"
+        );
+        require(
+            subsidiaries[subsidiaryAddress].id == subsidiaryAddress,
+            "Organization: Subsidiary not found"
+        );
         bool newState = !subsidiaries[subsidiaryAddress].state;
         emit SubsidiaryToggled(
             subsidiaryAddress,
             subsidiaries[subsidiaryAddress].state,
             newState
         );
-        subsidiaries[subsidiaryAddress].state = newState;        
+        subsidiaries[subsidiaryAddress].state = newState;
+        sendUpdateReport();
     }
 
     /**
      * @dev Change entity director
      * @param newEntityDirectorAddress New entity director address
      */
-    function changeEntityDirector(address newEntityDirectorAddress) external onlyOwner {
-        require(newEntityDirectorAddress != address(0), "Organization: Invalid entity director address");
-        emit EntityDirectorOwnershipChanged(entityDirector, newEntityDirectorAddress);
+    function changeEntityDirector(
+        address newEntityDirectorAddress
+    ) external onlyOwner {
+        require(
+            newEntityDirectorAddress != address(0),
+            "Organization: Invalid entity director address"
+        );
+        emit EntityDirectorOwnershipChanged(
+            entityDirector,
+            newEntityDirectorAddress
+        );
         entityDirector = newEntityDirectorAddress;
+        sendUpdateReport();
     }
 
     /**
@@ -262,9 +326,18 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         address subsidiaryAddress,
         address newSubsidiaryDirector
     ) external onlyOwner {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
-        require(newSubsidiaryDirector != address(0), "Organization: Invalid subsidiary director address");
+        require(
+            subsidiaryAddress != address(0),
+            "Organization: Invalid subsidiary address"
+        );
+        require(
+            subsidiaries[subsidiaryAddress].id == subsidiaryAddress,
+            "Organization: Subsidiary not found"
+        );
+        require(
+            newSubsidiaryDirector != address(0),
+            "Organization: Invalid subsidiary director address"
+        );
         emit SubsidiaryDirectorOwnershipTransferred(
             subsidiaryAddress,
             subsidiaries[subsidiaryAddress].director,
@@ -272,7 +345,87 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         );
         subsidiaries[subsidiaryAddress].director = newSubsidiaryDirector;
         subsidiaries[subsidiaryAddress].confirmed = false;
-        OrganizationInterface(subsidiaryAddress).changeEntityDirector(newSubsidiaryDirector);
+        OrganizationInterface(subsidiaryAddress)
+            .changeEntityDirector(newSubsidiaryDirector);
+        sendUpdateReport();
+    }
+
+    /**
+     * @dev Allows the current owner to transfer control of the contract to a newOwner.
+     * @param newOwner The address to transfer ownership to.
+     */
+    function transferOwnership(address payable newOwner) external onlyOwner {
+        require(
+            newOwner != address(0),
+            "Organization: Cannot transfer to 0x0 address"
+        );
+        emit OwnershipTransferred(_owner, newOwner);
+        _owner = newOwner;
+        sendUpdateReport();
+    }
+
+    /**
+     * @dev Liking with SegmentDirectory. 
+     * This function have to be called by SegmentDirectory contract only
+     */
+    function linkDirectory() external {
+        require(
+            Address.isContract(msg.sender),
+            "Organization: Only contacts can call this method"
+        );
+        require(
+            directories[msg.sender].linked == false,
+            "Organization: Directory can be linked once only"
+        );
+        require(
+            ERC165Checker._supportsInterface(msg.sender, 0xe4f00d44),
+            "Organization: Caller contract has to support reportable interface"
+        );
+
+        SegmentDirectoryInterface dir = SegmentDirectoryInterface(msg.sender);
+        require(
+            dir.organizationsIndex(address(this)) != 0,
+            "Organization: Only registered organizations can be linked"
+        );
+
+        if (directories[msg.sender].directory == address(0)) {
+            // Add new link
+            directories[msg.sender] = Directory(
+                msg.sender,
+                true,
+                directoriesIndex.length
+            );
+            directoriesIndex.push(msg.sender);
+        } else {
+            // Enable existed link
+            directories[msg.sender].linked = true;
+        }
+
+        emit DirectoryLinked(msg.sender);
+    }
+
+    /**
+     * @dev Removes a link with SegmentDirectory. 
+     * This function have to be called by SegmentDirectory contract only
+     */
+    function unlinkDirectory() external {
+        require(
+            Address.isContract(msg.sender),
+            "Organization: Only contacts can call this method"
+        );
+        require(
+            ERC165Checker._supportsInterface(msg.sender, 0xe4f00d44),
+            "Organization: Caller contract has to support reportable interface"
+        );
+
+        SegmentDirectoryInterface dir = SegmentDirectoryInterface(msg.sender);
+        require(
+            dir.organizationsIndex(address(this)) == 0,
+            "Organization: Only removed organizations can be unlinked"
+        );
+
+        directories[msg.sender].linked = false;
+        emit DirectoryUnlinked(msg.sender);
     }
 
     /**
@@ -291,8 +444,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         bool confirmed,
         address director
     ) {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(
+            subsidiaryAddress != address(0),
+            "Organization: Invalid subsidiary address"
+        );
+        require(
+            subsidiaries[subsidiaryAddress].id == subsidiaryAddress,
+            "Organization: Subsidiary not found"
+        );
         id = subsidiaries[subsidiaryAddress].id;
         state = subsidiaries[subsidiaryAddress].state;
         confirmed = subsidiaries[subsidiaryAddress].confirmed;
@@ -305,7 +464,9 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
          "subsidiariesList": "Array of active subsidiaries"
      }
      */
-    function getSubsidiaries() external view returns (address[] memory subsidiariesList) {
+    function getSubsidiaries() external view returns (
+        address[] memory subsidiariesList
+    ) {
         subsidiariesList = new address[](getConfirmedSubsidiariesCount());
         uint256 index;
 
@@ -340,66 +501,6 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev Shorthand method to change ORG.JSON uri and hash at the same time
-     * @param  _orgJsonUri New orgJsonUri pointer of this Organization
-     * @param  _orgJsonHash keccak256 hash of the new ORG.JSON contents.
-     */
-    function changeOrgJsonUriAndHash(string calldata _orgJsonUri, bytes32 _orgJsonHash) external onlyOwnerOrDirector {
-        changeOrgJsonUri(_orgJsonUri);
-        changeOrgJsonHash(_orgJsonHash);
-    }
-
-    /**
-     * @dev Adds another associated key. Only owner can call this.
-     * @param addr Associated Ethereum address
-     */
-    function addAssociatedKey(address addr) external onlyOwnerOrDirector {
-        require(addr != address(0), 'Organization: Cannot add associatedKey with 0x0 address');
-        require(associatedKeysIndex[addr] == 0, 'Organization: Cannot add associatedKey twice');
-        associatedKeysIndex[addr] = associatedKeys.length;
-        associatedKeys.push(addr);
-        emit AssociatedKeyAdded(addr, associatedKeysIndex[addr]);
-    }
-
-    /**
-     * @dev Removes an associated key. Only owner can call this.
-     * @param addr Associated Ethereum address
-     */
-    function removeAssociatedKey(address addr) external onlyOwnerOrDirector {
-        require(addr != address(0), 'Organization: Cannot remove associatedKey with 0x0 address');
-        require(associatedKeysIndex[addr] != uint(0), 'Organization: Cannot remove unknown organization');
-        delete associatedKeys[associatedKeysIndex[addr]];
-        delete associatedKeysIndex[addr];
-        emit AssociatedKeyRemoved(addr);
-    }
-
-    /**
-     * @dev Is an address considered as associated for this organization?
-     * @return {" ": "True if address is considered as associatedKey, false otherwise"}
-     */
-    function hasAssociatedKey(address addr) external view returns(bool) {
-        return associatedKeys[associatedKeysIndex[addr]] != address(0);
-    }
-
-    /**
-     * @dev Returns all addresses associated with this organization.
-     * @return {" ": "List of associated keys"}
-     */
-    function getAssociatedKeys() external view returns (address[] memory) {
-        return associatedKeys;
-    }
-
-    /**
-     * @dev Allows the current owner to transfer control of the contract to a newOwner.
-     * @param newOwner The address to transfer ownership to.
-     */
-    function transferOwnership(address payable newOwner) external onlyOwner {
-        require(newOwner != address(0), 'Organization: Cannot transfer to 0x0 address');
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-
-    /**
      * @dev Returns the address of the current owner.
      */
     function owner() external view returns (address) {
@@ -411,8 +512,14 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param subsidiaryAddress Subsidiary organization address
      */
     function confirmSubsidiaryDirectorOwnership(address subsidiaryAddress) public {
-        require(subsidiaryAddress != address(0), "Organization: Invalid subsidiary address");
-        require(subsidiaries[subsidiaryAddress].id == subsidiaryAddress, "Organization: Subsidiary not found");
+        require(
+            subsidiaryAddress != address(0),
+            "Organization: Invalid subsidiary address"
+        );
+        require(
+            subsidiaries[subsidiaryAddress].id == subsidiaryAddress,
+            "Organization: Subsidiary not found"
+        );
         require(
             subsidiaries[subsidiaryAddress].director == msg.sender,
             "Organization: Only subsidiary director can call this method"
@@ -422,13 +529,19 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
     }
 
     /**
-     * @dev `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+     * @dev `changeOrgJsonUri` Allows owner to change Organization"s orgJsonUri.
      * @param  _orgJsonUri New orgJsonUri pointer of this Organization
      */
-    function changeOrgJsonUri(string memory _orgJsonUri) public onlyOwnerOrDirector {
-        require(bytes(_orgJsonUri).length != 0, 'Organization: orgJsonUri cannot be an empty string');
+    function changeOrgJsonUri(
+        string memory _orgJsonUri
+    ) public onlyOwnerOrDirector {
+        require(
+            bytes(_orgJsonUri).length != 0,
+            "Organization: orgJsonUri cannot be an empty string"
+        );
         emit OrgJsonUriChanged(orgJsonUri, _orgJsonUri);
         orgJsonUri = _orgJsonUri;
+        sendUpdateReport();
     }
 
     /**
@@ -436,9 +549,10 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
     function changeOrgJsonHash(bytes32 _orgJsonHash) public onlyOwnerOrDirector {
-        require(_orgJsonHash != 0, 'Organization: orgJsonHash cannot be empty');
+        require(_orgJsonHash != 0, "Organization: orgJsonHash cannot be empty");
         emit OrgJsonHashChanged(orgJsonHash, _orgJsonHash);
         orgJsonHash = _orgJsonHash;
+        sendUpdateReport();
     }
 
     /**
@@ -447,22 +561,95 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
      * everytime the implementation gets updated. If the interface list gets out of
      * sync with the implementation at anytime, it is possible that some integrations
      * will stop working. Since this method is not destructive, no access restriction
-     * is in place. It's supposed to be called by the proxy admin anyway.
+     * is in place. It"s supposed to be called by the proxy admin anyway.
      */
     function setInterfaces() public {
-        // OrganizationInterface i;
-        bytes4[5] memory interfaceIds = [
-            bytes4(0x01ffc9a7), // _INTERFACE_ID_ERC165
-            bytes4(0x8da5cb5b), // i.owner.selector
-            bytes4(0xfed71811), // i.hasAssociatedKey.selector ^ i.getAssociatedKeys.selector
-            bytes4(0x6f4826be), // i.getOrgJsonUri.selector ^ i.getOrgJsonHash.selector
-            bytes4(0x1c3af5f4)  // 0x8da5cb5b ^ 0xfed71811 ^ 0x6f4826be
+        OrganizationInterface org;
+        bytes4[6] memory interfaceIds = [
+            // ERC165 interface: 0x01ffc9a7
+            bytes4(0x01ffc9a7),
+
+            // ownable interface: 0x7f5828d0
+            org.owner.selector ^ 
+            org.transferOwnership.selector, 
+
+            // organization interface: 0xe9e17278
+            org.changeOrgJsonUri.selector ^ 
+            org.changeOrgJsonHash.selector ^ 
+            org.getOrgJsonUri.selector ^ 
+            org.getOrgJsonHash.selector,
+
+            // hierarchy interface: 0xc501232e
+            org.entityDirector.selector ^ 
+            org.parentEntity.selector,
+
+            // linkable interface: 0xfa282a77
+            org.linkDirectory.selector ^ 
+            org.unlinkDirectory.selector, 
+
+            // subsidiary interface: 0x9ff6f0b0
+            org.createSubsidiary.selector ^ 
+            org.toggleSubsidiary.selector ^ 
+            org.entityDirector.selector ^ 
+            org.parentEntity.selector ^
+            org.changeEntityDirector.selector ^ 
+            org.getSubsidiary.selector ^ 
+            org.getSubsidiaries.selector ^ 
+            org.transferDirectorOwnership.selector 
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
-            if (!this.supportsInterface(interfaceIds[i])) {
-                _registerInterface(interfaceIds[i]);
+            _registerInterface(interfaceIds[i]);
+        }
+    }
+
+    /**
+     * @dev Sending a report about contract storage updated
+     * to the linked SegmentDirectory
+     */
+    function sendUpdateReport() internal {
+
+        for (uint256 i = 0; i < directoriesIndex.length; i++) {
+
+            if (directories[directoriesIndex[i]].linked) {                
+                SegmentDirectoryInterface(directoriesIndex[i]).reportUpdate();
             }
         }
+    }
+
+    /**
+     * @dev Organization factory
+     * @param _orgJsonUri orgJsonUri pointer
+     * @param _orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param subsidiaryDirector Subsidiary director address
+     * @param packageName Name of the package where the contract is contained.
+     * Will be "wt-contracts" if empty string provided
+     * @param contractName Name of the organization contract. 
+     * Will be "Organization" if empty string provided
+     */
+    function createOrganization(
+        string memory _orgJsonUri,
+        bytes32 _orgJsonHash,
+        address subsidiaryDirector,
+        string memory packageName,
+        string memory contractName
+    ) internal returns (address) {
+        return address(
+            app.create(
+                bytes(packageName).length == 0 ? "Organization" : packageName, 
+                bytes(contractName).length == 0 ? "Organization": contractName, 
+                proxyAdmin,
+                abi.encodeWithSignature(
+                    "initialize(address,string,bytes32,address,address,address,address)",
+                    address(this),
+                    _orgJsonUri,
+                    _orgJsonHash,
+                    address(app),
+                    proxyAdmin,
+                    address(this),
+                    subsidiaryDirector
+                )
+            )
+        );
     }
 
     /**
@@ -490,6 +677,8 @@ contract Organization is OrganizationInterface, ERC165, Initializable {
         if (confirmed) {
             confirmSubsidiaryDirectorOwnership(subsidiaryAddress);
         }
+
+        sendUpdateReport();
     }
 
     /**

@@ -1,31 +1,48 @@
 * [CustomOrganizationTest](#customorganizationtest)
-  * [changeEntityDirector](#function-changeentitydirector)
-  * [getAssociatedKeys](#function-getassociatedkeys)
+  * [changeOrgJsonHash](#function-changeorgjsonhash)
+  * [changeOrgJsonUri](#function-changeorgjsonuri)
+  * [entityDirector](#function-entitydirector)
   * [getOrgJsonHash](#function-getorgjsonhash)
   * [getOrgJsonUri](#function-getorgjsonuri)
-  * [hasAssociatedKey](#function-hasassociatedkey)
+  * [linkDirectory](#function-linkdirectory)
+  * [newFunction](#function-newfunction)
   * [owner](#function-owner)
+  * [parentEntity](#function-parententity)
+  * [setInterfaces](#function-setinterfaces)
   * [supportsInterface](#function-supportsinterface)
+  * [unlinkDirectory](#function-unlinkdirectory)
 
 # CustomOrganizationTest
 
 
 
-## *function* changeEntityDirector
+## *function* changeOrgJsonHash
 
-CustomOrganizationTest.changeEntityDirector(newEntityDirectorAddress) `nonpayable` `b1b53517`
+CustomOrganizationTest.changeOrgJsonHash(_orgJsonHash) `nonpayable` `32fda029`
 
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | newEntityDirectorAddress | undefined |
+| *bytes32* | _orgJsonHash | undefined |
 
 
-## *function* getAssociatedKeys
+## *function* changeOrgJsonUri
 
-CustomOrganizationTest.getAssociatedKeys() `view` `0ba11d86`
+CustomOrganizationTest.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *string* | _orgJsonUri | undefined |
+
+
+## *function* entityDirector
+
+CustomOrganizationTest.entityDirector() `view` `dcfa1cdc`
 
 
 
@@ -33,7 +50,7 @@ CustomOrganizationTest.getAssociatedKeys() `view` `0ba11d86`
 
 ## *function* getOrgJsonHash
 
-CustomOrganizationTest.getOrgJsonHash() `view` `72cd7fc9`
+CustomOrganizationTest.getOrgJsonHash() `pure` `72cd7fc9`
 
 
 
@@ -41,27 +58,47 @@ CustomOrganizationTest.getOrgJsonHash() `view` `72cd7fc9`
 
 ## *function* getOrgJsonUri
 
-CustomOrganizationTest.getOrgJsonUri() `view` `1d855977`
+CustomOrganizationTest.getOrgJsonUri() `pure` `1d855977`
 
 
 
 
 
-## *function* hasAssociatedKey
+## *function* linkDirectory
 
-CustomOrganizationTest.hasAssociatedKey(addr) `view` `f5760597`
+CustomOrganizationTest.linkDirectory() `pure` `8335ad14`
 
 
-Inputs
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | undefined |
+
+
+## *function* newFunction
+
+CustomOrganizationTest.newFunction() `pure` `1b28d63e`
+
+
+
 
 
 ## *function* owner
 
 CustomOrganizationTest.owner() `view` `8da5cb5b`
+
+
+
+
+
+## *function* parentEntity
+
+CustomOrganizationTest.parentEntity() `view` `19fb3ff2`
+
+
+
+
+
+## *function* setInterfaces
+
+CustomOrganizationTest.setInterfaces() `nonpayable` `fca85eb3`
 
 
 
@@ -78,6 +115,14 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes4* | interfaceId | undefined |
+
+
+## *function* unlinkDirectory
+
+CustomOrganizationTest.unlinkDirectory() `pure` `791d8763`
+
+
+
 
 
 ---

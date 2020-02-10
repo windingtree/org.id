@@ -5,11 +5,11 @@ const fs = require('fs'),
 const BASE_PATH = 'build/contracts';
 const CONTRACTS_DIR = path.resolve(__dirname, `../${BASE_PATH}`);
 const bundle = [
-  'OrganizationFactory\.json',
   'Organization\.json',
   'OrganizationInterface\.json',
   'SegmentDirectory\.json',
-  'Entrypoint\.json',
+  'SegmentDirectoryInterface\.json',
+  'WindingTreeEntrypoint\.json',
 ];
 const files = fs.readdirSync(CONTRACTS_DIR);
 const bundleRegex = new RegExp(bundle.join('|'));

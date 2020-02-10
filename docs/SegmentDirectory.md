@@ -1,6 +1,7 @@
 * [SegmentDirectory](#segmentdirectory)
   * [OrganizationAdded](#event-organizationadded)
   * [OrganizationRemoved](#event-organizationremoved)
+  * [OrganizationUpdated](#event-organizationupdated)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [add](#function-add)
   * [getLifToken](#function-getliftoken)
@@ -12,8 +13,11 @@
   * [organizationsIndex](#function-organizationsindex)
   * [owner](#function-owner)
   * [remove](#function-remove)
+  * [reportUpdate](#function-reportupdate)
   * [resolveLifTokenFromENS](#function-resolveliftokenfromens)
+  * [setInterfaces](#function-setinterfaces)
   * [setSegment](#function-setsegment)
+  * [supportsInterface](#function-supportsinterface)
   * [transferOwnership](#function-transferownership)
 
 # SegmentDirectory
@@ -39,6 +43,16 @@ Arguments
 |-|-|-|
 | *address* | organization | indexed |
 
+## *event* OrganizationUpdated
+
+SegmentDirectory.OrganizationUpdated(organization) `73b390f4`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | organization | not indexed |
+
 ## *event* OwnershipTransferred
 
 SegmentDirectory.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
@@ -61,7 +75,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | organization | Organization's address |
+| *address* | organization | Organization"s address |
 
 Outputs
 
@@ -195,19 +209,38 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | organization | Organization's address |
+| *address* | organization | Organization"s address |
+
+
+## *function* reportUpdate
+
+SegmentDirectory.reportUpdate() `nonpayable` `873d45bf`
+
+> This function is dedicated to receiving signals  about updates from registered organizations
+
+
 
 
 ## *function* resolveLifTokenFromENS
 
 SegmentDirectory.resolveLifTokenFromENS(_ENS) `nonpayable` `423ba56e`
 
+> Updating the _lifToken link from the ENS registry
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | _ENS | undefined |
+| *address* | _ENS | The address of the ENS registry |
+
+
+## *function* setInterfaces
+
+SegmentDirectory.setInterfaces() `nonpayable` `fca85eb3`
+
+> A synchronization method that should be kept up to date with  the list of interfaces set during initialization. It should also be called everytime the implementation gets updated. If the interface list gets out of sync with the implementation at anytime, it is possible that some integrations will stop working. Since this method is not destructive, no access restriction is in place. It"s supposed to be called by the proxy admin anyway.
+
+
 
 
 ## *function* setSegment
@@ -221,6 +254,19 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | __segment | The new segment name |
+
+
+## *function* supportsInterface
+
+SegmentDirectory.supportsInterface(interfaceId) `view` `01ffc9a7`
+
+> See {IERC165-supportsInterface}.     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes4* | interfaceId | undefined |
 
 
 ## *function* transferOwnership

@@ -9,7 +9,7 @@
     "test": "management/test.sh",
     "lint": "eslint test management && solhint 'contracts/**/*.sol'",
     "lint:fix": "eslint test management --fix && solhint 'contracts/**/*.sol'",
-    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545",
+    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
     "flattener": "management/flattener.sh",
@@ -17,7 +17,7 @@
     "build-index": "node management/build-index.js > index.js",
     "set-zos-version": "openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "buildfornpm": "npm run clean && truffle compile",
-    "version": "npm run set-zos-version && git add zos.json && npm run build-index && git add index.js"
+    "version": "npm run set-zos-version && git add .openzeppelin/project.json && npm run build-index && git add index.js"
   },
   "publishConfig": {
     "access": "public"
@@ -59,7 +59,7 @@
     "ganache-cli": "6.5.0",
     "lodash": "^4.17.14",
     "rimraf": "^3.0.0",
-    "solc": "^0.5.7",
+    "solc": "^0.6.2",
     "solhint": "^2.0.0",
     "solidity-coverage": "^0.6.0",
     "solmd": "^0.4.0",

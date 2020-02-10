@@ -1,6 +1,6 @@
 * [OrganizationUpgradeabilityTest](#organizationupgradeabilitytest)
-  * [AssociatedKeyAdded](#event-associatedkeyadded)
-  * [AssociatedKeyRemoved](#event-associatedkeyremoved)
+  * [DirectoryLinked](#event-directorylinked)
+  * [DirectoryUnlinked](#event-directoryunlinked)
   * [EntityDirectorOwnershipChanged](#event-entitydirectorownershipchanged)
   * [OrgJsonHashChanged](#event-orgjsonhashchanged)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
@@ -9,61 +9,56 @@
   * [SubsidiaryDirectorOwnershipConfirmed](#event-subsidiarydirectorownershipconfirmed)
   * [SubsidiaryDirectorOwnershipTransferred](#event-subsidiarydirectorownershiptransferred)
   * [SubsidiaryToggled](#event-subsidiarytoggled)
-  * [addAssociatedKey](#function-addassociatedkey)
-  * [associatedKeys](#function-associatedkeys)
-  * [associatedKeysIndex](#function-associatedkeysindex)
+  * [app](#function-app)
   * [changeEntityDirector](#function-changeentitydirector)
   * [changeOrgJsonHash](#function-changeorgjsonhash)
   * [changeOrgJsonUri](#function-changeorgjsonuri)
   * [changeOrgJsonUriAndHash](#function-changeorgjsonuriandhash)
   * [confirmSubsidiaryDirectorOwnership](#function-confirmsubsidiarydirectorownership)
   * [createSubsidiary](#function-createsubsidiary)
-  * [createSubsidiaryAndAddToDirectory](#function-createsubsidiaryandaddtodirectory)
   * [created](#function-created)
+  * [directoriesIndex](#function-directoriesindex)
   * [entityDirector](#function-entitydirector)
-  * [getAssociatedKeys](#function-getassociatedkeys)
   * [getOrgJsonHash](#function-getorgjsonhash)
   * [getOrgJsonUri](#function-getorgjsonuri)
   * [getSubsidiaries](#function-getsubsidiaries)
   * [getSubsidiary](#function-getsubsidiary)
-  * [hasAssociatedKey](#function-hasassociatedkey)
   * [initialize](#function-initialize)
+  * [linkDirectory](#function-linkdirectory)
   * [newFunction](#function-newfunction)
   * [orgJsonHash](#function-orgjsonhash)
   * [orgJsonUri](#function-orgjsonuri)
-  * [organizationFactory](#function-organizationfactory)
   * [owner](#function-owner)
   * [parentEntity](#function-parententity)
-  * [removeAssociatedKey](#function-removeassociatedkey)
   * [setInterfaces](#function-setinterfaces)
   * [subsidiariesIndex](#function-subsidiariesindex)
   * [supportsInterface](#function-supportsinterface)
   * [toggleSubsidiary](#function-togglesubsidiary)
   * [transferDirectorOwnership](#function-transferdirectorownership)
   * [transferOwnership](#function-transferownership)
+  * [unlinkDirectory](#function-unlinkdirectory)
 
 # OrganizationUpgradeabilityTest
 
-## *event* AssociatedKeyAdded
+## *event* DirectoryLinked
 
-OrganizationUpgradeabilityTest.AssociatedKeyAdded(associatedKey, index) `1cbc30c7`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | associatedKey | indexed |
-| *uint256* | index | not indexed |
-
-## *event* AssociatedKeyRemoved
-
-OrganizationUpgradeabilityTest.AssociatedKeyRemoved(associatedKey) `e8c3a62e`
+OrganizationUpgradeabilityTest.DirectoryLinked(directory) `d5bc0c0f`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *address* | associatedKey | indexed |
+| *address* | directory | indexed |
+
+## *event* DirectoryUnlinked
+
+OrganizationUpgradeabilityTest.DirectoryUnlinked(directory) `2412e58f`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *address* | directory | indexed |
 
 ## *event* EntityDirectorOwnershipChanged
 
@@ -157,46 +152,12 @@ Arguments
 | *bool* | newState | not indexed |
 
 
-## *function* addAssociatedKey
+## *function* app
 
-OrganizationUpgradeabilityTest.addAssociatedKey(addr) `nonpayable` `8d6c8ef0`
-
-> Adds another associated key. Only owner can call this.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Associated Ethereum address |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
-
-## *function* associatedKeys
-
-OrganizationUpgradeabilityTest.associatedKeys() `view` `1ad2c3cb`
+OrganizationUpgradeabilityTest.app() `view` `b76564bd`
 
 
-Inputs
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* |  | undefined |
-
-
-## *function* associatedKeysIndex
-
-OrganizationUpgradeabilityTest.associatedKeysIndex() `view` `df0a2bca`
-
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* |  | undefined |
 
 
 ## *function* changeEntityDirector
@@ -229,7 +190,7 @@ Inputs
 
 OrganizationUpgradeabilityTest.changeOrgJsonUri(_orgJsonUri) `nonpayable` `b454f4ef`
 
-> `changeOrgJsonUri` Allows owner to change Organization's orgJsonUri.
+> `changeOrgJsonUri` Allows owner to change Organization"s orgJsonUri.
 
 Inputs
 
@@ -267,7 +228,7 @@ Inputs
 
 ## *function* createSubsidiary
 
-OrganizationUpgradeabilityTest.createSubsidiary(_orgJsonUri, _orgJsonHash, subsidiaryDirector) `nonpayable` `81cab693`
+OrganizationUpgradeabilityTest.createSubsidiary(_orgJsonUri, _orgJsonHash, subsidiaryDirector, packageName, contractName) `nonpayable` `3ba2e931`
 
 > Create subsidiary
 
@@ -278,22 +239,8 @@ Inputs
 | *string* | _orgJsonUri | orgJsonUri pointer |
 | *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents |
 | *address* | subsidiaryDirector | Subsidiary director address |
-
-
-## *function* createSubsidiaryAndAddToDirectory
-
-OrganizationUpgradeabilityTest.createSubsidiaryAndAddToDirectory(_orgJsonUri, _orgJsonHash, subsidiaryDirector, directory) `nonpayable` `4090e12a`
-
-> Create subsidiary and add it to a segment directory
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *string* | _orgJsonUri | orgJsonUri pointer |
-| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents |
-| *address* | subsidiaryDirector | Subsidiary director address |
-| *address* | directory | Segment directory address |
+| *string* | packageName | Name of the package where the contract is contained.  Will be "wt-contracts" if empty string provided |
+| *string* | contractName | Name of the organization contract.  Will be "Organization" if empty string provided |
 
 
 ## *function* created
@@ -304,6 +251,18 @@ OrganizationUpgradeabilityTest.created() `view` `325a19f1`
 
 
 
+## *function* directoriesIndex
+
+OrganizationUpgradeabilityTest.directoriesIndex() `view` `83cec58d`
+
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* |  | undefined |
+
+
 ## *function* entityDirector
 
 OrganizationUpgradeabilityTest.entityDirector() `view` `dcfa1cdc`
@@ -311,20 +270,6 @@ OrganizationUpgradeabilityTest.entityDirector() `view` `dcfa1cdc`
 
 
 
-
-## *function* getAssociatedKeys
-
-OrganizationUpgradeabilityTest.getAssociatedKeys() `view` `0ba11d86`
-
-> Returns all addresses associated with this organization.
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address[]* |  | undefined |
 
 ## *function* getOrgJsonHash
 
@@ -389,27 +334,9 @@ Outputs
 | *bool* | confirmed | Subsidiary director ownership confirmation state |
 | *address* | director | Entity director address |
 
-## *function* hasAssociatedKey
-
-OrganizationUpgradeabilityTest.hasAssociatedKey(addr) `view` `f5760597`
-
-> Is an address considered as associated for this organization?
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | undefined |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bool* |  | undefined |
-
 ## *function* initialize
 
-OrganizationUpgradeabilityTest.initialize(__owner, _orgJsonUri, _orgJsonHash, _organizationFactory, _parentEntity, _entityDirector) `nonpayable` `a21f27f0`
+OrganizationUpgradeabilityTest.initialize(__owner, _orgJsonUri, _orgJsonHash, _app, _parentEntity, _entityDirector) `nonpayable` `a21f27f0`
 
 > Initializer for upgradeable contracts.
 
@@ -420,9 +347,18 @@ Inputs
 | *address* | __owner | The address of the contract owner |
 | *string* | _orgJsonUri | pointer to Organization data |
 | *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
-| *address* | _organizationFactory | Organizations factory address |
+| *address* | _app | ZeppelinOS App address |
 | *address* | _parentEntity | Parent organization address |
 | *address* | _entityDirector | Entity director address |
+
+
+## *function* linkDirectory
+
+OrganizationUpgradeabilityTest.linkDirectory() `nonpayable` `8335ad14`
+
+> Liking with SegmentDirectory.  This function have to be called by SegmentDirectory contract only
+
+
 
 
 ## *function* newFunction
@@ -449,14 +385,6 @@ OrganizationUpgradeabilityTest.orgJsonUri() `view` `3b3ba578`
 
 
 
-## *function* organizationFactory
-
-OrganizationUpgradeabilityTest.organizationFactory() `view` `81d6bb50`
-
-
-
-
-
 ## *function* owner
 
 OrganizationUpgradeabilityTest.owner() `view` `8da5cb5b`
@@ -472,19 +400,6 @@ OrganizationUpgradeabilityTest.parentEntity() `view` `19fb3ff2`
 
 
 
-
-
-## *function* removeAssociatedKey
-
-OrganizationUpgradeabilityTest.removeAssociatedKey(addr) `nonpayable` `01aedb62`
-
-> Removes an associated key. Only owner can call this.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | addr | Associated Ethereum address |
 
 
 ## *function* setInterfaces
@@ -558,6 +473,15 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | newOwner | The address to transfer ownership to. |
+
+
+## *function* unlinkDirectory
+
+OrganizationUpgradeabilityTest.unlinkDirectory() `nonpayable` `791d8763`
+
+> Removes a link with SegmentDirectory.  This function have to be called by SegmentDirectory contract only
+
+
 
 
 ---
