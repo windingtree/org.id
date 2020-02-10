@@ -435,86 +435,71 @@ Version:  0.9.0
 Sending a transaction to contract  
 Contract name:  Organization
 Method:  createSubsidiary(string,bytes32,address,string,string)
-Arguments:  https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,,
-Error: Invalid number of parameters for "createSubsidiary". Got 4 expected 5!
-    at Object.InvalidNumberOfParams (/home/kostysh/dev/wt-contracts-local/node_modules/web3-core-helpers/src/errors.js:32:16)
-    at Object._createTxObject (/home/kostysh/dev/wt-contracts-local/node_modules/web3-eth-contract/src/index.js:705:22)
-    at module.exports (/home/kostysh/dev/wt-contracts-local/management/tools/commands/tx.js:53:56)
-    at process._tickCallback (internal/process/next_tick.js:68:7)
-Truffle v5.0.29 (core: 5.0.29)
-Node v10.16.0
-kostysh@mindsaur:~/dev/wt-contracts-local$ ./management/tools/index.js --network development cmd=tx name=Organization address=0x7C728214be9A0049e6a86f2137ec61030D0AA964 from=0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1 method='createSubsidiary(string,bytes32,address,string,string)' args=https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,'',''
-Using network 'development'.
-
-================================================================================ 
-WindingTree Command Line Interface  
-Version:  0.9.0
-================================================================================ 
-Sending a transaction to contract  
-Contract name:  Organization
-Method:  createSubsidiary(string,bytes32,address,string,string)
-Arguments:  https://gist.githubusercontent.com/[username]/path/to/your/gist/with/ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1,,
-Result:  { transactionHash:
+Arguments:  https://gist.githubusercontent.com/kostysh/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID,0x1fe120cfd8f0cf216189a07e1a25b7da38030986b849b79ed59c0036456561dd,0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959,,
+Result:  { blockHash:
    ...,
+  transactionHash:
+   '0xa9ee7cb3e3b190bc82a3e0a386c74fbc92ed5f1b7f876964c317d67c37fc29e6',
+  transactionIndex: '52',
   events:
    { '0':
-      { logIndex: '1',
-        transactionIndex: '0',
-        transactionHash:
-         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+      { address: '0xcfF7EE0f5F28C71c3941C53AcbfDE37c3BC0DD08',
         blockHash:
-         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
-        blockNumber: '29',
-        address: '0x6eD79Aa1c71FD7BdBC515EfdA3Bd4e26394435cC',
-        type: 'mined',
-        id: 'log_cc9cc0f2',
+         '0xcb09f60c66a75a8f2e752c29d7abf128d20f6d62b6c8d3f40243bb0dfab94d9f',
+        blockNumber: '7296804',
+        logIndex: '15',
+        removed: false,
+        transactionHash:
+         '0xa9ee7cb3e3b190bc82a3e0a386c74fbc92ed5f1b7f876964c317d67c37fc29e6',
+        transactionIndex: '52',
+        id: 'log_33b90ab0',
         returnValues: Result {},
         event: undefined,
         signature: null,
         raw: [Object] },
      OwnershipTransferred:
-      { logIndex: '0',
-        transactionIndex: '0',
-        transactionHash:
-         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+      { address: '0xDa3D89fda52DE133DBbcC06d71E05Af75b8fcE52',
         blockHash:
-         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
-        blockNumber: '29',
-        address: '0x067805E69e62E8bE56e8D13f4EBf53372D3dD02e',
-        type: 'mined',
-        id: 'log_795e278b',
+         '0xcb09f60c66a75a8f2e752c29d7abf128d20f6d62b6c8d3f40243bb0dfab94d9f',
+        blockNumber: '7296804',
+        logIndex: '14',
+        removed: false,
+        transactionHash:
+         '0xa9ee7cb3e3b190bc82a3e0a386c74fbc92ed5f1b7f876964c317d67c37fc29e6',
+        transactionIndex: '52',
+        id: 'log_853292da',
         returnValues: [Result],
         event: 'OwnershipTransferred',
         signature:
          '0x8be0079c531659141344cd1fd0a4f28419497f9722a3daafe3b4186f6b6457e0',
         raw: [Object] },
      SubsidiaryCreated:
-      { logIndex: '2',
-        transactionIndex: '0',
-        transactionHash:
-         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+      { address: '0xd75C6F89C0d2B5808C720eF4078c5b62E804A50e',
         blockHash:
-         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
-        blockNumber: '29',
-        address: '0x7C728214be9A0049e6a86f2137ec61030D0AA964',
-        type: 'mined',
-        id: 'log_16683862',
+         '0xcb09f60c66a75a8f2e752c29d7abf128d20f6d62b6c8d3f40243bb0dfab94d9f',
+        blockNumber: '7296804',
+        logIndex: '16',
+        removed: false,
+        transactionHash:
+         '0xa9ee7cb3e3b190bc82a3e0a386c74fbc92ed5f1b7f876964c317d67c37fc29e6',
+        transactionIndex: '52',
+        id: 'log_db922705',
         returnValues: [Result],
         event: 'SubsidiaryCreated',
         signature:
          '0x1d19959a9df12178565ee79ed0f54483da27fb2be079d78a0728f5ac11c06795',
         raw: [Object] },
      SubsidiaryDirectorOwnershipConfirmed:
-      { logIndex: '3',
-        transactionIndex: '0',
-        transactionHash:
-         '0x5abb9b0a258d19287ff9e40073df2d0e7e9e8f2db066812d6e092ad19a7dcea4',
+      { address: '0xd75C6F89C0d2B5808C720eF4078c5b62E804A50e',
         blockHash:
-         '0xb878f9f2fbe5e2bad2d06726c1d2b0a324e0d31539d902864461d272ab03756d',
-        blockNumber: '29',
-        address: '0x7C728214be9A0049e6a86f2137ec61030D0AA964',
-        type: 'mined',
-        id: 'log_4e8591b6',
+         '0xcb09f60c66a75a8f2e752c29d7abf128d20f6d62b6c8d3f40243bb0dfab94d9f',
+        blockNumber: '7296804',
+        logIndex: '17',
+        removed: false,
+        transactionHash:
+         '0xa9ee7cb3e3b190bc82a3e0a386c74fbc92ed5f1b7f876964c317d67c37fc29e6',
+        transactionIndex: '52',
+        id: 'log_c0fe4c45',
         returnValues: [Result],
         event: 'SubsidiaryDirectorOwnershipConfirmed',
         signature:
