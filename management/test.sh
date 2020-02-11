@@ -11,9 +11,6 @@ cleanup() {
   if [ -n "$ganache_pid" ] && ps -p $ganache_pid > /dev/null; then
     kill -9 $ganache_pid
   fi
-
-  # Remove a build folder
-  rm -rf build
 }
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
