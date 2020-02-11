@@ -12,29 +12,29 @@ const deepValue = (obj, path) => path.split('.').reduce((a, v) => a[v], obj);
  * @returns {Object}
  */
 module.exports.buildTaskOptions = (properties, resultsScope) => {
-  const options = {};
+    const options = {};
 
-  const parseProperty = (property) => {
+    const parseProperty = (property) => {
 
-    if (property.match(/^\[TASK:/g)) {
-      const parts = property.replace(/[\[\]']+/g, '').split(':'); // eslint-disable-line no-useless-escape
-      const result = resultsScope[Number(parts[1])];
-      return deepValue(result, parts[2]);
+        if (property.match(/^\[TASK:/g)) {
+            const parts = property.replace(/[\[\]']+/g, '').split(':'); // eslint-disable-line no-useless-escape
+            const result = resultsScope[Number(parts[1])];
+            return deepValue(result, parts[2]);
+        }
+
+        return property;
+    };
+
+    for (const prop in properties) {
+
+        if (typeof properties[prop] === 'string') {
+            options[prop] = parseProperty(properties[prop]);
+        }
+
+        if (Array.isArray(properties[prop])) {
+            options[prop] = properties[prop].map(a => parseProperty(a)).join(',');
+        }
     }
 
-    return property;
-  };
-
-  for (const prop in properties) {
-
-    if (typeof properties[prop] === 'string') {
-      options[prop] = parseProperty(properties[prop]);
-    }
-
-    if (Array.isArray(properties[prop])) {
-      options[prop] = properties[prop].map(a => parseProperty(a)).join(',');
-    }
-  }
-
-  return options;
+    return options;
 };

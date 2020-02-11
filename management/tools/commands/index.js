@@ -6,10 +6,10 @@ const tx = require('./tx');
 const task = require('./task');
 
 module.exports = {
-  version,
-  contract,
-  makehash,
-  call,
-  tx,
-  task
+    version,
+    contract,
+    makehash,
+    call,
+    tx,
+    task
 };
