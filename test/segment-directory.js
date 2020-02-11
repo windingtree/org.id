@@ -184,54 +184,6 @@ contract('SegmentDirectory', (accounts) => {
     });
   });
 
-  describe('#resolveLifTokenFromENS', () => {
-
-    it('should set lif token address from ENS', async () => {
-      assert.equal(
-        await segmentDirectory.methods.getLifToken().call(),
-        tokenFakeAddress
-      );
-      await segmentDirectory
-        .methods.resolveLifTokenFromENS(ensContract.address)
-        .send({
-          from: segmentDirectoryOwner
-        });
-      assert.equal(
-        await segmentDirectory.methods.getLifToken().call(),
-        tokenContract.address
-      );
-    });
-
-    it('should throw if ENS cannot be read from', async () => {
-      try {
-        assert.equal(await segmentDirectory.methods.getLifToken().call(), tokenFakeAddress);
-        await segmentDirectory.methods.resolveLifTokenFromENS(tokenFakeAddress).send({
-          from: segmentDirectoryOwner
-        });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw if called by non-owner', async () => {
-      try {
-        assert.equal(
-          await segmentDirectory.methods.getLifToken().call(),
-          tokenFakeAddress
-        );
-        await segmentDirectory
-          .methods.resolveLifTokenFromENS(ensContract.address)
-          .send({
-            from: nonOwnerAccount
-          });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-  });
-
   describe('#transferOwnership', async () => {
 
     it('should transfer ownership', async () => {
