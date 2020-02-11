@@ -1,7 +1,8 @@
-require('babel-register');
-require('babel-polyfill');
-
 module.exports = {
+  plugins: [
+    'solidity-coverage'
+  ],
+
   networks: {
     development: {
       host: 'localhost',
@@ -20,9 +21,10 @@ module.exports = {
     mainnet: getInfuraConfig('mainnet', 1),
     ropsten: getInfuraConfig('ropsten', 3)
   },
+  
   compilers: {
     solc: {
-      version: '0.5.10',
+      version: '0.5.16',
       settings: {
         optimizer: {
           enabled: true,
@@ -34,7 +36,7 @@ module.exports = {
 };
 
 function getInfuraConfig (networkName, networkId) {
-  var HDWalletProvider = require('truffle-hdwallet-provider');
+  var HDWalletProvider = require('@truffle/hdwallet-provider');
   var keys = {};
   try {
     keys = require('./keys.json');

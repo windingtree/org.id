@@ -5,11 +5,19 @@ const assert = require('chai').assert;
 const help = require('./helpers/index.js');
 const web3Utils = require('web3-utils');
 
-ZWeb3.initialize(web3.currentProvider);
+let gasLimit = 8000000;// Like actual to the Ropsten
+
+if (process.env.SOLIDITY_COVERAGE) {
+  gasLimit = 0xfffffffffff;
+  Contracts.setLocalBuildDir('./.coverage_artifacts/contracts');
+}
+
 // workaround for https://github.com/zeppelinos/zos/issues/704
 Contracts.setArtifactsDefaults({
-  gas: 60000000,
+  gas: gasLimit,
 });
+
+ZWeb3.initialize(web3.currentProvider);
 
 const WindingTreeEntrypoint = Contracts.getFromLocal('WindingTreeEntrypoint');
 const WindingTreeEntrypointUpgradeabilityTest = Contracts

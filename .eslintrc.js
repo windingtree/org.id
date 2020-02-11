@@ -1,12 +1,7 @@
 module.exports = {
-  "extends" : [
-    "standard",
-    "plugin:promise/recommended"
-  ],
-  "plugins": [
-    "promise"
-  ],
+  "extends": "eslint:recommended",
   "env": {
+    "es6": true,
     "browser" : true,
     "node"    : true,
     "mocha"   : true,
@@ -18,13 +13,16 @@ module.exports = {
     "assert": false,
     "web3": false
   },
+  "parserOptions": {
+    "ecmaVersion": 8
+  },
   "rules": {
 
     // Strict mode
-    "strict": [2, "global"],
+    "strict": 0,
 
     // Code style
-    "indent": [2],
+    "indent": ["error", 2, { "SwitchCase": 1 }],
     "quotes": [2, "single"],
     "semi": ["error", "always"],
     "space-before-function-paren": ["error", "always"],
@@ -45,10 +43,9 @@ module.exports = {
     "one-var": [0],
     "object-curly-spacing": [2, "always"],
     "generator-star-spacing": ["error", "before"],
-    "promise/avoid-new": 0,
-    "promise/always-return": 0,
-    "promise/no-callback-in-promise": 0,
     "padded-blocks": 0,
-    "no-unused-expressions": 0
+    "no-unused-expressions": 0,
+    "arrow-body-style": 0,
+    "no-extra-semi": 0
   }
 };

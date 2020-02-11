@@ -37,7 +37,7 @@ module.exports = async (options) => {
 
     try {
       command = require(`./${task.command}`);
-    } catch (e) {}
+    } catch (e) {} // eslint-disable-line no-empty
     
     if (typeof command !== 'function') {
       log('Unable to find task command', task.command);

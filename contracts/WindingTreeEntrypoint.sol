@@ -1,4 +1,4 @@
-pragma solidity ^0.5.6;
+pragma solidity >=0.5.16;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
 
@@ -52,7 +52,7 @@ contract WindingTreeEntrypoint is Initializable {
         require(__owner != address(0), 'WindingTreeEntrypoint: Cannot set owner to 0x0 address');
         _owner = __owner;
         _lifToken = __lifToken;
-        segments.length++;
+        segments.push('');
     }
 
     /**

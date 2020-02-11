@@ -14,8 +14,7 @@ module.exports.createOrganizationAndAddToDir = async (
   subsidiaryDirector,
   directory,
   jsonOrgUri,
-  jsonOrgHash,
-  txOpts
+  jsonOrgHash
 ) => {
   // Subsidiaries are usually added to the directory
   const subsidiaryAddress = await createSubsidiary(

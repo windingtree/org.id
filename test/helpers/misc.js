@@ -1,5 +1,4 @@
 const web3utils = require('web3-utils');
-const _ = require('lodash');
 const ethJsUtil = require('ethereumjs-util');
 
 const zeroAddress = '0x0000000000000000000000000000000000000000';
@@ -68,7 +67,7 @@ module.exports = {
   },
 
   filterZeroAddresses: function (listOfAddresses) {
-    return _.filter(listOfAddresses, (a) => a !== zeroAddress);
+    return listOfAddresses.filter(a => a !== zeroAddress);
   },
 
   promisify: function (inner) {

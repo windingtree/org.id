@@ -131,7 +131,7 @@ module.exports = async (options) => {
       );
       return;
     }
-  } catch (e) {}
+  } catch (e) {} // eslint-disable-line no-empty
 
   log('Actual version', packageJson.version);
   log('Last known version', config.version);

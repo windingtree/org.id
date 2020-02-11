@@ -1,24 +1,24 @@
 {
   "name": "@windingtree/wt-contracts",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "Smart contracts of the Winding Tree platform",
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "management/test.sh",
-    "lint": "eslint test management && solhint 'contracts/**/*.sol'",
-    "lint:fix": "eslint test management --fix && solhint 'contracts/**/*.sol'",
-    "dev-net": "./node_modules/.bin/ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
+    "lint": "npx eslint test management && npx solhint 'contracts/**/*.sol'",
+    "lint:fix": "npx eslint test management --fix && npx solhint 'contracts/**/*.sol'",
+    "dev-net": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
     "flattener": "management/flattener.sh",
     "clean": "rimraf build",
     "build-index": "node management/build-index.js > index.js",
-    "set-oz-version": "openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
+    "set-oz-version": "npx openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "version": "npm run set-oz-version && git add .openzeppelin/project.json && npm run build-index && git add index.js",
     "prebuild": "npm run clean",
-    "build": "truffle compile && npm run build-index"
+    "build": "npx truffle compile && npm run build-index"
   },
   "publishConfig": {
     "access": "public"
@@ -31,45 +31,34 @@
     "winding-tree",
     "security",
     "encryption",
-    "smart-contracts"
+    "smart-contracts",
+    "solidity"
   ],
   "main": "index.js",
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "openzeppelin-solidity": "^2.2.0"
+    "openzeppelin-solidity": "2.5.0"
   },
   "devDependencies": {
-    "@openzeppelin/cli": "^2.5.1",
-    "@windingtree/lif-token": "^0.1.2-erc827",
-    "babel-polyfill": "^6.23.0",
-    "babel-register": "^6.26.0",
-    "chai": "^4.2.0",
-    "coveralls": "^3.0.5",
-    "eslint": "^6.0.1",
-    "eslint-config-standard": "^14.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-node": "^10.0.0",
-    "eslint-plugin-promise": "^4.1.1",
-    "eslint-plugin-standard": "^4.0.0",
-    "eth-ens-namehash": "^2.0.8",
-    "ethereumjs-util": "^6.1.0",
-    "ethereumjs-wallet": "^0.6.3",
-    "ganache-cli": "6.5.0",
-    "lodash": "^4.17.14",
-    "rimraf": "^3.0.0",
-    "solc": "^0.6.2",
-    "solhint": "^2.0.0",
-    "solidity-coverage": "^0.6.0",
-    "solmd": "^0.4.0",
-    "truffle": "^5.0.29",
-    "truffle-contract": "^4.0.26",
-    "truffle-flattener": "^1.4.0",
-    "truffle-hdwallet-provider": "^1.0.15",
-    "web3": "^1.2.0",
-    "web3-utils": "^1.2.2"
+    "@openzeppelin/cli": "2.7.1",
+    "chai": "4.2.0",
+    "coveralls": "3.0.9",
+    "eslint": "6.8.0",
+    "ethereumjs-util": "6.2.0",
+    "ganache-cli": "6.4.5",
+    "rimraf": "3.0.2",
+    "solc": "0.6.2",
+    "solhint": "2.3.0",
+    "solidity-coverage": "0.7.1",
+    "solmd": "0.4.0",
+    "truffle": "5.1.12",
+    "@truffle/contract": "4.1.8",
+    "@truffle/hdwallet-provider": "1.0.30",
+    "truffle-flattener": "1.4.2",
+    "web3-utils": "1.2.6"
   },
   "engines": {
-    "node": ">=10.3.0"
+    "node": ">=10.19.0"
   }
 }
