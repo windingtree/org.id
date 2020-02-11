@@ -32,21 +32,12 @@ contract('SegmentDirectory', (accounts) => {
   const tokenFakeAddress = accounts[4];
   const entityDirectorAccount = accounts[5];
 
-  let ensContract;
-  let tokenContract;
-
   let segmentDirectoryProxy;
   let segmentDirectory;
   let projectAppAddress;
   let proxyAdmin;
   let organization;
   let project;
-
-  before(async () => {
-    ensContract = await help.deployEnsRegistry();
-    tokenContract = await help.deployLifToken(true);
-    await help.setupEnsRegistry(ensContract, tokenContract);
-  });
 
   beforeEach(async () => {
     project = await TestHelper();

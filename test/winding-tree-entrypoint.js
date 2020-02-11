@@ -20,17 +20,10 @@ contract('WindingTreeEntrypoint', (accounts) => {
   const proxyOwner = accounts[2];
   const nonOwnerAccount = accounts[3];
   const tokenFakeAddress = accounts[4];
-  let ensContract, tokenContract;
 
   let windingTreeEntrypointProxy;
   let windingTreeEntrypoint;
   let project;
-
-  before(async () => {
-    ensContract = await help.deployEnsRegistry();
-    tokenContract = await help.deployLifToken(true);
-    await help.setupEnsRegistry(ensContract, tokenContract);
-  });
 
   beforeEach(async () => {
     project = await TestHelper();
@@ -122,59 +115,6 @@ contract('WindingTreeEntrypoint', (accounts) => {
         await entrypoint.methods.getLifToken().call(),
         tokenFakeAddress
       );
-    });
-  });
-
-  describe('#resolveLifTokenFromENS', () => {
-
-    it('should set lif token address from ENS', async () => {
-      assert.equal(
-        await windingTreeEntrypoint.methods.getLifToken().call(),
-        tokenFakeAddress
-      );
-      await windingTreeEntrypoint
-        .methods.resolveLifTokenFromENS(ensContract.address)
-        .send({
-          from: windingTreeEntrypointOwner
-        });
-      assert.equal(
-        await windingTreeEntrypoint.methods.getLifToken().call(),
-        tokenContract.address
-      );
-    });
-
-    it('should throw if ENS cannot be read from', async () => {
-      try {
-        assert.equal(
-          await windingTreeEntrypoint.methods.getLifToken().call(),
-          tokenFakeAddress
-        );
-        await windingTreeEntrypoint
-          .methods.resolveLifTokenFromENS(tokenFakeAddress)
-          .send({
-            from: windingTreeEntrypointOwner
-          });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
-    });
-
-    it('should throw if called by non-owner', async () => {
-      try {
-        assert.equal(
-          await windingTreeEntrypoint.methods.getLifToken().call(),
-          tokenFakeAddress
-        );
-        await windingTreeEntrypoint
-          .methods.resolveLifTokenFromENS(ensContract.address)
-          .send({
-            from: nonOwnerAccount
-          });
-        assert(false);
-      } catch (e) {
-        assert(help.isInvalidOpcodeEx(e));
-      }
     });
   });
 
