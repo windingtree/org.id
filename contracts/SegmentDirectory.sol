@@ -1,13 +1,11 @@
-pragma solidity ^0.5.6;
+pragma solidity >=0.5.16;
 
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165Checker.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "@ensdomains/ens/contracts/ENS.sol";
-import "@ensdomains/resolver/contracts/Resolver.sol";
 import "./OrganizationInterface.sol";
-import "./Organization.sol";
 import "./SegmentDirectoryInterface.sol";
+import "./Organization.sol";
 
 /**
  * @title SegmentDirectory
@@ -29,10 +27,6 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
 
     // Address of the LifToken contract
     address _lifToken;
-
-    // hashed "token.windingtree.eth" using eth-ens-namehash
-    bytes32 private constant tokenNamehash =
-        0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
     /**
      * @dev Event triggered every time organization is added.
@@ -103,26 +97,6 @@ contract SegmentDirectory is Initializable, SegmentDirectoryInterface, ERC165 {
         _organizations.length++;
         _segment = __segment;
         setInterfaces();
-    }
-
-    /**
-     * @dev Updating the _lifToken link from the ENS registry
-     * @param _ENS The address of the ENS registry
-     */
-    function resolveLifTokenFromENS(address _ENS) external onlyOwner {
-        ENS registry = ENS(_ENS);
-        address resolverAddress = registry.resolver(tokenNamehash);
-        require(
-            resolverAddress != address(0),
-            "SegmentDirectory: Resolver not found"
-        );
-        Resolver resolver = Resolver(resolverAddress);
-        address tokenAddress = resolver.addr(tokenNamehash);
-        require(
-            tokenAddress != address(0),
-            "SegmentDirectory: Token not found"
-        );
-        _lifToken = tokenAddress;
     }
 
     /**

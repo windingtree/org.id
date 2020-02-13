@@ -14,7 +14,6 @@
   * [owner](#function-owner)
   * [remove](#function-remove)
   * [reportUpdate](#function-reportupdate)
-  * [resolveLifTokenFromENS](#function-resolveliftokenfromens)
   * [setInterfaces](#function-setinterfaces)
   * [setSegment](#function-setsegment)
   * [supportsInterface](#function-supportsinterface)
@@ -219,19 +218,6 @@ SegmentDirectory.reportUpdate() `nonpayable` `873d45bf`
 > This function is dedicated to receiving signals  about updates from registered organizations
 
 
-
-
-## *function* resolveLifTokenFromENS
-
-SegmentDirectory.resolveLifTokenFromENS(_ENS) `nonpayable` `423ba56e`
-
-> Updating the _lifToken link from the ENS registry
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _ENS | The address of the ENS registry |
 
 
 ## *function* setInterfaces

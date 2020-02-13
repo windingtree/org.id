@@ -1,8 +1,6 @@
-pragma solidity ^0.5.6;
+pragma solidity >=0.5.16;
 
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "@ensdomains/ens/contracts/ENS.sol";
-import "@ensdomains/resolver/contracts/Resolver.sol";
 
 /**
  * @title WindingTreeEntrypoint
@@ -26,9 +24,6 @@ contract WindingTreeEntrypoint is Initializable {
 
     // List of registered segments
     string[] public segments;
-
-    // hashed 'token.windingtree.eth' using eth-ens-namehash
-    bytes32 private constant tokenNamehash = 0x30151473c3396a0cfca504fc0f1ebc0fe92c65542ad3aaf70126c087458deb85;
 
     /**
      * @dev Event triggered when owner of the entrypoint is changed.
@@ -57,21 +52,7 @@ contract WindingTreeEntrypoint is Initializable {
         require(__owner != address(0), 'WindingTreeEntrypoint: Cannot set owner to 0x0 address');
         _owner = __owner;
         _lifToken = __lifToken;
-        segments.length++;
-    }
-
-    /**
-     * @dev Updating the _lifToken link from the ENS registry
-     * @param _ENS The address of the ENS registry
-     */
-    function resolveLifTokenFromENS(address _ENS) external onlyOwner {
-        ENS registry = ENS(_ENS);
-        address resolverAddress = registry.resolver(tokenNamehash);
-        require(resolverAddress != address(0), 'WindingTreeEntrypoint: Resolver not found');
-        Resolver resolver = Resolver(resolverAddress);
-        address tokenAddress = resolver.addr(tokenNamehash);
-        require(tokenAddress != address(0), 'WindingTreeEntrypoint: Token not found');
-        _lifToken = tokenAddress;
+        segments.push('');
     }
 
     /**

@@ -30,6 +30,7 @@
   * [orgJsonUri](#function-orgjsonuri)
   * [owner](#function-owner)
   * [parentEntity](#function-parententity)
+  * [proxyAdmin](#function-proxyadmin)
   * [setInterfaces](#function-setinterfaces)
   * [subsidiariesIndex](#function-subsidiariesindex)
   * [supportsInterface](#function-supportsinterface)
@@ -336,9 +337,9 @@ Outputs
 
 ## *function* initialize
 
-OrganizationUpgradeabilityTest.initialize(__owner, _orgJsonUri, _orgJsonHash, _app, _parentEntity, _entityDirector) `nonpayable` `a21f27f0`
+OrganizationUpgradeabilityTest.initialize(__owner, _orgJsonUri, _orgJsonHash, _app, _proxyAdmin, _parentEntity, _entityDirector) `nonpayable` `63ef1e8f`
 
-> Initializer for upgradeable contracts.
+> Initializer for upgradeable contracts
 
 Inputs
 
@@ -346,8 +347,9 @@ Inputs
 |-|-|-|
 | *address* | __owner | The address of the contract owner |
 | *string* | _orgJsonUri | pointer to Organization data |
-| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
-| *address* | _app | ZeppelinOS App address |
+| *bytes32* | _orgJsonHash | keccak256 hash of the new ORG.JSON contents |
+| *address* | _app | OpenZeppelin App address |
+| *address* | _proxyAdmin | OpenZeppelin proxyAdmin address |
 | *address* | _parentEntity | Parent organization address |
 | *address* | _entityDirector | Entity director address |
 
@@ -397,6 +399,14 @@ OrganizationUpgradeabilityTest.owner() `view` `8da5cb5b`
 ## *function* parentEntity
 
 OrganizationUpgradeabilityTest.parentEntity() `view` `19fb3ff2`
+
+
+
+
+
+## *function* proxyAdmin
+
+OrganizationUpgradeabilityTest.proxyAdmin() `view` `3e47158c`
 
 
 

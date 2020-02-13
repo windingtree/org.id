@@ -1,12 +1,8 @@
-pragma solidity ^0.5.6;
+pragma solidity >=0.5.16;
 
 import "../Organization.sol";
 
-contract CustomInterface {
-    function newFunction() external pure returns(uint256);
-}
-
-contract OrganizationUpgradeabilityTest is Organization, CustomInterface {
+contract OrganizationUpgradeabilityTest is Organization {
 
     function newFunction() public pure returns(uint) {
         return 100;

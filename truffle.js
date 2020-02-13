@@ -1,53 +1,56 @@
-require('babel-register');
-require('babel-polyfill');
+var HDWalletProvider = require('@truffle/hdwallet-provider');
 
-module.exports = {
-  networks: {
-    development: {
-      host: 'localhost',
-      port: 8545,
-      network_id: '*', // eslint-disable-line camelcase
-      gas: 8000000,
-      gasPrice: 20000000000
-    },
-    coverage: {
-      host: 'localhost',
-      network_id: '*', // eslint-disable-line camelcase
-      port: 8555,
-      gas: 0xfffffffffff,
-      gasPrice: 0x01
-    },
-    mainnet: getInfuraConfig('mainnet', 1),
-    ropsten: getInfuraConfig('ropsten', 3)
-  },
-  compilers: {
-    solc: {
-      version: '0.5.10',
-      settings: {
-        optimizer: {
-          enabled: true,
-          runs: 200
-        }
-      }
+// Netowrk configuration factory
+const getInfuraConfig = (networkName, networkId) => {
+    var keys = {};
+
+    try {
+        keys = require('./keys.json');
+    } catch (err) {
+        console.log('could not find ./keys.json');
     }
-  }
+
+    return {
+        network_id: networkId, // eslint-disable-line camelcase
+        provider: () => {
+            return new HDWalletProvider(
+                keys.mnemonic,
+                `https://${networkName}.infura.io/v3/` + keys.infura_projectid,
+                0,
+                10
+            );
+        },
+        gas: 8000000,
+        gasPrice: 20000000000
+    };
 };
 
-function getInfuraConfig (networkName, networkId) {
-  var HDWalletProvider = require('truffle-hdwallet-provider');
-  var keys = {};
-  try {
-    keys = require('./keys.json');
-  } catch (err) {
-    console.log('could not find ./keys.json');
-  }
+module.exports = {
+    plugins: [
+        'solidity-coverage'
+    ],
 
-  return {
-    network_id: networkId, // eslint-disable-line camelcase
-    provider: () => {
-      return new HDWalletProvider(keys.mnemonic, `https://${networkName}.infura.io/v3/` + keys.infura_projectid, 0, 10);
+    networks: {
+        development: {
+            host: 'localhost',
+            port: 8545,
+            network_id: '*', // eslint-disable-line camelcase
+            gas: 8000000,
+            gasPrice: 20000000000
+        },
+        mainnet: getInfuraConfig('mainnet', 1),
+        ropsten: getInfuraConfig('ropsten', 3)
     },
-    gas: 8000000,
-    gasPrice: 20000000000
-  };
-}
+
+    compilers: {
+        solc: {
+            version: '0.5.16',
+            settings: {
+                optimizer: {
+                    enabled: true,
+                    runs: 200
+                }
+            }
+        }
+    }
+};

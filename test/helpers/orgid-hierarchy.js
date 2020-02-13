@@ -4,7 +4,7 @@ const { Contracts, ZWeb3 } = require('@openzeppelin/upgrades');
 ZWeb3.initialize(web3.currentProvider);
 // workaround for https://github.com/zeppelinos/zos/issues/704
 Contracts.setArtifactsDefaults({
-  gas: 60000000,
+    gas: 60000000,
 });
 const Organization = Contracts.getFromLocal('Organization');
 
@@ -20,68 +20,74 @@ const Organization = Contracts.getFromLocal('Organization');
  * @returns {Promise<{string}>} Promise that resolved with subsidiary instance address
  */
 module.exports.createSubsidiary = async (
-  organization,
-  organizationOwner,
-  entityDirectorAccount,
-  organizationUri,
-  organizationHash,
-  packageName = 'wt-contracts',
-  contractName = 'Organization'
-) => {
-  const result = await organization.methods['createSubsidiary(string,bytes32,address,string,string)'](
+    organization,
+    organizationOwner,
+    entityDirectorAccount,
     organizationUri,
     organizationHash,
-    entityDirectorAccount,
-    packageName,
-    contractName
-  ).send(
-    {
-      from: organizationOwner
-    }
-  );
+    packageName = 'wt-contracts',
+    contractName = 'Organization'
+) => {
+    const result = await organization
+        .methods['createSubsidiary(string,bytes32,address,string,string)'](
+            organizationUri,
+            organizationHash,
+            entityDirectorAccount,
+            packageName,
+            contractName
+        )
+        .send({
+            from: organizationOwner
+        });
 
-  let subsidiaryAddress;
-  assertEvent(result, 'SubsidiaryCreated', [
-    [
-      'owner',
-      p => (p).should.equal(organizationOwner)
-    ],
-    [
-      'director',
-      p => (p).should.equal(entityDirectorAccount)
-    ],
-    [
-      'subsidiary',
-      p => {
-        (web3.utils.isAddress(p)).should.be.true;
-        subsidiaryAddress = p;
-      }
-    ]
-  ]);
-
-  if (organizationOwner === entityDirectorAccount) {
-    assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
-      [
-        'subsidiary',
-        p => (p).should.equal(subsidiaryAddress)
-      ],
-      [
-        'director',
-        p => (p).should.equal(entityDirectorAccount)
-      ]
+    let subsidiaryAddress;
+    assertEvent(result, 'SubsidiaryCreated', [
+        [
+            'owner',
+            p => (p).should.equal(organizationOwner)
+        ],
+        [
+            'director',
+            p => (p).should.equal(entityDirectorAccount)
+        ],
+        [
+            'subsidiary',
+            p => {
+                (web3.utils.isAddress(p)).should.be.true;
+                subsidiaryAddress = p;
+            }
+        ]
     ]);
-  }
 
-  const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
-  (subsidiaryParams.id).should.equal(subsidiaryAddress);
-  (subsidiaryParams.director).should.equal(entityDirectorAccount);
-  (subsidiaryParams.state).should.be.true;
-  (subsidiaryParams.confirmed).should.equal(organizationOwner === entityDirectorAccount);
+    if (organizationOwner === entityDirectorAccount) {
+        assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
+            [
+                'subsidiary',
+                p => (p).should.equal(subsidiaryAddress)
+            ],
+            [
+                'director',
+                p => (p).should.equal(entityDirectorAccount)
+            ]
+        ]);
+    }
 
-  const subsidiary = await Organization.at(subsidiaryAddress);
-  (await subsidiary.methods['owner()']().call()).should.equal(organization.address);
+    const subsidiaryParams = await organization
+        .methods['getSubsidiary(address)'](subsidiaryAddress)
+        .call();
+    (subsidiaryParams.id).should.equal(subsidiaryAddress);
+    (subsidiaryParams.director).should.equal(entityDirectorAccount);
+    (subsidiaryParams.state).should.be.true;
+    (subsidiaryParams.confirmed).should.equal(
+        organizationOwner === entityDirectorAccount
+    );
 
-  return subsidiaryAddress;
+    const subsidiary = await Organization.at(subsidiaryAddress);
+    (
+        await subsidiary.methods['owner()']().call()
+    ).should.equal(organization.address);
+
+    return subsidiaryAddress;
 };
 
 /**
@@ -92,31 +98,33 @@ module.exports.createSubsidiary = async (
  * @returns {Promise}
  */
 module.exports.toggleSubsidiary = async (
-  organization,
-  organizationOwner,
-  subsidiaryAddress
+    organization,
+    organizationOwner,
+    subsidiaryAddress
 ) => {
-  const subsidiaryParams = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
-  const oldState = subsidiaryParams.state;// bool
-  const result = await organization.methods['toggleSubsidiary(address)'](subsidiaryAddress).send(
-    {
-      from: organizationOwner
-    }
-  );
-  assertEvent(result, 'SubsidiaryToggled', [
-    [
-      'subsidiary',
-      p => (p).should.equal(subsidiaryAddress)
-    ],
-    [
-      'previousState',
-      p => (p).should.equal(oldState)
-    ],
-    [
-      'newState',
-      p => (p).should.equal(!oldState)
-    ]
-  ]);
+    const subsidiaryParams = await organization
+        .methods['getSubsidiary(address)'](subsidiaryAddress)
+        .call();
+    const oldState = subsidiaryParams.state; // bool
+    const result = await organization
+        .methods['toggleSubsidiary(address)'](subsidiaryAddress)
+        .send({
+            from: organizationOwner
+        });
+    assertEvent(result, 'SubsidiaryToggled', [
+        [
+            'subsidiary',
+            p => (p).should.equal(subsidiaryAddress)
+        ],
+        [
+            'previousState',
+            p => (p).should.equal(oldState)
+        ],
+        [
+            'newState',
+            p => (p).should.equal(!oldState)
+        ]
+    ]);
 };
 
 /**
@@ -127,27 +135,29 @@ module.exports.toggleSubsidiary = async (
  * @returns {Promise}
  */
 module.exports.confirmSubsidiaryDirectorOwnership = async (
-  organization,
-  subsidiaryAddress,
-  entityDirectorAccount
+    organization,
+    subsidiaryAddress,
+    entityDirectorAccount
 ) => {
-  const result = await organization.methods['confirmSubsidiaryDirectorOwnership(address)'](subsidiaryAddress).send(
-    {
-      from: entityDirectorAccount
-    }
-  );
-  assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
-    [
-      'subsidiary',
-      p => (p).should.equal(subsidiaryAddress)
-    ],
-    [
-      'director',
-      p => (p).should.equal(entityDirectorAccount)
-    ]
-  ]);
-  const subsidiary = await organization.methods['getSubsidiary(address)'](subsidiaryAddress).call();
-  (subsidiary.confirmed).should.be.true;
+    const result = await organization
+        .methods['confirmSubsidiaryDirectorOwnership(address)'](subsidiaryAddress)
+        .send({
+            from: entityDirectorAccount
+        });
+    assertEvent(result, 'SubsidiaryDirectorOwnershipConfirmed', [
+        [
+            'subsidiary',
+            p => (p).should.equal(subsidiaryAddress)
+        ],
+        [
+            'director',
+            p => (p).should.equal(entityDirectorAccount)
+        ]
+    ]);
+    const subsidiary = await organization
+        .methods['getSubsidiary(address)'](subsidiaryAddress)
+        .call();
+    (subsidiary.confirmed).should.be.true;
 };
 
 /**
@@ -159,36 +169,38 @@ module.exports.confirmSubsidiaryDirectorOwnership = async (
  * @returns {Promise}
  */
 module.exports.transferSubsidiaryDirectorOwnership = async (
-  organizationAddress,
-  subsidiaryAddress,
-  organizationOwner,
-  newDirectorAccount
-) => {
-  const organization = await Organization.at(organizationAddress);
-  const subsidiary = await Organization.at(subsidiaryAddress);
-  const initialDirector = await subsidiary.methods['entityDirector()']().call();
-  const result = await organization.methods['transferDirectorOwnership(address,address)'](
+    organizationAddress,
     subsidiaryAddress,
+    organizationOwner,
     newDirectorAccount
-  ).send(
-    {
-      from: organizationOwner
-    }
-  );
-  assertEvent(result, 'SubsidiaryDirectorOwnershipTransferred', [
-    [
-      'subsidiary',
-      p => (p).should.equal(subsidiaryAddress)
-    ],
-    [
-      'previousDirector',
-      p => (p).should.equal(initialDirector)
-    ],
-    [
-      'newDirector',
-      p => (p).should.equal(newDirectorAccount)
-    ]
-  ]);
+) => {
+    const organization = await Organization.at(organizationAddress);
+    const subsidiary = await Organization.at(subsidiaryAddress);
+    const initialDirector = await subsidiary
+        .methods['entityDirector()']()
+        .call();
+    const result = await organization
+        .methods['transferDirectorOwnership(address,address)'](
+            subsidiaryAddress,
+            newDirectorAccount
+        )
+        .send({
+            from: organizationOwner
+        });
+    assertEvent(result, 'SubsidiaryDirectorOwnershipTransferred', [
+        [
+            'subsidiary',
+            p => (p).should.equal(subsidiaryAddress)
+        ],
+        [
+            'previousDirector',
+            p => (p).should.equal(initialDirector)
+        ],
+        [
+            'newDirector',
+            p => (p).should.equal(newDirectorAccount)
+        ]
+    ]);
 };
 
 /**
@@ -199,26 +211,26 @@ module.exports.transferSubsidiaryDirectorOwnership = async (
  * @returns {Promise}
  */
 module.exports.changeOrgJsonUri = async (
-  entity,
-  ownerOrDirectorAccount,
-  newOrgJsonUri
+    entity,
+    ownerOrDirectorAccount,
+    newOrgJsonUri
 ) => {
-  const initialUri = await entity.methods['getOrgJsonUri()']().call();
-  const result = await entity.methods['changeOrgJsonUri(string)'](newOrgJsonUri).send(
-    {
-      from: ownerOrDirectorAccount
-    }
-  );
-  assertEvent(result, 'OrgJsonUriChanged', [
-    [
-      'previousOrgJsonUri',
-      p => (p).should.equal(initialUri)
-    ],
-    [
-      'newOrgJsonUri',
-      p => (p).should.equal(newOrgJsonUri)
-    ]
-  ]);
+    const initialUri = await entity.methods['getOrgJsonUri()']().call();
+    const result = await entity
+        .methods['changeOrgJsonUri(string)'](newOrgJsonUri)
+        .send({
+            from: ownerOrDirectorAccount
+        });
+    assertEvent(result, 'OrgJsonUriChanged', [
+        [
+            'previousOrgJsonUri',
+            p => (p).should.equal(initialUri)
+        ],
+        [
+            'newOrgJsonUri',
+            p => (p).should.equal(newOrgJsonUri)
+        ]
+    ]);
 };
 
 /**
@@ -229,26 +241,24 @@ module.exports.changeOrgJsonUri = async (
  * @returns {Promise}
  */
 module.exports.changeOrgJsonHash = async (
-  entity,
-  ownerOrDirectorAccount,
-  newOrgJsonHash
+    entity,
+    ownerOrDirectorAccount,
+    newOrgJsonHash
 ) => {
-  const initialHash = await entity.methods['getOrgJsonHash()']().call();
-  const result = await entity.methods['changeOrgJsonHash(bytes32)'](newOrgJsonHash).send(
-    {
-      from: ownerOrDirectorAccount
-    }
-  );
-  assertEvent(result, 'OrgJsonHashChanged', [
-    [
-      'previousOrgJsonHash',
-      p => (p).should.equal(initialHash)
-    ],
-    [
-      'newOrgJsonHash',
-      p => (p).should.equal(newOrgJsonHash)
-    ]
-  ]);
+    const initialHash = await entity.methods['getOrgJsonHash()']().call();
+    const result = await entity.methods['changeOrgJsonHash(bytes32)'](newOrgJsonHash).send({
+        from: ownerOrDirectorAccount
+    });
+    assertEvent(result, 'OrgJsonHashChanged', [
+        [
+            'previousOrgJsonHash',
+            p => (p).should.equal(initialHash)
+        ],
+        [
+            'newOrgJsonHash',
+            p => (p).should.equal(newOrgJsonHash)
+        ]
+    ]);
 };
 
 /**
@@ -260,39 +270,39 @@ module.exports.changeOrgJsonHash = async (
  * @returns {Promise}
  */
 module.exports.changeOrgJsonUriAndHash = async (
-  entity,
-  ownerOrDirectorAccount,
-  newOrgJsonUri,
-  newOrgJsonHash
-) => {
-  const initialUri = await entity.methods['getOrgJsonUri()']().call();
-  const initialHash = await entity.methods['getOrgJsonHash()']().call();
-  const result = await entity.methods['changeOrgJsonUriAndHash(string,bytes32)'](
+    entity,
+    ownerOrDirectorAccount,
     newOrgJsonUri,
     newOrgJsonHash
-  ).send(
-    {
-      from: ownerOrDirectorAccount
-    }
-  );
-  assertEvent(result, 'OrgJsonUriChanged', [
-    [
-      'previousOrgJsonUri',
-      p => (p).should.equal(initialUri)
-    ],
-    [
-      'newOrgJsonUri',
-      p => (p).should.equal(newOrgJsonUri)
-    ]
-  ]);
-  assertEvent(result, 'OrgJsonHashChanged', [
-    [
-      'previousOrgJsonHash',
-      p => (p).should.equal(initialHash)
-    ],
-    [
-      'newOrgJsonHash',
-      p => (p).should.equal(newOrgJsonHash)
-    ]
-  ]);
+) => {
+    const initialUri = await entity.methods['getOrgJsonUri()']().call();
+    const initialHash = await entity.methods['getOrgJsonHash()']().call();
+    const result = await entity
+        .methods['changeOrgJsonUriAndHash(string,bytes32)'](
+            newOrgJsonUri,
+            newOrgJsonHash
+        )
+        .send({
+            from: ownerOrDirectorAccount
+        });
+    assertEvent(result, 'OrgJsonUriChanged', [
+        [
+            'previousOrgJsonUri',
+            p => (p).should.equal(initialUri)
+        ],
+        [
+            'newOrgJsonUri',
+            p => (p).should.equal(newOrgJsonUri)
+        ]
+    ]);
+    assertEvent(result, 'OrgJsonHashChanged', [
+        [
+            'previousOrgJsonHash',
+            p => (p).should.equal(initialHash)
+        ],
+        [
+            'newOrgJsonHash',
+            p => (p).should.equal(newOrgJsonHash)
+        ]
+    ]);
 };

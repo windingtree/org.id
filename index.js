@@ -6,10 +6,10 @@ const SegmentDirectoryInterfaceContract = require('./build/contracts/SegmentDire
 const WindingTreeEntrypointContract = require('./build/contracts/WindingTreeEntrypoint.json');
 
 module.exports = {
-  OrganizationContract: OrganizationContract,
-  OrganizationInterfaceContract: OrganizationInterfaceContract,
-  SegmentDirectoryContract: SegmentDirectoryContract,
-  SegmentDirectoryInterfaceContract: SegmentDirectoryInterfaceContract,
-  WindingTreeEntrypointContract: WindingTreeEntrypointContract,
+    OrganizationContract: OrganizationContract,
+    OrganizationInterfaceContract: OrganizationInterfaceContract,
+    SegmentDirectoryContract: SegmentDirectoryContract,
+    SegmentDirectoryInterfaceContract: SegmentDirectoryInterfaceContract,
+    WindingTreeEntrypointContract: WindingTreeEntrypointContract,
 };
 

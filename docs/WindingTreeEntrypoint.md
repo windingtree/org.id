@@ -11,7 +11,6 @@
   * [initialize](#function-initialize)
   * [owner](#function-owner)
   * [removeSegment](#function-removesegment)
-  * [resolveLifTokenFromENS](#function-resolveliftokenfromens)
   * [segments](#function-segments)
   * [segmentsIndex](#function-segmentsindex)
   * [setSegment](#function-setsegment)
@@ -179,19 +178,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *string* | segment | Segment name |
-
-
-## *function* resolveLifTokenFromENS
-
-WindingTreeEntrypoint.resolveLifTokenFromENS(_ENS) `nonpayable` `423ba56e`
-
-> Updating the _lifToken link from the ENS registry
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _ENS | The address of the ENS registry |
 
 
 ## *function* segments

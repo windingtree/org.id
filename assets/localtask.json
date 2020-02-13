@@ -1,0 +1,49 @@
+[
+    {
+        "command": "version"
+    },
+    {
+        "command": "makehash",
+        "parameters": {
+            "file": "./assets/orgid-legal.json"
+        }
+    },
+    {
+        "command": "contract",
+        "parameters": {
+            "name": "Organization",
+            "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+            "initArgs": [
+                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+                "https://gist.githubusercontent.com/kostysh/3bde88a0e8248c73c68c1aed2ca4b9be/raw/5df8c96ceff4d0fa99a32d1da63b061ad4b27ccd/ORG.ID",
+                "[TASK:1:hash]",
+                "[APP]",
+                "[PROXY_ADMIN]",
+                "0x0000000000000000000000000000000000000000",
+                "0x0000000000000000000000000000000000000000"
+            ]
+        }
+    },
+    {
+        "command": "makehash",
+        "parameters": {
+            "file": "./assets/orgid-unit.json"
+        }
+    },
+    {
+        "command": "tx",
+        "parameters": {
+            "name": "Organization",
+            "address": "[TASK:2:contract.proxy]",
+            "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+            "method": "createSubsidiary(string,bytes32,address,string,string)",
+            "args": [
+                "https://gist.githubusercontent.com/kostysh/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID",
+                "[TASK:3:hash]",
+                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+                "",
+                ""
+            ]
+        }
+    }
+]
