@@ -7,8 +7,6 @@ node_js:
 env:
   matrix:
   - SOLIDITY_COVERAGE=true
-  global:
-    secure: kCYoCJpn71dBISD2qctMYZtpPcn/mf9Yxm+Gm8G4Y0mYIP/CD0A8QCPQsrw7rO4F2Bt3Yh13/rgIwYcsX6cylE7xpVVOuUQD+MsMxrUQR2tJo9FDnbhBCehy8yEPoKhXgcI/gv8cw2hb4SasU3VTbtgeHPjxz6+EX5hw2ZAOiLZQ2LpRgV59A2ygHioT/s8WZgjrXyog+7xsv0elrklMTlmk1lLYQ1VKyu6AjzCTFPnk6HtK5g6rTZQkqRZfD4xDufwttBoMGRa6h5me+9kNBDpSVSwv85zetqdAR9o+71ITYKQuazZ58+bK6gimXbAmWy28pRKEB5KszbtSKsPOYbEA3Q4NT3QNiOPKrL4n4d+watPVfXfCLTdjuKyRXONzULQoPxvzzxleFsym+HL9c0ZPsPfN2SPmrN1MJlh+B1G8YMfVX3WKaNX2GqRBM+GQfo8r3FYKVBTNuEtpmBIKrVGMPSnEQAGhUQBPYY85UAPMy813d+SPMdDjSGYBvdz4liVmcUIX9v0IWUqTl9RhpKnGSlBU45AH4NqWtG1LPwnDPDoeLtCS0E2zwkzgjBGc556Qkfw87wJlI5lr3fNLm+OeVdH4krLldeP0E2yq7XjlxlLYfVJrXSwgHgC5p5dsTyHut3e8u/I+KhpDIxYn0lRrucFFUBA79PfbbQD0UeE=
 matrix:
   fast_finish: true
   allow_failures:
@@ -22,7 +20,10 @@ deploy:
   provider: npm
   email: devops@windingtree.com
   skip_cleanup: true
-  api_key: "$NPM_TOKEN"
+  api_key: "NPM_TOKEN"
   on:
     repo: windingtree/wt-contracts
     tags: true
+    condition: $SOLIDITY_COVERAGE != true
+notifications:
+  slack: windingtree:mHY9adjLqGCf2nO0zzvQ8fuT
