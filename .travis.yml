@@ -20,7 +20,8 @@ deploy:
   provider: npm
   email: devops@windingtree.com
   skip_cleanup: true
-  api_key: "NPM_TOKEN"
+  api_key:
+    secure: ZLM3bxeg7FvJmzHNEEUle198H6Fc+Gb7YxJ5gRSkr7O8Z0E6C89LFtnwUpxH2cmqqC7iUoLh8W1ksbV7lmR/JAqu7Le7sCLilzVzEfxaLEVEAxjMEBgiJ2BjbfD18Ekdjoa1fvwIEFKAiT2qy448Khr2GcBCEX4OFGmUYkbm3zdYWp1PRdpgWF7KRSqsDZWTnHSPRBA26u4NnvvbipDwDYKWVBC7P2VcbMDT8sIQUgG+TWc9niEVSp5iRimHa443WKUNgOQyE4vfKRFeg55ndi5rck12qlMCvs+/PVTVRUyXDATnrzelpubaQQnC7khdXry4kOcDfkm7xoaOAglDxPPddqteRo0s0cHyUl09AKTNVu7GVDMhiqVsnnf/FuRtuOHGxb5P8zbHnWWNrQ5dK7rvw1veJRr6roAgFGakq8dqoUWv48GVxWxp7kvauikU1vM8+a1gxMrjrTn4WEGYErhhv7GBgzBbQXSvzeaO7IVG5RoBhgkGdjCiKylMUNgxnfteFLC4/fmUTV5982aJ7JHT3aAsZY2o5T5ruCbJpOltXlNYpXwn3tIfdfYVjtUPylg+ytpaqvtPGpYyHGCVu4NEdx5o+1nmXCDpRYxuRPiIoYiQC/4lQ3eoWT7Vz2RMUx2Rq5VoTIsVDEXc38mrUAJxmsV2jmte8MuOcdQng54=
   on:
     repo: windingtree/wt-contracts
     tags: true
