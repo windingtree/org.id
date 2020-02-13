@@ -26,4 +26,3 @@ deploy:
   on:
     repo: windingtree/wt-contracts
     tags: true
-    condition: $SOLIDITY_COVERAGE != true
