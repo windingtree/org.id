@@ -603,11 +603,41 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#getOrganization()', () => {
+        describe('#getOrganization(bytes32)', () => {
+            let id;
 
-            it('should fail if organization not found', async () => {});
+            beforeEach(async () => {
+                id = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+            });
 
-            it('should return an organization', async () => {});
+            it('should fail if organization not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['getOrganization(bytes32)'](zeroBytes)
+                        .call(),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
+
+            it('should return an organization', async () => {
+                const org = await orgId
+                    .methods['getOrganization(bytes32)'](id)
+                    .call();
+                (org.orgId).should.equal(id);
+                (org.orgJsonUri).should.equal(organizationUri);
+                (org.orgJsonHash).should.equal(organizationHash);
+                (org.parentEntity).should.equal(zeroBytes);
+                (org.owner).should.equal(orgIdOwner);
+                (org.director).should.equal(zeroAddress);
+                (org.state).should.be.true;
+                (org.directorConfirmed).should.be.false;
+            });
         });
     });
 
