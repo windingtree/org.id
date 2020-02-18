@@ -260,15 +260,65 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#transferOrganizationOwnership(bytes32,address)', () => {
+        describe('#transferOrganizationOwnership(bytes32,address)', () => {
+            let id;
 
-            it('should fail if provided orgId not existed', async () => {});
+            beforeEach(async () => {
+                id = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+            });
 
-            it('should fail if called by not an owner', async () => {});
+            it('should fail if provided orgId not existed', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['transferOrganizationOwnership(bytes32,address)'](zeroBytes, nonOwner)
+                        .send({ from: orgIdOwner }),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
 
-            it('should fail if zero address provided as new owner', async () => {});
+            it('should fail if called by not an owner', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['transferOrganizationOwnership(bytes32,address)'](id, nonOwner)
+                        .send({ from: nonOwner }),
+                    'OrgId: Only organization owner can call this method'
+                );
+            });
 
-            it('should transfer organization ownership', async () => {});
+            it('should fail if zero address provided as new owner', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['transferOrganizationOwnership(bytes32,address)'](id, zeroAddress)
+                        .send({ from: orgIdOwner }),
+                    'OrgId: Invalid owner address'
+                );
+            });
+
+            it('should transfer organization ownership', async () => {
+                const result = await orgId
+                    .methods['transferOrganizationOwnership(bytes32,address)'](id, nonOwner)
+                    .send({ from: orgIdOwner });
+                assertEvent(result, 'OrganizationOwnershipTransferred', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(id)
+                    ],
+                    [
+                        'previousOwner',
+                        p => (p).should.equal(orgIdOwner)
+                    ],
+                    [
+                        'newOwner',
+                        p => (p).should.equal(nonOwner)
+                    ]
+                ]);
+            });
         });
 
         describe.skip('#changeOrgJsonUri(bytes32,string)', () => {

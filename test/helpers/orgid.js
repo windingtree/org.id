@@ -32,9 +32,9 @@ module.exports.createOrganization = async (
         [
             'owner',
             p => (p).should.equal(from)
-        ],
+        ]
     ]);
-    
+
     const org = await contract
         .methods['getOrganization(bytes32)'](organizationId)
         .call();
