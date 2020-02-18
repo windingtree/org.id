@@ -741,13 +741,54 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#confirmDirectorOwnership(bytes32)', () => {
+        describe('#confirmDirectorOwnership(bytes32)', () => {
+            let subId;
 
-            it('should fail if provided orgId not found', async () => {});
+            beforeEach(async () => {
+                subId = await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+            });
 
-            it('should fail if called not by director', async () => {});
+            it('should fail if provided orgId not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['confirmDirectorOwnership(bytes32)'](zeroBytes)
+                        .send({ from: entityDirector }),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
 
-            it('should confirm director ownership', async () => {});
+            it('should fail if called not by director', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['confirmDirectorOwnership(bytes32)'](subId)
+                        .send({ from: nonOwner }),
+                    'OrgId: Only subsidiary director can call this method'
+                );
+            });
+
+            it('should confirm director ownership', async () => {
+                const result = await orgId
+                    .methods['confirmDirectorOwnership(bytes32)'](subId)
+                    .send({ from: entityDirector });
+                assertEvent(result, 'DirectorOwnershipConfirmed', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(subId)
+                    ],
+                    [
+                        'director',
+                        p => (p).should.equal(entityDirector)
+                    ]
+                ]);
+            });
         });
 
         describe.skip('#transferDirectorOwnership(bytes32,address)', () => {
