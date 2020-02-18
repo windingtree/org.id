@@ -1,7 +1,7 @@
 {
-  "name": "@windingtree/wt-contracts",
-  "version": "0.9.1",
-  "description": "Smart contracts of the Winding Tree platform",
+  "name": "@windingtree/org.id",
+  "version": "0.10.0",
+  "description": "ORG.ID smart contract",
   "directories": {
     "test": "test"
   },
@@ -25,13 +25,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/windingtree/wt-contracts"
+    "url": "https://github.com/windingtree/org.id"
   },
   "keywords": [
     "winding-tree",
     "security",
     "encryption",
-    "smart-contracts",
+    "smart-contract",
     "solidity"
   ],
   "main": "index.js",
@@ -42,20 +42,20 @@
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.1.8",
-    "@truffle/hdwallet-provider": "1.0.30",
+    "@truffle/contract": "4.1.9",
+    "@truffle/hdwallet-provider": "1.0.31",
     "chai": "4.2.0",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
     "ethereumjs-util": "6.2.0",
     "ganache-cli": "6.4.5",
-    "husky": "^4.2.1",
+    "husky": "4.2.3",
     "rimraf": "3.0.2",
     "solc": "0.6.2",
     "solhint": "2.3.0",
-    "solidity-coverage": "0.7.1",
+    "solidity-coverage": "0.7.2",
     "solmd": "0.4.0",
-    "truffle": "5.1.12",
+    "truffle": "5.1.13",
     "truffle-flattener": "1.4.2",
     "web3-utils": "1.2.6"
   },

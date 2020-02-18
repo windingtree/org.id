@@ -6,6 +6,7 @@ npm-debug.log*
 
 # Compiled
 build
+index.js
 
 # Dependency directories
 node_modules

@@ -5,7 +5,7 @@ const expect = require('../utils/expect');
 const web3utils = require('web3-utils');
 
 module.exports = async (options) => {
-    title('ORG.JSON JSON hash');
+    title('ORG.JSON hash');
 
     expect.all(options, {
         file: {
