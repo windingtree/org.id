@@ -27,6 +27,7 @@ ZWeb3.initialize(web3.currentProvider);
 
 const OrgId = Contracts.getFromLocal('OrgId');
 const OrgIdInterface = Contracts.getFromLocal('OrgIdInterface');
+const OrgIdUpgradeability = Contracts.getFromLocal('OrgIdUpgradeability');
 
 require('chai').should();
 
@@ -52,7 +53,29 @@ contract('OrgId', accounts => {
         });
     });
     
-    describe('Upgradeability behaviour', () => {});
+    describe('Upgradeability behaviour', () => {
+
+        it('should upgrade proxy and reveal a new function and interface', async () => {
+            orgId = await project.upgradeProxy(
+                orgId.address,
+                OrgIdUpgradeability,
+                {
+                    initMethod: 'initialize',
+                    initArgs: []
+                }
+            );
+            orgId = await OrgIdUpgradeability.at(orgId.address);
+            await orgId.methods['setupNewStorage(uint256)']('100').send({
+                from: orgIdOwner
+            });
+            (await orgId.methods['newFunction()']().call()).should.equal('100');
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0x1b28d63e')
+                    .call()
+            ).should.be.true;
+        });
+    });
 
     describe('Ownable behaviour', () => {
 

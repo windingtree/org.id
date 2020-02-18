@@ -1,7 +1,8 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "OrgId": "OrgId"
+    "OrgId": "OrgId",
+    "OrgIdUpgradeability": "OrgIdUpgradeability"
   },
   "dependencies": {},
   "name": "org.id",
