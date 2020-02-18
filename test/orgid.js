@@ -544,13 +544,63 @@ contract('OrgId', accounts => {
             });
         });
         
-        describe.skip('#getOrganizations()', () => {
+        describe('#getOrganizations()', () => {
 
-            it('should return an empty array if no organizations has been added before', async () => {});
+            it('should return an empty array if no organizations has been added before', async () => {
+                const orgs = await orgId
+                    .methods['getOrganizations()']()
+                    .call();
+                (orgs).should.to.be.an('array');
+                (orgs.length).should.equal(0);
+            });
 
-            it('should return an empty array if previously added organizations had been disabled', async () => {});
+            it('should return an empty array if previously added organizations had been disabled', async () => {
+                const id1 = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+                const id2 = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+                await orgId.methods['toggleOrganization(bytes32)'](id1)
+                    .send({ from: orgIdOwner });
+                await orgId.methods['toggleOrganization(bytes32)'](id2)
+                    .send({ from: orgIdOwner });
+                const orgs = await orgId
+                    .methods['getOrganizations()']()
+                    .call();
+                (orgs).should.to.be.an('array');
+                (orgs.length).should.equal(0);
+            });
 
-            it('should return an array of organizations', async () => {});
+            it('should return an array of organizations', async () => {
+                const id1 = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+                const id2 = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+                const orgs = await orgId
+                    .methods['getOrganizations()']()
+                    .call();
+                (orgs).should.to.be.an('array').that.include(id1);
+                (orgs).should.to.be.an('array').that.include(id2);
+            });
         });
 
         describe.skip('#getOrganization()', () => {
