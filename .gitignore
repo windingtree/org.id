@@ -18,6 +18,7 @@ coverage.json
 allFiredEvents
 coverageEnv
 scTopics
+.coverage_artifacts
 
 # ETH keys
 keys.json

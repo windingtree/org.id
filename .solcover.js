@@ -2,7 +2,8 @@ const ganache = require('ganache-cli');
 
 module.exports = {
     skipFiles: [
-        'test'
+        'test',
+        'OrgIdInterface'
     ],
     client: ganache,
     providerOptions: {

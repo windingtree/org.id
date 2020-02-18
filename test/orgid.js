@@ -734,7 +734,7 @@ contract('OrgId', accounts => {
                     organizationOwner,
                     id,
                     generateId(organizationOwner),
-                    entityDirector,
+                    organizationOwner,
                     organizationUri,
                     organizationHash
                 );
