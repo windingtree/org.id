@@ -13,7 +13,8 @@ const {
 } = require('./helpers/constants');
 const {
     generateId,
-    createOrganization
+    createOrganization,
+    createSubsidiary
 } = require('./helpers/orgid');
 
 let gasLimit = 8000000; // Like actual to the Ropsten
@@ -31,7 +32,6 @@ Contracts.setArtifactsDefaults({
 ZWeb3.initialize(web3.currentProvider);
 
 const OrgId = Contracts.getFromLocal('OrgId');
-const OrgIdInterface = Contracts.getFromLocal('OrgIdInterface');
 const OrgIdUpgradeability = Contracts.getFromLocal('OrgIdUpgradeability');
 
 require('chai').should();
@@ -157,7 +157,7 @@ contract('OrgId', accounts => {
         it('should support hierarchy interface', async () => {
             (
                 await orgId
-                    .methods['supportsInterface(bytes4)']('0x2c8667d8')
+                    .methods['supportsInterface(bytes4)']('0x3a3bc250')
                     .call()
             ).should.be.true;
         });
@@ -176,10 +176,10 @@ contract('OrgId', accounts => {
         describe('#createOrganization(bytes32,string,bytes32)', () => {
 
             it('should fail if existed orgId provided', async () => {
-                const id = generateId(orgIdOwner);
+                const id = generateId(organizationOwner);
                 await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     id,
                     organizationUri,
                     organizationHash
@@ -187,7 +187,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     createOrganization(
                         orgId,
-                        orgIdOwner,
+                        organizationOwner,
                         id,
                         organizationUri,
                         organizationHash
@@ -199,8 +199,8 @@ contract('OrgId', accounts => {
             it('should create a new orgId with provided Id', async () => {
                 await createOrganization(
                     orgId,
-                    orgIdOwner,
-                    generateId(orgIdOwner),
+                    organizationOwner,
+                    generateId(organizationOwner),
                     organizationUri,
                     organizationHash
                 );
@@ -209,7 +209,7 @@ contract('OrgId', accounts => {
             it('should create a new orgId if provided default zero address', async () => {
                 await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -223,7 +223,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -234,7 +234,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['toggleOrganization(bytes32)'](zeroBytes)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Organization with given orgId not found'
                 );
             });
@@ -250,11 +250,11 @@ contract('OrgId', accounts => {
 
             it('should toggle organization state', async () => {
                 await orgId.methods['toggleOrganization(bytes32)'](id)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 let org = await orgId.methods['getOrganization(bytes32)'](id).call();
                 (org.state).should.be.false;
                 await orgId.methods['toggleOrganization(bytes32)'](id)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 org = await orgId.methods['getOrganization(bytes32)'](id).call();
                 (org.state).should.be.true;
             });
@@ -266,7 +266,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -277,7 +277,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['transferOrganizationOwnership(bytes32,address)'](zeroBytes, nonOwner)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Organization with given orgId not found'
                 );
             });
@@ -295,7 +295,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['transferOrganizationOwnership(bytes32,address)'](id, zeroAddress)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Invalid owner address'
                 );
             });
@@ -303,7 +303,7 @@ contract('OrgId', accounts => {
             it('should transfer organization ownership', async () => {
                 const result = await orgId
                     .methods['transferOrganizationOwnership(bytes32,address)'](id, nonOwner)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 assertEvent(result, 'OrganizationOwnershipTransferred', [
                     [
                         'orgId',
@@ -311,7 +311,7 @@ contract('OrgId', accounts => {
                     ],
                     [
                         'previousOwner',
-                        p => (p).should.equal(orgIdOwner)
+                        p => (p).should.equal(organizationOwner)
                     ],
                     [
                         'newOwner',
@@ -327,7 +327,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -338,7 +338,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['changeOrgJsonUri(bytes32,string)'](zeroBytes, organizationUri)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Organization with given orgId not found'
                 );
             });
@@ -356,7 +356,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['changeOrgJsonUri(bytes32,string)'](id, '')
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: orgJsonUri cannot be an empty string'
                 );
             });
@@ -364,7 +364,7 @@ contract('OrgId', accounts => {
             it('should change json uri', async () => {
                 const result = await orgId
                     .methods['changeOrgJsonUri(bytes32,string)'](id, organizationUri)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 assertEvent(result, 'OrgJsonUriChanged', [
                     [
                         'orgId',
@@ -388,7 +388,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -399,7 +399,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['changeOrgJsonHash(bytes32,bytes32)'](zeroBytes, organizationHash)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Organization with given orgId not found'
                 );
             });
@@ -417,7 +417,7 @@ contract('OrgId', accounts => {
                 await assertRevert(
                     orgId
                         .methods['changeOrgJsonHash(bytes32,bytes32)'](id, zeroBytes)
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: orgJsonHash cannot be an empty'
                 );
             });
@@ -425,7 +425,7 @@ contract('OrgId', accounts => {
             it('should change json hash', async () => {
                 const result = await orgId
                     .methods['changeOrgJsonHash(bytes32,bytes32)'](id, organizationHash)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 assertEvent(result, 'OrgJsonHashChanged', [
                     [
                         'orgId',
@@ -449,7 +449,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -464,7 +464,7 @@ contract('OrgId', accounts => {
                             organizationUri,
                             organizationHash
                         )
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: Organization with given orgId not found'
                 );
             });
@@ -490,7 +490,7 @@ contract('OrgId', accounts => {
                             organizationUri,
                             zeroBytes
                         )
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: orgJsonHash cannot be an empty'
                 );
                 await assertRevert(
@@ -500,7 +500,7 @@ contract('OrgId', accounts => {
                             '',
                             organizationHash
                         )
-                        .send({ from: orgIdOwner }),
+                        .send({ from: organizationOwner }),
                     'OrgId: orgJsonUri cannot be an empty string'
                 );
             });
@@ -512,7 +512,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     )
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 assertEvent(result, 'OrgJsonHashChanged', [
                     [
                         'orgId',
@@ -557,22 +557,22 @@ contract('OrgId', accounts => {
             it('should return an empty array if previously added organizations had been disabled', async () => {
                 const id1 = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
                 );
                 const id2 = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
                 );
                 await orgId.methods['toggleOrganization(bytes32)'](id1)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 await orgId.methods['toggleOrganization(bytes32)'](id2)
-                    .send({ from: orgIdOwner });
+                    .send({ from: organizationOwner });
                 const orgs = await orgId
                     .methods['getOrganizations()']()
                     .call();
@@ -583,14 +583,14 @@ contract('OrgId', accounts => {
             it('should return an array of organizations', async () => {
                 const id1 = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
                 );
                 const id2 = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -609,7 +609,7 @@ contract('OrgId', accounts => {
             beforeEach(async () => {
                 id = await createOrganization(
                     orgId,
-                    orgIdOwner,
+                    organizationOwner,
                     zeroBytes,
                     organizationUri,
                     organizationHash
@@ -633,7 +633,7 @@ contract('OrgId', accounts => {
                 (org.orgJsonUri).should.equal(organizationUri);
                 (org.orgJsonHash).should.equal(organizationHash);
                 (org.parentEntity).should.equal(zeroBytes);
-                (org.owner).should.equal(orgIdOwner);
+                (org.owner).should.equal(organizationOwner);
                 (org.director).should.equal(zeroAddress);
                 (org.state).should.be.true;
                 (org.directorConfirmed).should.be.false;
@@ -641,22 +641,107 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe.skip('OrgId hierarchy methods', () => {
+    describe('OrgId hierarchy methods', () => {
+        let id;
 
-        describe('#createSubsidiary(bytes32,bytes32,string,bytes32,address)', () => {
-
-            it('should fail if called not by owner or director', async () => {});
-
-            it('should fail if provided subsidiary id already existed', async () => {});
-
-            it('should fail if parent organization not found', async () => {});
-
-            it('should fail if director address not been provided', async () => {});
-
-            it('should create a subsidiary', async () => {});
+        beforeEach(async () => {
+            id = await createOrganization(
+                orgId,
+                organizationOwner,
+                zeroBytes,
+                organizationUri,
+                organizationHash
+            );
         });
 
-        describe('#confirmDirectorOwnership(bytes32)', () => {
+        describe('#createSubsidiary(bytes32,bytes32,address,string,bytes32)', () => {
+
+            it('should fail if called not by owner or director', async () => {
+                await assertRevert(
+                    createSubsidiary(
+                        orgId,
+                        nonOwner,
+                        id,
+                        generateId(organizationOwner),
+                        entityDirector,
+                        organizationUri,
+                        organizationHash
+                    ),
+                    'OrgId: Only organization owner or entity director can call this method'
+                );
+            });
+
+            it('should fail if provided subsidiary id already existed', async () => {
+                await assertRevert(
+                    createSubsidiary(
+                        orgId,
+                        organizationOwner,
+                        id,
+                        id,
+                        entityDirector,
+                        organizationUri,
+                        organizationHash
+                    ),
+                    'OrgId: An organization with given orgId already exists'
+                );
+            });
+
+            it('should fail if parent organization not found', async () => {
+                await assertRevert(
+                    createSubsidiary(
+                        orgId,
+                        organizationOwner,
+                        zeroBytes,
+                        generateId(organizationOwner),
+                        entityDirector,
+                        organizationUri,
+                        organizationHash
+                    ),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
+
+            it('should fail if director address not been provided', async () => {
+                await assertRevert(
+                    createSubsidiary(
+                        orgId,
+                        organizationOwner,
+                        id,
+                        generateId(organizationOwner),
+                        zeroAddress,
+                        organizationUri,
+                        organizationHash
+                    ),
+                    'OrgId: Invalid subsidiary director address'
+                );
+            });
+
+            it('should create a subsidiary', async () => {
+                // Director is different from the organization owner
+                await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+                
+                // Director is the same as the organization owner
+                await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+            });
+        });
+
+        describe.skip('#confirmDirectorOwnership(bytes32)', () => {
 
             it('should fail if provided orgId not found', async () => {});
 
@@ -665,7 +750,7 @@ contract('OrgId', accounts => {
             it('should confirm director ownership', async () => {});
         });
 
-        describe('#transferDirectorOwnership(bytes32,address)', () => {
+        describe.skip('#transferDirectorOwnership(bytes32,address)', () => {
 
             it('should fail if provided orgId not found', async () => {});
 
@@ -674,7 +759,7 @@ contract('OrgId', accounts => {
             it('should transfer director ownership', async () => {});
         });
 
-        describe('#getSubsidiaries(bytes32)', () => {
+        describe.skip('#getSubsidiaries(bytes32)', () => {
 
             it('should fail if provided orgId not found', async () => {});
 

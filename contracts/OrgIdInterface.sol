@@ -25,16 +25,16 @@ contract OrgIdInterface {
      * @dev Create subsidiary
      * @param orgId The organization Id
      * @param subOrgId The subsidiary organization Id
+     * @param subsidiaryDirector Subsidiary director address
      * @param orgJsonUri orgJsonUri pointer
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
-     * @param subsidiaryDirector Subsidiary director address
      */
     function createSubsidiary(
         bytes32 orgId,
         bytes32 subOrgId,
+        address subsidiaryDirector,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash,
-        address subsidiaryDirector
+        bytes32 orgJsonHash
     ) external returns (bytes32 id);
 
     /**

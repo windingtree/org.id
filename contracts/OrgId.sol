@@ -63,7 +63,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     /**
      * @dev Event triggered when entitiy director ownership has been confirmed
      */
-    event SubsidiaryDirectorOwnershipConfirmed(
+    event DirectorOwnershipConfirmed(
         bytes32 indexed orgId,
         address indexed director
     );
@@ -72,7 +72,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      * @dev Event triggered when subsidiary director ownership 
      * has been transferred
      */
-    event SubsidiaryDirectorOwnershipTransferred(
+    event DirectorOwnershipTransferred(
         bytes32 indexed orgId,
         address indexed previousDirector,
         address indexed newDirector
@@ -180,16 +180,16 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      * @dev Create subsidiary
      * @param orgId The organization Id
      * @param subOrgId The subsidiary organization Id
+     * @param subsidiaryDirector Subsidiary director address
      * @param orgJsonUri orgJsonUri pointer
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
-     * @param subsidiaryDirector Subsidiary director address
      */
     function createSubsidiary(
         bytes32 orgId,
         bytes32 subOrgId,
+        address subsidiaryDirector,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash,
-        address subsidiaryDirector
+        bytes32 orgJsonHash
     ) 
         external 
         existedOrganization(orgId)
@@ -203,10 +203,10 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             orgJsonUri,
             orgJsonHash
         );
-        emit SubsidiaryCreated(orgId, id, msg.sender);
+        emit SubsidiaryCreated(orgId, id, subsidiaryDirector);
 
         if (subsidiaryDirector == msg.sender) {
-            emit SubsidiaryDirectorOwnershipConfirmed(orgId, msg.sender);
+            emit DirectorOwnershipConfirmed(id, msg.sender);
         }
     }
 
@@ -241,7 +241,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         );
 
         organizations[orgId].directorConfirmed = true;
-        emit SubsidiaryDirectorOwnershipConfirmed(orgId, msg.sender);
+        emit DirectorOwnershipConfirmed(orgId, msg.sender);
     }
 
     /**
@@ -262,7 +262,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             "OrgId: Invalid subsidiary director address"
         );
 
-        emit SubsidiaryDirectorOwnershipTransferred(
+        emit DirectorOwnershipTransferred(
             orgId,
             organizations[orgId].director,
             newDirector
@@ -459,7 +459,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             org.getOrganizations.selector ^
             org.getOrganization.selector,
 
-            // hierarchy interface: 0x2c8667d8
+            // hierarchy interface: 0x3a3bc250
             org.createSubsidiary.selector ^ 
             org.confirmDirectorOwnership.selector ^
             org.transferDirectorOwnership.selector ^
