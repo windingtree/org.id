@@ -131,7 +131,40 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe('ERC165 interfaces', () => {});
+    describe('ERC165 interfaces', () => {
+
+        it('should support IERC165 interface', async () => {
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0x01ffc9a7')
+                    .call()
+            ).should.be.true;
+        });
+
+        it('should support ownable interface', async () => {
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0x7f5828d0')
+                    .call()
+            ).should.be.true;
+        });
+
+        it('should support hierarchy interface', async () => {
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0x2c8667d8')
+                    .call()
+            ).should.be.true;
+        });
+
+        it('should support ORG.ID interface', async () => {
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0x36b78f0f')
+                    .call()
+            ).should.be.true;
+        });
+    });
 
     describe('OrgId methods', () => {});
 
