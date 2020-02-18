@@ -2,7 +2,6 @@ const path = require('path');
 const fs = require('fs');
 const { title, log } = require('../utils/stdout');
 const expect = require('../utils/expect');
-const web3utils = require('web3-utils');
 
 module.exports = async (options) => {
     title('ORG.JSON hash');
@@ -20,7 +19,7 @@ module.exports = async (options) => {
     try {
         const orgidJsonString = fs.readFileSync(path.join(process.cwd(), file), 'utf8');
         const orgidJson = JSON.parse(orgidJsonString);
-        const hash = web3utils.soliditySha3(orgidJsonString);
+        const hash = web3.utils.soliditySha3(orgidJsonString);
         log('DID', orgidJson.id);
         log('Sha3 Hash', hash);
 

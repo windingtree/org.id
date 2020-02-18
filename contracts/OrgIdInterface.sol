@@ -107,6 +107,7 @@ contract OrgIdInterface {
      */
     function getOrganization(bytes32 _orgId) 
         external 
+        view 
         returns (
             bytes32 orgId,
             string memory orgJsonUri,

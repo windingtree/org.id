@@ -110,7 +110,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      */
     modifier existedOrganization(bytes32 orgId) {
         require(
-            organizations[orgId].orgId != bytes32(0),
+            orgId != bytes32(0) &&
+            organizations[orgId].orgId == orgId,
             "OrgId: Organization with given orgId not found"
         );
         _;
@@ -164,6 +165,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     ) external returns (bytes32 id) {
+
         id = _createOrganization(
             orgId,
             bytes32(0),
@@ -188,7 +190,12 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         string calldata orgJsonUri,
         bytes32 orgJsonHash,
         address subsidiaryDirector
-    ) external onlyOrganizationOwnerOrDirector(orgId) returns (bytes32 id) {
+    ) 
+        external 
+        existedOrganization(orgId)
+        onlyOrganizationOwnerOrDirector(orgId) 
+        returns (bytes32 id) 
+    {
         id = _createOrganization(
             subOrgId,
             orgId,
@@ -349,6 +356,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      */
     function getOrganization(bytes32 _orgId) 
         external 
+        view 
         existedOrganization(_orgId) 
         returns (
             bytes32 orgId,
@@ -360,15 +368,16 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             bool state,
             bool directorConfirmed
         )
-    {
-        orgId = organizations[orgId].orgId;
-        orgJsonUri = organizations[orgId].orgJsonUri;
-        orgJsonHash = organizations[orgId].orgJsonHash;
-        parentEntity = organizations[orgId].parentEntity;
-        owner = organizations[orgId].owner;
-        director = organizations[orgId].director;
-        state = organizations[orgId].state;
-        directorConfirmed = organizations[orgId].directorConfirmed;
+    {   
+        Organization storage org = organizations[_orgId];
+        orgId = org.orgId;
+        orgJsonUri = org.orgJsonUri;
+        orgJsonHash = org.orgJsonHash;
+        parentEntity = org.parentEntity;
+        owner = org.owner;
+        director = org.director;
+        state = org.state;
+        directorConfirmed = org.directorConfirmed;
     }
 
     /**
@@ -476,6 +485,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         bytes32 orgJsonHash
     ) internal returns (bytes32) {
 
+        // If orgId not been provided
         if (orgId == bytes32(0)) {
             
             orgId = keccak256(
@@ -491,26 +501,19 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             "OrgId: An organization with given orgId already exists"
         );
 
-        require(
-            orgId != parentEntity,
-            "OrgId: A subsidiary organization cannot refer to itself"
-        );
+        // Subsidiary requirements
+        if (parentEntity != bytes32(0)) {
+            
+            require(
+                organizations[parentEntity].orgId == parentEntity,
+                "OrgId: Parent organization not found"
+            );
 
-        require(
-            parentEntity == bytes32(0) && subsidiaryDirector != address(0),
-            "OrgId: Cannot assign director to the main organization"
-        );
-
-        require(
-            parentEntity != bytes32(0) && 
-            organizations[parentEntity].orgId == parentEntity,
-            "OrgId: Parent organization not found"
-        );
-
-        require(
-            parentEntity != bytes32(0) && subsidiaryDirector != address(0),
-            "OrgId: Invalid subsidiary director address"
-        );
+            require(
+                subsidiaryDirector != address(0),
+                "OrgId: Invalid subsidiary director address"
+            );
+        }
 
         organizations[orgId] = Organization(
             orgId,
@@ -552,9 +555,11 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
         for (uint256 i = 0; i < source.length; i++) {
 
-            if (organizations[source[i]].state && 
-                organizations[source[i]].directorConfirmed) {
-                    
+            if (organizations[source[i]].state &&
+                ((organizations[source[i]].parentEntity != bytes32(0) && 
+                organizations[source[i]].directorConfirmed) ||
+                !organizations[source[i]].directorConfirmed)) {
+
                 organizationsList[index] = source[i];
                 index += 1;
             }
@@ -575,8 +580,10 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     {
         for (uint256 i = 0; i < source.length; i++) {
 
-            if (organizations[source[i]].state && 
-                organizations[source[i]].directorConfirmed) {
+            if (organizations[source[i]].state &&
+                ((organizations[source[i]].parentEntity != bytes32(0) && 
+                organizations[source[i]].directorConfirmed) ||
+                !organizations[source[i]].directorConfirmed)) {
                 
                 count += 1;
             }
