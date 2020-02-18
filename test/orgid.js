@@ -321,15 +321,65 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#changeOrgJsonUri(bytes32,string)', () => {
+        describe('#changeOrgJsonUri(bytes32,string)', () => {
+            let id;
 
-            it('should fail if provided orgId not existed', async () => {});
+            beforeEach(async () => {
+                id = await createOrganization(
+                    orgId,
+                    orgIdOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+            });
 
-            it('should fail if called by not an owner or director', async () => {});
+            it('should fail if provided orgId not existed', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['changeOrgJsonUri(bytes32,string)'](zeroBytes, organizationUri)
+                        .send({ from: orgIdOwner }),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
 
-            it('should fail if empty uri provided', async () => {});
+            it('should fail if called by not an owner or director', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['changeOrgJsonUri(bytes32,string)'](id, organizationUri)
+                        .send({ from: nonOwner }),
+                    'OrgId: Only organization owner or entity director can call this method'
+                );
+            });
 
-            it('should change json uri', async () => {});
+            it('should fail if empty uri provided', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['changeOrgJsonUri(bytes32,string)'](id, '')
+                        .send({ from: orgIdOwner }),
+                    'OrgId: orgJsonUri cannot be an empty string'
+                );
+            });
+
+            it('should change json uri', async () => {
+                const result = await orgId
+                    .methods['changeOrgJsonUri(bytes32,string)'](id, organizationUri)
+                    .send({ from: orgIdOwner });
+                assertEvent(result, 'OrgJsonUriChanged', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(id)
+                    ],
+                    [
+                        'previousOrgJsonUri',
+                        p => (p).should.equal(organizationUri)
+                    ],
+                    [
+                        'newOrgJsonUri',
+                        p => (p).should.equal(organizationUri)
+                    ]
+                ]);
+            });
         });
 
         describe.skip('#changeOrgJsonHash(bytes32,bytes32)', () => {

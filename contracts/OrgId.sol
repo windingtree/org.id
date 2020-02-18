@@ -38,8 +38,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      * @dev Event triggered when organization is created
      */
     event OrganizationCreated(
-        bytes32 orgId,
-        address owner
+        bytes32 indexed orgId,
+        address indexed owner
     );
 
     /**
@@ -92,8 +92,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      */
     event OrgJsonUriChanged(
         bytes32 indexed orgId,
-        string indexed previousOrgJsonUri, 
-        string indexed newOrgJsonUri
+        string previousOrgJsonUri, 
+        string newOrgJsonUri
     );
 
     /**
