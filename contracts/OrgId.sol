@@ -267,7 +267,13 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             organizations[orgId].director,
             newDirector
         );
-        organizations[orgId].director = newDirector;        
+        organizations[orgId].director = newDirector; 
+
+        if (newDirector == msg.sender) {
+            emit DirectorOwnershipConfirmed(orgId, newDirector);
+        } else {
+            organizations[orgId].directorConfirmed = false;
+        }      
     }
 
     /**

@@ -791,13 +791,111 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#transferDirectorOwnership(bytes32,address)', () => {
+        describe('#transferDirectorOwnership(bytes32,address)', () => {
+            let subId;
 
-            it('should fail if provided orgId not found', async () => {});
+            beforeEach(async () => {
+                subId = await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+                await orgId
+                    .methods['confirmDirectorOwnership(bytes32)'](subId)
+                    .send({ from: entityDirector });
+            });
 
-            it('should fail if called not by owner', async () => {});
+            it('should fail if provided orgId not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['transferDirectorOwnership(bytes32,address)'](
+                            zeroBytes,
+                            nonOwner
+                        )
+                        .send({ from: organizationOwner }),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
 
-            it('should transfer director ownership', async () => {});
+            it('should fail if called not by owner', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['transferDirectorOwnership(bytes32,address)'](
+                            subId,
+                            nonOwner
+                        )
+                        .send({ from: nonOwner }),
+                    'OrgId: Only organization owner can call this method'
+                );
+            });
+
+            it('should transfer director ownership to not an owner', async () => {
+                const result = await orgId
+                    .methods['transferDirectorOwnership(bytes32,address)'](
+                        subId,
+                        nonOwner
+                    )
+                    .send({ from: organizationOwner });
+                assertEvent(result, 'DirectorOwnershipTransferred', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(subId)
+                    ],
+                    [
+                        'previousDirector',
+                        p => (p).should.equal(entityDirector)
+                    ],
+                    [
+                        'newDirector',
+                        p => (p).should.equal(nonOwner)
+                    ]
+                ]);
+                let org = await orgId
+                    .methods['getOrganization(bytes32)'](subId)
+                    .call();
+                (org.directorConfirmed).should.be.false;
+            });
+
+            it('should transfer director ownership to not the owner', async () => {
+                const result = await orgId
+                    .methods['transferDirectorOwnership(bytes32,address)'](
+                        subId,
+                        organizationOwner
+                    )
+                    .send({ from: organizationOwner });
+                assertEvent(result, 'DirectorOwnershipTransferred', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(subId)
+                    ],
+                    [
+                        'previousDirector',
+                        p => (p).should.equal(entityDirector)
+                    ],
+                    [
+                        'newDirector',
+                        p => (p).should.equal(organizationOwner)
+                    ]
+                ]);
+                assertEvent(result, 'DirectorOwnershipConfirmed', [
+                    [
+                        'orgId',
+                        p => (p).should.equal(subId)
+                    ],
+                    [
+                        'director',
+                        p => (p).should.equal(organizationOwner)
+                    ]
+                ]);
+                let org = await orgId
+                    .methods['getOrganization(bytes32)'](subId)
+                    .call();
+                (org.directorConfirmed).should.be.true;
+            });
         });
 
         describe.skip('#getSubsidiaries(bytes32)', () => {
