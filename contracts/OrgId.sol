@@ -306,7 +306,11 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
-    ) external onlyOrganizationOwnerOrDirector(orgId) {
+    ) 
+        external
+        existedOrganization(orgId)
+        onlyOrganizationOwnerOrDirector(orgId) 
+    {
         changeOrgJsonUri(orgId, orgJsonUri);
         changeOrgJsonHash(orgId, orgJsonHash);
     }
