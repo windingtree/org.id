@@ -4,3 +4,34 @@
 # ORG.ID Smart Contract
 
 Smart contract of the Winding Tree ORG.ID protocol
+
+## Initial setup  
+
+```bash
+npm i
+```
+
+## Build contracts artifacts
+
+```bash
+npm run build
+```
+Artifacts for using in the external projects will be placed in `./artifacts` folder.
+
+## Tests
+
+```bash
+npm run test
+npm run test ./<path_to_test_file>.js
+``` 
+
+## Tests coverage  
+
+```bash
+npm run coverage
+``` 
+
+## Linting
+
+```bash
+npm run lint
