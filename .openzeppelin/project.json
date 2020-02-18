@@ -1,16 +1,11 @@
 {
   "manifestVersion": "2.2",
   "contracts": {
-    "Organization": "Organization",
-    "OrganizationUpgradeabilityTest": "OrganizationUpgradeabilityTest",
-    "SegmentDirectory": "SegmentDirectory",
-    "SegmentDirectoryUpgradeabilityTest": "SegmentDirectoryUpgradeabilityTest",
-    "WindingTreeEntrypoint": "WindingTreeEntrypoint",
-    "WindingTreeEntrypointUpgradeabilityTest": "WindingTreeEntrypointUpgradeabilityTest"
+    "OrgId": "OrgId"
   },
   "dependencies": {},
-  "name": "wt-contracts",
-  "version": "0.9.1",
+  "name": "org.id",
+  "version": "0.10.0",
   "publish": true,
   "compiler": {
     "manager": "openzeppelin",

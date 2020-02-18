@@ -134,7 +134,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     modifier onlyOrganizationOwnerOrDirector(bytes32 orgId) {
         require(
             organizations[orgId].owner == msg.sender || 
-            organizations[orgId].entityDirector == msg.sender, 
+            organizations[orgId].director == msg.sender, 
             "OrgId: Only organization owner or entity director can call this method"
         );
         _;
@@ -147,7 +147,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     function initialize(
         address payable __owner
     ) public initializer {
-        transferOwnership(__owner);
+        _transferOwnership(__owner);
         setInterfaces(); 
     }
 
@@ -267,7 +267,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     /**
      * @dev Transfer organization ownership
      * @param orgId The organization orgId
-     * @param newDirector New subsidiary director address
+     * @param newOwner New subsidiary director address
      */
     function transferOrganizationOwnership(
         bytes32 orgId,
@@ -292,6 +292,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Shorthand method to change ORG.JSON uri and hash at the same time
+     * @param orgId The organization orgId
      * @param orgJsonUri New orgJsonUri pointer of this Organization
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
@@ -299,7 +300,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
-    ) external onlyOwnerOrDirector(orgId) {
+    ) external onlyOrganizationOwnerOrDirector(orgId) {
         changeOrgJsonUri(orgId, orgJsonUri);
         changeOrgJsonHash(orgId, orgJsonHash);
     }
@@ -335,7 +336,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Get organization by orgId
-     * @param orgId The organization Id
+     * @param _orgId The organization Id
      * @return {
          "orgId": "The organization orgId",
          "orgJsonUri": "orgJsonUri pointer of this Organization",
@@ -347,12 +348,12 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
          "directorConfirmed": "Flag is director ownership is confirmed"
      }
      */
-    function getOrganization(bytes32 orgId) 
+    function getOrganization(bytes32 _orgId) 
         external 
-        existedOrganization(orgId) 
+        existedOrganization(_orgId) 
         returns (
             bytes32 orgId,
-            string orgJsonUri,
+            string memory orgJsonUri,
             bytes32 orgJsonHash,
             bytes32 parentEntity,
             address owner,
@@ -428,15 +429,16 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      */
     function setInterfaces() public {
         OrgIdInterface org;
+        Ownable own;
         bytes4[4] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
 
             // ownable interface: 0x7f5828d0
-            org.owner.selector ^ 
-            org.transferOwnership.selector, 
+            own.owner.selector ^ 
+            own.transferOwnership.selector, 
 
-            // ORG.ID interface: 0xe9e17278
+            // ORG.ID interface: 0x36b78f0f
             org.createOrganization.selector ^
             org.toggleOrganization.selector ^
             org.transferOrganizationOwnership.selector ^
@@ -445,7 +447,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             org.getOrganizations.selector ^
             org.getOrganization.selector,
 
-            // hierarchy interface: 0xc501232e
+            // hierarchy interface: 0x2c8667d8
             org.createSubsidiary.selector ^ 
             org.confirmDirectorOwnership.selector ^
             org.transferDirectorOwnership.selector ^
@@ -515,6 +517,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             orgId,
             orgJsonUri,
             orgJsonHash,
+            parentEntity,
             msg.sender,
             subsidiaryDirector,
             true,
@@ -545,7 +548,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             orgId == bytes32(0) 
             ? orgIds 
             : organizations[orgId].subsidiaries;
-        organizationsList = new address[](_getOrganizationsCount(list));
+        organizationsList = new bytes32[](_getOrganizationsCount(source));
         uint256 index;
 
         for (uint256 i = 0; i < source.length; i++) {

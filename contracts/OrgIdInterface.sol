@@ -47,7 +47,7 @@ contract OrgIdInterface {
      * @dev Confirmation of the organization director ownership
      * @param orgId The organization orgId
      */
-    function confirmSubsidiaryDirectorOwnership(bytes32 orgId) external;
+    function confirmDirectorOwnership(bytes32 orgId) external;
 
     /**
      * @dev Transfer subsidiary director ownership
@@ -62,7 +62,7 @@ contract OrgIdInterface {
     /**
      * @dev Transfer organization ownership
      * @param orgId The organization orgId
-     * @param newDirector New subsidiary director address
+     * @param newOwner New subsidiary director address
      */
     function transferOrganizationOwnership(
         bytes32 orgId,
@@ -93,7 +93,7 @@ contract OrgIdInterface {
 
     /**
      * @dev Get organization by orgId
-     * @param orgId The organization Id
+     * @param _orgId The organization Id
      * @return {
          "orgId": "The organization orgId",
          "orgJsonUri": "orgJsonUri pointer of this Organization",
@@ -105,11 +105,11 @@ contract OrgIdInterface {
          "directorConfirmed": "Flag is director ownership is confirmed"
      }
      */
-    function getOrganization(bytes32 orgId) 
+    function getOrganization(bytes32 _orgId) 
         external 
         returns (
             bytes32 orgId,
-            string orgJsonUri,
+            string memory orgJsonUri,
             bytes32 orgJsonHash,
             bytes32 parentEntity,
             address owner,
