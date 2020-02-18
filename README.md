@@ -11,13 +11,6 @@ Smart contract of the Winding Tree ORG.ID protocol
 npm i
 ```
 
-## Build contracts artifacts
-
-```bash
-npm run build
-```
-Artifacts for using in the external projects will be placed in `./artifacts` folder.
-
 ## Tests
 
 ```bash
@@ -35,3 +28,8 @@ npm run coverage
 
 ```bash
 npm run lint
+
+```
+
+## Generated docs
+[OrgId](./docs/OrgId.md)
