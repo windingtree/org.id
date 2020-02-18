@@ -560,15 +560,21 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             orgId == bytes32(0) 
             ? orgIds 
             : organizations[orgId].subsidiaries;
-        organizationsList = new bytes32[](_getOrganizationsCount(source));
+        organizationsList = new bytes32[](_getOrganizationsCount(orgId));
         uint256 index;
 
         for (uint256 i = 0; i < source.length; i++) {
 
+            // If organization is enabled AND
+            // organization is a main organization OR
+            // organization is subsidiary AND director ownership is confirmed
             if (organizations[source[i]].state &&
-                ((organizations[source[i]].parentEntity != bytes32(0) && 
-                organizations[source[i]].directorConfirmed) ||
-                !organizations[source[i]].directorConfirmed)) {
+                (
+                    (orgId == bytes32(0) && organizations[source[i]].parentEntity == bytes32(0)) ||
+                    (orgId != bytes32(0) && 
+                        organizations[source[i]].parentEntity != bytes32(0) && 
+                        organizations[source[i]].directorConfirmed)
+                )) {
 
                 organizationsList[index] = source[i];
                 index += 1;
@@ -578,22 +584,30 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Get count of active organizations
-     * @param source The list of organization
+     * @param orgId Organization orgId or zero bytes (for main organizations)
      * @return {
          "count": "Count of active and confirmed subsidiaries"
      }
      */
-    function _getOrganizationsCount(bytes32[] memory source) 
+    function _getOrganizationsCount(bytes32 orgId) 
         internal 
         view 
         returns (uint256 count) 
     {
+        bytes32[] memory source = 
+            orgId == bytes32(0) 
+            ? orgIds 
+            : organizations[orgId].subsidiaries;
+
         for (uint256 i = 0; i < source.length; i++) {
 
             if (organizations[source[i]].state &&
-                ((organizations[source[i]].parentEntity != bytes32(0) && 
-                organizations[source[i]].directorConfirmed) ||
-                !organizations[source[i]].directorConfirmed)) {
+                (
+                    (orgId == bytes32(0) && organizations[source[i]].parentEntity == bytes32(0)) ||
+                    (orgId != bytes32(0) && 
+                        organizations[source[i]].parentEntity != bytes32(0) && 
+                        organizations[source[i]].directorConfirmed)
+                )) {
                 
                 count += 1;
             }

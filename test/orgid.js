@@ -898,15 +898,72 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe.skip('#getSubsidiaries(bytes32)', () => {
+        describe('#getSubsidiaries(bytes32)', () => {
+            let id;
 
-            it('should fail if provided orgId not found', async () => {});
+            beforeEach(async () => {
+                id = await createOrganization(
+                    orgId,
+                    organizationOwner,
+                    zeroBytes,
+                    organizationUri,
+                    organizationHash
+                );
+            });
 
-            it('should return an empty array if no subsidiaries has been added before', async () => {});
+            it('should fail if provided orgId not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['getSubsidiaries(bytes32)'](zeroBytes)
+                        .call(),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
 
-            it('shoudl return an empty array if some subsidiaries had been added but director ownership not been confirmed', async () => {});
+            it('should return an empty array if no subsidiaries has been added before', async () => {
+                const subs = await orgId
+                    .methods['getSubsidiaries(bytes32)'](id)
+                    .call();
+                (subs).should.to.be.an('array');
+                (subs.length).should.equal(0);
+            });
 
-            it('should return an array of subsidiaries', async () => {});
+            it('shoudl return an empty array if some subsidiaries had been added but director ownership not been confirmed', async () => {
+                await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+                const subs = await orgId
+                    .methods['getSubsidiaries(bytes32)'](id)
+                    .call();
+                (subs).should.to.be.an('array');
+                (subs.length).should.equal(0);
+            });
+
+            it('should return an array of subsidiaries', async () => {
+                const subId = await createSubsidiary(
+                    orgId,
+                    organizationOwner,
+                    id,
+                    generateId(organizationOwner),
+                    entityDirector,
+                    organizationUri,
+                    organizationHash
+                );
+                await orgId
+                    .methods['confirmDirectorOwnership(bytes32)'](subId)
+                    .send({ from: entityDirector });
+                const subs = await orgId
+                    .methods['getSubsidiaries(bytes32)'](id)
+                    .call();
+                (subs).should.to.be.an('array');
+                (subs).should.to.be.an('array').that.include(subId);
+            });
         });
     });
 });
