@@ -1,6 +1,6 @@
 {
     "@context": "https://windingtree.com/ns/did/v1",
-    "id": "did:orgid:0x0d43fB214606C731e7f298A3D803f5f3F3e46fB8",
+    "id": "did:orgid:0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99",
     "created": "2019-01-01T13:10:02.251Z",
     "updated": "2019-06-03T13:20:06.398Z",
     "publicKey": [

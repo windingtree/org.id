@@ -28,3 +28,8 @@ keys.json
 zos.dev-*
 .openzeppelin/*
 !.openzeppelin/project.json
+
+# Project deployments
+!.openzeppelin/ropsten-OrgId.json
+!.openzeppelin/rinkeby-OrgId.json
+!.openzeppelin/mainnet-OrgId.json

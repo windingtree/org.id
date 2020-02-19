@@ -3,46 +3,16 @@
         "command": "version"
     },
     {
-        "command": "makehash",
-        "parameters": {
-            "file": "./assets/orgid-legal.json"
-        }
-    },
-    {
-        "command": "contract",
-        "parameters": {
-            "name": "Organization",
-            "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-            "initArgs": [
-                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-                "https://gist.githubusercontent.com/kostysh/3bde88a0e8248c73c68c1aed2ca4b9be/raw/5df8c96ceff4d0fa99a32d1da63b061ad4b27ccd/ORG.ID",
-                "[TASK:1:hash]",
-                "[APP]",
-                "[PROXY_ADMIN]",
-                "0x0000000000000000000000000000000000000000",
-                "0x0000000000000000000000000000000000000000"
-            ]
-        }
-    },
-    {
-        "command": "makehash",
-        "parameters": {
-            "file": "./assets/orgid-unit.json"
-        }
-    },
-    {
         "command": "tx",
         "parameters": {
-            "name": "Organization",
-            "address": "[TASK:2:contract.proxy]",
+            "name": "OrgId",
+            "address": "0x3b12cbB971876423DcAf74D8381bA1C27Aed9A5C",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-            "method": "createSubsidiary(string,bytes32,address,string,string)",
+            "method": "createOrganization(bytes32,string,bytes32)",
             "args": [
-                "https://gist.githubusercontent.com/kostysh/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID",
-                "[TASK:3:hash]",
-                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-                "",
-                ""
+                "0xd1e15bcea4bbf5fa55e36bb5aa9ad5183a4acdc1b06a0f21f3dba8868dee2c99",
+                "https://gist.githubusercontent.com/kostysh/3bde88a0e8248c73c68c1aed2ca4b9be/raw/eed4163c4af3b853d9018632db53b75095fb0be4/ORG.ID",
+                "0x98d8d8193d7c4c88ad96c75fa8a0db4989dab621bbdb8b5a5c308ef36a91ea03"
             ]
         }
     }

@@ -1,8 +1,22 @@
 const { assertEvent } = require('../helpers/assertions');
 const { zeroAddress, zeroBytes } = require('../helpers/constants');
 
+/**
+ * Generates an id on the base of string and solt
+ * @param {string} string Part of the base for id generation
+ * @param {atring} [solt=Math.random().toString()] Solt string
+ */
 module.exports.generateId = (string, solt = Math.random().toString()) => web3.utils.keccak256(`${string}${solt}`);
 
+/**
+ * Creates an organization
+ * @param {Object} contract OrgId contract instance
+ * @param {string} from Sender address
+ * @param {string} id Id string that should be conform with bytes32 hex form
+ * @param {string} uri Link to the json file online
+ * @param {string} hash Hash of the json file, should be in bytes32 hex form
+ * @returns {Promise<{string}>} The organization address
+ */
 module.exports.createOrganization = async (
     contract,
     from,
@@ -50,6 +64,17 @@ module.exports.createOrganization = async (
     return organizationId;
 };
 
+/**
+ * Creates the subisidiary
+ * @param {Object} contract OrgId contract instance
+ * @param {string} from Sender address
+ * @param {string} id Id string that should be conform with bytes32 hex form
+ * @param {string} subId Id string that should be conform with bytes32 hex form
+ * @param {string} entityDirector The entity director address
+ * @param {string} uri Link to the json file online
+ * @param {string} hash Hash of the json file, should be in bytes32 hex form
+ * @returns {Promise<{string}>} The subsidiary address
+ */
 module.exports.createSubsidiary = async (
     contract,
     from,
