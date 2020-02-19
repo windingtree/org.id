@@ -17,9 +17,9 @@ before_deploy: npm run build
 deploy:
   edge: true
   provider: npm
-  cleanup: true
+  cleanup: false
   on:
-    repo: windingtree/wt-contracts
+    repo: windingtree/org.id
     tags: true
 
 notifications:
