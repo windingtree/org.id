@@ -2,6 +2,8 @@ pragma solidity >=0.5.16;
 
 import "@openzeppelin/contracts/introspection/ERC165.sol";
 import "@openzeppelin/contracts/introspection/ERC165Checker.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -11,9 +13,10 @@ import "./OrgIdInterface.sol";
  * @title OrgId contract
  * @dev A contract that represents an OrgId registry
  */
-contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
+contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     /// @dev Organization structure
     struct Organization {
@@ -26,6 +29,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         bool state;
         bool directorConfirmed;
         bytes32[] subsidiaries;
+        uint256 deposit;
     }
 
     // Mapped list of Organizations
@@ -34,8 +38,11 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     // List of organizations orgIds
     bytes32[] internal orgIds;
 
+    // Lif token instance
+    IERC20 internal lif;
+
     /**
-     * @dev Event triggered when organization is created
+     * @dev Event emitted when organization is created
      */
     event OrganizationCreated(
         bytes32 indexed orgId,
@@ -43,7 +50,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when new subsidiary has been created
+     * @dev Event emitted when new subsidiary has been created
      */
     event SubsidiaryCreated(
         bytes32 indexed parentOrgId,
@@ -52,7 +59,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when a subsidiary state has been toggled
+     * @dev Event emitted when a subsidiary state has been toggled
      */
     event OrganizationToggled(
         bytes32 indexed orgId,
@@ -61,7 +68,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when entitiy director ownership has been confirmed
+     * @dev Event emitted when entitiy director ownership has been confirmed
      */
     event DirectorOwnershipConfirmed(
         bytes32 indexed orgId,
@@ -69,7 +76,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when subsidiary director ownership 
+     * @dev Event emitted when subsidiary director ownership 
      * has been transferred
      */
     event DirectorOwnershipTransferred(
@@ -79,7 +86,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when organization ownership has been transferred
+     * @dev Event emitted when organization ownership has been transferred
      */
     event OrganizationOwnershipTransferred(
         bytes32 indexed orgId,
@@ -88,7 +95,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when orgJsonUri of the organization is changed.
+     * @dev Event emitted when orgJsonUri of the organization is changed.
      */
     event OrgJsonUriChanged(
         bytes32 indexed orgId,
@@ -97,12 +104,29 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     );
 
     /**
-     * @dev Event triggered when orgJsonHash of the organization is changed.
+     * @dev Event emitted when orgJsonHash of the organization is changed.
      */
     event OrgJsonHashChanged(
         bytes32 indexed orgId,
         bytes32 indexed previousOrgJsonHash,
         bytes32 indexed newOrgJsonHash
+    );
+
+    /**
+     * @dev Event emitted when address of the Lif token is changed
+     */
+    event LifTokenChanged(
+        address indexed previousAddress,
+        address indexed newAddress
+    );
+
+    /**
+     * @dev Event emitted when Lif deposit has been added
+     */
+    event LifDepositAdded(
+        bytes32 indexed orgId,
+        address indexed sender,
+        uint256 value
     );
 
     /**
@@ -143,11 +167,14 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     /**
      * @dev Initializer for upgradeable contracts
      * @param __owner The address of the contract owner
+     * @param _lif Address of the Lif token
      */
     function initialize(
-        address payable __owner
+        address payable __owner,
+        address _lif
     ) public initializer {
         _transferOwnership(__owner);
+        changeLifToken(_lif);
         setInterfaces(); 
     }
 
@@ -157,7 +184,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      * @param orgJsonUri orgJsonUri pointer
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @return {
-         "id": "The organization orgId"
+         "id": "The organization Id"
      }
      */
     function createOrganization(
@@ -212,7 +239,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Toggle the organization state
-     * @param orgId The organization orgId
+     * @param orgId The organization Id
      */
     function toggleOrganization(bytes32 orgId)
         external 
@@ -229,7 +256,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Confirmation of the organization director ownership
-     * @param orgId The organization orgId
+     * @param orgId The organization Id
      */
     function confirmDirectorOwnership(bytes32 orgId)
         external
@@ -246,7 +273,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Transfer subsidiary director ownership
-     * @param orgId The organization orgId
+     * @param orgId The organization Id
      * @param newDirector New subsidiary director address
      */
     function transferDirectorOwnership(
@@ -278,7 +305,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Transfer organization ownership
-     * @param orgId The organization orgId
+     * @param orgId The organization Id
      * @param newOwner New subsidiary director address
      */
     function transferOrganizationOwnership(
@@ -304,7 +331,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
 
     /**
      * @dev Shorthand method to change ORG.JSON uri and hash at the same time
-     * @param orgId The organization orgId
+     * @param orgId The organization Id
      * @param orgJsonUri New orgJsonUri pointer of this Organization
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents.
      */
@@ -361,7 +388,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
          "owner": "The organization owner",
          "director": "The organization director",
          "state": "State of the organization",
-         "directorConfirmed": "Flag is director ownership is confirmed"
+         "directorConfirmed": "Flag is director ownership is confirmed",
+         "deposit": "Lif deposit value"
      }
      */
     function getOrganization(bytes32 _orgId) 
@@ -376,7 +404,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             address owner,
             address director,
             bool state,
-            bool directorConfirmed
+            bool directorConfirmed,
+            uint256 deposit
         )
     {   
         Organization storage org = organizations[_orgId];
@@ -388,6 +417,34 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
         director = org.director;
         state = org.state;
         directorConfirmed = org.directorConfirmed;
+        deposit = org.deposit;
+    }
+
+    /**
+     * @dev Returns Lif token address
+     * @return address
+     */
+    function getLifTokenAddress() external view returns (address) {
+        return address(lif);
+    }
+
+    /**
+     * @dev Makes deposit of Lif tokens
+     * @param orgId The organization OrgId
+     * @param value The value to be deposited
+     */
+    function addDeposit(
+        bytes32 orgId,
+        uint256 value
+    )
+        external 
+        existedOrganization(orgId)
+        onlyOrganizationOwnerOrDirector(orgId)
+    {
+        require(value > 0, "OrgId: Invalid deposit value");
+        lif.safeTransferFrom(msg.sender, address(this), value);
+        organizations[orgId].deposit = organizations[orgId].deposit.add(value);
+        emit LifDepositAdded(orgId, msg.sender, value);
     }
 
     /**
@@ -443,6 +500,16 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
     }
 
     /**
+     * @dev Change Lif token
+     * @param _lif Address of the Lif token
+     */
+    function changeLifToken(address _lif) public onlyOwner {
+        require(_lif != address(0), "OrgId: Invalid Lif token address");
+        emit LifTokenChanged(address(lif), _lif);
+        lif = IERC20(_lif);
+    }
+
+    /**
      * @dev Set the list of contract interfaces supported
      */
     function setInterfaces() public {
@@ -484,7 +551,7 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
      * @param orgJsonUri orgJsonUri pointer
      * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
      * @return {
-         "orgId": "Created organization orgId"
+         "orgId": "Created organization Id"
      }
      */
     function _createOrganization(
@@ -534,7 +601,8 @@ contract OrgId is Ownable, OrgIdInterface, ERC165, Initializable {
             subsidiaryDirector,
             true,
             subsidiaryDirector == msg.sender,
-            new bytes32[](0)
+            new bytes32[](0),
+            0
         );
         orgIds.push(orgId);
 

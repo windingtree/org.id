@@ -41,7 +41,9 @@ else
   start_ganache
 fi
 
-NODE_ENV=test npx truffle compile --all
+export NODE_ENV=test
+
+npx truffle compile --all
 
 if [ "$SOLIDITY_COVERAGE" = true ]; then
   npx truffle run coverage
@@ -50,5 +52,5 @@ if [ "$SOLIDITY_COVERAGE" = true ]; then
     cat coverage/lcov.info | npx coveralls
   fi
 else
-  NODE_ENV=test npx truffle test "$@" -f
+  npx truffle test "$@" -f
 fi

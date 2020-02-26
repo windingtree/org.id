@@ -46,6 +46,7 @@
     "@truffle/contract": "4.1.10",
     "@truffle/hdwallet-provider": "1.0.31",
     "chai": "4.2.0",
+    "bn-chai": "1.0.1",
     "coveralls": "3.0.9",
     "eslint": "6.8.0",
     "ganache-cli": "6.9.1",

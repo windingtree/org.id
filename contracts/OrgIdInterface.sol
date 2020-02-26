@@ -102,7 +102,8 @@ contract OrgIdInterface {
          "owner": "The organization owner",
          "director": "The organization director",
          "state": "State of the organization",
-         "directorConfirmed": "Flag is director ownership is confirmed"
+         "directorConfirmed": "Flag is director ownership is confirmed",
+         "deposit": "Lif deposit value"
      }
      */
     function getOrganization(bytes32 _orgId) 
@@ -116,7 +117,8 @@ contract OrgIdInterface {
             address owner,
             address director,
             bool state,
-            bool directorConfirmed
+            bool directorConfirmed,
+            uint256 deposit
         );
     
     /**
