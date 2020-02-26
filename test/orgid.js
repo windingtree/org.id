@@ -1201,7 +1201,82 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe('#getWithdrawalRequest(bytes32)', () => {});
+        describe('#getWithdrawalRequest(bytes32)', () => {
+            const depositValue = toWeiEther('1000');
+            let organizationId;
+            let organizationIdNoRequest;
+            let withdrawalRequest;
+
+            beforeEach(async () => {
+                organizationId = generateId(organizationOwner);
+                organizationIdNoRequest = generateId(organizationOwner);
+                await createOrganization(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    organizationUri,
+                    organizationHash
+                );
+                await createOrganization(
+                    orgId,
+                    organizationOwner,
+                    organizationIdNoRequest,
+                    organizationUri,
+                    organizationHash
+                );
+                await addDeposit(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    depositValue,
+                    lifToken
+                );
+                await addDeposit(
+                    orgId,
+                    organizationOwner,
+                    organizationIdNoRequest,
+                    depositValue,
+                    lifToken
+                );
+                withdrawalRequest = await submitWithdrawalRequest(
+                    orgId,
+                    organizationOwner,
+                    orgIdOwner,
+                    organizationId,
+                    depositValue
+                );
+            });
+
+            it('should fail if organization not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['getWithdrawalRequest(bytes32)'](zeroBytes)
+                        .call(),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
+
+            it('should fail if withdrawal request not found', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['getWithdrawalRequest(bytes32)'](organizationIdNoRequest)
+                        .call(),
+                    'OrgId: Withdrawal request not found'
+                );
+            });
+
+            it('should return withrdawal request info', async () => {
+                const request = await orgId
+                    .methods['getWithdrawalRequest(bytes32)'](organizationId)
+                    .call();
+                (request).should.be.an('object')
+                    .that.has.property('value')
+                    .to.equal(depositValue);
+                (request).should.be.an('object')
+                    .that.has.property('withdrawTime')
+                    .to.equal(withdrawalRequest.withdrawTime);
+            });
+        });
 
         describe('#withdrawDeposit(bytes32)', () => {
             const depositValue = toWeiEther('1000');

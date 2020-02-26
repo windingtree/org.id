@@ -62,7 +62,7 @@ module.exports.addDeposit = async (
  * @param {string} orgIdOwner OrgId owner address
  * @param {string} id The organization Id
  * @param {string} value The value of Lif tokens to withdraw
- * @returns {Promise}
+ * @returns {Promise<{Object}>}
  */
 module.exports.submitWithdrawalRequest = async (
     orgId,
@@ -77,6 +77,7 @@ module.exports.submitWithdrawalRequest = async (
     await orgId.methods['setCurrentTime(uint256)'](timeBefore).send({
         from: orgIdOwner
     });
+    let withdrawTime;
     const result = await orgId
         .methods['submitWithdrawalRequest(bytes32,uint256)'](
             id,
@@ -98,9 +99,16 @@ module.exports.submitWithdrawalRequest = async (
         ],
         [
             'withdrawTime',
-            p => (toBN(p)).should.eq.BN(toBN(timeBefore).add(toBN(delay)))
+            p => {
+                withdrawTime = p;
+                (toBN(p)).should.eq.BN(toBN(timeBefore).add(toBN(delay)))
+            }
         ]
     ]);
+    return {
+        value,
+        withdrawTime
+    };
 };
 
 /**
