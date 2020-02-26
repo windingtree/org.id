@@ -83,7 +83,7 @@ contract('OrgId', accounts => {
             .send({ from: orgIdOwner });
     });
     
-    describe.skip('Upgradeability behaviour', () => {
+    describe('Upgradeability behaviour', () => {
 
         it('should upgrade proxy and reveal a new function and interface', async () => {
             orgId = await project.upgradeProxy(
@@ -107,7 +107,7 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe.skip('Ownable behaviour', () => {
+    describe('Ownable behaviour', () => {
 
         describe('#transferOwnership(address)', () => {
 
@@ -161,7 +161,7 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe.skip('ERC165 interfaces', () => {
+    describe('ERC165 interfaces', () => {
 
         it('should support IERC165 interface', async () => {
             (
@@ -196,7 +196,7 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe.skip('OrgId methods', () => {
+    describe('OrgId methods', () => {
 
         describe('#createOrganization(bytes32,string,bytes32)', () => {
 
@@ -666,7 +666,7 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe.skip('OrgId hierarchy methods', () => {
+    describe('OrgId hierarchy methods', () => {
         let id;
 
         beforeEach(async () => {

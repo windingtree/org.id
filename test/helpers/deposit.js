@@ -101,7 +101,7 @@ module.exports.submitWithdrawalRequest = async (
             'withdrawTime',
             p => {
                 withdrawTime = p;
-                (toBN(p)).should.eq.BN(toBN(timeBefore).add(toBN(delay)))
+                (toBN(p)).should.eq.BN(toBN(timeBefore).add(toBN(delay)));
             }
         ]
     ]);
