@@ -461,18 +461,22 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Returns Lif token address
-     * @return address
+     * @return {
+         "lifToken": "Address of the Lif token"
+     }
      */
-    function getLifTokenAddress() external view returns (address) {
-        return address(lif);
+    function getLifTokenAddress() external view returns (address lifToken) {
+        lifToken = address(lif);
     }
 
     /**
      * @dev Returns withdrawDelay value
-     * @return uint256
+     * @return {
+         "delay": "Delay time in seconds before the requested withdrawal will be possible"
+     }
      */
-    function getWithdrawDelay() external view returns (uint256) {
-        return withdrawDelay;
+    function getWithdrawDelay() external view returns (uint256 delay) {
+        delay = withdrawDelay;
     }
 
     /**

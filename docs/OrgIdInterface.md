@@ -132,6 +132,7 @@ Outputs
 | *address* | director | The organization director |
 | *bool* | state | State of the organization |
 | *bool* | directorConfirmed | Flag is director ownership is confirmed |
+| *uint256* | deposit | Lif deposit value |
 
 ## *function* getOrganizations
 

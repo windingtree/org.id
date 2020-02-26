@@ -20,10 +20,12 @@ contract OrgIdTimeMachine is OrgId {
 
     /**
      * @dev Get current contract time
-     * @return uint256
+     * @return {
+         "contractTime": "Current time inside the contract used as 'now'"
+     }
      */
-    function currentTime() public view returns (uint256) {
-        return time();
+    function currentTime() public view returns (uint256 contractTime) {
+        contractTime = time();
     }
 
     /**

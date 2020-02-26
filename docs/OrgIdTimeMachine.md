@@ -1,4 +1,4 @@
-* [OrgId](#orgid)
+* [OrgIdTimeMachine](#orgidtimemachine)
   * [DepositWithdrawn](#event-depositwithdrawn)
   * [DirectorOwnershipConfirmed](#event-directorownershipconfirmed)
   * [DirectorOwnershipTransferred](#event-directorownershiptransferred)
@@ -11,6 +11,7 @@
   * [OrganizationToggled](#event-organizationtoggled)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SubsidiaryCreated](#event-subsidiarycreated)
+  * [TimeMachine](#event-timemachine)
   * [WithdrawDelayChanged](#event-withdrawdelaychanged)
   * [WithdrawalRequested](#event-withdrawalrequested)
   * [addDeposit](#function-adddeposit)
@@ -21,6 +22,7 @@
   * [confirmDirectorOwnership](#function-confirmdirectorownership)
   * [createOrganization](#function-createorganization)
   * [createSubsidiary](#function-createsubsidiary)
+  * [currentTime](#function-currenttime)
   * [getLifTokenAddress](#function-getliftokenaddress)
   * [getOrganization](#function-getorganization)
   * [getOrganizations](#function-getorganizations)
@@ -31,6 +33,7 @@
   * [isOwner](#function-isowner)
   * [owner](#function-owner)
   * [renounceOwnership](#function-renounceownership)
+  * [setCurrentTime](#function-setcurrenttime)
   * [setInterfaces](#function-setinterfaces)
   * [setWithdrawDelay](#function-setwithdrawdelay)
   * [submitWithdrawalRequest](#function-submitwithdrawalrequest)
@@ -41,11 +44,11 @@
   * [transferOwnership](#function-transferownership)
   * [withdrawDeposit](#function-withdrawdeposit)
 
-# OrgId
+# OrgIdTimeMachine
 
 ## *event* DepositWithdrawn
 
-OrgId.DepositWithdrawn(orgId, sender, value) `0c4c5d4c`
+OrgIdTimeMachine.DepositWithdrawn(orgId, sender, value) `0c4c5d4c`
 
 Arguments
 
@@ -57,7 +60,7 @@ Arguments
 
 ## *event* DirectorOwnershipConfirmed
 
-OrgId.DirectorOwnershipConfirmed(orgId, director) `fe20179a`
+OrgIdTimeMachine.DirectorOwnershipConfirmed(orgId, director) `fe20179a`
 
 Arguments
 
@@ -68,7 +71,7 @@ Arguments
 
 ## *event* DirectorOwnershipTransferred
 
-OrgId.DirectorOwnershipTransferred(orgId, previousDirector, newDirector) `872246ae`
+OrgIdTimeMachine.DirectorOwnershipTransferred(orgId, previousDirector, newDirector) `872246ae`
 
 Arguments
 
@@ -80,7 +83,7 @@ Arguments
 
 ## *event* LifDepositAdded
 
-OrgId.LifDepositAdded(orgId, sender, value) `6acf8bd7`
+OrgIdTimeMachine.LifDepositAdded(orgId, sender, value) `6acf8bd7`
 
 Arguments
 
@@ -92,7 +95,7 @@ Arguments
 
 ## *event* LifTokenChanged
 
-OrgId.LifTokenChanged(previousAddress, newAddress) `c380bccc`
+OrgIdTimeMachine.LifTokenChanged(previousAddress, newAddress) `c380bccc`
 
 Arguments
 
@@ -103,7 +106,7 @@ Arguments
 
 ## *event* OrgJsonHashChanged
 
-OrgId.OrgJsonHashChanged(orgId, previousOrgJsonHash, newOrgJsonHash) `fa137db5`
+OrgIdTimeMachine.OrgJsonHashChanged(orgId, previousOrgJsonHash, newOrgJsonHash) `fa137db5`
 
 Arguments
 
@@ -115,7 +118,7 @@ Arguments
 
 ## *event* OrgJsonUriChanged
 
-OrgId.OrgJsonUriChanged(orgId, previousOrgJsonUri, newOrgJsonUri) `0cd23142`
+OrgIdTimeMachine.OrgJsonUriChanged(orgId, previousOrgJsonUri, newOrgJsonUri) `0cd23142`
 
 Arguments
 
@@ -127,7 +130,7 @@ Arguments
 
 ## *event* OrganizationCreated
 
-OrgId.OrganizationCreated(orgId, owner) `5bf391b9`
+OrgIdTimeMachine.OrganizationCreated(orgId, owner) `5bf391b9`
 
 Arguments
 
@@ -138,7 +141,7 @@ Arguments
 
 ## *event* OrganizationOwnershipTransferred
 
-OrgId.OrganizationOwnershipTransferred(orgId, previousOwner, newOwner) `92cbe7f5`
+OrgIdTimeMachine.OrganizationOwnershipTransferred(orgId, previousOwner, newOwner) `92cbe7f5`
 
 Arguments
 
@@ -150,7 +153,7 @@ Arguments
 
 ## *event* OrganizationToggled
 
-OrgId.OrganizationToggled(orgId, previousState, newState) `e6a96d99`
+OrgIdTimeMachine.OrganizationToggled(orgId, previousState, newState) `e6a96d99`
 
 Arguments
 
@@ -162,7 +165,7 @@ Arguments
 
 ## *event* OwnershipTransferred
 
-OrgId.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
+OrgIdTimeMachine.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
 
 Arguments
 
@@ -173,7 +176,7 @@ Arguments
 
 ## *event* SubsidiaryCreated
 
-OrgId.SubsidiaryCreated(parentOrgId, subOrgId, director) `ea0a430a`
+OrgIdTimeMachine.SubsidiaryCreated(parentOrgId, subOrgId, director) `ea0a430a`
 
 Arguments
 
@@ -183,9 +186,20 @@ Arguments
 | *bytes32* | subOrgId | indexed |
 | *address* | director | indexed |
 
+## *event* TimeMachine
+
+OrgIdTimeMachine.TimeMachine(oldTime, newTime) `78028a94`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* | oldTime | not indexed |
+| *uint256* | newTime | not indexed |
+
 ## *event* WithdrawDelayChanged
 
-OrgId.WithdrawDelayChanged(previousWithdrawDelay, newWithdrawDelay) `675b321b`
+OrgIdTimeMachine.WithdrawDelayChanged(previousWithdrawDelay, newWithdrawDelay) `675b321b`
 
 Arguments
 
@@ -196,7 +210,7 @@ Arguments
 
 ## *event* WithdrawalRequested
 
-OrgId.WithdrawalRequested(orgId, sender, value, withdrawTime) `8b0fcbdf`
+OrgIdTimeMachine.WithdrawalRequested(orgId, sender, value, withdrawTime) `8b0fcbdf`
 
 Arguments
 
@@ -210,7 +224,7 @@ Arguments
 
 ## *function* addDeposit
 
-OrgId.addDeposit(orgId, value) `nonpayable` `6e700a7f`
+OrgIdTimeMachine.addDeposit(orgId, value) `nonpayable` `6e700a7f`
 
 > Makes deposit of Lif tokens
 
@@ -224,7 +238,7 @@ Inputs
 
 ## *function* changeLifToken
 
-OrgId.changeLifToken(_lif) `nonpayable` `b8674252`
+OrgIdTimeMachine.changeLifToken(_lif) `nonpayable` `b8674252`
 
 > Change Lif token
 
@@ -237,7 +251,7 @@ Inputs
 
 ## *function* changeOrgJsonHash
 
-OrgId.changeOrgJsonHash(orgId, orgJsonHash) `nonpayable` `7fc5f5fb`
+OrgIdTimeMachine.changeOrgJsonHash(orgId, orgJsonHash) `nonpayable` `7fc5f5fb`
 
 > Allows owner to change Organization"s orgJsonHash
 
@@ -251,7 +265,7 @@ Inputs
 
 ## *function* changeOrgJsonUri
 
-OrgId.changeOrgJsonUri(orgId, orgJsonUri) `nonpayable` `57b5e80d`
+OrgIdTimeMachine.changeOrgJsonUri(orgId, orgJsonUri) `nonpayable` `57b5e80d`
 
 > Allows owner to change Organization"s orgJsonUri
 
@@ -265,7 +279,7 @@ Inputs
 
 ## *function* changeOrgJsonUriAndHash
 
-OrgId.changeOrgJsonUriAndHash(orgId, orgJsonUri, orgJsonHash) `nonpayable` `f1745894`
+OrgIdTimeMachine.changeOrgJsonUriAndHash(orgId, orgJsonUri, orgJsonHash) `nonpayable` `f1745894`
 
 > Shorthand method to change ORG.JSON uri and hash at the same time
 
@@ -280,7 +294,7 @@ Inputs
 
 ## *function* confirmDirectorOwnership
 
-OrgId.confirmDirectorOwnership(orgId) `nonpayable` `4b845bef`
+OrgIdTimeMachine.confirmDirectorOwnership(orgId) `nonpayable` `4b845bef`
 
 > Confirmation of the organization director ownership
 
@@ -293,7 +307,7 @@ Inputs
 
 ## *function* createOrganization
 
-OrgId.createOrganization(orgId, orgJsonUri, orgJsonHash) `nonpayable` `0670af5c`
+OrgIdTimeMachine.createOrganization(orgId, orgJsonUri, orgJsonHash) `nonpayable` `0670af5c`
 
 > Create organization
 
@@ -313,7 +327,7 @@ Outputs
 
 ## *function* createSubsidiary
 
-OrgId.createSubsidiary(orgId, subOrgId, subsidiaryDirector, orgJsonUri, orgJsonHash) `nonpayable` `981f3dcf`
+OrgIdTimeMachine.createSubsidiary(orgId, subOrgId, subsidiaryDirector, orgJsonUri, orgJsonHash) `nonpayable` `981f3dcf`
 
 > Create subsidiary
 
@@ -328,9 +342,23 @@ Inputs
 | *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
 
 
+## *function* currentTime
+
+OrgIdTimeMachine.currentTime() `view` `d18e81b3`
+
+> Get current contract time
+
+
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* | contractTime | Current time inside the contract used as 'now' |
+
 ## *function* getLifTokenAddress
 
-OrgId.getLifTokenAddress() `view` `671110df`
+OrgIdTimeMachine.getLifTokenAddress() `view` `671110df`
 
 > Returns Lif token address
 
@@ -344,7 +372,7 @@ Outputs
 
 ## *function* getOrganization
 
-OrgId.getOrganization(_orgId) `view` `22b3cd4e`
+OrgIdTimeMachine.getOrganization(_orgId) `view` `22b3cd4e`
 
 > Get organization by orgId
 
@@ -370,7 +398,7 @@ Outputs
 
 ## *function* getOrganizations
 
-OrgId.getOrganizations() `view` `9754a3a8`
+OrgIdTimeMachine.getOrganizations() `view` `9754a3a8`
 
 > Return an array of active organizations orgIds
 
@@ -384,7 +412,7 @@ Outputs
 
 ## *function* getSubsidiaries
 
-OrgId.getSubsidiaries(orgId) `view` `5aee5dc7`
+OrgIdTimeMachine.getSubsidiaries(orgId) `view` `5aee5dc7`
 
 > Return an array of active subsidiaries orgIds
 
@@ -402,7 +430,7 @@ Outputs
 
 ## *function* getWithdrawDelay
 
-OrgId.getWithdrawDelay() `view` `fe3300d0`
+OrgIdTimeMachine.getWithdrawDelay() `view` `fe3300d0`
 
 > Returns withdrawDelay value
 
@@ -416,7 +444,7 @@ Outputs
 
 ## *function* getWithdrawalRequest
 
-OrgId.getWithdrawalRequest(orgId) `view` `3e7d48ab`
+OrgIdTimeMachine.getWithdrawalRequest(orgId) `view` `3e7d48ab`
 
 > Returns information about deposit withdrawal request
 
@@ -435,7 +463,7 @@ Outputs
 
 ## *function* initialize
 
-OrgId.initialize(__owner, _lif) `nonpayable` `485cc955`
+OrgIdTimeMachine.initialize(__owner, _lif) `nonpayable` `485cc955`
 
 > Initializer for upgradeable contracts
 
@@ -449,7 +477,7 @@ Inputs
 
 ## *function* isOwner
 
-OrgId.isOwner() `view` `8f32d59b`
+OrgIdTimeMachine.isOwner() `view` `8f32d59b`
 
 > Returns true if the caller is the current owner.
 
@@ -458,7 +486,7 @@ OrgId.isOwner() `view` `8f32d59b`
 
 ## *function* owner
 
-OrgId.owner() `view` `8da5cb5b`
+OrgIdTimeMachine.owner() `view` `8da5cb5b`
 
 > Returns the address of the current owner.
 
@@ -467,16 +495,29 @@ OrgId.owner() `view` `8da5cb5b`
 
 ## *function* renounceOwnership
 
-OrgId.renounceOwnership() `nonpayable` `715018a6`
+OrgIdTimeMachine.renounceOwnership() `nonpayable` `715018a6`
 
 > Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
 
 
 
 
+## *function* setCurrentTime
+
+OrgIdTimeMachine.setCurrentTime(time) `nonpayable` `22f8e566`
+
+> Set new contract time
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *uint256* | time | New time value |
+
+
 ## *function* setInterfaces
 
-OrgId.setInterfaces() `nonpayable` `fca85eb3`
+OrgIdTimeMachine.setInterfaces() `nonpayable` `fca85eb3`
 
 > Set the list of contract interfaces supported
 
@@ -485,7 +526,7 @@ OrgId.setInterfaces() `nonpayable` `fca85eb3`
 
 ## *function* setWithdrawDelay
 
-OrgId.setWithdrawDelay(_withdrawDelay) `nonpayable` `72f0cb30`
+OrgIdTimeMachine.setWithdrawDelay(_withdrawDelay) `nonpayable` `72f0cb30`
 
 > Changing withdrawDelay value
 
@@ -498,7 +539,7 @@ Inputs
 
 ## *function* submitWithdrawalRequest
 
-OrgId.submitWithdrawalRequest(orgId, value) `nonpayable` `fa094c70`
+OrgIdTimeMachine.submitWithdrawalRequest(orgId, value) `nonpayable` `fa094c70`
 
 > Submits withdrawal request
 
@@ -512,7 +553,7 @@ Inputs
 
 ## *function* supportsInterface
 
-OrgId.supportsInterface(interfaceId) `view` `01ffc9a7`
+OrgIdTimeMachine.supportsInterface(interfaceId) `view` `01ffc9a7`
 
 > See {IERC165-supportsInterface}.     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
 
@@ -525,7 +566,7 @@ Inputs
 
 ## *function* toggleOrganization
 
-OrgId.toggleOrganization(orgId) `nonpayable` `07233a3d`
+OrgIdTimeMachine.toggleOrganization(orgId) `nonpayable` `07233a3d`
 
 > Toggle the organization state
 
@@ -538,7 +579,7 @@ Inputs
 
 ## *function* transferDirectorOwnership
 
-OrgId.transferDirectorOwnership(orgId, newDirector) `nonpayable` `b34ef9b7`
+OrgIdTimeMachine.transferDirectorOwnership(orgId, newDirector) `nonpayable` `b34ef9b7`
 
 > Transfer subsidiary director ownership
 
@@ -552,7 +593,7 @@ Inputs
 
 ## *function* transferOrganizationOwnership
 
-OrgId.transferOrganizationOwnership(orgId, newOwner) `nonpayable` `aa73697e`
+OrgIdTimeMachine.transferOrganizationOwnership(orgId, newOwner) `nonpayable` `aa73697e`
 
 > Transfer organization ownership
 
@@ -566,7 +607,7 @@ Inputs
 
 ## *function* transferOwnership
 
-OrgId.transferOwnership(newOwner) `nonpayable` `f2fde38b`
+OrgIdTimeMachine.transferOwnership(newOwner) `nonpayable` `f2fde38b`
 
 > Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
 
@@ -579,7 +620,7 @@ Inputs
 
 ## *function* withdrawDeposit
 
-OrgId.withdrawDeposit(orgId) `nonpayable` `a8e06bc3`
+OrgIdTimeMachine.withdrawDeposit(orgId) `nonpayable` `a8e06bc3`
 
 > Trunsfers deposited tokens to the sender
 
