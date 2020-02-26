@@ -32,17 +32,26 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         uint256 deposit;
     }
 
-    // Mapped list of Organizations
+    /// @dev Withdrawal request structure
+    struct WithdrawalRequest {
+        uint256 value;
+        uint256 withdrawTime;
+    }
+
+    /// @dev Mapped list of Organizations
     mapping (bytes32 => Organization) internal organizations;
 
-    // List of organizations orgIds
+    /// @dev List of organizations orgIds
     bytes32[] internal orgIds;
 
-    // Lif token instance
+    /// @dev Lif token instance
     IERC20 internal lif;
 
-    // Delay in seconds between withdrawal request and withdrawal
+    /// @dev Delay in seconds between withdrawal request and withdrawal
     uint256 internal withdrawDelay;
+
+    /// @dev Deposits wiwdrawal requests
+    mapping (bytes32 => WithdrawalRequest) internal withdrawalRequests;
 
     /**
      * @dev Event emitted when organization is created
@@ -138,6 +147,16 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     event WithdrawDelayChanged(
         uint256 previousWithdrawDelay,
         uint256 newWithdrawDelay
+    );
+
+    /**
+     * @dev Event emitted when withdrawal requested has been sent
+     */
+    event WithdrawalRequested(
+        bytes32 orgId,
+        address sender,
+        uint256 value,
+        uint256 withdrawTime
     );
 
     /**
@@ -476,6 +495,29 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
+     * @dev Submits withdrawal request
+     * @param orgId The organization OrgId
+     * @param value The value to withdraw
+     */
+    function submitWithdrawalRequest(
+        bytes32 orgId,
+        uint256 value
+    )
+        external 
+        existedOrganization(orgId)
+        onlyOrganizationOwnerOrDirector(orgId)
+    {
+        require(value > 0, "OrgId: Invalid withdrawal value");
+        require(
+            value <= organizations[orgId].deposit,
+            "OrgId: Insufficient balance"
+        );
+        uint256 withdrawTime = time().add(withdrawDelay);
+        withdrawalRequests[orgId] = WithdrawalRequest(value, withdrawTime);
+        emit WithdrawalRequested(orgId, msg.sender, value, withdrawTime);
+    }
+
+    /**
      * @dev Allows owner to change Organization"s orgJsonUri
      * @param orgId The organization OrgId
      * @param orgJsonUri New orgJsonUri pointer of this Organization
@@ -708,5 +750,16 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
                 count += 1;
             }
         }
+    }
+
+    /**
+     * @dev Get current time
+     *  
+     * This function can be overriden for testing purposes
+     * 
+     * @return uint256 Current block time
+     */
+    function time() internal view returns (uint256) {
+        return now;// solhint-disable-line not-rely-on-time
     }
 }

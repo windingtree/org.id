@@ -2,7 +2,8 @@
   "manifestVersion": "2.2",
   "contracts": {
     "OrgId": "OrgId",
-    "OrgIdUpgradeability": "OrgIdUpgradeability"
+    "OrgIdUpgradeability": "OrgIdUpgradeability",
+    "OrgIdTimeMachine": "OrgIdTimeMachine"
   },
   "dependencies": {},
   "name": "org.id",

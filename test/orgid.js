@@ -22,7 +22,8 @@ const {
     distributeLifTokens
 } = require('./helpers/lif');
 const {
-    addDeposit
+    addDeposit,
+    submitWithdrawalRequest
 } = require('./helpers/deposit');
 
 let gasLimit = 8000000; // Like actual to the Ropsten
@@ -39,7 +40,7 @@ Contracts.setArtifactsDefaults({
 
 ZWeb3.initialize(web3.currentProvider);
 
-const OrgId = Contracts.getFromLocal('OrgId');
+const OrgId = Contracts.getFromLocal('OrgIdTimeMachine');
 const OrgIdUpgradeability = Contracts.getFromLocal('OrgIdUpgradeability');
 
 require('chai')
@@ -1008,7 +1009,7 @@ contract('OrgId', accounts => {
             });
         });
 
-        describe('#addDeposit(bytes32,value)', () => {
+        describe('#addDeposit(bytes32,uint256)', () => {
 
             it('should fail if organization not found', async () => {
                 await assertRevert(
@@ -1018,19 +1019,21 @@ contract('OrgId', accounts => {
                         zeroBytes,
                         toWeiEther('1000'),
                         lifToken
-                    )
+                    ),
+                    'OrgId: Organization with given orgId not found'
                 );
             });
 
-            it('should fail if called not by an owner ot director', async () => {
+            it('should fail if called not by an organization owner ot director', async () => {
                 await assertRevert(
                     addDeposit(
                         orgId,
                         nonOwner,
-                        zeroBytes,
+                        organizationId,
                         toWeiEther('1000'),
                         lifToken
-                    )
+                    ),
+                    'OrgId: Only organization owner or entity director can call this method'
                 );
             });
 
@@ -1039,10 +1042,11 @@ contract('OrgId', accounts => {
                     addDeposit(
                         orgId,
                         organizationOwner,
-                        zeroBytes,
-                        '0x0',
+                        organizationId,
+                        '0',
                         lifToken
-                    )
+                    ),
+                    'OrgId: Invalid deposit value'
                 );
             });
 
@@ -1051,9 +1055,10 @@ contract('OrgId', accounts => {
                     addDeposit(
                         orgId,
                         organizationOwner,
-                        zeroBytes,
+                        organizationId,
                         toWeiEther('1000')
-                    )
+                    ),
+                    'SafeERC20: low-level call failed'
                 );
             });
 
@@ -1110,6 +1115,78 @@ contract('OrgId', accounts => {
                 (
                     await orgId.methods['getWithdrawDelay()']().call()
                 ).should.equal(delay);
+            });
+        });
+
+        describe('#submitWithdrawalRequest(bytes32,uint256)', () => {
+            const depositValue = toWeiEther('1000');
+            const extraDepositValue = toWeiEther('1001');
+
+            beforeEach(async () => {
+                await addDeposit(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    depositValue,
+                    lifToken
+                );
+            });
+
+            it('should fail if organization not found', async () => {
+                await assertRevert(
+                    submitWithdrawalRequest(
+                        orgId,
+                        organizationOwner,
+                        zeroBytes,
+                        depositValue
+                    ),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
+
+            it('should fail if called not by an organization owner or director', async () => {
+                await assertRevert(
+                    submitWithdrawalRequest(
+                        orgId,
+                        nonOwner,
+                        organizationId,
+                        depositValue
+                    ),
+                    'OrgId: Only organization owner or entity director can call this method'
+                );
+            });
+
+            it('should fail if zero withdrawal value has been sent', async () => {
+                await assertRevert(
+                    submitWithdrawalRequest(
+                        orgId,
+                        organizationOwner,
+                        organizationId,
+                        '0'
+                    ),
+                    'OrgId: Invalid withdrawal value'
+                );
+            });
+
+            it('should fail if deposit balance is insufficient to withdraw', async () => {
+                await assertRevert(
+                    submitWithdrawalRequest(
+                        orgId,
+                        organizationOwner,
+                        organizationId,
+                        extraDepositValue
+                    ),
+                    'OrgId: Insufficient balance'
+                );
+            });
+
+            it('should submit withdrawal request', async () => {
+                await submitWithdrawalRequest(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    depositValue
+                );
             });
         });
     });

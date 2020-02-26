@@ -54,3 +54,45 @@ module.exports.addDeposit = async (
         toBN(depositBefore).add(toBN(value))
     );
 };
+
+/**
+ * Submits deposit withdrawal request
+ * @param {Object} orgId OrgId instance
+ * @param {string} from Sender address
+ * @param {string} id The organization Id
+ * @param {string} value The value of Lif tokens to withdraw
+ * @returns {Promise}
+ */
+module.exports.submitWithdrawalRequest = async (
+    orgId,
+    from,
+    id,
+    value
+) => {
+    const timeBefore = await orgId.methods['currentTime()']().call();
+    const delay = await orgId.methods['getWithdrawDelay()']().call();
+    const result = await orgId
+        .methods['submitWithdrawalRequest(bytes32,uint256)'](
+            id,
+            value
+        )
+        .send({ from });
+    assertEvent(result, 'WithdrawalRequested', [
+        [
+            'orgId',
+            p => (p).should.equal(id)
+        ],
+        [
+            'sender',
+            p => (p).should.equal(from)
+        ],
+        [
+            'value',
+            p => (p).should.equal(value)
+        ],
+        [
+            'withdrawTime',
+            p => (toBN(p)).should.eq.BN(toBN(timeBefore).add(toBN(delay)))
+        ]
+    ]);
+};
