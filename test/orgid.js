@@ -23,7 +23,8 @@ const {
 } = require('./helpers/lif');
 const {
     addDeposit,
-    submitWithdrawalRequest
+    submitWithdrawalRequest,
+    withdrawDeposit
 } = require('./helpers/deposit');
 
 let gasLimit = 8000000; // Like actual to the Ropsten
@@ -55,6 +56,8 @@ contract('OrgId', accounts => {
     const organizationOwner = accounts[4];
     const entityDirector = accounts[5];
 
+    const defaultWithdrawalDelay = '60000';
+
     let lifToken;
     let project;
     let orgId;
@@ -75,6 +78,9 @@ contract('OrgId', accounts => {
                 lifToken.address
             ]
         });
+        await orgId
+            .methods['setWithdrawDelay(uint256)'](defaultWithdrawalDelay)
+            .send({ from: orgIdOwner });
     });
     
     describe.skip('Upgradeability behaviour', () => {
@@ -1092,7 +1098,7 @@ contract('OrgId', accounts => {
                 assertEvent(result, 'WithdrawDelayChanged', [
                     [
                         'previousWithdrawDelay',
-                        p => (p).should.equal('0')
+                        p => (p).should.equal(defaultWithdrawalDelay)
                     ],
                     [
                         'newWithdrawDelay',
@@ -1107,7 +1113,7 @@ contract('OrgId', accounts => {
             it('should return withdrawDelay', async () => {
                 (
                     await orgId.methods['getWithdrawDelay()']().call()
-                ).should.equal('0');
+                ).should.equal(defaultWithdrawalDelay);
                 const delay = '6000';
                 await orgId
                     .methods['setWithdrawDelay(uint256)'](delay)
@@ -1137,6 +1143,7 @@ contract('OrgId', accounts => {
                     submitWithdrawalRequest(
                         orgId,
                         organizationOwner,
+                        orgIdOwner,
                         zeroBytes,
                         depositValue
                     ),
@@ -1149,6 +1156,7 @@ contract('OrgId', accounts => {
                     submitWithdrawalRequest(
                         orgId,
                         nonOwner,
+                        orgIdOwner,
                         organizationId,
                         depositValue
                     ),
@@ -1161,6 +1169,7 @@ contract('OrgId', accounts => {
                     submitWithdrawalRequest(
                         orgId,
                         organizationOwner,
+                        orgIdOwner,
                         organizationId,
                         '0'
                     ),
@@ -1173,6 +1182,7 @@ contract('OrgId', accounts => {
                     submitWithdrawalRequest(
                         orgId,
                         organizationOwner,
+                        orgIdOwner,
                         organizationId,
                         extraDepositValue
                     ),
@@ -1184,8 +1194,114 @@ contract('OrgId', accounts => {
                 await submitWithdrawalRequest(
                     orgId,
                     organizationOwner,
+                    orgIdOwner,
                     organizationId,
                     depositValue
+                );
+            });
+        });
+
+        describe('#getWithdrawalRequest(bytes32)', () => {});
+
+        describe('#withdrawDeposit(bytes32)', () => {
+            const depositValue = toWeiEther('1000');
+            let organizationId;
+
+            beforeEach(async () => {
+                organizationId = generateId(organizationOwner);
+                await createOrganization(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    organizationUri,
+                    organizationHash
+                );
+                await addDeposit(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    depositValue,
+                    lifToken
+                );
+                await submitWithdrawalRequest(
+                    orgId,
+                    organizationOwner,
+                    orgIdOwner,
+                    organizationId,
+                    depositValue
+                );
+            });
+
+            it('should fail if orgainzation not found', async () => {
+                await assertRevert(
+                    withdrawDeposit(
+                        orgId,
+                        organizationOwner,
+                        orgIdOwner,
+                        zeroBytes
+                    ),
+                    'OrgId: Organization with given orgId not found'
+                );
+            });
+
+            it('should fail if called not by organization owner or director', async () => {
+                await assertRevert(
+                    withdrawDeposit(
+                        orgId,
+                        nonOwner,
+                        orgIdOwner,
+                        organizationId
+                    ),
+                    'OrgId: Only organization owner or entity director can call this method'
+                );
+            });
+
+            it('should fail if withdrawal request not found', async () => {
+                const organizationId = generateId(organizationOwner);
+                await createOrganization(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    organizationUri,
+                    organizationHash
+                );
+                await addDeposit(
+                    orgId,
+                    organizationOwner,
+                    organizationId,
+                    depositValue,
+                    lifToken
+                );
+                await assertRevert(
+                    withdrawDeposit(
+                        orgId,
+                        organizationOwner,
+                        orgIdOwner,
+                        organizationId
+                    ),
+                    'OrgId: Withdrawal request not found'
+                );
+            });
+
+            it('should fail if withdrawal request delay period not passed', async () => {
+                await assertRevert(
+                    withdrawDeposit(
+                        orgId,
+                        organizationOwner,
+                        orgIdOwner,
+                        organizationId
+                    ),
+                    'OrgId: Withdrawal request delay period not passed'
+                );
+            });
+
+            it('should withdraw deposit', async () => {
+                await withdrawDeposit(
+                    orgId,
+                    organizationOwner,
+                    orgIdOwner,
+                    organizationId,
+                    true
                 );
             });
         });

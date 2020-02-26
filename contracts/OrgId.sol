@@ -153,10 +153,19 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @dev Event emitted when withdrawal requested has been sent
      */
     event WithdrawalRequested(
-        bytes32 orgId,
-        address sender,
+        bytes32 indexed orgId,
+        address indexed sender,
         uint256 value,
         uint256 withdrawTime
+    );
+
+    /**
+     * @dev Event emitted when deposit has been withdrawn
+     */
+    event DepositWithdrawn(
+        bytes32 indexed orgId,
+        address indexed sender,
+        uint256 value
     );
 
     /**
@@ -515,6 +524,60 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         uint256 withdrawTime = time().add(withdrawDelay);
         withdrawalRequests[orgId] = WithdrawalRequest(value, withdrawTime);
         emit WithdrawalRequested(orgId, msg.sender, value, withdrawTime);
+    }
+
+    /**
+     * @dev Returns information about deposit withdrawal request
+     * @param orgId The organization Id
+     * @return {
+         "value": "Deposit withdrawal value",
+         "withdrawTime": "Withraw time on seconds"
+     }
+     */
+    function getWithdrawalRequest(bytes32 orgId)
+        external
+        view 
+        existedOrganization(orgId)
+        returns (
+            uint256 value,
+            uint256 withdrawTime
+        )
+    {
+        require(
+            withdrawalRequests[orgId].value != 0,
+            "OrgId: Withdrawal request not found"
+        );
+
+        WithdrawalRequest memory request = withdrawalRequests[orgId];
+        value = request.value;
+        withdrawTime = request.withdrawTime;
+    }
+
+    /**
+     * @dev Trunsfers deposited tokens to the sender
+     * @param orgId The organization OrgId
+     */
+    function withdrawDeposit(
+        bytes32 orgId
+    )
+        external 
+        existedOrganization(orgId)
+        onlyOrganizationOwnerOrDirector(orgId)
+    {
+        require(
+            withdrawalRequests[orgId].value != 0,
+            "OrgId: Withdrawal request not found"
+        );
+        require(
+            withdrawalRequests[orgId].withdrawTime <= time(),
+            "OrgId: Withdrawal request delay period not passed"
+        );
+        uint256 withdrawalValue = withdrawalRequests[orgId].value;
+        organizations[orgId].deposit =
+            organizations[orgId].deposit.sub(withdrawalValue);
+        delete withdrawalRequests[orgId];
+        lif.safeTransfer(msg.sender, withdrawalValue);
+        emit DepositWithdrawn(orgId, msg.sender, withdrawalValue);
     }
 
     /**
