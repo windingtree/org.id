@@ -39,7 +39,7 @@
   "author": "Winding Tree Developers <dev@windingtree.com>",
   "license": "GPL-3.0-only",
   "dependencies": {
-    "openzeppelin-solidity": "2.5.0"
+    "@openzeppelin/contracts": "2.5.0"
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
