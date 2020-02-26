@@ -41,6 +41,9 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     // Lif token instance
     IERC20 internal lif;
 
+    // Delay in seconds between withdrawal request and withdrawal
+    uint256 internal withdrawDelay;
+
     /**
      * @dev Event emitted when organization is created
      */
@@ -127,6 +130,14 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 indexed orgId,
         address indexed sender,
         uint256 value
+    );
+
+    /**
+     * @dev Event emitted when withdrawDelay has been changed
+     */
+    event WithdrawDelayChanged(
+        uint256 previousWithdrawDelay,
+        uint256 newWithdrawDelay
     );
 
     /**
@@ -426,6 +437,23 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      */
     function getLifTokenAddress() external view returns (address) {
         return address(lif);
+    }
+
+    /**
+     * @dev Returns withdrawDelay value
+     * @return uint256
+     */
+    function getWithdrawDelay() external view returns (uint256) {
+        return withdrawDelay;
+    }
+
+    /**
+     * @dev Changing withdrawDelay value
+     * @param _withdrawDelay New withdrawDelay value in seconds
+     */
+    function setWithdrawDelay(uint256 _withdrawDelay) external onlyOwner {
+        emit WithdrawDelayChanged(withdrawDelay, _withdrawDelay);
+        withdrawDelay = _withdrawDelay;
     }
 
     /**

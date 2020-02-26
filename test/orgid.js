@@ -1067,5 +1067,50 @@ contract('OrgId', accounts => {
                 );
             });
         });
+
+        describe('#setWithdrawDelay(uint256)', () => {
+
+            it('should fail if called not by an owner', async () => {
+                await assertRevert(
+                    orgId
+                        .methods['setWithdrawDelay(uint256)']('6000')
+                        .send({ from: nonOwner }),
+                    'Ownable: caller is not the owner'
+                );
+            });
+
+            it('should change withdrawal delay', async () => {
+                const delay = '6000';
+                const result = await orgId
+                    .methods['setWithdrawDelay(uint256)'](delay)
+                    .send({ from: orgIdOwner });
+                assertEvent(result, 'WithdrawDelayChanged', [
+                    [
+                        'previousWithdrawDelay',
+                        p => (p).should.equal('0')
+                    ],
+                    [
+                        'newWithdrawDelay',
+                        p => (p).should.equal(delay)
+                    ]
+                ]);
+            });
+        });
+
+        describe('#getWithdrawDelay()', () => {
+
+            it('should return withdrawDelay', async () => {
+                (
+                    await orgId.methods['getWithdrawDelay()']().call()
+                ).should.equal('0');
+                const delay = '6000';
+                await orgId
+                    .methods['setWithdrawDelay(uint256)'](delay)
+                    .send({ from: orgIdOwner });
+                (
+                    await orgId.methods['getWithdrawDelay()']().call()
+                ).should.equal(delay);
+            });
+        });
     });
 });
