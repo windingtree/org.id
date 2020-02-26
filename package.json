@@ -3,7 +3,8 @@
   "version": "0.10.0",
   "description": "ORG.ID smart contract",
   "directories": {
-    "test": "test"
+    "test": "test",
+    "doc": "doc"
   },
   "scripts": {
     "test": "management/test.sh",
@@ -42,7 +43,7 @@
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.1.9",
+    "@truffle/contract": "4.1.10",
     "@truffle/hdwallet-provider": "1.0.31",
     "chai": "4.2.0",
     "coveralls": "3.0.9",
@@ -50,14 +51,14 @@
     "ganache-cli": "6.9.1",
     "husky": "4.2.3",
     "rimraf": "3.0.2",
-    "solc": "0.6.2",
+    "solc": "0.6.3",
     "solhint": "2.3.0",
     "solidity-coverage": "0.7.2",
     "solmd": "0.4.0",
-    "truffle": "5.1.13",
+    "truffle": "5.1.14",
     "truffle-flattener": "1.4.2"
   },
   "engines": {
-    "node": ">=10.19.0"
+    "node": ">=10"
   }
 }
