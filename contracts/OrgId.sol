@@ -652,7 +652,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function setInterfaces() public {
         OrgIdInterface org;
         Ownable own;
-        bytes4[4] memory interfaceIds = [
+        bytes4[5] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
 
@@ -673,7 +673,16 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.createSubsidiary.selector ^ 
             org.confirmDirectorOwnership.selector ^
             org.transferDirectorOwnership.selector ^
-            org.getSubsidiaries.selector
+            org.getSubsidiaries.selector,
+
+            // Lif deposit interface: 0xe936be58
+            org.getLifTokenAddress.selector ^
+            org.getWithdrawDelay.selector ^
+            org.setWithdrawDelay.selector ^
+            org.addDeposit.selector ^
+            org.submitWithdrawalRequest.selector ^
+            org.getWithdrawalRequest.selector ^
+            org.withdrawDeposit.selector
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
             _registerInterface(interfaceIds[i]);
