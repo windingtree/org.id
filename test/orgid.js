@@ -194,6 +194,14 @@ contract('OrgId', accounts => {
                     .call()
             ).should.be.true;
         });
+
+        it('should support deposit interface', async () => {
+            (
+                await orgId
+                    .methods['supportsInterface(bytes4)']('0xe936be58')
+                    .call()
+            ).should.be.true;
+        });
     });
 
     describe('OrgId methods', () => {
