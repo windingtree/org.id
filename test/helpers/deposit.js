@@ -1,4 +1,4 @@
-const { assertEvent } = require('../helpers/assertions');
+const { assertRevert, assertEvent } = require('../helpers/assertions');
 const { toBN } = require('../helpers/common');
 
 /**
@@ -157,4 +157,10 @@ module.exports.withdrawDeposit = async (
             p => (p).should.equal(request.value)
         ]
     ]);
+    await assertRevert(
+        orgId
+            .methods['getWithdrawalRequest(bytes32)'](id)
+            .call(),
+        'OrgId: Withdrawal request not found'
+    );
 };
