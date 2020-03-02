@@ -6,6 +6,10 @@ const getInfuraConfig = (networkName, networkId) => {
 
     try {
         keys = require('./keys.json');
+
+        if (keys.MYTHX_API_KEY) {
+            process.env.MYTHX_API_KEY = keys.MYTHX_API_KEY;
+        }
     } catch (err) {
         console.log('could not find ./keys.json');
     }
@@ -27,7 +31,8 @@ const getInfuraConfig = (networkName, networkId) => {
 
 module.exports = {
     plugins: [
-        'solidity-coverage'
+        'solidity-coverage',
+        'truffle-security'
     ],
 
     networks: {

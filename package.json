@@ -10,6 +10,7 @@
     "test": "management/test.sh",
     "lint": "npx eslint test management && npx solhint 'contracts/**/*.sol'",
     "lint:fix": "npx eslint test management --fix && npx solhint 'contracts/**/*.sol'",
+    "verify": "npx truffle run verify --mode=quick --ci OrgId.sol",
     "dev-net": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
@@ -43,8 +44,8 @@
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.1.10",
-    "@truffle/hdwallet-provider": "1.0.31",
+    "@truffle/contract": "4.1.11",
+    "@truffle/hdwallet-provider": "1.0.32",
     "chai": "4.2.0",
     "bn-chai": "1.0.1",
     "coveralls": "3.0.9",
@@ -53,11 +54,12 @@
     "husky": "4.2.3",
     "rimraf": "3.0.2",
     "solc": "0.6.3",
-    "solhint": "2.3.0",
+    "solhint": "3.0.0-rc.4",
     "solidity-coverage": "0.7.2",
     "solmd": "0.4.0",
-    "truffle": "5.1.14",
-    "truffle-flattener": "1.4.2"
+    "truffle": "5.1.15",
+    "truffle-flattener": "1.4.2",
+    "truffle-security": "1.7.1"
   },
   "engines": {
     "node": ">=10"
