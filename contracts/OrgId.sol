@@ -420,6 +420,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @dev Get organization by orgId
      * @param _orgId The organization Id
      * @return {
+         "exist": "The organizatoin existence flag",
          "orgId": "The organization orgId",
          "orgJsonUri": "orgJsonUri pointer of this Organization",
          "orgJsonHash": "keccak256 hash of the new ORG.JSON contents",
@@ -434,8 +435,8 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function getOrganization(bytes32 _orgId) 
         external 
         view 
-        existedOrganization(_orgId) 
         returns (
+            bool exist,
             bytes32 orgId,
             string memory orgJsonUri,
             bytes32 orgJsonHash,
@@ -447,16 +448,16 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             uint256 deposit
         )
     {   
-        Organization storage org = organizations[_orgId];
-        orgId = org.orgId;
-        orgJsonUri = org.orgJsonUri;
-        orgJsonHash = org.orgJsonHash;
-        parentEntity = org.parentEntity;
-        owner = org.owner;
-        director = org.director;
-        state = org.state;
-        directorConfirmed = org.directorConfirmed;
-        deposit = org.deposit;
+        exist = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
+        orgId = organizations[_orgId].orgId;
+        orgJsonUri = organizations[_orgId].orgJsonUri;
+        orgJsonHash = organizations[_orgId].orgJsonHash;
+        parentEntity = organizations[_orgId].parentEntity;
+        owner = organizations[_orgId].owner;
+        director = organizations[_orgId].director;
+        state = organizations[_orgId].state;
+        directorConfirmed = organizations[_orgId].directorConfirmed;
+        deposit = organizations[_orgId].deposit;
     }
 
     /**
@@ -534,6 +535,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @dev Returns information about deposit withdrawal request
      * @param orgId The organization Id
      * @return {
+         "exist": "The request existence flag",
          "value": "Deposit withdrawal value",
          "withdrawTime": "Withraw time on seconds"
      }
@@ -541,20 +543,18 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function getWithdrawalRequest(bytes32 orgId)
         external
         view 
-        existedOrganization(orgId)
         returns (
+            bool exist,
             uint256 value,
             uint256 withdrawTime
         )
     {
-        require(
-            withdrawalRequests[orgId].value != 0,
-            "OrgId: Withdrawal request not found"
-        );
-
-        WithdrawalRequest memory request = withdrawalRequests[orgId];
-        value = request.value;
-        withdrawTime = request.withdrawTime;
+        exist = 
+            orgId != bytes32(0) &&
+            organizations[orgId].orgId == orgId &&
+            withdrawalRequests[orgId].value != 0;
+        value = withdrawalRequests[orgId].value;
+        withdrawTime = withdrawalRequests[orgId].withdrawTime;
     }
 
     /**

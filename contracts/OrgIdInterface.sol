@@ -95,6 +95,7 @@ contract OrgIdInterface {
      * @dev Get organization by orgId
      * @param _orgId The organization Id
      * @return {
+         "existed": "The organizatoin existence flag",
          "orgId": "The organization orgId",
          "orgJsonUri": "orgJsonUri pointer of this Organization",
          "orgJsonHash": "keccak256 hash of the new ORG.JSON contents",
@@ -110,6 +111,7 @@ contract OrgIdInterface {
         external 
         view 
         returns (
+            bool existed,
             bytes32 orgId,
             string memory orgJsonUri,
             bytes32 orgJsonHash,
@@ -167,14 +169,16 @@ contract OrgIdInterface {
      * @dev Returns information about deposit withdrawal request
      * @param orgId The organization Id
      * @return {
+         "existed": "The request existence flag",
          "value": "Deposit withdrawal value",
          "withdrawTime": "Withraw time on seconds"
      }
      */
     function getWithdrawalRequest(bytes32 orgId)
         external
-        view
+        view 
         returns (
+            bool existed,
             uint256 value,
             uint256 withdrawTime
         );

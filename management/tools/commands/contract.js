@@ -269,12 +269,7 @@ module.exports = async (options) => {
             )
         ));
 
-        log('Contract upgraded at address', upgradedContracts[0].address);
-
-        if (upgradedContracts.length > 1) {
-            log('Upgraded proxies', upgradedContracts
-                .map(p => p.address).join(', '));
-        }
+        log('Contract upgraded at address', config.contract.proxy);
 
         config.version = packageJson.version;
     }

@@ -157,10 +157,7 @@ module.exports.withdrawDeposit = async (
             p => (p).should.equal(request.value)
         ]
     ]);
-    await assertRevert(
-        orgId
-            .methods['getWithdrawalRequest(bytes32)'](id)
-            .call(),
-        'OrgId: Withdrawal request not found'
-    );
+    (await orgId
+        .methods['getWithdrawalRequest(bytes32)'](id)
+        .call()).should.has.property('exist').to.false;
 };

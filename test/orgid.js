@@ -649,27 +649,27 @@ contract('OrgId', accounts => {
                 );
             });
 
-            it('should fail if organization not found', async () => {
-                await assertRevert(
-                    orgId
+            it('should return exist=false if organization not found', async () => {
+                (
+                    await orgId
                         .methods['getOrganization(bytes32)'](zeroBytes)
-                        .call(),
-                    'OrgId: Organization with given orgId not found'
-                );
+                        .call()
+                ).should.has.property('exist').to.false;
             });
 
             it('should return an organization', async () => {
                 const org = await orgId
                     .methods['getOrganization(bytes32)'](id)
                     .call();
-                (org.orgId).should.equal(id);
-                (org.orgJsonUri).should.equal(organizationUri);
-                (org.orgJsonHash).should.equal(organizationHash);
-                (org.parentEntity).should.equal(zeroBytes);
-                (org.owner).should.equal(organizationOwner);
-                (org.director).should.equal(zeroAddress);
-                (org.state).should.be.true;
-                (org.directorConfirmed).should.be.false;
+                (org).should.has.property('exist').to.true;
+                (org).should.has.property('orgId').to.equal(id);
+                (org).should.has.property('orgJsonUri').to.equal(organizationUri);
+                (org).should.has.property('orgJsonHash').to.equal(organizationHash);
+                (org).should.has.property('parentEntity').to.equal(zeroBytes);
+                (org).should.has.property('owner').to.equal(organizationOwner);
+                (org).should.has.property('director').to.equal(zeroAddress);
+                (org).should.has.property('state').to.be.true;
+                (org).should.has.property('directorConfirmed').to.be.false;
             });
         });
     });
@@ -1255,28 +1255,25 @@ contract('OrgId', accounts => {
                 );
             });
 
-            it('should fail if organization not found', async () => {
-                await assertRevert(
-                    orgId
-                        .methods['getWithdrawalRequest(bytes32)'](zeroBytes)
-                        .call(),
-                    'OrgId: Organization with given orgId not found'
-                );
+            it('should return exist=false if organization not found', async () => {
+                (await orgId
+                    .methods['getWithdrawalRequest(bytes32)'](zeroBytes)
+                    .call()).should.has.property('exist').to.false;
             });
 
-            it('should fail if withdrawal request not found', async () => {
-                await assertRevert(
-                    orgId
-                        .methods['getWithdrawalRequest(bytes32)'](organizationIdNoRequest)
-                        .call(),
-                    'OrgId: Withdrawal request not found'
-                );
+            it('should return exist=false withdrawal request not found', async () => {
+                (await orgId
+                    .methods['getWithdrawalRequest(bytes32)'](organizationIdNoRequest)
+                    .call()).should.has.property('exist').to.false;
             });
 
             it('should return withrdawal request info', async () => {
                 const request = await orgId
                     .methods['getWithdrawalRequest(bytes32)'](organizationId)
                     .call();
+                (await orgId
+                    .methods['getWithdrawalRequest(bytes32)'](organizationId)
+                    .call()).should.has.property('exist').to.true;
                 (request).should.be.an('object')
                     .that.has.property('value')
                     .to.equal(depositValue);
