@@ -251,7 +251,7 @@ module.exports = async (options) => {
 
         upgradeProxiesParsed.unshift[config.contract.proxy];
 
-        const upgradedContracts = await Promise.all(upgradeProxiesParsed.map(
+        await Promise.all(upgradeProxiesParsed.map(
             i => project.upgradeProxy(
                 i,
                 ContractSchema,

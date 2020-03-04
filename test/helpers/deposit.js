@@ -1,4 +1,4 @@
-const { assertRevert, assertEvent } = require('../helpers/assertions');
+const { assertEvent } = require('../helpers/assertions');
 const { toBN } = require('../helpers/common');
 
 /**
