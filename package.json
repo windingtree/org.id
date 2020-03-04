@@ -12,6 +12,7 @@
     "lint:fix": "npx eslint test management --fix && npx solhint 'contracts/**/*.sol'",
     "verify": "npx truffle run verify --mode=quick --ci OrgId.sol",
     "dev-net": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
+    "geth": "management/geth.sh",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "management/soldoc.sh",
     "flattener": "management/flattener.sh",
