@@ -4,7 +4,8 @@ const { parseArgv } = require('./utils/cli');
 // Commands modules
 const {
     version,
-    contract,
+    deploy,
+    upgrade,
     makehash,
     call,
     tx,
@@ -15,11 +16,17 @@ const {
 const main = async () => {
     const args = parseArgv(process.argv, 6);
 
-    await version();
-
     switch (args.cmd) {
-        case 'contract':
-            await contract(args);
+        case 'version':
+            await version();
+            break;
+            
+        case 'deploy':
+            await deploy(args);
+            break;
+
+        case 'upgrade':
+            await upgrade(args);
             break;
 
         case 'makehash':

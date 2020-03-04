@@ -3,6 +3,14 @@ This CLI is dedicated to the deployment of the new contracts instances, managing
 
 > All commands are require proper network configuration in the `truffle.js` file
 
+## Get Starting
+
+Before the first use of the CLI run this command  
+
+```bash
+npm link
+```
+
 ## Commands    
   - [version](#version)
   - [makehash](#makehash)
@@ -11,7 +19,7 @@ This CLI is dedicated to the deployment of the new contracts instances, managing
   - [call](#call)
   - [task](#task)
 
-Usage: `./management/index.js --network [NETWORK_NAME] cmd=[COMMAND] [PARAMETERS]`
+Usage: `orgid-tools --network <NETWORK_NAME> cmd=<COMMAND> <PARAMETERS>`
 
 ## version
 
@@ -21,119 +29,123 @@ Prints the current package version.
 
 ## makehash
 
-Usage: `cmd=makehash [PROPERTIES]`  
+Usage: `cmd=makehash <PROPERTIES>`  
 
 Generates a hash of the given json file using keccak method from solidity. This hash should be used as ORG.ID JSON validation parameter.  
 
 Parameters: 
-- `file=[PATH_TO_JSON]`
+- `file=<PATH_TO_JSON>`
   Relative path to the ORG.ID json file. 
 
-## contract
+## deploy
 
-Usage: `cmd=contract [PROPERTIES]`  
+Usage: `cmd=deploy <PROPERTIES>`  
 
-Manages contracts deployments and upgrades.
+Manages contracts deployments.
 
 Parameters: 
-- `name=[CONTRACT_NAME]`  
+- `name=<CONTRACT_NAME>`  
   Contract name to deploy or upgrade  
   
-- `from=[SENDER_ACCOUNT_ADDRESS]`  
+- `from=<SENDER_ACCOUNT_ADDRESS>`  
   Account address that should be used to signing transactions   
 
-- `initMethod=[INITIALIZER_METHOD_NAME]`  
+- `initMethod=<INITIALIZER_METHOD_NAME>`  
   Name of the contract initializer method name. Optional. Default value: "initialize"  
 
-- `initArgs=[INITIALIZER_ARGUMENTS]`
-  Initializer arguments separated by comma. Optional.  
+- `initArgs=<INITIALIZER_ARGUMENTS>`
+  Initializer arguments separated by comma. Optional.
 
-- `upgradeMethod=[UPGRADE_INITIALIZER_METHOD_NAME]`  
-  Contract upgrade method name. Optional. Will be ignored in case of initial deployment. Default value: "initialize"
-
-- `upgradeArgs=[UPGRADE_INITIALIZER_ARGUMENTS]`  
-  Initializer arguments separated by coma. Optional.  
-
-- `upgradeProxies=[PROXIES_ADDRESSES_LIST_TO_UPGRADE]`  
-  A comma-separated list of the proxies address to be upgraded (except of root contract proxy).
-
-- `dao=[DAO_ADDRESS]`  
-  Reserved parameter.
-
-In the `initArgs` or `upgradeArgs` there are can be used special template such as `[APP]` and [PROXY_ADMIN]. These templates will be replaced with values obtained at run time by their values. `APP` and `PROXY_ADMIN` are the addresses of contracts instances from the OpenZeppelin upgradeability framework used in this solution.
+In the `initArgs` or `upgradeArgs` there are can be used special template such as `[OWNER]` and [PROXY_ADMIN]. These templates will be replaced with values obtained at run time by their values. `OWNER` and `PROXY_ADMIN` are the addresses of contracts instances from the OpenZeppelin upgradeability framework used in this solution.
 
 As result of initial deployment of the contract will created a project confiruration file with following content:  
 
 ```json
 {
-  "version": "0.9.0",
+  "version": "0.11.3",
   "contract": {
-    "name": "Organization",
-    "implementation": "0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7",
-    "proxy": "0x59d3631c86BbE35EF041872d502F218A39FBa150"
+    "name": "OrgId",
+    "implementation": "0x11Ff015b28E0Fb1897a8D84439C7B8390aF71dA3",
+    "proxy": "0xA2Fc2108FB7DFADCb637e1cd636521AeEdE8BE6c"
   },
-  "owner": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-  "app": "0xe78A0F7E598Cc8b0Bb87894B0F60dD2a88d6a8Ab",
-  "proxyAdmin": "0xD833215cBcc3f914bD1C9ece3EE7BF8B14f841bb",
-  "implementationDirectory": "0xCfEB869F69431e42cdB54A4F4f105C19C080A601",
-  "package": "0x5b1869D9A4C187F2EAa108f3062412ecf0526b24",
-  "blockNumber": 9
+  "owner": "0xf9fb2fac0781b6c2b57d44b1890bcaec20a1cb38",
+  "proxyAdmin": "0x73eb34Fe7b24918fF8366C4d15e57887998C2747",
+  "blockNumber": 18
 }
 ```
 The name of this file is forming by the following template:  
-`[NETWORK_TYPE]-[CONTRACT_NAME].json`
+`<NETWORK_TYPE>-<CONTRACT_NAME>.json`
 
 If this file will be detected on the utility start the whole following process will go by the upgrade workflow.  
 
+## upgrade
+
+Usage: `cmd=upgrade <PROPERTIES>`  
+
+Manages contracts upgrades.
+
+Parameters: 
+- `name=<CONTRACT_NAME>`  
+  Contract name to deploy or upgrade  
+  
+- `from=<SENDER_ACCOUNT_ADDRESS>`  
+  Account address that should be used to signing transactions   
+
+- `initMethod=<INITIALIZER_METHOD_NAME>`  
+  Name of the contract initializer method name. Optional. 
+
+- `initArgs=<INITIALIZER_ARGUMENTS>`
+  Initializer arguments separated by comma. Optional.
+
 ## tx
 
-Usage: `cmd=tx [PROPERTIES]`  
+Usage: `cmd=tx <PROPERTIES>`  
 
 Sending transactions to the contract instances. 
 
 Properties:  
-- `name=[CONTRACT_NAME]`  
+- `name=<CONTRACT_NAME>`  
   Contract name to transaction sending  
   
-- `from=[SENDER_ACCOUNT_ADDRESS]`  
+- `from=<SENDER_ACCOUNT_ADDRESS>`  
   Account address that should be used to signing transactions   
 
-- `address=[CONTRACT_PROXY_ADDRESS]`  
+- `address=<CONTRACT_PROXY_ADDRESS>`  
   Address of the deployed contract (proxy) on the network
 
-- `method=[CONTRACT_METHOD_NAME]`  
+- `method=<CONTRACT_METHOD_NAME>`  
   Transaction method
 
-- `args=[ARGUMENTS]`  
+- `args=<ARGUMENTS>`  
   Transactio arguments
 
 ## call
 
-Usage: `cmd=call [PROPERTIES]`  
+Usage: `cmd=call <PROPERTIES>`  
 
 Sending transactions to the contract instances. 
 
 Properties:  
-- `name=[CONTRACT_NAME]`  
+- `name=<CONTRACT_NAME>`  
   Contract name  
   
-- `address=[CONTRACT_PROXY_ADDRESS]`  
+- `address=<CONTRACT_PROXY_ADDRESS>`  
   Address of the deployed contract (proxy) on the network
 
-- `method=[CONTRACT_METHOD_NAME]`  
+- `method=<CONTRACT_METHOD_NAME>`  
   Contract method to call
 
-- `args=[ARGUMENTS]`  
+- `args=<ARGUMENTS>`  
   Contract method arguments  
 
 ## task
 
-Usage: `cmd=task [PROPERTIES]`  
+Usage: `cmd=task <PROPERTIES>`  
 
 Running the series of predefined commands
 
 Properties:
-- `file=[PATH_TO_FILE]`
+- `file=<PATH_TO_FILE>`
   Relative path to the file that contains a configuration of the task. 
 
 Configuration of the task it is a list of objects with options for each command. All commands are running in the common data scope. Result of each command execution is saved in this common scope and can be used by the next coming command as source for options. To use a result of the execution of the previous command is possible by using a special template for the parameter.  
@@ -155,18 +167,34 @@ Here the example of possible task configuration:
         }
     },
     {
-        "command": "contract",
+        "command": "deploy",
         "parameters": {
-            "name": "Organization",
+            "name": "OrgId",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+            "initMethod": "initialize",
             "initArgs": [
-                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+                "[OWNER]",
+                "0x8060F19e1b19923ad4b9D54Ce64151Ed403f9168"
+            ]
+        }
+    },
+    {
+        "command": "makehash",
+        "parameters": {
+            "file": "./assets/orgid-legal.json"
+        }
+    },
+    {
+        "command": "tx",
+        "parameters": {
+            "name": "OrgId",
+            "address": "[TASK:2:contract.proxy]",
+            "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
+            "method": "createOrganization(bytes32,string,bytes32)",
+            "args": [
+                "0x31f5e1745a65fd8a2dd556c8b27d8d585ed184876126779e1323c6a1f06c68f0",
                 "https://gist.githubusercontent.com/[username]/3bde88a0e8248c73c68c1aed2ca4b9be/raw/5df8c96ceff4d0fa99a32d1da63b061ad4b27ccd/ORG.ID",
-                "[TASK:1:hash]",
-                "[APP]",
-                "[PROXY_ADMIN]",
-                "0x0000000000000000000000000000000000000000",
-                "0x0000000000000000000000000000000000000000"
+                "[TASK:1:hash]"
             ]
         }
     },
@@ -179,16 +207,16 @@ Here the example of possible task configuration:
     {
         "command": "tx",
         "parameters": {
-            "name": "Organization",
+            "name": "OrgId",
             "address": "[TASK:2:contract.proxy]",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
             "method": "createSubsidiary(string,bytes32,address,string,string)",
             "args": [
+                "0x31f5e1745a65fd8a2dd556c8b27d8d585ed184876126779e1323c6a1f06c68f0",
+                "0x5ba8f3df5408ee9db90015040cf8cacca679a145ca3452cbd09b66eac2e54cdc",
+                "0xa284D6724Ab7D8194b0D894C74C34318c1319391",
                 "https://gist.githubusercontent.com/[username]/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID",
-                "[TASK:3:hash]",
-                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-                "",
-                ""
+                "[TASK:3:hash]"
             ]
         }
     }

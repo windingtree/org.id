@@ -62,4 +62,6 @@ module.exports = async (options) => {
     const result = await (await contract.methods[method].apply(contract, argsParsed)).send(txParams);
 
     log('Result', parseCallResult(result));
+
+    return result;
 };

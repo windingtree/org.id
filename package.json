@@ -23,6 +23,9 @@
     "prebuild": "npm run clean",
     "build": "npx truffle compile && npm run build-index"
   },
+  "bin": {
+    "orgid-tools": "./management/tools/index.js"
+  },
   "publishConfig": {
     "access": "public"
   },
