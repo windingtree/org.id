@@ -2,13 +2,13 @@
   "version": "0.11.3",
   "contract": {
     "name": "OrgId",
-    "implementation": "0x8d2EC5b2c3EE69E3864193AFcfd66850389c22Df",
-    "proxy": "0x27B9dFa2607AaF3730Dad5c0E9fa8f6Dc0F2B49f"
+    "implementation": "0x213Ede46e15e28B9CB0342cF6bf309E759799CF8",
+    "proxy": "0x3b12cbB971876423DcAf74D8381bA1C27Aed9A5C"
   },
   "owner": "0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959",
-  "app": "0xCD715C9EC87404730734113650272d8f83bbc306",
-  "proxyAdmin": "0x1Fb69f265b222035dEe7BD14c27563E06C6b0D1e",
-  "implementationDirectory": "0xD0fc06C3bC68Ca119aCbF6e7B261081d4B1D96a7",
-  "package": "0x7D5274A6436A9D3aAE6fE8806C682664A01EA3c3",
-  "blockNumber": 7452263
+  "app": "0x4027bB8E8cef9C1867099847784F1fBffCC9f193",
+  "proxyAdmin": "0x78E9C04D751F0a6baeDE7302099b73AB902e1af9",
+  "implementationDirectory": "0x4CbF879f831660501106FBD9a153655D90F03ed2",
+  "package": "0xB185caFE7719352f7ccf00E4ef3Cf0769c2620a7",
+  "blockNumber": 7358891
 }
