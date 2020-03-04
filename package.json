@@ -19,7 +19,7 @@
     "clean": "rimraf build",
     "build-index": "node management/build-index.js > index.js",
     "set-oz-version": "npx openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
-    "version": "npm run set-oz-version && git add .openzeppelin/project.json && npm run build-index && git add index.js",
+    "version": "npm run set-oz-version && git add .openzeppelin/project.json && npm run build-index",
     "prebuild": "npm run clean",
     "build": "npx truffle compile && npm run build-index"
   },

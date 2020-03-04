@@ -358,6 +358,7 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
+| *bool* | exist | The organizatoin existence flag |
 | *bytes32* | orgId | The organization orgId |
 | *string* | orgJsonUri | orgJsonUri pointer of this Organization |
 | *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
@@ -430,6 +431,7 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
+| *bool* | exist | The request existence flag |
 | *uint256* | value | Deposit withdrawal value |
 | *uint256* | withdrawTime | Withraw time on seconds |
 
