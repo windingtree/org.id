@@ -128,7 +128,7 @@ module.exports = async (options) => {
             }
         ));
 
-    log('Proxy upgraded at address', proxy.address);
+    log('COntract upgraded at address', proxy.address);
 
     // Creation of the deployment configuration file
     deploymentConfig.version = packageJson.version;
