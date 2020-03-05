@@ -1,0 +1,58 @@
+{
+    "@context": [
+        "https://www.w3.org/ns/did/v1",
+        "https://windingtree.com/ns/orgid/v1"
+    ],
+    "id": "did:orgid:0x5e6994f76764ceb42c476a2505065a6170178a24c03d81c9f372563830001171",
+    "created": "2019-01-01T13:10:02.251Z",
+    "updated": "2019-06-03T13:20:06.398Z",
+    "publicKey": [
+        {
+            "id": "did:orgid:0x7D4d6d06587dE48F339E209687fA53Cc6c169319#firstkey",
+            "type": "X25519",
+            "controller": "did:orgid:0x7D4d6d06587dE48F339E209687fA53Cc6c169319",
+            "publicKeyPem": "MCowBQYDK2VuAyEAbiR4HzIZUp1EVvPNo9SkqqeW1gFegxeTr00AFnT35Sg=",
+            "note": "Key 1"
+        },
+        {
+            "id": "did:orgid:0x7D4d6d06587dE48F339E209687fA53Cc6c169319#secondkey",
+            "type": "secp256k1",
+            "controller": "did:orgid:0x7D4d6d06587dE48F339E209687fA53Cc6c169319",
+            "publicKeyPem": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEBJML80bkZOMpYXnWmDWfIfvMH5LldhPPWtPhg9EWgDCpBNyyaD1J04oWC7ajum4FrnzApdFHpQALcqPWFtPTuQ==",
+            "note": "Key 2"
+        }
+    ],
+    "service": [],
+    "trust": {
+        "assertions": [
+            {
+                "type": "dns",
+                "claim": "simard.io",
+                "proof": "TXT"
+            },
+            {
+                "type": "domain",
+                "claim": "simard.io",
+                "proof": "https://simard.io/orgid.txt"
+            }
+        ],
+        "credentials": []
+    },
+    "legalEntity": {
+        "legalName": "Simard OÜ",
+        "alternativeName": "Simard",
+        "legalIdentifier": "14905495",
+        "identifiers": [],
+        "legalForm": "OÜ",
+        "registeredAddress": {
+            "country": "EE",
+            "subdivision": "37",
+            "locality": "Tallinn",
+            "postalCode": "10115",
+            "streetAddress": "Tartu mnt 67/1",
+            "premise": "13b"
+        },
+        "locations": [],
+        "contacts": []
+    }
+}
