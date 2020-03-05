@@ -161,19 +161,13 @@ Here the example of possible task configuration:
         "command": "version"
     },
     {
-        "command": "makehash",
-        "parameters": {
-            "file": "./assets/orgid-legal.json"
-        }
-    },
-    {
         "command": "deploy",
         "parameters": {
             "name": "OrgId",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
             "initMethod": "initialize",
             "initArgs": [
-                "[OWNER]",
+                "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
                 "0x8060F19e1b19923ad4b9D54Ce64151Ed403f9168"
             ]
         }
@@ -194,7 +188,7 @@ Here the example of possible task configuration:
             "args": [
                 "0x31f5e1745a65fd8a2dd556c8b27d8d585ed184876126779e1323c6a1f06c68f0",
                 "https://gist.githubusercontent.com/[username]/3bde88a0e8248c73c68c1aed2ca4b9be/raw/5df8c96ceff4d0fa99a32d1da63b061ad4b27ccd/ORG.ID",
-                "[TASK:1:hash]"
+                "[TASK:2:hash]"
             ]
         }
     },
@@ -216,7 +210,7 @@ Here the example of possible task configuration:
                 "0x5ba8f3df5408ee9db90015040cf8cacca679a145ca3452cbd09b66eac2e54cdc",
                 "0xa284D6724Ab7D8194b0D894C74C34318c1319391",
                 "https://gist.githubusercontent.com/[username]/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID",
-                "[TASK:3:hash]"
+                "[TASK:4:hash]"
             ]
         }
     }
@@ -225,7 +219,9 @@ Here the example of possible task configuration:
 
 The explanation of this task:
 - Running of `version` command
-- Running `makehash` command
-- Running of `contract` command. Option value `[TASK:1:hash]` will be replaced with result of running previous step
-- Running `makehash` command for another file
-- Running `tx` command. Option value `[TASK:2:contract.proxy]` will be replaced with the value from the result of command running on step 2  
+- Running of `deploy` command. Initial OrgId deployment
+- Running `makehash` command for file `./assets/orgid-legal.json`
+- Running of `tx` command. Creation of an Organization record. The hash is obtained from previous step
+- Running `makehash` command for file `./assets/orgid-unit.json`
+- Running of `tx` command. Creation of an Subsidiary record. The hash is obtained from previous step
+
