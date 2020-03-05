@@ -109,7 +109,6 @@ module.exports = async (options) => {
         txParams,
         deploymentConfig.proxyAdmin
     );
-    const proxyAdmin = await project.getAdminAddress();
     
     // Upgrading of the contract
     const proxy = await project.upgradeProxy(
@@ -123,17 +122,16 @@ module.exports = async (options) => {
             !initArgsParsed ? {} : {
                 initArgs: applyArgs(initArgsParsed, {
                     '[OWNER]': from,
-                    '[PROXY_ADMIN]': proxyAdmin
+                    '[PROXY_ADMIN]': deploymentConfig.proxyAdmin
                 })
             }
         ));
 
-    log('COntract upgraded at address', proxy.address);
+    log('Contract upgraded at address', proxy.address);
 
     // Creation of the deployment configuration file
     deploymentConfig.version = packageJson.version;
     deploymentConfig.owner = from;
-    deploymentConfig.proxyAdmin = proxyAdmin;
     deploymentConfig.contract.name = name;
     deploymentConfig.contract.proxy = proxy.address;
     deploymentConfig.contract.implementation =

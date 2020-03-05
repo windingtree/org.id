@@ -6,6 +6,6 @@
     "proxy": "0xc8fD300bE7e4613bCa573ad820a6F1f0b915CfcA"
   },
   "owner": "0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959",
-  "proxyAdmin": null,
+  "proxyAdmin": "0x9F67949EE6aA9C94c959Ba64F03781a11ed130fD",
   "blockNumber": 7455603
 }

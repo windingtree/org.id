@@ -92,7 +92,6 @@ module.exports = async (options) => {
         
     // Setup upgradeability project
     const project = new ProxyAdminProject(name, null, null, txParams);
-    const proxyAdmin = await project.getAdminAddress();
     
     // Deployment of the contract
     const proxy = await project.createProxy(ContractSchema, Object.assign(
@@ -102,8 +101,7 @@ module.exports = async (options) => {
         },
         !initArgsParsed ? {} : {
             initArgs: applyArgs(initArgsParsed, {
-                '[OWNER]': from,
-                '[PROXY_ADMIN]': proxyAdmin
+                '[OWNER]': from
             })
         }
     ));
@@ -113,7 +111,7 @@ module.exports = async (options) => {
     // Creation of the deployment configuration file
     deploymentConfig.version = packageJson.version;
     deploymentConfig.owner = from;
-    deploymentConfig.proxyAdmin = proxyAdmin;
+    deploymentConfig.proxyAdmin = await project.getAdminAddress();
     deploymentConfig.contract.name = name;
     deploymentConfig.contract.proxy = proxy.address;
     deploymentConfig.contract.implementation =
