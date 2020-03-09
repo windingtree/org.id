@@ -15,7 +15,6 @@ geth \
     --wsaddr 0.0.0.0 \
     --wsorigins "*" \
     --wsapi debug,web3,eth,personal,miner,net \
-    --fakepow \
     --mine \
     --miner.threads 1 \
     --datadir /data \
