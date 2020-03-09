@@ -8,16 +8,16 @@
     "updated": "2019-06-03T13:20:06.398Z",
     "publicKey": [
         {
-            "id": "did:orgid:0x99894FAb38E35b726ceb8345e74dDe6716E6bd51#firstkey",
+            "id": "did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0#firstkey",
             "type": "X25519",
-            "controller": "did:orgid:0x99894FAb38E35b726ceb8345e74dDe6716E6bd51",
+            "controller": "did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0",
             "publicKeyPem": "MCowBQYDK2VuAyEAosPy/TSQ2PCqszOh/maErE6yztM8jwJ5JtypoatDaUM=",
             "note": "Key 1"
         },
         {
-            "id": "did:orgid:0x99894FAb38E35b726ceb8345e74dDe6716E6bd51#secondkey",
+            "id": "did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0#secondkey",
             "type": "secp256k1",
-            "controller": "did:orgid:0x99894FAb38E35b726ceb8345e74dDe6716E6bd51",
+            "controller": "did:orgid:0x71cd1781a3082f33d2521ac8290c9d4b3b3b116e4e8548a4914b71a1f7201da0",
             "publicKeyPem": "MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEE7NX18FJE2bxiNdlD2vpL5Im36UB7OSkw2+Gq2wySQmX9BLVoTXZk+iHrv1vGKOIFGUbCn9CvoWY41vA3mOXeQ==",
             "note": "Key 2"
         }
@@ -45,7 +45,14 @@
         ],
         "description": "Glider is world's first open-source OTA",
         "longDescription": "",
-        "address": {},
+        "address": {
+            "country": "",
+            "subdivision": "",
+            "locality": "",
+            "postalCode": "",
+            "streetAddress": "",
+            "premise": ""
+        },
         "openingHours": [],
         "contacts": [],
         "media": {
