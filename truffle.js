@@ -43,7 +43,7 @@ module.exports = {
             gas: 8000000,
             gasPrice: 20000000000
         },
-        mainnet: getInfuraConfig('mainnet', 1),
+        main: getInfuraConfig('mainnet', 1),
         ropsten: getInfuraConfig('ropsten', 3),
         rinkeby: getInfuraConfig('rinkeby', 4),
     },
