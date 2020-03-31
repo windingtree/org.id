@@ -14,7 +14,8 @@ npm link
 ## Commands    
   - [version](#version)
   - [makehash](#makehash)
-  - [contract](#contract)
+  - [deploy](#deploy)
+  - [upgrade](#upgrade)
   - [tx](#tx)
   - [call](#call)
   - [task](#task)

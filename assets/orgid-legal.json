@@ -57,7 +57,7 @@
                 "value": "CH-170.7.000.838-1"
             }
         ],
-        "legalForm": "Stiftung",
+        "legalType": "Stiftung",
         "registeredAddress": {
             "country": "CH",
             "subdivision": "ZG",

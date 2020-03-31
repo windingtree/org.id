@@ -117,7 +117,7 @@ The filename of the configuration file is formed according to mask:
 Upgrading of the contract is pretty similar to the deployment procedure but with a little difference. To be able to make an upgrade a configuration file (that had been created on the previous step) must already exist. So do not remove file with deployment information. In opposite case, the error message will be thrown and you will not be able to upgrade the contract. The second thing is a repository version. This version should be different from the previously deployed.
 
 ```bash
-$ orgid-tools --network ropsten cmd=deploy name=OrgId from=0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959 initMethod=setInterfaces
+$ orgid-tools --network ropsten cmd=upgrade name=OrgId from=0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959 initMethod=setInterfaces
 ```
 
 The result will look like:
