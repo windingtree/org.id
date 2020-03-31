@@ -10,7 +10,7 @@ const bundle = [
     'OrgIdInterface.json'
 ];
 const deploymentsInfo = [
-    'mainnet-OrgId.json',
+    'main-OrgId.json',
     'ropsten-OrgId.json',
     'rinkeby-OrgId.json'
 ];
