@@ -148,6 +148,8 @@ Running the series of predefined commands
 Properties:
 - `file=<PATH_TO_FILE>`
   Relative path to the file that contains a configuration of the task. 
+- `params=FROM:<addr>,HOLDER1:<addr>,HOLDER2:<addr>`
+  Parameters that can be used as in-script commands parameters replacements.
 
 Configuration of the task it is a list of objects with options for each command. All commands are running in the common data scope. Result of each command execution is saved in this common scope and can be used by the next coming command as source for options. To use a result of the execution of the previous command is possible by using a special template for the parameter.  
 For example: `[TASK:2:contract.proxy]` where:

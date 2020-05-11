@@ -3,11 +3,12 @@
   "contracts": {
     "OrgId": "OrgId",
     "OrgIdUpgradeability": "OrgIdUpgradeability",
-    "OrgIdTimeMachine": "OrgIdTimeMachine"
+    "OrgIdTimeMachine": "OrgIdTimeMachine",
+    "LifTestInitializable": "LifTestInitializable"
   },
   "dependencies": {},
   "name": "org.id",
-  "version": "0.11.4",
+  "version": "0.11.5",
   "publish": true,
   "compiler": {
     "manager": "openzeppelin",

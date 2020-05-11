@@ -1,5 +1,5 @@
 const { title, log } = require('../utils/stdout');
-const { parseParams, parseCallResult } = require('../utils/cli');
+const { parseParams, applyArgs, parseCallResult } = require('../utils/cli');
 const expect = require('../utils/expect');
 const truffleJs = require('../../../truffle');
 
@@ -42,7 +42,12 @@ module.exports = async (options) => {
     let argsParsed = [];
 
     if (args) {
-        argsParsed = parseParams(args);
+        argsParsed = applyArgs(
+            parseParams(args),
+            {
+                '[OWNER]': from
+            }
+        );
     }
 
     log('Arguments', args || '');

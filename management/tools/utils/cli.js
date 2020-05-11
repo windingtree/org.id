@@ -15,6 +15,20 @@ module.exports.parseArgv = (argv, skip = 0) => {
     let normalised = [];
     const args = {};
 
+    argv = Object.entries(
+        argv
+            .map(p => p.split('='))
+            .reduce((a, v) => {
+                if (a[v[0]]) {
+                    a[v[0]] = `${a[v[0]]},${v[1]}`;
+                } else {
+                    a[v[0]] = v[1];
+                }
+                return a;
+            }, {})
+    )
+        .map(p => `${p[0]}=${p[1]}`);
+    
     argv.forEach((arg) => {
 
         // Splitting and cleananup

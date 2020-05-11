@@ -1,0 +1,58 @@
+[
+    {
+        "command": "version"
+    },
+    {
+        "command": "deploy",
+        "parameters": {
+            "name": "LifTestInitializable",
+            "from": "[FROM]",
+            "initMethod": "initialize",
+            "initArgs": [
+                "[FROM]",
+                "Lif Token (Private Testnet)",
+                "Lif",
+                "18",
+                "1000000000000000000000000"
+            ]
+        }
+    },
+    {
+        "command": "tx",
+        "parameters": {
+            "name": "LifTestInitializable",
+            "address": "[TASK:1:contract.proxy]",
+            "from": "[FROM]",
+            "method": "transfer(address,uint256)",
+            "args": [
+                "[HOLDER1]",
+                "100000000000000000000"
+            ]
+        }
+    },
+    {
+        "command": "tx",
+        "parameters": {
+            "name": "LifTestInitializable",
+            "address": "[TASK:1:contract.proxy]",
+            "from": "[FROM]",
+            "method": "transfer(address,uint256)",
+            "args": [
+                "[HOLDER2]",
+                "100000000000000000000"
+            ]
+        }
+    },
+    {
+        "command": "deploy",
+        "parameters": {
+            "name": "OrgId",
+            "from": "[FROM]",
+            "initMethod": "initialize",
+            "initArgs": [
+                "[FROM]",
+                "[TASK:1:contract.proxy]"
+            ]
+        }
+    }
+]

@@ -38,3 +38,49 @@ module.exports.buildTaskOptions = (properties, resultsScope) => {
 
     return options;
 };
+
+/**
+ * Parse grouped command parameters
+ * @param {Object} params
+ * @returns {Object}
+ */
+module.exports.parseParamsReplacements = params => {
+    
+    if (!params) {
+        return {};
+    }
+
+    return params.split(',').reduce((a, v) => {
+        console.log('!!!', v);
+        const param = v.trim().split(':');
+        a[`[${param[0]}]`] = param[1];
+        return a;
+    }, {});
+};
+
+/**
+ * Replace templated paramenters with provided value
+ * @param {Object} taskParams
+ * @param {Object} replacements
+ * @returns {Object}
+ */
+module.exports.applyParamsReplacements = (taskParams, replacements) => {
+
+    if (!replacements || !Object.keys(replacements).length === 0) {
+        return taskParams;
+    }
+
+    const replace = (param, replacements) => replacements[param]
+        ? replacements[param]
+        : param;
+
+    for (const param in taskParams) {
+
+        if (Array.isArray(taskParams[param])) {
+            taskParams[param] = taskParams[param].map(p => replace(p, replacements));
+        } else if (typeof param === 'string') {
+            taskParams[param] = replace(taskParams[param], replacements);
+        }
+    }
+    return taskParams;
+};

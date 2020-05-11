@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const { parseParamsReplacements, applyParamsReplacements } = require('../utils/tasks');
 const { title, log } = require('../utils/stdout');
 const { buildTaskOptions } = require('../utils/tasks');
 const expect = require('../utils/expect');
@@ -10,14 +11,28 @@ module.exports = async (options) => {
     expect.all(options, {
         file: {
             type: 'string'
+        },
+        params: {
+            type: 'string',
+            required: false
         }
     });
 
     const {
-        file
+        file,
+        params
     } = options;
+    var parsedParamsReplacements;
 
     log('Task file name', file);
+
+    if (params) {
+        parsedParamsReplacements = parseParamsReplacements(params);
+        log(
+            'Commands params replacements provided',
+            JSON.stringify(parsedParamsReplacements, null, 2)
+        );
+    }
 
     let taskJson;
 
@@ -28,7 +43,8 @@ module.exports = async (options) => {
         );
         taskJson = JSON.parse(jsonString);
     } catch (e) {
-        log('Unable to read ORG.ID JSON file due to error', e.message);
+        log('Unable to read ORG.ID Tasks JSON file due to error', e.message);
+        return;
     }
 
     if (!taskJson) {
@@ -39,6 +55,11 @@ module.exports = async (options) => {
     let command;
 
     for (const task of taskJson) {
+        
+        task.parameters = applyParamsReplacements(
+            task.parameters,
+            parsedParamsReplacements
+        );
 
         try {
             command = require(`./${task.command}`);
