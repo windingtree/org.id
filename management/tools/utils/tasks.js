@@ -51,7 +51,6 @@ module.exports.parseParamsReplacements = params => {
     }
 
     return params.split(',').reduce((a, v) => {
-        console.log('!!!', v);
         const param = v.trim().split(':');
         a[`[${param[0]}]`] = param[1];
         return a;
