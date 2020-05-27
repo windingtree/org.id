@@ -1,11 +1,11 @@
 pragma solidity >=0.5.16;
 
-import "../OrgId.sol";
+import "../LifDeposit.sol";
 
 /**
  * @dev Time machine features for the OrgId
  */
-contract OrgIdTimeMachine is OrgId {
+contract LifDepositTimeMachine is LifDeposit {
     uint256 internal _currentTime;
 
     /**

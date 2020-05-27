@@ -3,7 +3,8 @@
   "contracts": {
     "OrgId": "OrgId",
     "OrgIdUpgradeability": "OrgIdUpgradeability",
-    "OrgIdTimeMachine": "OrgIdTimeMachine",
+    "LifDepositUpgradeability": "LifDepositUpgradeability",
+    "LifDepositTimeMachine": "LifDepositTimeMachine",
     "LifTestInitializable": "LifTestInitializable"
   },
   "dependencies": {},
