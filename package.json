@@ -7,24 +7,24 @@
     "doc": "doc"
   },
   "scripts": {
-    "test": "management/test.sh",
-    "lint": "npx eslint test management && npx solhint 'contracts/**/*.sol'",
-    "lint:fix": "npx eslint test management --fix && npx solhint 'contracts/**/*.sol'",
+    "test": "scripts/test.sh",
+    "lint": "npx eslint test scripts && npx solhint 'contracts/**/*.sol'",
+    "lint:fix": "npx eslint test scripts --fix && npx solhint 'contracts/**/*.sol'",
     "verify": "npx truffle run verify --mode=quick --ci OrgId.sol",
     "dev-net": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
-    "geth": "management/geth.sh",
+    "geth": "scripts/geth.sh",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
-    "soldoc": "management/soldoc.sh",
-    "flattener": "management/flattener.sh",
+    "soldoc": "scripts/soldoc.sh",
+    "flattener": "scripts/flattener.sh",
     "clean": "rimraf build",
-    "build-index": "node management/build-index.js > index.js",
+    "build-index": "node scripts/build-index.js > index.js",
     "set-oz-version": "npx openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
     "version": "npm run set-oz-version && git add .openzeppelin/project.json && npm run build-index",
     "prebuild": "npm run clean",
     "build": "npx truffle compile && npm run build-index"
   },
   "bin": {
-    "orgid-tools": "./management/tools/index.js"
+    "orgid-tools": "./scripts/tools/index.js"
   },
   "publishConfig": {
     "access": "public"

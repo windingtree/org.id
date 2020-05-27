@@ -75,7 +75,7 @@ Any organization registered at the OrgId smart contract can make a **deposit of 
 
 ## Contract deployment
 
-All deployments, upgrades, transactions, calls and complex tasks can be hadled using our [command line tools](./management/tools/README.md): 
+All deployments, upgrades, transactions, calls and complex tasks can be hadled using our [command line tools](./scripts/tools/README.md): 
 
 ```bash
 $ orgid-tools --network ropsten cmd=deploy name=OrgId from=0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959 initMethod=initialize initArgs=0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959,0xB6e225194a1C892770c43D4B529841C99b3DA1d7
