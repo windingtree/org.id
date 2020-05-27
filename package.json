@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/org.id",
-  "version": "0.11.7",
+  "version": "0.12.0",
   "description": "ORG.ID is Decentralized Identifier (DID) Protocol for Organizations",
   "directories": {
     "test": "test",

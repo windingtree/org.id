@@ -3,7 +3,7 @@ const { toBN } = require('../helpers/common');
 
 /**
  * Adds deposit
- * @param {Object} orgId OrgId instance
+ * @param {Object} lifDeposit LifDeposit instance
  * @param {string} from Sender address
  * @param {string} id The organization Id
  * @param {string} value The value of Lif tokens to deposit
@@ -11,7 +11,7 @@ const { toBN } = require('../helpers/common');
  * @returns {Promise}
  */
 module.exports.addDeposit = async (
-    orgId,
+    lifDeposit,
     from,
     id,
     value,
@@ -21,15 +21,14 @@ module.exports.addDeposit = async (
     if (tokenAllowance) {
         await tokenAllowance
             .methods['approve(address,uint256)'](
-                orgId.address,
+                lifDeposit.address,
                 value
             )
             .send({ from });
     }
 
-    let organization = await orgId.methods['getOrganization(bytes32)'](id).call();
-    const depositBefore = organization.deposit;
-    const result = await orgId
+    const depositBefore = await lifDeposit.methods['balanceOf(bytes32)'](id).call();
+    const result = await lifDeposit
         .methods['addDeposit(bytes32,uint256)'](
             id,
             value
@@ -37,7 +36,7 @@ module.exports.addDeposit = async (
         .send({ from });
     assertEvent(result, 'LifDepositAdded', [
         [
-            'orgId',
+            'organization',
             p => (p).should.equal(id)
         ],
         [
@@ -49,36 +48,36 @@ module.exports.addDeposit = async (
             p => (p).should.equal(value)
         ]
     ]);
-    organization = await orgId.methods['getOrganization(bytes32)'](id).call();
-    (toBN(organization.deposit)).should.eq.BN(
+    const depositAfter = await lifDeposit.methods['balanceOf(bytes32)'](id).call();
+    (toBN(depositAfter)).should.eq.BN(
         toBN(depositBefore).add(toBN(value))
     );
 };
 
 /**
  * Submits deposit withdrawal request
- * @param {Object} orgId OrgId instance
+ * @param {Object} lifDeposit LifDeposit instance
  * @param {string} from Sender address
- * @param {string} orgIdOwner OrgId owner address
+ * @param {string} lifDepositOwner LifDeposit owner address
  * @param {string} id The organization Id
  * @param {string} value The value of Lif tokens to withdraw
  * @returns {Promise<{Object}>}
  */
 module.exports.submitWithdrawalRequest = async (
-    orgId,
+    lifDeposit,
     from,
-    orgIdOwner,
+    lifDepositOwner,
     id,
     value
 ) => {
-    const timeBefore = await orgId.methods['currentTime()']().call();
-    const delay = await orgId.methods['getWithdrawDelay()']().call();
+    const timeBefore = await lifDeposit.methods['currentTime()']().call();
+    const delay = await lifDeposit.methods['getWithdrawDelay()']().call();
     // stop the time
-    await orgId.methods['setCurrentTime(uint256)'](timeBefore).send({
-        from: orgIdOwner
+    await lifDeposit.methods['setCurrentTime(uint256)'](timeBefore).send({
+        from: lifDepositOwner
     });
     let withdrawTime;
-    const result = await orgId
+    const result = await lifDeposit
         .methods['submitWithdrawalRequest(bytes32,uint256)'](
             id,
             value
@@ -86,7 +85,7 @@ module.exports.submitWithdrawalRequest = async (
         .send({ from });
     assertEvent(result, 'WithdrawalRequested', [
         [
-            'orgId',
+            'organization',
             p => (p).should.equal(id)
         ],
         [
@@ -113,39 +112,39 @@ module.exports.submitWithdrawalRequest = async (
 
 /**
  * Withdrawal deposit
- * @param {Object} orgId OrgId instance
+ * @param {Object} lifDeposit LifDeposit instance
  * @param {string} from Sender address
- * @param {string} orgIdOwner OrgId owner address
+ * @param {string} lifDepositOwner OrgId owner address
  * @param {string} id The organization Id
  * @param {string} rewindTime Flag for time machine activation
  * @returns {Promise}
  */
 module.exports.withdrawDeposit = async (
-    orgId,
+    lifDeposit,
     from,
-    orgIdOwner,
+    lifDepositOwner,
     id,
     rewindTime = false
 ) => {
-    const timeBefore = await orgId.methods['currentTime()']().call();
-    const delay = await orgId.methods['getWithdrawDelay()']().call();
+    const timeBefore = await lifDeposit.methods['currentTime()']().call();
+    const delay = await lifDeposit.methods['getWithdrawDelay()']().call();
     const withdrawTime = toBN(timeBefore).add(toBN(delay)).toString();
-    const request = await orgId
+    const request = await lifDeposit
         .methods['getWithdrawalRequest(bytes32)'](id)
         .call();
     
     if (rewindTime) {
-        await orgId.methods['setCurrentTime(uint256)'](withdrawTime).send({
-            from: orgIdOwner
+        await lifDeposit.methods['setCurrentTime(uint256)'](withdrawTime).send({
+            from: lifDepositOwner
         });
     }
     
-    const result = await orgId
+    const result = await lifDeposit
         .methods['withdrawDeposit(bytes32)'](id)
         .send({ from });
     assertEvent(result, 'DepositWithdrawn', [
         [
-            'orgId',
+            'organization',
             p => (p).should.equal(id)
         ],
         [
@@ -157,7 +156,7 @@ module.exports.withdrawDeposit = async (
             p => (p).should.equal(request.value)
         ]
     ]);
-    (await orgId
+    (await lifDeposit
         .methods['getWithdrawalRequest(bytes32)'](id)
         .call()).should.has.property('exist').to.false;
 };

@@ -91,7 +91,7 @@ contract LifDeposit is LifDepositInterface, Ownable, ERC165, Initializable {
             bool state,
             bool directorConfirmed
         ) = orgId.getOrganization(organization);
-        require(exit, "LifDeposit: Organization not found");
+        require(exist, "LifDeposit: Organization not found");
         require(
             organizationOwner == msg.sender || 
             (
@@ -186,7 +186,7 @@ contract LifDeposit is LifDepositInterface, Ownable, ERC165, Initializable {
     {
         require(value > 0, "LifDeposit: Invalid withdrawal value");
         require(
-            value <= organizations[organization],
+            value <= deposits[organization],
             "LifDeposit: Insufficient balance"
         );
         uint256 withdrawTime = time().add(withdrawDelay);
@@ -221,8 +221,23 @@ contract LifDeposit is LifDepositInterface, Ownable, ERC165, Initializable {
     }
 
     /**
+     * @dev Returns deposit value of the organization
+     * @param organization The organization Id
+     * @return {
+         "balance": "Deposit value"
+     }
+     */
+    function balanceOf(bytes32 organization)
+        external
+        view
+        returns (uint256 balance)
+    {
+        balance = deposits[organization];
+    }
+
+    /**
      * @dev Trunsfers deposited tokens to the sender
-     * @param orgId The organization OrgId
+     * @param organization The organization OrgId
      */
     function withdrawDeposit(
         bytes32 organization

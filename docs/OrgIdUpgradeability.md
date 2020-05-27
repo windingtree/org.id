@@ -1,9 +1,6 @@
 * [OrgIdUpgradeability](#orgidupgradeability)
-  * [DepositWithdrawn](#event-depositwithdrawn)
   * [DirectorOwnershipConfirmed](#event-directorownershipconfirmed)
   * [DirectorOwnershipTransferred](#event-directorownershiptransferred)
-  * [LifDepositAdded](#event-lifdepositadded)
-  * [LifTokenChanged](#event-liftokenchanged)
   * [OrgJsonHashChanged](#event-orgjsonhashchanged)
   * [OrgJsonUriChanged](#event-orgjsonurichanged)
   * [OrganizationCreated](#event-organizationcreated)
@@ -11,22 +8,15 @@
   * [OrganizationToggled](#event-organizationtoggled)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [SubsidiaryCreated](#event-subsidiarycreated)
-  * [WithdrawDelayChanged](#event-withdrawdelaychanged)
-  * [WithdrawalRequested](#event-withdrawalrequested)
-  * [addDeposit](#function-adddeposit)
-  * [changeLifToken](#function-changeliftoken)
   * [changeOrgJsonHash](#function-changeorgjsonhash)
   * [changeOrgJsonUri](#function-changeorgjsonuri)
   * [changeOrgJsonUriAndHash](#function-changeorgjsonuriandhash)
   * [confirmDirectorOwnership](#function-confirmdirectorownership)
   * [createOrganization](#function-createorganization)
   * [createSubsidiary](#function-createsubsidiary)
-  * [getLifTokenAddress](#function-getliftokenaddress)
   * [getOrganization](#function-getorganization)
   * [getOrganizations](#function-getorganizations)
   * [getSubsidiaries](#function-getsubsidiaries)
-  * [getWithdrawDelay](#function-getwithdrawdelay)
-  * [getWithdrawalRequest](#function-getwithdrawalrequest)
   * [initialize](#function-initialize)
   * [initialize](#function-initialize)
   * [isOwner](#function-isowner)
@@ -34,30 +24,15 @@
   * [owner](#function-owner)
   * [renounceOwnership](#function-renounceownership)
   * [setInterfaces](#function-setinterfaces)
-  * [setWithdrawDelay](#function-setwithdrawdelay)
   * [setupNewStorage](#function-setupnewstorage)
-  * [submitWithdrawalRequest](#function-submitwithdrawalrequest)
   * [supportsInterface](#function-supportsinterface)
   * [test](#function-test)
   * [toggleOrganization](#function-toggleorganization)
   * [transferDirectorOwnership](#function-transferdirectorownership)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
   * [transferOwnership](#function-transferownership)
-  * [withdrawDeposit](#function-withdrawdeposit)
 
 # OrgIdUpgradeability
-
-## *event* DepositWithdrawn
-
-OrgIdUpgradeability.DepositWithdrawn(orgId, sender, value) `0c4c5d4c`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | indexed |
-| *address* | sender | indexed |
-| *uint256* | value | not indexed |
 
 ## *event* DirectorOwnershipConfirmed
 
@@ -81,29 +56,6 @@ Arguments
 | *bytes32* | orgId | indexed |
 | *address* | previousDirector | indexed |
 | *address* | newDirector | indexed |
-
-## *event* LifDepositAdded
-
-OrgIdUpgradeability.LifDepositAdded(orgId, sender, value) `6acf8bd7`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | indexed |
-| *address* | sender | indexed |
-| *uint256* | value | not indexed |
-
-## *event* LifTokenChanged
-
-OrgIdUpgradeability.LifTokenChanged(previousAddress, newAddress) `c380bccc`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousAddress | indexed |
-| *address* | newAddress | indexed |
 
 ## *event* OrgJsonHashChanged
 
@@ -186,57 +138,6 @@ Arguments
 | *bytes32* | parentOrgId | indexed |
 | *bytes32* | subOrgId | indexed |
 | *address* | director | indexed |
-
-## *event* WithdrawDelayChanged
-
-OrgIdUpgradeability.WithdrawDelayChanged(previousWithdrawDelay, newWithdrawDelay) `675b321b`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | previousWithdrawDelay | not indexed |
-| *uint256* | newWithdrawDelay | not indexed |
-
-## *event* WithdrawalRequested
-
-OrgIdUpgradeability.WithdrawalRequested(orgId, sender, value, withdrawTime) `8b0fcbdf`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | indexed |
-| *address* | sender | indexed |
-| *uint256* | value | not indexed |
-| *uint256* | withdrawTime | not indexed |
-
-
-## *function* addDeposit
-
-OrgIdUpgradeability.addDeposit(orgId, value) `nonpayable` `6e700a7f`
-
-> Makes deposit of Lif tokens
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *uint256* | value | The value to be deposited |
-
-
-## *function* changeLifToken
-
-OrgIdUpgradeability.changeLifToken(_lif) `nonpayable` `b8674252`
-
-> Change Lif token
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | _lif | Address of the Lif token |
 
 
 ## *function* changeOrgJsonHash
@@ -332,20 +233,6 @@ Inputs
 | *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
 
 
-## *function* getLifTokenAddress
-
-OrgIdUpgradeability.getLifTokenAddress() `view` `671110df`
-
-> Returns Lif token address
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | lifToken | Address of the Lif token |
-
 ## *function* getOrganization
 
 OrgIdUpgradeability.getOrganization(_orgId) `view` `22b3cd4e`
@@ -371,7 +258,6 @@ Outputs
 | *address* | director | The organization director |
 | *bool* | state | State of the organization |
 | *bool* | directorConfirmed | Flag is director ownership is confirmed |
-| *uint256* | deposit | Lif deposit value |
 
 ## *function* getOrganizations
 
@@ -405,43 +291,17 @@ Outputs
 |-|-|-|
 | *bytes32[]* |  | undefined |
 
-## *function* getWithdrawDelay
+## *function* initialize
 
-OrgIdUpgradeability.getWithdrawDelay() `view` `fe3300d0`
-
-> Returns withdrawDelay value
+OrgIdUpgradeability.initialize() `nonpayable` `8129fc1c`
 
 
 
-Outputs
 
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | delay | Delay time in seconds before the requested withdrawal will be possible |
-
-## *function* getWithdrawalRequest
-
-OrgIdUpgradeability.getWithdrawalRequest(orgId) `view` `3e7d48ab`
-
-> Returns information about deposit withdrawal request
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization Id |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bool* | exist | The request existence flag |
-| *uint256* | value | Deposit withdrawal value |
-| *uint256* | withdrawTime | Withraw time on seconds |
 
 ## *function* initialize
 
-OrgIdUpgradeability.initialize(__owner, _lif) `nonpayable` `485cc955`
+OrgIdUpgradeability.initialize(__owner) `nonpayable` `c4d66de8`
 
 > Initializer for upgradeable contracts
 
@@ -450,15 +310,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | __owner | The address of the contract owner |
-| *address* | _lif | Address of the Lif token |
-
-
-## *function* initialize
-
-OrgIdUpgradeability.initialize() `nonpayable` `8129fc1c`
-
-
-
 
 
 ## *function* isOwner
@@ -505,19 +356,6 @@ OrgIdUpgradeability.setInterfaces() `nonpayable` `fca85eb3`
 
 
 
-## *function* setWithdrawDelay
-
-OrgIdUpgradeability.setWithdrawDelay(_withdrawDelay) `nonpayable` `72f0cb30`
-
-> Changing withdrawDelay value
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | _withdrawDelay | New withdrawDelay value in seconds |
-
-
 ## *function* setupNewStorage
 
 OrgIdUpgradeability.setupNewStorage(value) `nonpayable` `00551333`
@@ -528,20 +366,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *uint256* | value | undefined |
-
-
-## *function* submitWithdrawalRequest
-
-OrgIdUpgradeability.submitWithdrawalRequest(orgId, value) `nonpayable` `fa094c70`
-
-> Submits withdrawal request
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *uint256* | value | The value to withdraw |
 
 
 ## *function* supportsInterface
@@ -617,19 +441,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *address* | newOwner | undefined |
-
-
-## *function* withdrawDeposit
-
-OrgIdUpgradeability.withdrawDeposit(orgId) `nonpayable` `a8e06bc3`
-
-> Trunsfers deposited tokens to the sender
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
 
 
 ---

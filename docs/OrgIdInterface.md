@@ -1,39 +1,18 @@
 * [OrgIdInterface](#orgidinterface)
-  * [addDeposit](#function-adddeposit)
   * [changeOrgJsonHash](#function-changeorgjsonhash)
   * [changeOrgJsonUri](#function-changeorgjsonuri)
   * [changeOrgJsonUriAndHash](#function-changeorgjsonuriandhash)
   * [confirmDirectorOwnership](#function-confirmdirectorownership)
   * [createOrganization](#function-createorganization)
   * [createSubsidiary](#function-createsubsidiary)
-  * [getLifTokenAddress](#function-getliftokenaddress)
   * [getOrganization](#function-getorganization)
   * [getOrganizations](#function-getorganizations)
   * [getSubsidiaries](#function-getsubsidiaries)
-  * [getWithdrawDelay](#function-getwithdrawdelay)
-  * [getWithdrawalRequest](#function-getwithdrawalrequest)
-  * [setWithdrawDelay](#function-setwithdrawdelay)
-  * [submitWithdrawalRequest](#function-submitwithdrawalrequest)
   * [toggleOrganization](#function-toggleorganization)
   * [transferDirectorOwnership](#function-transferdirectorownership)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
-  * [withdrawDeposit](#function-withdrawdeposit)
 
 # OrgIdInterface
-
-
-## *function* addDeposit
-
-OrgIdInterface.addDeposit(orgId, value) `nonpayable` `6e700a7f`
-
-> Makes deposit of Lif tokens
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *uint256* | value | The value to be deposited |
 
 
 ## *function* changeOrgJsonHash
@@ -129,20 +108,6 @@ Inputs
 | *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
 
 
-## *function* getLifTokenAddress
-
-OrgIdInterface.getLifTokenAddress() `view` `671110df`
-
-> Returns Lif token address
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | lifToken | Address of the Lif token |
-
 ## *function* getOrganization
 
 OrgIdInterface.getOrganization(_orgId) `view` `22b3cd4e`
@@ -168,7 +133,6 @@ Outputs
 | *address* | director | The organization director |
 | *bool* | state | State of the organization |
 | *bool* | directorConfirmed | Flag is director ownership is confirmed |
-| *uint256* | deposit | Lif deposit value |
 
 ## *function* getOrganizations
 
@@ -201,67 +165,6 @@ Outputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes32[]* |  | undefined |
-
-## *function* getWithdrawDelay
-
-OrgIdInterface.getWithdrawDelay() `view` `fe3300d0`
-
-> Returns withdrawDelay value
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | delay | Delay time in seconds before the requested withdrawal will be possible |
-
-## *function* getWithdrawalRequest
-
-OrgIdInterface.getWithdrawalRequest(orgId) `view` `3e7d48ab`
-
-> Returns information about deposit withdrawal request
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization Id |
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bool* | existed | The request existence flag |
-| *uint256* | value | Deposit withdrawal value |
-| *uint256* | withdrawTime | Withraw time on seconds |
-
-## *function* setWithdrawDelay
-
-OrgIdInterface.setWithdrawDelay(_withdrawDelay) `nonpayable` `72f0cb30`
-
-> Changing withdrawDelay value
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *uint256* | _withdrawDelay | New withdrawDelay value in seconds |
-
-
-## *function* submitWithdrawalRequest
-
-OrgIdInterface.submitWithdrawalRequest(orgId, value) `nonpayable` `fa094c70`
-
-> Submits withdrawal request
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *uint256* | value | The value to withdraw |
-
 
 ## *function* toggleOrganization
 
@@ -302,19 +205,6 @@ Inputs
 |-|-|-|
 | *bytes32* | orgId | The organization orgId |
 | *address* | newOwner | New subsidiary director address |
-
-
-## *function* withdrawDeposit
-
-OrgIdInterface.withdrawDeposit(orgId) `nonpayable` `a8e06bc3`
-
-> Trunsfers deposited tokens to the sender
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
 
 
 ---
