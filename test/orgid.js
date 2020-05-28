@@ -11,21 +11,11 @@ const {
     organizationUri,
     organizationHash
 } = require('./helpers/constants');
-const { toWeiEther } = require('./helpers/common');
 const {
     generateId,
     createOrganization,
     createSubsidiary
 } = require('./helpers/orgid');
-const {
-    setupLifToken,
-    distributeLifTokens
-} = require('./helpers/lif');
-const {
-    addDeposit,
-    submitWithdrawalRequest,
-    withdrawDeposit
-} = require('./helpers/deposit');
 
 let gasLimit = 8000000; // Like actual to the Ropsten
 
@@ -41,7 +31,7 @@ Contracts.setArtifactsDefaults({
 
 ZWeb3.initialize(web3.currentProvider);
 
-const OrgId = Contracts.getFromLocal('OrgIdTimeMachine');
+const OrgId = Contracts.getFromLocal('OrgId');
 const OrgIdUpgradeability = Contracts.getFromLocal('OrgIdUpgradeability');
 
 require('chai')
@@ -50,37 +40,24 @@ require('chai')
 
 contract('OrgId', accounts => {
 
-    const lifOwner = accounts[1];
-    const nonOwner = accounts[2];
-    const orgIdOwner = accounts[3];
-    const organizationOwner = accounts[4];
-    const entityDirector = accounts[5];
+    const nonOwner = accounts[1];
+    const orgIdOwner = accounts[2];
+    const organizationOwner = accounts[3];
+    const entityDirector = accounts[4];
 
-    const defaultWithdrawalDelay = '60000';
-
-    let lifToken;
     let project;
     let orgId;
     
     beforeEach(async () => {
-        lifToken = await setupLifToken(lifOwner);
-        await distributeLifTokens(lifToken, lifOwner, '10000', [
-            organizationOwner,
-            entityDirector
-        ]);
         project = await TestHelper({
             from: orgIdOwner
         });
         orgId = await project.createProxy(OrgId, {
             initMethod: 'initialize',
             initArgs: [
-                orgIdOwner,
-                lifToken.address
+                orgIdOwner
             ]
         });
-        await orgId
-            .methods['setWithdrawDelay(uint256)'](defaultWithdrawalDelay)
-            .send({ from: orgIdOwner });
     });
     
     describe('Upgradeability behaviour', () => {
@@ -139,7 +116,7 @@ contract('OrgId', accounts => {
                     .send({
                         from: orgIdOwner
                     });
-                await assertEvent(result, 'OwnershipTransferred', [
+                assertEvent(result, 'OwnershipTransferred', [
                     [
                         'previousOwner',
                         p => (p).should.equal(orgIdOwner)
@@ -191,14 +168,6 @@ contract('OrgId', accounts => {
             (
                 await orgId
                     .methods['supportsInterface(bytes4)']('0x36b78f0f')
-                    .call()
-            ).should.be.true;
-        });
-
-        it('should support deposit interface', async () => {
-            (
-                await orgId
-                    .methods['supportsInterface(bytes4)']('0xe936be58')
                     .call()
             ).should.be.true;
         });
@@ -996,393 +965,6 @@ contract('OrgId', accounts => {
                     .call();
                 (subs).should.to.be.an('array');
                 (subs).should.to.be.an('array').that.include(subId);
-            });
-        });
-    });
-
-    describe('Lif deposit', () => {
-        let organizationId;
-
-        beforeEach(async () => {
-            organizationId = generateId(organizationOwner);
-            await createOrganization(
-                orgId,
-                organizationOwner,
-                organizationId,
-                organizationUri,
-                organizationHash
-            );
-        });
-
-        describe('#getLifTokenAddress()', () => {
-
-            it('should return Lif token address', async () => {
-                (
-                    await orgId.methods['getLifTokenAddress()']().call()
-                ).should.equal(lifToken.address);
-            });
-        });
-
-        describe('#addDeposit(bytes32,uint256)', () => {
-
-            it('should fail if organization not found', async () => {
-                await assertRevert(
-                    addDeposit(
-                        orgId,
-                        organizationOwner,
-                        zeroBytes,
-                        toWeiEther('1000'),
-                        lifToken
-                    ),
-                    'OrgId: Organization with given orgId not found'
-                );
-            });
-
-            it('should fail if called not by an organization owner ot director', async () => {
-                await assertRevert(
-                    addDeposit(
-                        orgId,
-                        nonOwner,
-                        organizationId,
-                        toWeiEther('1000'),
-                        lifToken
-                    ),
-                    'OrgId: Only organization owner or entity director can call this method'
-                );
-            });
-
-            it('should fail if zero value provided', async () => {
-                await assertRevert(
-                    addDeposit(
-                        orgId,
-                        organizationOwner,
-                        organizationId,
-                        '0',
-                        lifToken
-                    ),
-                    'OrgId: Invalid deposit value'
-                );
-            });
-
-            it('should fail if Lif token allowance not sufficient', async () => {
-                await assertRevert(
-                    addDeposit(
-                        orgId,
-                        organizationOwner,
-                        organizationId,
-                        toWeiEther('1000')
-                    ),
-                    'SafeERC20: low-level call failed'
-                );
-            });
-
-            it('should add deposit', async () => {
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    toWeiEther('1000'),
-                    lifToken
-                );
-            });
-        });
-
-        describe('#setWithdrawDelay(uint256)', () => {
-
-            it('should fail if called not by an owner', async () => {
-                await assertRevert(
-                    orgId
-                        .methods['setWithdrawDelay(uint256)']('6000')
-                        .send({ from: nonOwner }),
-                    'Ownable: caller is not the owner'
-                );
-            });
-
-            it('should change withdrawal delay', async () => {
-                const delay = '6000';
-                const result = await orgId
-                    .methods['setWithdrawDelay(uint256)'](delay)
-                    .send({ from: orgIdOwner });
-                assertEvent(result, 'WithdrawDelayChanged', [
-                    [
-                        'previousWithdrawDelay',
-                        p => (p).should.equal(defaultWithdrawalDelay)
-                    ],
-                    [
-                        'newWithdrawDelay',
-                        p => (p).should.equal(delay)
-                    ]
-                ]);
-            });
-        });
-
-        describe('#getWithdrawDelay()', () => {
-
-            it('should return withdrawDelay', async () => {
-                (
-                    await orgId.methods['getWithdrawDelay()']().call()
-                ).should.equal(defaultWithdrawalDelay);
-                const delay = '6000';
-                await orgId
-                    .methods['setWithdrawDelay(uint256)'](delay)
-                    .send({ from: orgIdOwner });
-                (
-                    await orgId.methods['getWithdrawDelay()']().call()
-                ).should.equal(delay);
-            });
-        });
-
-        describe('#submitWithdrawalRequest(bytes32,uint256)', () => {
-            const depositValue = toWeiEther('1000');
-            const extraDepositValue = toWeiEther('1001');
-
-            beforeEach(async () => {
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    depositValue,
-                    lifToken
-                );
-            });
-
-            it('should fail if organization not found', async () => {
-                await assertRevert(
-                    submitWithdrawalRequest(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        zeroBytes,
-                        depositValue
-                    ),
-                    'OrgId: Organization with given orgId not found'
-                );
-            });
-
-            it('should fail if called not by an organization owner or director', async () => {
-                await assertRevert(
-                    submitWithdrawalRequest(
-                        orgId,
-                        nonOwner,
-                        orgIdOwner,
-                        organizationId,
-                        depositValue
-                    ),
-                    'OrgId: Only organization owner or entity director can call this method'
-                );
-            });
-
-            it('should fail if zero withdrawal value has been sent', async () => {
-                await assertRevert(
-                    submitWithdrawalRequest(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        organizationId,
-                        '0'
-                    ),
-                    'OrgId: Invalid withdrawal value'
-                );
-            });
-
-            it('should fail if deposit balance is insufficient to withdraw', async () => {
-                await assertRevert(
-                    submitWithdrawalRequest(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        organizationId,
-                        extraDepositValue
-                    ),
-                    'OrgId: Insufficient balance'
-                );
-            });
-
-            it('should submit withdrawal request', async () => {
-                await submitWithdrawalRequest(
-                    orgId,
-                    organizationOwner,
-                    orgIdOwner,
-                    organizationId,
-                    depositValue
-                );
-            });
-        });
-
-        describe('#getWithdrawalRequest(bytes32)', () => {
-            const depositValue = toWeiEther('1000');
-            let organizationId;
-            let organizationIdNoRequest;
-            let withdrawalRequest;
-
-            beforeEach(async () => {
-                organizationId = generateId(organizationOwner);
-                organizationIdNoRequest = generateId(organizationOwner);
-                await createOrganization(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    organizationUri,
-                    organizationHash
-                );
-                await createOrganization(
-                    orgId,
-                    organizationOwner,
-                    organizationIdNoRequest,
-                    organizationUri,
-                    organizationHash
-                );
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    depositValue,
-                    lifToken
-                );
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationIdNoRequest,
-                    depositValue,
-                    lifToken
-                );
-                withdrawalRequest = await submitWithdrawalRequest(
-                    orgId,
-                    organizationOwner,
-                    orgIdOwner,
-                    organizationId,
-                    depositValue
-                );
-            });
-
-            it('should return exist=false if organization not found', async () => {
-                (await orgId
-                    .methods['getWithdrawalRequest(bytes32)'](zeroBytes)
-                    .call()).should.has.property('exist').to.false;
-            });
-
-            it('should return exist=false withdrawal request not found', async () => {
-                (await orgId
-                    .methods['getWithdrawalRequest(bytes32)'](organizationIdNoRequest)
-                    .call()).should.has.property('exist').to.false;
-            });
-
-            it('should return withrdawal request info', async () => {
-                const request = await orgId
-                    .methods['getWithdrawalRequest(bytes32)'](organizationId)
-                    .call();
-                (await orgId
-                    .methods['getWithdrawalRequest(bytes32)'](organizationId)
-                    .call()).should.has.property('exist').to.true;
-                (request).should.be.an('object')
-                    .that.has.property('value')
-                    .to.equal(depositValue);
-                (request).should.be.an('object')
-                    .that.has.property('withdrawTime')
-                    .to.equal(withdrawalRequest.withdrawTime);
-            });
-        });
-
-        describe('#withdrawDeposit(bytes32)', () => {
-            const depositValue = toWeiEther('1000');
-            let organizationId;
-
-            beforeEach(async () => {
-                organizationId = generateId(organizationOwner);
-                await createOrganization(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    organizationUri,
-                    organizationHash
-                );
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    depositValue,
-                    lifToken
-                );
-                await submitWithdrawalRequest(
-                    orgId,
-                    organizationOwner,
-                    orgIdOwner,
-                    organizationId,
-                    depositValue
-                );
-            });
-
-            it('should fail if orgainzation not found', async () => {
-                await assertRevert(
-                    withdrawDeposit(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        zeroBytes
-                    ),
-                    'OrgId: Organization with given orgId not found'
-                );
-            });
-
-            it('should fail if called not by organization owner or director', async () => {
-                await assertRevert(
-                    withdrawDeposit(
-                        orgId,
-                        nonOwner,
-                        orgIdOwner,
-                        organizationId
-                    ),
-                    'OrgId: Only organization owner or entity director can call this method'
-                );
-            });
-
-            it('should fail if withdrawal request not found', async () => {
-                const organizationId = generateId(organizationOwner);
-                await createOrganization(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    organizationUri,
-                    organizationHash
-                );
-                await addDeposit(
-                    orgId,
-                    organizationOwner,
-                    organizationId,
-                    depositValue,
-                    lifToken
-                );
-                await assertRevert(
-                    withdrawDeposit(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        organizationId
-                    ),
-                    'OrgId: Withdrawal request not found'
-                );
-            });
-
-            it('should fail if withdrawal request delay period not passed', async () => {
-                await assertRevert(
-                    withdrawDeposit(
-                        orgId,
-                        organizationOwner,
-                        orgIdOwner,
-                        organizationId
-                    ),
-                    'OrgId: Withdrawal request delay period not passed'
-                );
-            });
-
-            it('should withdraw deposit', async () => {
-                await withdrawDeposit(
-                    orgId,
-                    organizationOwner,
-                    orgIdOwner,
-                    organizationId,
-                    true
-                );
             });
         });
     });

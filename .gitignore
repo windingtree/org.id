@@ -33,3 +33,6 @@ zos.dev-*
 !.openzeppelin/ropsten-OrgId.json
 !.openzeppelin/rinkeby-OrgId.json
 !.openzeppelin/main-OrgId.json
+
+# Etc
+temp

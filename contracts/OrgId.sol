@@ -2,8 +2,6 @@ pragma solidity >=0.5.16;
 
 import "@openzeppelin/contracts/introspection/ERC165.sol";
 import "@openzeppelin/contracts/introspection/ERC165Checker.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
@@ -16,7 +14,6 @@ import "./OrgIdInterface.sol";
 contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     using SafeMath for uint256;
-    using SafeERC20 for IERC20;
 
     /// @dev Organization structure
     struct Organization {
@@ -29,13 +26,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bool state;
         bool directorConfirmed;
         bytes32[] subsidiaries;
-        uint256 deposit;
-    }
-
-    /// @dev Withdrawal request structure
-    struct WithdrawalRequest {
-        uint256 value;
-        uint256 withdrawTime;
     }
 
     /// @dev Mapped list of Organizations
@@ -43,15 +33,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /// @dev List of organizations orgIds
     bytes32[] internal orgIds;
-
-    /// @dev Lif token instance
-    IERC20 internal lif;
-
-    /// @dev Delay in seconds between withdrawal request and withdrawal
-    uint256 internal withdrawDelay;
-
-    /// @dev Deposits wiwdrawal requests
-    mapping (bytes32 => WithdrawalRequest) internal withdrawalRequests;
 
     /**
      * @dev Event emitted when organization is created
@@ -125,50 +106,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     );
 
     /**
-     * @dev Event emitted when address of the Lif token is changed
-     */
-    event LifTokenChanged(
-        address indexed previousAddress,
-        address indexed newAddress
-    );
-
-    /**
-     * @dev Event emitted when Lif deposit has been added
-     */
-    event LifDepositAdded(
-        bytes32 indexed orgId,
-        address indexed sender,
-        uint256 value
-    );
-
-    /**
-     * @dev Event emitted when withdrawDelay has been changed
-     */
-    event WithdrawDelayChanged(
-        uint256 previousWithdrawDelay,
-        uint256 newWithdrawDelay
-    );
-
-    /**
-     * @dev Event emitted when withdrawal requested has been sent
-     */
-    event WithdrawalRequested(
-        bytes32 indexed orgId,
-        address indexed sender,
-        uint256 value,
-        uint256 withdrawTime
-    );
-
-    /**
-     * @dev Event emitted when deposit has been withdrawn
-     */
-    event DepositWithdrawn(
-        bytes32 indexed orgId,
-        address indexed sender,
-        uint256 value
-    );
-
-    /**
      * @dev Throws if organization not found
      */
     modifier existedOrganization(bytes32 orgId) {
@@ -206,14 +143,11 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Initializer for upgradeable contracts
      * @param __owner The address of the contract owner
-     * @param _lif Address of the Lif token
      */
     function initialize(
-        address payable __owner,
-        address _lif
+        address payable __owner
     ) public initializer {
         _transferOwnership(__owner);
-        changeLifToken(_lif);
         setInterfaces(); 
     }
 
@@ -428,8 +362,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
          "owner": "The organization owner",
          "director": "The organization director",
          "state": "State of the organization",
-         "directorConfirmed": "Flag is director ownership is confirmed",
-         "deposit": "Lif deposit value"
+         "directorConfirmed": "Flag is director ownership is confirmed"
      }
      */
     function getOrganization(bytes32 _orgId) 
@@ -444,8 +377,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             address owner,
             address director,
             bool state,
-            bool directorConfirmed,
-            uint256 deposit
+            bool directorConfirmed
         )
     {   
         exist = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
@@ -457,131 +389,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         director = organizations[_orgId].director;
         state = organizations[_orgId].state;
         directorConfirmed = organizations[_orgId].directorConfirmed;
-        deposit = organizations[_orgId].deposit;
-    }
-
-    /**
-     * @dev Returns Lif token address
-     * @return {
-         "lifToken": "Address of the Lif token"
-     }
-     */
-    function getLifTokenAddress() external view returns (address lifToken) {
-        lifToken = address(lif);
-    }
-
-    /**
-     * @dev Returns withdrawDelay value
-     * @return {
-         "delay": "Delay time in seconds before the requested withdrawal will be possible"
-     }
-     */
-    function getWithdrawDelay() external view returns (uint256 delay) {
-        delay = withdrawDelay;
-    }
-
-    /**
-     * @dev Changing withdrawDelay value
-     * @param _withdrawDelay New withdrawDelay value in seconds
-     */
-    function setWithdrawDelay(uint256 _withdrawDelay) external onlyOwner {
-        emit WithdrawDelayChanged(withdrawDelay, _withdrawDelay);
-        withdrawDelay = _withdrawDelay;
-    }
-
-    /**
-     * @dev Makes deposit of Lif tokens
-     * @param orgId The organization OrgId
-     * @param value The value to be deposited
-     */
-    function addDeposit(
-        bytes32 orgId,
-        uint256 value
-    )
-        external 
-        existedOrganization(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
-    {
-        require(value > 0, "OrgId: Invalid deposit value");
-        lif.safeTransferFrom(msg.sender, address(this), value);
-        organizations[orgId].deposit = organizations[orgId].deposit.add(value);
-        emit LifDepositAdded(orgId, msg.sender, value);
-    }
-
-    /**
-     * @dev Submits withdrawal request
-     * @param orgId The organization OrgId
-     * @param value The value to withdraw
-     */
-    function submitWithdrawalRequest(
-        bytes32 orgId,
-        uint256 value
-    )
-        external 
-        existedOrganization(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
-    {
-        require(value > 0, "OrgId: Invalid withdrawal value");
-        require(
-            value <= organizations[orgId].deposit,
-            "OrgId: Insufficient balance"
-        );
-        uint256 withdrawTime = time().add(withdrawDelay);
-        withdrawalRequests[orgId] = WithdrawalRequest(value, withdrawTime);
-        emit WithdrawalRequested(orgId, msg.sender, value, withdrawTime);
-    }
-
-    /**
-     * @dev Returns information about deposit withdrawal request
-     * @param orgId The organization Id
-     * @return {
-         "exist": "The request existence flag",
-         "value": "Deposit withdrawal value",
-         "withdrawTime": "Withraw time on seconds"
-     }
-     */
-    function getWithdrawalRequest(bytes32 orgId)
-        external
-        view 
-        returns (
-            bool exist,
-            uint256 value,
-            uint256 withdrawTime
-        )
-    {
-        exist = 
-            orgId != bytes32(0) &&
-            organizations[orgId].orgId == orgId &&
-            withdrawalRequests[orgId].value != 0;
-        value = withdrawalRequests[orgId].value;
-        withdrawTime = withdrawalRequests[orgId].withdrawTime;
-    }
-
-    /**
-     * @dev Trunsfers deposited tokens to the sender
-     * @param orgId The organization OrgId
-     */
-    function withdrawDeposit(
-        bytes32 orgId
-    )
-        external 
-        existedOrganization(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
-    {
-        require(
-            withdrawalRequests[orgId].value != 0,
-            "OrgId: Withdrawal request not found"
-        );
-        require(
-            withdrawalRequests[orgId].withdrawTime <= time(),
-            "OrgId: Withdrawal request delay period not passed"
-        );
-        uint256 withdrawalValue = withdrawalRequests[orgId].value;
-        organizations[orgId].deposit =
-            organizations[orgId].deposit.sub(withdrawalValue);
-        delete withdrawalRequests[orgId];
-        lif.safeTransfer(msg.sender, withdrawalValue);
-        emit DepositWithdrawn(orgId, msg.sender, withdrawalValue);
     }
 
     /**
@@ -637,22 +444,12 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Change Lif token
-     * @param _lif Address of the Lif token
-     */
-    function changeLifToken(address _lif) public onlyOwner {
-        require(_lif != address(0), "OrgId: Invalid Lif token address");
-        emit LifTokenChanged(address(lif), _lif);
-        lif = IERC20(_lif);
-    }
-
-    /**
      * @dev Set the list of contract interfaces supported
      */
     function setInterfaces() public {
         OrgIdInterface org;
         Ownable own;
-        bytes4[5] memory interfaceIds = [
+        bytes4[4] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
 
@@ -673,16 +470,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.createSubsidiary.selector ^ 
             org.confirmDirectorOwnership.selector ^
             org.transferDirectorOwnership.selector ^
-            org.getSubsidiaries.selector,
-
-            // Lif deposit interface: 0xe936be58
-            org.getLifTokenAddress.selector ^
-            org.getWithdrawDelay.selector ^
-            org.setWithdrawDelay.selector ^
-            org.addDeposit.selector ^
-            org.submitWithdrawalRequest.selector ^
-            org.getWithdrawalRequest.selector ^
-            org.withdrawDeposit.selector
+            org.getSubsidiaries.selector
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
             _registerInterface(interfaceIds[i]);
@@ -747,8 +535,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             subsidiaryDirector,
             true,
             subsidiaryDirector == msg.sender,
-            new bytes32[](0),
-            0
+            new bytes32[](0)
         );
         orgIds.push(orgId);
 
@@ -826,16 +613,5 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
                 count += 1;
             }
         }
-    }
-
-    /**
-     * @dev Get current time
-     *  
-     * This function can be overriden for testing purposes
-     * 
-     * @return uint256 Current block time
-     */
-    function time() internal view returns (uint256) {
-        return now;// solhint-disable-line not-rely-on-time
     }
 }
