@@ -3,14 +3,13 @@
 Deployments, upgrades, and many other tasks may be performed using [orgid-tools](./management/tools/README.md).
 
 ```sh
-orgid-tools --network ropsten cmd=deploy name=OrgId from=<0xCONTRACT_OWNER> initMethod=initialize initArgs=<0xCONTRACT_OWNER>,<0xLIF_CONTRACT_ADDRESS>
+orgid-tools --network ropsten cmd=deploy name=OrgId from=<0xCONTRACT_OWNER> initMethod=initialize initArgs=<0xCONTRACT_OWNER>
 Deployment of the contract:  OrgId
 Version:  0.11.4
 Owner address:  <0xCONTRACT_OWNER>
 Initializing method:  initialize
-Initializing arguments:  [ '<0xCONTRACT_OWNER>',
-  '<0xLIF_CONTRACT_ADDRESS>' ]
-Contract deployed at address:  <0xLIF_CONTRACT_ADDRESS>
+Initializing arguments:  [ '<0xCONTRACT_OWNER>' ]
+Contract deployed at address:  <0xORGID_CONTRACT_ADDRESS>
 ```
 
 Auto-generated deployment configuration will be saved in `./openzeppelin/<NETWORK_NAME>-<CONTRACT_NAME>.json`, e.g.:
@@ -23,7 +22,7 @@ Auto-generated deployment configuration will be saved in `./openzeppelin/<NETWOR
     "implementation": "0xd863861E680B4C881A91fC92C36bAB1d09F8cd3A",
     "proxy": "0xc8fD300bE7e4613bCa573ad820a6F1f0b915CfcA"
   },
-  "owner": "<LIF_CONTRACT_ADDRESS>",
+  "owner": "<0xCONTRACT_OWNER>",
   "proxyAdmin": null,
   "blockNumber": 7455603
 }

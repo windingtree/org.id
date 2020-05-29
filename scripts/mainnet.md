@@ -29,7 +29,7 @@ Create file with name `keys.json` in the root of the cloned repository folder wi
 ## Run deployment
 
 ```bash
-$ orgid-tools --network main cmd=deploy name=OrgId from=<owner_address> initMethod=initialize initArgs=<owner_address>,<lif_token_address>
+$ orgid-tools --network main cmd=deploy name=OrgId from=<owner_address> initMethod=initialize initArgs=<owner_address>
 ```
 
 ## Deployment information

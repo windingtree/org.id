@@ -7,15 +7,11 @@ const CONTRACTS_DIR = path.resolve(__dirname, `../${BASE_PATH}`);
 const DEPLOYMENTS_DIR = path.resolve(__dirname, `../${DEPLOYMENTS_PATH}`);
 const bundle = [
     'OrgId.json',
-    'OrgIdInterface.json',
-    'LifDeposit.json',
-    'LifDepositInterface.json'
+    'OrgIdInterface.json'
 ];
 const deploymentsInfo = [
     'main-OrgId.json',
-    'ropsten-OrgId.json',
-    'main-LifDeposit.json',
-    'ropsten-LifDeposit.json'
+    'ropsten-OrgId.json'
 ];
 const files = fs.readdirSync(CONTRACTS_DIR);
 const deploymentsFiles = fs.readdirSync(DEPLOYMENTS_DIR);

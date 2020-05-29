@@ -2,10 +2,7 @@
   "manifestVersion": "2.2",
   "contracts": {
     "OrgId": "OrgId",
-    "OrgIdUpgradeability": "OrgIdUpgradeability",
-    "LifDepositUpgradeability": "LifDepositUpgradeability",
-    "LifDepositTimeMachine": "LifDepositTimeMachine",
-    "LifTestInitializable": "LifTestInitializable"
+    "OrgIdUpgradeability": "OrgIdUpgradeability"
   },
   "dependencies": {},
   "name": "org.id",
