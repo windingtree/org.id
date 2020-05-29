@@ -41,35 +41,6 @@ const { mainnet, ropsten, rinkeby } = addresses;
 
 Check out the [auto-generated docs](./docs/OrgId.md).
 
-## Development
-
-### Setup
-
-```sh
-npm i
-npm link
-```
-
-### Test
-
-```sh
-npm run test
-npm run test ./<path_to_test_file>.js
-```
-
-### Test coverage
-
-```sh
-npm run coverage
-```
-
-### Linting
-
-```sh
-npm run lint
-
-```
-
 ## ORG.ID Ecosystem
 
 ![ORG.ID Ecosystem](./assets/orgid-ecosystem.png)
@@ -116,3 +87,32 @@ Additionally, unit's ORG.ID may contain:
 | `parentEntity` | `address` | Unit parent's ORG.ID |
 | `director` | `address` | Unit director's account or smart contract address |
 | `directorConfirmed` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
+
+## Development
+
+### Setup
+
+```sh
+npm i
+npm link
+```
+
+### Test
+
+```sh
+npm run test
+npm run test ./<path_to_test_file>.js
+```
+
+### Test coverage
+
+```sh
+npm run coverage
+```
+
+### Linting
+
+```sh
+npm run lint
+
+```
