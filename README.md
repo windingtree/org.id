@@ -85,7 +85,7 @@ Additionally, unit's ORG.ID may contain:
 | **Name** | **Type** | **Description** |
 |-|-|-|
 | `parentEntity` | `address` | Unit parent's ORG.ID |
-| `director` | `address` | Unit director's account or smart contract address |
+| `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `directorConfirmed` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
 ## Development
