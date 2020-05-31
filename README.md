@@ -47,7 +47,7 @@ Check out the [auto-generated docs](./docs/OrgId.md).
 
 ### ORG.ID Functionality
 
-ORG.ID Smart Contract is a list of all organizations in the ecosystem. Its interface allows anyone to retrieve information about all and any organization, as well as create and change organizations and its organizational units.
+ORG.ID Smart Contract is a list of all organizations in the ecosystem. Its interface allows anyone to retrieve information about all and any organization, as well as create and change organizations and organizational units.
 
 #### What is an organization?
 
