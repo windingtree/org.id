@@ -1,21 +1,11 @@
 [![Build Status](https://travis-ci.org/windingtree/org.id.svg?branch=master)](https://travis-ci.org/windingtree/org.id)
 [![Coverage Status](https://coveralls.io/repos/github/windingtree/org.id/badge.svg?branch=master)](https://coveralls.io/github/windingtree/org.id?branch=master&v=2.0)
 
-# What is ORG.ID?
-
 <a href="https://orgid.tech"><img src="https://github.com/windingtree/branding/raw/master/org.id/svg/org.id-logo.svg" height="50" alt="ORG.ID"></a>
 
-ORG.ID is a decentralized identity (DID), also known as self-sovereign identity (SSI), solution for organizations (firms, non-profits, NGOs, etc.). It uses [DID](https://w3c.github.io/did-core/) and [VC](https://www.w3.org/TR/vc-data-model/) W3C standards.
+## ORG.ID Registry
 
-ORG.ID is designed to streamline online commerce (and other types of B2B communication) by allowing companies to easily prove their identity to others, eliminating unnecessary bureaucracy.
-
-ORG.ID is 100% open-source and decentralized thanks to Ethereum.
-
-<a href="https://ethereum.org/"><img src="https://ethereum.org/assets/img/ethereum-icon-purple.56fbef66.svg" height="50" alt="Ethereum"></a>
-
-# ORG.ID Ethereum Smart Contract
-
-ORG.ID is the the core smart contract of the [ORG.ID ecosystem](https://orgid.tech). [Arbor](https://arbor.fm) is the easiest way to interact with mainnet and ropsten versions of ORG.ID.
+ORG.ID Registry is the core smart contract of the [ORG.ID ecosystem](https://orgid.tech). It is a list of all organizations and their organizational units. Its interface allows to retrieve information about all and any organization or unit, as well as create and change them.
 
 ### Mainnet
 
@@ -49,36 +39,9 @@ const { mainnet, ropsten, rinkeby } = addresses;
 
 ## Interface
 
-Check out the [auto-generated docs](./docs/OrgId.md).
+[Auto-generated docs](./docs/OrgId.md).
 
-## ORG.ID Ecosystem
-
-![ORG.ID Ecosystem](./assets/orgid-ecosystem.png)
-
-### ORG.ID Functionality
-
-ORG.ID Smart Contract is a list of all organizations in the ecosystem. Its interface allows anyone to retrieve information about all and any organization, as well as create and change organizations and organizational units.
-
-#### What is an organization?
-
-We use the word "organization" to emphasize that any kind of entity, commercial firm, non-profit, NGO, and even entities that aren't officially incorporated ([W3C, for example](https://www.w3.org/Consortium/facts.html)), may create an ORG.ID.
-
-#### Organizations and organizational units
-
-Organizations may have complicated internal structure, and even in simple cases there is hierarchy. Here's a few examples, where first level are *organizations* and second level are the *organizational units* or simply *units.*
-
-- Best Sell, LLC
-  - Best Sell Store Paris
-  - Best Sell Store Berlin
-  - Best Sell Store Prague
-- Acme, Corp.
-  - Acme Toys Department
-  - Acme Guns Department
-  - Acme Foods Department
-  - Accounting Department
-  - Legal Department
-
-#### ORG.ID Record
+## ORG.ID Record Structure
 
 Both organization and unit records have:
 
