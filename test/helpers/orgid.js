@@ -2,7 +2,7 @@ const { assertEvent } = require('../helpers/assertions');
 const { zeroAddress, zeroBytes } = require('../helpers/constants');
 
 /**
- * Generates an id on the base of string and solt
+ * Generates an id on the base of string and salt
  * @param {string} string Part of the base for id generation
  * @param {atring} [solt=Math.random().toString()] Solt string
  */

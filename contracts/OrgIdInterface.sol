@@ -1,18 +1,17 @@
 pragma solidity >=0.5.16;
 
 /**
- * @title OrgId contract interface
- * @dev A contract that represents an OrgId 
+ * @title ORG.ID Registry Smart Contract Interface
  */
 contract OrgIdInterface {
 
     /**
      * @dev Create organization
-     * @param orgId The organization Id
-     * @param orgJsonUri orgJsonUri pointer
-     * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @param orgId Organization's desired ORG.ID hash (TODO: remove from production implementation)
+     * @param orgJsonUri ORG.JSON URI (stored off-chain)
+     * @param orgJsonHash ORG.JSON's keccak256 hash
      * @return {
-         "id": "The organization orgId"
+         "id": "ORG.ID byte32 hash"
      }
      */
     function createOrganization(
@@ -22,12 +21,12 @@ contract OrgIdInterface {
     ) external returns (bytes32 id);
 
     /**
-     * @dev Create subsidiary
-     * @param orgId The organization Id
-     * @param subOrgId The subsidiary organization Id
-     * @param subsidiaryDirector Subsidiary director address
-     * @param orgJsonUri orgJsonUri pointer
-     * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @dev Create organizational unit
+     * @param orgId Parent ORG.ID hash
+     * @param subOrgId Unit's desired ORG.ID hash (TODO: remove from production implementation)
+     * @param subsidiaryDirector Unit's director address
+     * @param orgJsonUri Unit's ORG.JSON URI
+     * @param orgJsonHash ORG.JSON's keccak256 hash
      */
     function createSubsidiary(
         bytes32 orgId,
@@ -38,21 +37,21 @@ contract OrgIdInterface {
     ) external returns (bytes32 id);
 
     /**
-     * @dev Toggle the organization state
-     * @param orgId The organization orgId
+     * @dev Toggle ORG.ID's active/inactive state
+     * @param orgId ORG.ID hash
      */
     function toggleOrganization(bytes32 orgId) external;
 
     /**
-     * @dev Confirmation of the organization director ownership
-     * @param orgId The organization orgId
+     * @dev Unit directorship confirmation
+     * @param orgId Unit's ORG.ID hash
      */
     function confirmDirectorOwnership(bytes32 orgId) external;
 
     /**
-     * @dev Transfer subsidiary director ownership
-     * @param orgId The organization orgId
-     * @param newDirector New subsidiary director address
+     * @dev Unit directorship transfer
+     * @param orgId Unit's ORG.ID hash
+     * @param newDirector New director's address
      */
     function transferDirectorOwnership(
         bytes32 orgId,
@@ -60,9 +59,9 @@ contract OrgIdInterface {
     ) external;
 
     /**
-     * @dev Transfer organization ownership
-     * @param orgId The organization orgId
-     * @param newOwner New subsidiary director address
+     * @dev Ownership transfer
+     * @param orgId ORG.ID hash
+     * @param newOwner New owner's address
      */
     function transferOrganizationOwnership(
         bytes32 orgId,
@@ -70,9 +69,10 @@ contract OrgIdInterface {
     ) external;
 
     /**
-     * @dev Shorthand method to change ORG.JSON uri and hash at the same time
-     * @param orgJsonUri New orgJsonUri pointer of this Organization
-     * @param orgJsonHash keccak256 hash of the new ORG.JSON contents.
+     * @dev Shorthand method to change ORG.JSON URI and hash at once
+     * @param orgId ORG.ID hash
+     * @param orgJsonUri New ORG.JSON URI
+     * @param orgJsonHash New ORG.JSON's keccak256 hash
      */
     function changeOrgJsonUriAndHash(
         bytes32 orgId,
@@ -81,34 +81,34 @@ contract OrgIdInterface {
     ) external;
 
     /**
-     * @dev Return an array of active organizations orgIds
+     * @dev Get all active organizations' ORG.ID hashes
      * @return {
-         "organizationsList": "Array of active organizations orgIds"
+         "organizationsList": "Array of all active organizations' ORG.ID hashes"
      }
      */
     function getOrganizations()
-        external 
-        view 
+        external
+        view
         returns (bytes32[] memory organizationsList);
 
     /**
-     * @dev Get organization by orgId
-     * @param _orgId The organization Id
+     * @dev Get organization or unit's info by ORG.ID hash
+     * @param _orgId ORG.ID hash
      * @return {
-         "existed": "The organizatoin existence flag",
-         "orgId": "The organization orgId",
-         "orgJsonUri": "orgJsonUri pointer of this Organization",
-         "orgJsonHash": "keccak256 hash of the new ORG.JSON contents",
-         "parentEntity": "The parent organization orgId",
-         "owner": "The organization owner",
-         "director": "The organization director",
-         "state": "State of the organization",
-         "directorConfirmed": "Flag is director ownership is confirmed"
+         "existed": "Flag indicating ORG.ID's existence",
+         "orgId": "ORG.ID hash",
+         "orgJsonUri": "ORG.JSON URI",
+         "orgJsonHash": "ORG.JSON keccak256 hash",
+         "parentEntity": "Parent ORG.ID (if applicable)",
+         "owner": "Owner's address",
+         "director": "Unit director's address",
+         "state": "Indicates whether ORG.ID is active",
+         "directorConfirmed": "Indicates whether directorship is confirmed"
      }
      */
-    function getOrganization(bytes32 _orgId) 
-        external 
-        view 
+    function getOrganization(bytes32 _orgId)
+        external
+        view
         returns (
             bool existed,
             bytes32 orgId,
@@ -120,22 +120,23 @@ contract OrgIdInterface {
             bool state,
             bool directorConfirmed
         );
-    
+
     /**
-     * @dev Return an array of active subsidiaries orgIds
+     * @dev Get all active organizational units of a particular ORG.ID
+     * @param orgId Parent ORG.ID hash
      * @return {
-         "organizationsList": "Array of active subsidiaries orgIds"
+         "organizationsList": "Array of ORG.ID hashes of active organizational units"
      }
      */
     function getSubsidiaries(bytes32 orgId)
         external
-        view 
+        view
         returns (bytes32[] memory);
-    
+
     /**
-     * @dev Allows owner to change Organization"s orgJsonUri
-     * @param orgId The organization OrgId
-     * @param orgJsonUri New orgJsonUri pointer of this Organization
+     * @dev Change ORG.JSON URI (caller must be owner or director)
+     * @param orgId ORG.ID hash
+     * @param orgJsonUri New ORG.JSON URI
      */
     function changeOrgJsonUri(
         bytes32 orgId,
@@ -143,9 +144,9 @@ contract OrgIdInterface {
     ) public;
 
     /**
-     * @dev Allows owner to change Organization"s orgJsonHash
-     * @param orgId The organization OrgId
-     * @param orgJsonHash keccak256 hash of the new ORG.JSON contents
+     * @dev Change ORG.JSON hash (caller must be owner or director)
+     * @param orgId ORG.ID hash
+     * @param orgJsonHash New ORG.JSON's keccak256 hash
      */
     function changeOrgJsonHash(
         bytes32 orgId,

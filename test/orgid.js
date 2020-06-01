@@ -38,7 +38,7 @@ require('chai')
     .use(require('bn-chai')(web3.utils.BN))
     .should();
 
-contract('OrgId', accounts => {
+contract('ORG.ID', accounts => {
 
     const nonOwner = accounts[1];
     const orgIdOwner = accounts[2];
@@ -47,7 +47,7 @@ contract('OrgId', accounts => {
 
     let project;
     let orgId;
-    
+
     beforeEach(async () => {
         project = await TestHelper({
             from: orgIdOwner
@@ -59,7 +59,7 @@ contract('OrgId', accounts => {
             ]
         });
     });
-    
+
     describe('Upgradeability behaviour', () => {
 
         it('should upgrade proxy and reveal a new function and interface', async () => {
@@ -98,7 +98,7 @@ contract('OrgId', accounts => {
                     'Ownable: caller is not the owner'
                 );
             });
-    
+
             it('should fail if new owner has zero address', async () => {
                 await assertRevert(
                     orgId
@@ -194,7 +194,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     ),
-                    'OrgId: An organization with given orgId already exists'
+                    'ORG.ID: requested ORG.ID hash already exists'
                 );
             });
 
@@ -237,7 +237,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['toggleOrganization(bytes32)'](zeroBytes)
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -246,7 +246,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['toggleOrganization(bytes32)'](id)
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner can call this method'
+                    'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
@@ -280,7 +280,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['transferOrganizationOwnership(bytes32,address)'](zeroBytes, nonOwner)
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -289,7 +289,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['transferOrganizationOwnership(bytes32,address)'](id, nonOwner)
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner can call this method'
+                    'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
@@ -298,7 +298,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['transferOrganizationOwnership(bytes32,address)'](id, zeroAddress)
                         .send({ from: organizationOwner }),
-                    'OrgId: Invalid owner address'
+                    'ORG.ID: Invalid owner address'
                 );
             });
 
@@ -341,7 +341,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonUri(bytes32,string)'](zeroBytes, organizationUri)
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -350,7 +350,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonUri(bytes32,string)'](id, organizationUri)
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner or entity director can call this method'
+                    'ORG.ID: action not authorized (must be owner or director)'
                 );
             });
 
@@ -359,7 +359,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonUri(bytes32,string)'](id, '')
                         .send({ from: organizationOwner }),
-                    'OrgId: orgJsonUri cannot be an empty string'
+                    'ORG.ID: ORG.JSON URI cannot be empty'
                 );
             });
 
@@ -402,7 +402,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonHash(bytes32,bytes32)'](zeroBytes, organizationHash)
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -411,7 +411,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonHash(bytes32,bytes32)'](id, organizationHash)
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner or entity director can call this method'
+                    'ORG.ID: action not authorized (must be owner or director)'
                 );
             });
 
@@ -420,7 +420,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['changeOrgJsonHash(bytes32,bytes32)'](id, zeroBytes)
                         .send({ from: organizationOwner }),
-                    'OrgId: orgJsonHash cannot be an empty'
+                    'ORG.ID: ORG.JSON hash cannot be empty'
                 );
             });
 
@@ -467,7 +467,7 @@ contract('OrgId', accounts => {
                             organizationHash
                         )
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -480,7 +480,7 @@ contract('OrgId', accounts => {
                             organizationHash
                         )
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner or entity director can call this method'
+                    'ORG.ID: action not authorized (must be owner or director)'
                 );
             });
 
@@ -493,7 +493,7 @@ contract('OrgId', accounts => {
                             zeroBytes
                         )
                         .send({ from: organizationOwner }),
-                    'OrgId: orgJsonHash cannot be an empty'
+                    'ORG.ID: ORG.JSON hash cannot be empty'
                 );
                 await assertRevert(
                     orgId
@@ -503,7 +503,7 @@ contract('OrgId', accounts => {
                             organizationHash
                         )
                         .send({ from: organizationOwner }),
-                    'OrgId: orgJsonUri cannot be an empty string'
+                    'ORG.ID: ORG.JSON URI cannot be empty'
                 );
             });
 
@@ -545,7 +545,7 @@ contract('OrgId', accounts => {
                 ]);
             });
         });
-        
+
         describe('#getOrganizations()', () => {
 
             it('should return an empty array if no organizations has been added before', async () => {
@@ -669,7 +669,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     ),
-                    'OrgId: Only organization owner or entity director can call this method'
+                    'ORG.ID: action not authorized (must be owner or director)'
                 );
             });
 
@@ -684,7 +684,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     ),
-                    'OrgId: An organization with given orgId already exists'
+                    'ORG.ID: requested ORG.ID hash already exists'
                 );
             });
 
@@ -699,7 +699,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     ),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -714,7 +714,7 @@ contract('OrgId', accounts => {
                         organizationUri,
                         organizationHash
                     ),
-                    'OrgId: Invalid subsidiary director address'
+                    'ORG.ID: Invalid director address'
                 );
             });
 
@@ -729,7 +729,7 @@ contract('OrgId', accounts => {
                     organizationUri,
                     organizationHash
                 );
-                
+
                 // Director is the same as the organization owner
                 await createSubsidiary(
                     orgId,
@@ -763,7 +763,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['confirmDirectorOwnership(bytes32)'](zeroBytes)
                         .send({ from: entityDirector }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -772,7 +772,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['confirmDirectorOwnership(bytes32)'](subId)
                         .send({ from: nonOwner }),
-                    'OrgId: Only subsidiary director can call this method'
+                    'ORG.ID: action not authorized (must be director)'
                 );
             });
 
@@ -819,7 +819,7 @@ contract('OrgId', accounts => {
                             nonOwner
                         )
                         .send({ from: organizationOwner }),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
@@ -831,7 +831,7 @@ contract('OrgId', accounts => {
                             nonOwner
                         )
                         .send({ from: nonOwner }),
-                    'OrgId: Only organization owner can call this method'
+                    'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
@@ -918,7 +918,7 @@ contract('OrgId', accounts => {
                     orgId
                         .methods['getSubsidiaries(bytes32)'](zeroBytes)
                         .call(),
-                    'OrgId: Organization with given orgId not found'
+                    'ORG.ID: Organization not found'
                 );
             });
 
