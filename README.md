@@ -1,7 +1,17 @@
-<a href="https://orgid.tech"><img src="https://github.com/windingtree/branding/raw/master/org.id/svg/org.id-logo.svg" height="50px" alt="ORG.ID">
-
 [![Build Status](https://travis-ci.org/windingtree/org.id.svg?branch=master)](https://travis-ci.org/windingtree/org.id)
 [![Coverage Status](https://coveralls.io/repos/github/windingtree/org.id/badge.svg?branch=master)](https://coveralls.io/github/windingtree/org.id?branch=master&v=2.0)
+
+# What is ORG.ID?
+
+<a href="https://orgid.tech"><img src="https://github.com/windingtree/branding/raw/master/org.id/svg/org.id-logo.svg" height="50" alt="ORG.ID"></a>
+
+ORG.ID is a decentralized identity (DID), also known as self-sovereign identity (SSI), solution for organizations (firms, non-profits, NGOs, etc.). It uses [DID](https://w3c.github.io/did-core/) and [VC](https://www.w3.org/TR/vc-data-model/) W3C standards.
+
+ORG.ID is designed to streamline online commerce (and other types of B2B communication) by allowing companies to easily prove their identity to others, eliminating unnecessary bureaucracy.
+
+ORG.ID is 100% open-source and decentralized thanks to Ethereum.
+
+<a href="https://ethereum.org/"><img src="https://ethereum.org/assets/img/ethereum-icon-purple.56fbef66.svg" height="50" alt="Ethereum"></a>
 
 # ORG.ID Ethereum Smart Contract
 
@@ -74,7 +84,7 @@ Both organization and unit records have:
 
 | **Name** | **Type** | **Description** |
 |-|-|-|
-| `orgId` | `address` | Unique Organization ID |
+| `orgId` | `bytes32` | Unique Organization ID |
 | `state` | `bool` | Indicates whether this ORG.ID is active |
 | `owner` | `address` | Account (or smart contract) currently authorized to manage this ORG.ID |
 | `orgJsonUri` | `string` | URI of a [ORG.JSON-compliant](https://github.com/windingtree/org.json-schema) datasheet ([example](https://gist.githubusercontent.com/kvakes/0f728d60add6561f18d173c01f87a5bd/raw/9ba3c6fd08c29daaff9809ffa04be09a66196900/glider.json)) |
@@ -84,7 +94,7 @@ Additionally, unit's ORG.ID may contain:
 
 | **Name** | **Type** | **Description** |
 |-|-|-|
-| `parentEntity` | `address` | Unit parent's ORG.ID |
+| `parentEntity` | `bytes32` | Unit parent's ORG.ID |
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `directorConfirmed` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
