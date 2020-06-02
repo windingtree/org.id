@@ -190,7 +190,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         external
         existedOrganization(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
+        onlyOrganizationOwner(orgId)
         returns (bytes32 id)
     {
         id = _createOrganization(
@@ -202,6 +202,8 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         );
         emit SubsidiaryCreated(orgId, id, subsidiaryDirector);
 
+        // If parent ORG.ID owner indicates their address as director,
+        // their directorship is automatically confirmed
         if (subsidiaryDirector == msg.sender) {
             emit DirectorOwnershipConfirmed(id, msg.sender);
         }
@@ -430,7 +432,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         require(
             orgJsonHash != bytes32(0),
-            "ORG.ID: ORG.JSON hash cannot be empty"
+            "ORG.ID: ORG.JSON hash cannot be zero"
         );
 
         emit OrgJsonHashChanged(

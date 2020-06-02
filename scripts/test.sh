@@ -24,10 +24,10 @@ start_ganache() {
     echo "Testing coverage mode"
     # solidity-coverage will runs it own instance
   else
-    npx ganache-cli --gasLimit 0xfffffffffff --gasPrice 0x01 --port "$ganache_port" --accounts 20 --defaultBalanceEther 1000000 > /dev/null &        
-    ganache_pid=$! 
+    npx ganache-cli --gasLimit 0xfffffffffff --gasPrice 0x01 --port "$ganache_port" --accounts 20 --defaultBalanceEther 1000000 > /dev/null &
+    ganache_pid=$!
     echo "Server is listening on the port $ganache_port (pid: $ganache_pid)"
-  fi  
+  fi
 }
 
 ganache_running() {
