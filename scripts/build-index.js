@@ -11,8 +11,7 @@ const bundle = [
 ];
 const deploymentsInfo = [
     'main-OrgId.json',
-    'ropsten-OrgId.json',
-    'rinkeby-OrgId.json'
+    'ropsten-OrgId.json'
 ];
 const files = fs.readdirSync(CONTRACTS_DIR);
 const deploymentsFiles = fs.readdirSync(DEPLOYMENTS_DIR);

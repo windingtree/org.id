@@ -2,13 +2,11 @@
   "manifestVersion": "2.2",
   "contracts": {
     "OrgId": "OrgId",
-    "OrgIdUpgradeability": "OrgIdUpgradeability",
-    "OrgIdTimeMachine": "OrgIdTimeMachine",
-    "LifTestInitializable": "LifTestInitializable"
+    "OrgIdUpgradeability": "OrgIdUpgradeability"
   },
   "dependencies": {},
   "name": "org.id",
-  "version": "0.11.7",
+  "version": "0.12.0",
   "publish": true,
   "compiler": {
     "manager": "openzeppelin",
