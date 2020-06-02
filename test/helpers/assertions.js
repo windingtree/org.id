@@ -6,7 +6,7 @@
  */
 module.exports.assertRevert = async (promise, expectedReason = null) => {
     if (expectedReason === null) {
-      throw('assertRevert: expected reason for revert must be provided');
+        throw('assertRevert: expected reason for revert must be provided');
     }
 
     try {
@@ -19,10 +19,10 @@ module.exports.assertRevert = async (promise, expectedReason = null) => {
 
         // Both "revert" keyword and the expected revert reason must be present in the error message
         if (!revertFound) {
-          assert(false, `"revert" keyword not found in error message:\n\n    ` + msg);
+            assert(false, '"revert" keyword not found in error message: ' + msg);
         }
         if (!expectedReasonFound) {
-          assert(false, `Expected revert reason was not found in error message.
+            assert(false, `Expected revert reason was not found in error message.
 
             expected reason: "${expectedReason}"
               error message: "${msg}"`);

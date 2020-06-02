@@ -10,18 +10,18 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * Helper function for creating organizations
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
- * @param {array} arguments Array of arguments for the real createOrganization
+ * @param {array} args Array of arguments for the real createOrganization
  * @dev Arguments order: [requestedOrgIdHash(bytes32), orgJsonUri(string), orgJsonHash(bytes32)]
  * @returns {Promise<{string}>} New ORG.ID hash
  */
 module.exports.createOrganizationHelper = async (
     orgIdContract,
     callerAddress,
-    arguments
+    args
 ) => {
-    const requestedOrgIdHash = arguments[0];
-    const orgJsonUri = arguments[1];
-    const orgJsonHash = arguments[2];
+    const requestedOrgIdHash = args[0];
+    const orgJsonUri = args[1];
+    const orgJsonHash = args[2];
 
     const result = await orgIdContract
         .methods['createOrganization(bytes32,string,bytes32)'](
@@ -68,20 +68,20 @@ module.exports.createOrganizationHelper = async (
  * Helper function for creating organizational units
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
- * @param {array} arguments Array of arguments for the real createSubsidiary
+ * @param {array} args Array of arguments for the real createSubsidiary
  * @dev Arguments order: [parentOrgIdHash(bytes32), requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
  * @returns {Promise<{string}>} New unit's ORG.ID hash
  */
 module.exports.createSubsidiaryHelper = async (
     orgIdContract,
     callerAddress,
-    arguments
+    args
 ) => {
-    const parentOrgIdHash = arguments[0];
-    const requestedUnitHash = arguments[1];
-    const directorAddress = arguments[2];
-    const orgJsonUri = arguments[3];
-    const orgJsonHash = arguments[4];
+    const parentOrgIdHash = args[0];
+    const requestedUnitHash = args[1];
+    const directorAddress = args[2];
+    const orgJsonUri = args[3];
+    const orgJsonHash = args[4];
 
     const result = await orgIdContract
         .methods['createSubsidiary(bytes32,bytes32,address,string,bytes32)'](
