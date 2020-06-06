@@ -118,7 +118,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Throws if called by non-owner
      */
-    modifier onlyOrganizationOwner(bytes32 orgId) {
+    modifier mustBeCalledByOwner(bytes32 orgId) {
         require(
             organizations[orgId].owner == msg.sender,
             "ORG.ID: action not authorized (must be owner)"
@@ -129,7 +129,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Throws if called by non-director
      */
-    modifier onlyOrganizationOwnerOrDirector(bytes32 orgId) {
+    modifier mustBeCalledByOwnerOrDirector(bytes32 orgId) {
         require(
             organizations[orgId].owner == msg.sender ||
             organizations[orgId].director == msg.sender,
@@ -190,7 +190,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         external
         orgIdMustExist(orgId)
-        onlyOrganizationOwner(orgId)
+        mustBeCalledByOwner(orgId)
         returns (bytes32 id)
     {
         id = _createOrganization(
@@ -216,7 +216,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function toggleOrganization(bytes32 orgId)
         external
         orgIdMustExist(orgId)
-        onlyOrganizationOwner(orgId)
+        mustBeCalledByOwner(orgId)
     {
         emit OrganizationToggled(
             orgId,
@@ -254,7 +254,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         external
         orgIdMustExist(orgId)
-        onlyOrganizationOwner(orgId)
+        mustBeCalledByOwner(orgId)
     {
         require(
             newDirector != address(0),
@@ -286,7 +286,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         external
         orgIdMustExist(orgId)
-        onlyOrganizationOwner(orgId)
+        mustBeCalledByOwner(orgId)
     {
         require(
             newOwner != address(0),
@@ -314,7 +314,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         external
         orgIdMustExist(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
+        mustBeCalledByOwnerOrDirector(orgId)
     {
         changeOrgJsonUri(orgId, orgJsonUri);
         changeOrgJsonHash(orgId, orgJsonHash);
@@ -403,7 +403,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         public
         orgIdMustExist(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
+        mustBeCalledByOwnerOrDirector(orgId)
     {
         require(
             bytes(orgJsonUri).length != 0,
@@ -429,7 +429,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     )
         public
         orgIdMustExist(orgId)
-        onlyOrganizationOwnerOrDirector(orgId)
+        mustBeCalledByOwnerOrDirector(orgId)
     {
         require(
             orgJsonHash != bytes32(0),
