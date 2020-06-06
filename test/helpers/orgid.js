@@ -1,144 +1,145 @@
 const { assertEvent } = require('../helpers/assertions');
-const { zeroAddress, zeroBytes } = require('../helpers/constants');
+const { zeroAddress, zeroHash } = require('../helpers/constants');
 
 /**
- * Generates an id on the base of string and solt
- * @param {string} string Part of the base for id generation
- * @param {atring} [solt=Math.random().toString()] Solt string
+ * Generates an ID from string and salt
  */
-module.exports.generateId = (string, solt = Math.random().toString()) => web3.utils.keccak256(`${string}${solt}`);
+module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toString());
 
 /**
- * Creates an organization
- * @param {Object} contract OrgId contract instance
- * @param {string} from Sender address
- * @param {string} id Id string that should be conform with bytes32 hex form
- * @param {string} uri Link to the json file online
- * @param {string} hash Hash of the json file, should be in bytes32 hex form
- * @returns {Promise<{string}>} The organization address
+ * Helper function for creating organizations
+ * @param {Object} orgIdContract ORG.ID contract instance
+ * @param {address} callerAddress Caller address
+ * @param {array} args Array of arguments for the real createOrganization
+ * @dev Arguments order: [requestedOrgIdHash(bytes32), orgJsonUri(string), orgJsonHash(bytes32)]
+ * @returns {Promise<{string}>} New ORG.ID hash
  */
-module.exports.createOrganization = async (
-    contract,
-    from,
-    id,
-    uri,
-    hash
+module.exports.createOrganizationHelper = async (
+    orgIdContract,
+    callerAddress,
+    args
 ) => {
-    const result = await contract
+    const requestedOrgIdHash = args[0];
+    const orgJsonUri = args[1];
+    const orgJsonHash = args[2];
+
+    const result = await orgIdContract
         .methods['createOrganization(bytes32,string,bytes32)'](
-            id,
-            uri,
-            hash
+            requestedOrgIdHash,
+            orgJsonUri,
+            orgJsonHash
         )
-        .send({ from });
-    let organizationId;
+        .send({ from: callerAddress });
+
+    let newOrgIdHash;
     assertEvent(result, 'OrganizationCreated', [
         [
             'orgId',
             p => {
-                if (id !== zeroBytes) {
-                    (p).should.equal(id);
+                if (requestedOrgIdHash !== zeroHash) {
+                    (p).should.equal(requestedOrgIdHash);
                 }
 
-                organizationId = p;
+                newOrgIdHash = p;
             }
         ],
         [
             'owner',
-            p => (p).should.equal(from)
+            p => (p).should.equal(callerAddress)
         ]
     ]);
 
-    const org = await contract
-        .methods['getOrganization(bytes32)'](organizationId)
+    const org = await orgIdContract
+        .methods['getOrganization(bytes32)'](newOrgIdHash)
         .call();
-    (org.orgId).should.equal(organizationId);
-    (org.orgJsonUri).should.equal(uri);
-    (org.orgJsonHash).should.equal(hash);
-    (org.parentEntity).should.equal(zeroBytes);
-    (org.owner).should.equal(from);
+    (org.orgId).should.equal(newOrgIdHash);
+    (org.orgJsonUri).should.equal(orgJsonUri);
+    (org.orgJsonHash).should.equal(orgJsonHash);
+    (org.parentEntity).should.equal(zeroHash);
+    (org.owner).should.equal(callerAddress);
     (org.director).should.equal(zeroAddress);
     (org.state).should.be.true;
     (org.directorConfirmed).should.be.false;
 
-    return organizationId;
+    return newOrgIdHash;
 };
 
 /**
- * Creates the subisidiary
- * @param {Object} contract OrgId contract instance
- * @param {string} from Sender address
- * @param {string} id Id string that should be conform with bytes32 hex form
- * @param {string} subId Id string that should be conform with bytes32 hex form
- * @param {string} entityDirector The entity director address
- * @param {string} uri Link to the json file online
- * @param {string} hash Hash of the json file, should be in bytes32 hex form
- * @returns {Promise<{string}>} The subsidiary address
+ * Helper function for creating organizational units
+ * @param {Object} orgIdContract ORG.ID contract instance
+ * @param {address} callerAddress Caller address
+ * @param {array} args Array of arguments for the real createSubsidiary
+ * @dev Arguments order: [parentOrgIdHash(bytes32), requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
+ * @returns {Promise<{string}>} New unit's ORG.ID hash
  */
-module.exports.createSubsidiary = async (
-    contract,
-    from,
-    id,
-    subId,
-    entityDirector,
-    uri,
-    hash
+module.exports.createSubsidiaryHelper = async (
+    orgIdContract,
+    callerAddress,
+    args
 ) => {
-    const result = await contract
+    const parentOrgIdHash = args[0];
+    const requestedUnitHash = args[1];
+    const directorAddress = args[2];
+    const orgJsonUri = args[3];
+    const orgJsonHash = args[4];
+
+    const result = await orgIdContract
         .methods['createSubsidiary(bytes32,bytes32,address,string,bytes32)'](
-            id,
-            subId,
-            entityDirector,
-            uri,
-            hash
+            parentOrgIdHash,
+            requestedUnitHash,
+            directorAddress,
+            orgJsonUri,
+            orgJsonHash
         )
-        .send({ from });
-    let organizationId;
+        .send({ from: callerAddress });
+
+    let newUnitOrgIdHash;
     assertEvent(result, 'SubsidiaryCreated', [
         [
             'parentOrgId',
-            p => (p).should.equal(id)
+            p => (p).should.equal(parentOrgIdHash)
         ],
         [
             'subOrgId',
             p => {
-                if (id !== zeroBytes) {
-                    (p).should.equal(subId);
+                if (requestedUnitHash !== zeroHash) {
+                    (p).should.equal(requestedUnitHash);
                 }
 
-                organizationId = p;
+                newUnitOrgIdHash = p;
             }
         ],
         [
             'director',
-            p => (p).should.equal(entityDirector)
+            p => (p).should.equal(directorAddress)
         ]
     ]);
 
-    if (from === entityDirector) {
+    if (callerAddress === directorAddress) {
         assertEvent(result, 'DirectorOwnershipConfirmed', [
             [
                 'orgId',
-                p => (p).should.equal(organizationId)
+                p => (p).should.equal(newUnitOrgIdHash)
             ],
             [
                 'director',
-                p => (p).should.equal(entityDirector)
+                p => (p).should.equal(directorAddress)
             ]
         ]);
     }
 
-    const org = await contract
-        .methods['getOrganization(bytes32)'](organizationId)
+    const org = await orgIdContract
+        .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
         .call();
-    (org.orgId).should.equal(organizationId);
-    (org.orgJsonUri).should.equal(uri);
-    (org.orgJsonHash).should.equal(hash);
-    (org.parentEntity).should.equal(id);
-    (org.owner).should.equal(from);
-    (org.director).should.equal(entityDirector);
-    (org.state).should.be.true;
-    (org.directorConfirmed).should.be[(from === entityDirector).toString()];
 
-    return organizationId;
+    (org.orgId).should.equal(newUnitOrgIdHash);
+    (org.orgJsonUri).should.equal(orgJsonUri);
+    (org.orgJsonHash).should.equal(orgJsonHash);
+    (org.parentEntity).should.equal(parentOrgIdHash);
+    (org.owner).should.equal(callerAddress);
+    (org.director).should.equal(directorAddress);
+    (org.state).should.be.true;
+    (org.directorConfirmed).should.be[(callerAddress === directorAddress).toString()];
+
+    return newUnitOrgIdHash;
 };

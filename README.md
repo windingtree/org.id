@@ -1,11 +1,11 @@
-<a href="https://orgid.tech"><img src="https://github.com/windingtree/branding/raw/master/org.id/svg/org.id-logo.svg" height="50px" alt="ORG.ID">
-
 [![Build Status](https://travis-ci.org/windingtree/org.id.svg?branch=master)](https://travis-ci.org/windingtree/org.id)
 [![Coverage Status](https://coveralls.io/repos/github/windingtree/org.id/badge.svg?branch=master)](https://coveralls.io/github/windingtree/org.id?branch=master&v=2.0)
 
-# ORG.ID Ethereum Smart Contract
+<a href="https://orgid.tech"><img src="https://github.com/windingtree/branding/raw/master/org.id/svg/org.id-logo.svg" height="50" alt="ORG.ID"></a>
 
-ORG.ID is the the core smart contract of the [ORG.ID ecosystem](https://orgid.tech). [Arbor](https://arbor.fm) is the easiest way to interact with mainnet and ropsten versions of ORG.ID.
+## ORG.ID Registry
+
+ORG.ID Registry is the core smart contract of the [ORG.ID ecosystem](https://orgid.tech). It is a list of all organizations and their organizational units. Its interface allows to retrieve information about all and any organization or unit, as well as create and change them.
 
 ### Mainnet
 
@@ -39,42 +39,15 @@ const { mainnet, ropsten, rinkeby } = addresses;
 
 ## Interface
 
-Check out the [auto-generated docs](./docs/OrgId.md).
+[Auto-generated docs](./docs/OrgId.md).
 
-## ORG.ID Ecosystem
-
-![ORG.ID Ecosystem](./assets/orgid-ecosystem.png)
-
-### ORG.ID Functionality
-
-ORG.ID Smart Contract is a list of all organizations in the ecosystem. Its interface allows anyone to retrieve information about all and any organization, as well as create and change organizations and organizational units.
-
-#### What is an organization?
-
-We use the word "organization" to emphasize that any kind of entity, commercial firm, non-profit, NGO, and even entities that aren't officially incorporated ([W3C, for example](https://www.w3.org/Consortium/facts.html)), may create an ORG.ID.
-
-#### Organizations and organizational units
-
-Organizations may have complicated internal structure, and even in simple cases there is hierarchy. Here's a few examples, where first level are *organizations* and second level are the *organizational units* or simply *units.*
-
-- Best Sell, LLC
-  - Best Sell Store Paris
-  - Best Sell Store Berlin
-  - Best Sell Store Prague
-- Acme, Corp.
-  - Acme Toys Department
-  - Acme Guns Department
-  - Acme Foods Department
-  - Accounting Department
-  - Legal Department
-
-#### ORG.ID Record
+## ORG.ID Record Structure
 
 Both organization and unit records have:
 
 | **Name** | **Type** | **Description** |
 |-|-|-|
-| `orgId` | `address` | Unique Organization ID |
+| `orgId` | `bytes32` | Unique Organization ID |
 | `state` | `bool` | Indicates whether this ORG.ID is active |
 | `owner` | `address` | Account (or smart contract) currently authorized to manage this ORG.ID |
 | `orgJsonUri` | `string` | URI of a [ORG.JSON-compliant](https://github.com/windingtree/org.json-schema) datasheet ([example](https://gist.githubusercontent.com/kvakes/0f728d60add6561f18d173c01f87a5bd/raw/9ba3c6fd08c29daaff9809ffa04be09a66196900/glider.json)) |
@@ -84,7 +57,7 @@ Additionally, unit's ORG.ID may contain:
 
 | **Name** | **Type** | **Description** |
 |-|-|-|
-| `parentEntity` | `address` | Unit parent's ORG.ID |
+| `parentEntity` | `bytes32` | Unit parent's ORG.ID |
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `directorConfirmed` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 

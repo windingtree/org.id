@@ -4,28 +4,31 @@
  * @param {boolean} [reason=null] Revert reason to compare
  * @returns {Promise}
  */
-module.exports.assertRevert = async (promise, reason = false) => {
+module.exports.assertRevert = async (promise, expectedReason = null) => {
+    if (expectedReason === null) {
+        throw('assertRevert: expected reason for revert must be provided');
+    }
 
     try {
         await promise;
-        assert.fail('The assertion is fulfilled although failure was expected');
+        assert.fail('Revert was expected, but action succeeded');
     } catch (error) {
-        const revertFound = error.message.search('revert') >= 0;
-        const reasonFoundByString = error.message.search(reason) >= 0;
-        const reasonFound = reason
-            ? error.reason === reason|| reasonFoundByString
-            : true; // truffle 5 have to provide a revert reason string
+        const msg = error.message;
+        const revertFound = msg.indexOf('revert') !== -1;
+        const expectedReasonFound = msg.indexOf(expectedReason) !== -1 || error.reason === expectedReason;
 
-        if (reason) {
-            assert(
-                revertFound && reasonFound,
-                `Expected "revert"${
-                    reason ? ' with reason "' + reason + '"' : ''
-                }, got ${error} instead`
-            );
-        } else if (!reason && !revertFound) {
-            throw error;
+        // Both "revert" keyword and the expected revert reason must be present in the error message
+        if (!revertFound) {
+            assert(false, '"revert" keyword not found in error message: ' + msg);
         }
+        if (!expectedReasonFound) {
+            assert(false, `Expected revert reason was not found in error message.
+
+            expected reason: "${expectedReason}"
+              error message: "${msg}"`);
+        }
+
+        assert(true);
     }
 };
 
