@@ -106,7 +106,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Throws if ORG.ID does not exist
      */
-    modifier existedOrganization(bytes32 orgId) {
+    modifier orgIdMustExist(bytes32 orgId) {
         require(
             orgId != bytes32(0) &&
             organizations[orgId].orgId == orgId,
@@ -189,7 +189,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 orgJsonHash
     )
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwner(orgId)
         returns (bytes32 id)
     {
@@ -215,7 +215,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      */
     function toggleOrganization(bytes32 orgId)
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwner(orgId)
     {
         emit OrganizationToggled(
@@ -232,7 +232,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      */
     function confirmDirectorOwnership(bytes32 orgId)
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
     {
         require(
             organizations[orgId].director == msg.sender,
@@ -253,7 +253,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         address newDirector
     )
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwner(orgId)
     {
         require(
@@ -285,7 +285,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         address newOwner
     )
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwner(orgId)
     {
         require(
@@ -313,7 +313,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 orgJsonHash
     )
         external
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwnerOrDirector(orgId)
     {
         changeOrgJsonUri(orgId, orgJsonUri);
@@ -386,7 +386,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function getSubsidiaries(bytes32 orgId)
         external
         view
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         returns (bytes32[] memory)
     {
         return _getOrganizations(orgId);
@@ -402,7 +402,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         string memory orgJsonUri
     )
         public
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwnerOrDirector(orgId)
     {
         require(
@@ -428,7 +428,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 orgJsonHash
     )
         public
-        existedOrganization(orgId)
+        orgIdMustExist(orgId)
         onlyOrganizationOwnerOrDirector(orgId)
     {
         require(
