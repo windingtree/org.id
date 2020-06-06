@@ -102,7 +102,7 @@ contract OrgIdInterface {
          "parentOrgId": "Parent ORG.ID (if applicable)",
          "owner": "Owner's address",
          "director": "Unit director's address",
-         "state": "Indicates whether ORG.ID is active",
+         "isActive": "Indicates whether ORG.ID is active",
          "directorConfirmed": "Indicates whether directorship is confirmed"
      }
      */
@@ -117,7 +117,7 @@ contract OrgIdInterface {
             bytes32 parentOrgId,
             address owner,
             address director,
-            bool state,
+            bool isActive,
             bool directorConfirmed
         );
 

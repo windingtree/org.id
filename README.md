@@ -48,8 +48,8 @@ Both organization and unit records have:
 | **Name** | **Type** | **Description** |
 |-|-|-|
 | `orgId` | `bytes32` | Unique Organization ID |
-| `state` | `bool` | Indicates whether this ORG.ID is active |
-| `owner` | `address` | Account (or smart contract) currently authorized to manage this ORG.ID |
+| `isActive` | `bool` | Indicates whether ORG.ID is active |
+| `owner` | `address` | Account (or smart contract) currently authorized to manage ORG.ID |
 | `orgJsonUri` | `string` | URI of a [ORG.JSON-compliant](https://github.com/windingtree/org.json-schema) datasheet ([example](https://gist.githubusercontent.com/kvakes/0f728d60add6561f18d173c01f87a5bd/raw/9ba3c6fd08c29daaff9809ffa04be09a66196900/glider.json)) |
 | `orgJsonHash` | `bytes32` | ORG.JSON keccak256 hash |
 

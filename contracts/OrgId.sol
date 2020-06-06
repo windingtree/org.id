@@ -22,7 +22,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 parentOrgId;
         address owner;
         address director;
-        bool state;
+        bool isActive;
         bool directorConfirmed;
         bytes32[] subsidiaries;
     }
@@ -220,10 +220,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         emit OrganizationToggled(
             orgId,
-            organizations[orgId].state,
-            !organizations[orgId].state
+            organizations[orgId].isActive,
+            !organizations[orgId].isActive
         );
-        organizations[orgId].state = !organizations[orgId].state;
+        organizations[orgId].isActive = !organizations[orgId].isActive;
     }
 
     /**
@@ -346,7 +346,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
          "parentOrgId": "Parent ORG.ID (*)",
          "owner": "Owner's address",
          "director": "Unit director's address (*)",
-         "state": "Indicates whether ORG.ID is active",
+         "isActive": "Indicates whether ORG.ID is active",
          "directorConfirmed": "Indicates whether directorship is confirmed (*)"
      }
      */
@@ -361,7 +361,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             bytes32 parentOrgId,
             address owner,
             address director,
-            bool state,
+            bool isActive,
             bool directorConfirmed
         )
     {
@@ -372,7 +372,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         parentOrgId = organizations[_orgId].parentOrgId;
         owner = organizations[_orgId].owner;
         director = organizations[_orgId].director;
-        state = organizations[_orgId].state;
+        isActive = organizations[_orgId].isActive;
         directorConfirmed = organizations[_orgId].directorConfirmed;
     }
 
@@ -568,7 +568,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             // If organization is active AND
             // organization is top level (not unit) OR
             // organization is a unit AND directorship is confirmed
-            if (organizations[source[i]].state &&
+            if (organizations[source[i]].isActive &&
                 (
                     (orgId == bytes32(0) && organizations[source[i]].parentOrgId == bytes32(0)) ||
                     (orgId != bytes32(0) &&
@@ -601,7 +601,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             : organizations[orgId].subsidiaries;
 
         for (uint256 i = 0; i < source.length; i++) {
-            if (organizations[source[i]].state &&
+            if (organizations[source[i]].isActive &&
                 (
                     (orgId == bytes32(0) && organizations[source[i]].parentOrgId == bytes32(0)) ||
                     (orgId != bytes32(0) &&

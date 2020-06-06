@@ -239,15 +239,15 @@ contract('ORG.ID', accounts => {
                 );
             });
 
-            it('should toggle organization state', async () => {
+            it('should toggle organization isActive state', async () => {
                 await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
                 let org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
-                (org.state).should.be.false;
+                (org.isActive).should.be.false;
                 await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
                 org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
-                (org.state).should.be.true;
+                (org.isActive).should.be.true;
             });
         });
 
@@ -735,7 +735,7 @@ contract('ORG.ID', accounts => {
                 (org).should.has.property('parentOrgId').to.equal(zeroHash);
                 (org).should.has.property('owner').to.equal(testOrgIdOwner);
                 (org).should.has.property('director').to.equal(zeroAddress);
-                (org).should.has.property('state').to.be.true;
+                (org).should.has.property('isActive').to.be.true;
                 (org).should.has.property('directorConfirmed').to.be.false;
             });
         });

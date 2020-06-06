@@ -58,7 +58,7 @@ module.exports.createOrganizationHelper = async (
     (org.parentOrgId).should.equal(zeroHash);
     (org.owner).should.equal(callerAddress);
     (org.director).should.equal(zeroAddress);
-    (org.state).should.be.true;
+    (org.isActive).should.be.true;
     (org.directorConfirmed).should.be.false;
 
     return newOrgIdHash;
@@ -138,7 +138,7 @@ module.exports.createSubsidiaryHelper = async (
     (org.parentOrgId).should.equal(parentOrgIdHash);
     (org.owner).should.equal(callerAddress);
     (org.director).should.equal(directorAddress);
-    (org.state).should.be.true;
+    (org.isActive).should.be.true;
     (org.directorConfirmed).should.be[(callerAddress === directorAddress).toString()];
 
     return newUnitOrgIdHash;
