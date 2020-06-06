@@ -732,7 +732,7 @@ contract('ORG.ID', accounts => {
                 (org).should.has.property('orgId').to.equal(testOrgIdHash);
                 (org).should.has.property('orgJsonUri').to.equal(mockOrgJsonUri);
                 (org).should.has.property('orgJsonHash').to.equal(mockOrgJsonHash);
-                (org).should.has.property('parentEntity').to.equal(zeroHash);
+                (org).should.has.property('parentOrgId').to.equal(zeroHash);
                 (org).should.has.property('owner').to.equal(testOrgIdOwner);
                 (org).should.has.property('director').to.equal(zeroAddress);
                 (org).should.has.property('state').to.be.true;

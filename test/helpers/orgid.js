@@ -55,7 +55,7 @@ module.exports.createOrganizationHelper = async (
     (org.orgId).should.equal(newOrgIdHash);
     (org.orgJsonUri).should.equal(orgJsonUri);
     (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentEntity).should.equal(zeroHash);
+    (org.parentOrgId).should.equal(zeroHash);
     (org.owner).should.equal(callerAddress);
     (org.director).should.equal(zeroAddress);
     (org.state).should.be.true;
@@ -135,7 +135,7 @@ module.exports.createSubsidiaryHelper = async (
     (org.orgId).should.equal(newUnitOrgIdHash);
     (org.orgJsonUri).should.equal(orgJsonUri);
     (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentEntity).should.equal(parentOrgIdHash);
+    (org.parentOrgId).should.equal(parentOrgIdHash);
     (org.owner).should.equal(callerAddress);
     (org.director).should.equal(directorAddress);
     (org.state).should.be.true;

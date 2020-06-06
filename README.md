@@ -57,7 +57,7 @@ Additionally, unit's ORG.ID may contain:
 
 | **Name** | **Type** | **Description** |
 |-|-|-|
-| `parentEntity` | `bytes32` | Unit parent's ORG.ID |
+| `parentOrgId` | `bytes32` | Unit parent's ORG.ID |
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `directorConfirmed` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
