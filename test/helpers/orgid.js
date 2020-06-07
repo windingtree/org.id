@@ -11,7 +11,7 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createOrganization
- * @dev Arguments order: [requestedOrgIdHash(bytes32), orgJsonUri(string), orgJsonHash(bytes32)]
+ * @dev Arguments order: [orgJsonUri(string), orgJsonHash(bytes32)]
  * @returns {Promise<{string}>} New ORG.ID hash
  */
 module.exports.createOrganizationHelper = async (
@@ -19,13 +19,11 @@ module.exports.createOrganizationHelper = async (
     callerAddress,
     args
 ) => {
-    const requestedOrgIdHash = args[0];
-    const orgJsonUri = args[1];
-    const orgJsonHash = args[2];
+    const orgJsonUri = args[0];
+    const orgJsonHash = args[1];
 
     const result = await orgIdContract
-        .methods['createOrganization(bytes32,string,bytes32)'](
-            requestedOrgIdHash,
+        .methods['createOrganization(string,bytes32)'](
             orgJsonUri,
             orgJsonHash
         )
@@ -36,10 +34,6 @@ module.exports.createOrganizationHelper = async (
         [
             'orgId',
             p => {
-                if (requestedOrgIdHash !== zeroHash) {
-                    (p).should.equal(requestedOrgIdHash);
-                }
-
                 newOrgIdHash = p;
             }
         ],
@@ -69,7 +63,7 @@ module.exports.createOrganizationHelper = async (
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createSubsidiary
- * @dev Arguments order: [parentOrgIdHash(bytes32), requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
+ * @dev Arguments order: [requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
  * @returns {Promise<{string}>} New unit's ORG.ID hash
  */
 module.exports.createSubsidiaryHelper = async (
@@ -78,15 +72,13 @@ module.exports.createSubsidiaryHelper = async (
     args
 ) => {
     const parentOrgIdHash = args[0];
-    const requestedUnitHash = args[1];
-    const directorAddress = args[2];
-    const orgJsonUri = args[3];
-    const orgJsonHash = args[4];
+    const directorAddress = args[1];
+    const orgJsonUri = args[2];
+    const orgJsonHash = args[3];
 
     const result = await orgIdContract
-        .methods['createSubsidiary(bytes32,bytes32,address,string,bytes32)'](
+        .methods['createSubsidiary(bytes32,address,string,bytes32)'](
             parentOrgIdHash,
-            requestedUnitHash,
             directorAddress,
             orgJsonUri,
             orgJsonHash
@@ -102,10 +94,6 @@ module.exports.createSubsidiaryHelper = async (
         [
             'subOrgId',
             p => {
-                if (requestedUnitHash !== zeroHash) {
-                    (p).should.equal(requestedUnitHash);
-                }
-
                 newUnitOrgIdHash = p;
             }
         ],

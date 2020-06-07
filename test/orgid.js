@@ -169,41 +169,11 @@ contract('ORG.ID', accounts => {
 
     describe('ORG.ID methods', () => {
         describe('#createOrganization(bytes32,string,bytes32)', () => {
-            it('should fail if requested ORG.ID hash is not unique', async () => {
-                const requestedOrgIdHash = generateHashHelper();
-
-                // Create an org with `requestedId`
-                await createOrganizationHelper(
-                    orgIdContract,
-                    randomAddress,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-
-                // Try to create another org with the same id (`requestedId`)
-                await assertRevert(
-                    createOrganizationHelper(
-                        orgIdContract,
-                        randomAddressTwo,
-                        [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                    ),
-                    'ORG.ID: requested ORG.ID hash already exists'
-                );
-            });
-
-            it('should create organization with requested ORG.ID hash', async () => {
-                const requestedOrgIdHash = generateHashHelper();
+            it('should create an organization', async () => {
                 await createOrganizationHelper(
                     orgIdContract,
                     getRandomAccount(),
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-            });
-
-            it('should create organization with random new ORG.ID hash (zeroHash should be sent as requested hash in this case)', async () => {
-                await createOrganizationHelper(
-                    orgIdContract,
-                    getRandomAccount(),
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
         });
@@ -212,11 +182,10 @@ contract('ORG.ID', accounts => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -255,11 +224,10 @@ contract('ORG.ID', accounts => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -316,14 +284,13 @@ contract('ORG.ID', accounts => {
         describe('#changeOrgJsonUri(bytes32,string)', () => {
             let testOrgIdHash;
             const testOrgIdOwner = accounts[5];
-            const requestedOrgIdHash = zeroHash;
             let newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
 
             beforeEach(async () => {
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -379,12 +346,11 @@ contract('ORG.ID', accounts => {
             it('should change unit ORG.JSON URI requested by director', async () => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
                 const unitDirector = randomAddressTwo;
                 const testUnitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 const result = await orgIdContract
@@ -414,11 +380,10 @@ contract('ORG.ID', accounts => {
             let newOrgJsonHash = generateHashHelper();
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -482,12 +447,11 @@ contract('ORG.ID', accounts => {
             it('should change unit ORG.JSON hash requested by director', async () => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
                 const unitDirector = randomAddressTwo;
                 const testUnitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 const result = await orgIdContract
@@ -518,11 +482,10 @@ contract('ORG.ID', accounts => {
             let newOrgJsonHash = generateHashHelper();
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -609,12 +572,11 @@ contract('ORG.ID', accounts => {
             it('should change unit ORG.JSON URI requested by director', async () => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
                 const unitDirector = randomAddressTwo;
                 const testUnitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 const result = await orgIdContract
@@ -665,12 +627,12 @@ contract('ORG.ID', accounts => {
                 const orgId1 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddress,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
                 const orgId2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
                 await orgIdContract.methods['toggleOrganization(bytes32)'](orgId1)
                     .send({ from: randomAddress });
@@ -687,12 +649,12 @@ contract('ORG.ID', accounts => {
                 const orgId1 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddress,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
                 const orgId2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
                 const orgs = await orgIdContract
                     .methods['getOrganizations()']()
@@ -706,11 +668,10 @@ contract('ORG.ID', accounts => {
             const testOrgIdOwner = accounts[5];
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
                 testOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -747,24 +708,22 @@ contract('ORG.ID', accounts => {
         const testOrgIdOwner = unitOwner;
         const unitDirector = accounts[6];
         const nonOwnerOrDirector = accounts[7];
-        const requestedOrgIdHash = zeroHash;
-        const requestedUnitOrgIdHash = zeroHash;
 
         beforeEach(async () => {
             parentOrgIdHash = await createOrganizationHelper(
                 orgIdContract,
                 testOrgIdOwner,
-                [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                [mockOrgJsonUri, mockOrgJsonHash]
             );
         });
 
-        describe('#createSubsidiary(bytes32,bytes32,address,string,bytes32)', () => {
+        describe('#createSubsidiary(bytes32,address,string,bytes32)', () => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     createSubsidiaryHelper(
                         orgIdContract,
                         nonOwnerOrDirector,
-                        [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                        [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                     ),
                     'ORG.ID: action not authorized (must be owner)'
                 );
@@ -776,7 +735,7 @@ contract('ORG.ID', accounts => {
                     createSubsidiaryHelper(
                         orgIdContract,
                         testOrgIdOwner,
-                        [nonExistingOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                        [nonExistingOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                     ),
                     'ORG.ID: Organization not found'
                 );
@@ -789,7 +748,7 @@ contract('ORG.ID', accounts => {
                     createSubsidiaryHelper(
                         orgIdContract,
                         testOrgIdOwner,
-                        [parentOrgIdHash, requestedUnitOrgIdHash, invalidDirectorAddress, mockOrgJsonUri, mockOrgJsonHash]
+                        [parentOrgIdHash, invalidDirectorAddress, mockOrgJsonUri, mockOrgJsonHash]
                     ),
                     'ORG.ID: Invalid director address'
                 );
@@ -800,14 +759,14 @@ contract('ORG.ID', accounts => {
                 await createSubsidiaryHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 // Director is the same as the organization owner
                 await createSubsidiaryHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, testOrgIdOwner, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, testOrgIdOwner, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 // TODO: assertions are missing!!!
@@ -825,7 +784,7 @@ contract('ORG.ID', accounts => {
                 unitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -873,7 +832,7 @@ contract('ORG.ID', accounts => {
                 unitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
                 await orgIdContract
                     .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
@@ -976,14 +935,12 @@ contract('ORG.ID', accounts => {
             const parentOrgIdOwner = accounts[5];
             const testOrgIdOwner = accounts[5];
             const unitDirector = accounts[6];
-            const requestedOrgIdHash = zeroHash;
-            const requestedUnitOrgIdHash = zeroHash;
 
             beforeEach(async () => {
                 parentOrgIdHash = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
             });
 
@@ -1011,7 +968,7 @@ contract('ORG.ID', accounts => {
                 await createSubsidiaryHelper(
                     orgIdContract,
                     parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
                 const subs = await orgIdContract
                     .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
@@ -1024,7 +981,7 @@ contract('ORG.ID', accounts => {
                 const unitOrgIdHash = await createSubsidiaryHelper(
                     orgIdContract,
                     parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
                 await orgIdContract
                     .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)

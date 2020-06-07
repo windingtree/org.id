@@ -151,7 +151,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organization
-     * @param orgId Organization's desired ORG.ID hash (TODO: remove from production implementation)
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @return {
@@ -159,12 +158,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      }
      */
     function createOrganization(
-        bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     ) external returns (bytes32 id) {
         id = _createOrganization(
-            orgId,
             bytes32(0),
             address(0),
             orgJsonUri,
@@ -176,14 +173,12 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Create organizational unit
      * @param orgId Parent ORG.ID hash
-     * @param subOrgId Unit's desired ORG.ID hash (TODO: remove from production implementation)
      * @param subsidiaryDirector Unit's director address
      * @param orgJsonUri Unit's ORG.JSON URI
      * @param orgJsonHash ORG.JSON's keccak256 hash
      */
     function createSubsidiary(
         bytes32 orgId,
-        bytes32 subOrgId,
         address subsidiaryDirector,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
@@ -194,7 +189,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         returns (bytes32 id)
     {
         id = _createOrganization(
-            subOrgId,
             orgId,
             subsidiaryDirector,
             orgJsonUri,
@@ -480,7 +474,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create new organization and add it to storage
-     * @param orgId Organization's desired ORG.ID hash (TODO: remove from production implementation)
      * @param orgJsonUri ORG.JSON URI
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @param parentOrgId Parent ORG.ID hash (if applicable)
@@ -490,25 +483,17 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      }
      */
     function _createOrganization(
-        bytes32 orgId,
         bytes32 parentOrgId,
         address subsidiaryDirector,
         string memory orgJsonUri,
         bytes32 orgJsonHash
     ) internal returns (bytes32) {
         // If desired ORG.ID hash was not provided
-        if (orgId == bytes32(0)) {
-            orgId = keccak256(
-                abi.encodePacked(
-                    msg.sender,
-                    blockhash(block.number.sub(1))
-                )
-            );
-        }
-
-        require(
-            organizations[orgId].orgId == bytes32(0),
-            "ORG.ID: requested ORG.ID hash already exists"
+        bytes32 orgId = keccak256(
+            abi.encodePacked(
+                msg.sender,
+                blockhash(block.number.sub(1))
+            )
         );
 
         // If this is a unit...

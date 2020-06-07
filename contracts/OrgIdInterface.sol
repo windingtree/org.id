@@ -7,7 +7,6 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organization
-     * @param orgId Organization's desired ORG.ID hash (TODO: remove from production implementation)
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @return {
@@ -15,7 +14,6 @@ contract OrgIdInterface {
      }
      */
     function createOrganization(
-        bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     ) external returns (bytes32 id);
@@ -23,14 +21,12 @@ contract OrgIdInterface {
     /**
      * @dev Create organizational unit
      * @param orgId Parent ORG.ID hash
-     * @param subOrgId Unit's desired ORG.ID hash (TODO: remove from production implementation)
      * @param subsidiaryDirector Unit's director address
      * @param orgJsonUri Unit's ORG.JSON URI
      * @param orgJsonHash ORG.JSON's keccak256 hash
      */
     function createSubsidiary(
         bytes32 orgId,
-        bytes32 subOrgId,
         address subsidiaryDirector,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
