@@ -24,7 +24,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         address director;
         bool isActive;
         bool directorConfirmed;
-        bytes32[] subsidiaries;
+        bytes32[] units;
     }
 
     /// @dev Mapped list of Organizations
@@ -44,9 +44,9 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Emits when new organizational unit created
      */
-    event SubsidiaryCreated(
+    event UnitCreated(
         bytes32 indexed parentOrgId,
-        bytes32 indexed subOrgId,
+        bytes32 indexed unitOrgId,
         address indexed director
     );
 
@@ -177,7 +177,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param orgJsonUri Unit ORG.JSON URI
      * @param orgJsonHash ORG.JSON keccak256 hash
      */
-    function createSubsidiary(
+    function createUnit(
         bytes32 parentOrgId,
         address director,
         string calldata orgJsonUri,
@@ -194,7 +194,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             orgJsonUri,
             orgJsonHash
         );
-        emit SubsidiaryCreated(parentOrgId, newUnitOrgId, director);
+        emit UnitCreated(parentOrgId, newUnitOrgId, director);
 
         // If parent ORG.ID owner indicates their address as director,
         // their directorship is automatically confirmed
@@ -372,18 +372,18 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Get all active organizational units of a particular ORG.ID
-     * @param orgId Parent ORG.ID hash
+     * @param parentOrgId Parent ORG.ID hash
      * @return {
          "organizationsList": "Array of ORG.ID hashes of active organizational units"
      }
      */
-    function getSubsidiaries(bytes32 orgId)
+    function getUnits(bytes32 parentOrgId)
         external
         view
-        orgIdMustExist(orgId)
+        orgIdMustExist(parentOrgId)
         returns (bytes32[] memory)
     {
-        return _getOrganizations(orgId);
+        return _getOrganizations(parentOrgId);
     }
 
     /**
@@ -462,10 +462,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.getOrganization.selector,
 
             // hierarchy interface: 0x3a3bc250
-            org.createSubsidiary.selector ^
+            org.createUnit.selector ^
             org.confirmDirectorOwnership.selector ^
             org.transferDirectorOwnership.selector ^
-            org.getSubsidiaries.selector
+            org.getUnits.selector
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {
             _registerInterface(interfaceIds[i]);
@@ -475,16 +475,16 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Create new organization and add it to storage
      * @param orgJsonUri ORG.JSON URI
-     * @param orgJsonHash ORG.JSON's keccak256 hash
+     * @param orgJsonHash ORG.JSON keccak256 hash
      * @param parentOrgId Parent ORG.ID hash (if applicable)
-     * @param subsidiaryDirector Unit director's address (if applicable)
+     * @param director Unit director address (if applicable)
      * @return {
          "ORG.ID": "New ORG.ID hash"
      }
      */
     function _createOrganization(
         bytes32 parentOrgId,
-        address subsidiaryDirector,
+        address director,
         string memory orgJsonUri,
         bytes32 orgJsonHash
     ) internal returns (bytes32) {
@@ -504,7 +504,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             );
 
             require(
-                subsidiaryDirector != address(0),
+                director != address(0),
                 "ORG.ID: Invalid director address"
             );
         }
@@ -515,15 +515,15 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             orgJsonHash,
             parentOrgId,
             msg.sender,
-            subsidiaryDirector,
+            director,
             true,
-            subsidiaryDirector == msg.sender,
+            director == msg.sender,
             new bytes32[](0)
         );
         orgIds.push(orgId);
 
         if (parentOrgId != bytes32(0)) {
-            organizations[parentOrgId].subsidiaries.push(orgId);
+            organizations[parentOrgId].units.push(orgId);
         }
 
         return orgId;
@@ -545,7 +545,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32[] memory source =
             orgId == bytes32(0)
             ? orgIds
-            : organizations[orgId].subsidiaries;
+            : organizations[orgId].director;
         organizationsList = new bytes32[](_getOrganizationsCount(orgId));
         uint256 index;
 
@@ -583,7 +583,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32[] memory source =
             orgId == bytes32(0)
             ? orgIds
-            : organizations[orgId].subsidiaries;
+            : organizations[orgId].director;
 
         for (uint256 i = 0; i < source.length; i++) {
             if (organizations[source[i]].isActive &&

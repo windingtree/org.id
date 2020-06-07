@@ -25,7 +25,7 @@ contract OrgIdInterface {
      * @param orgJsonUri Unit ORG.JSON URI
      * @param orgJsonHash ORG.JSON keccak256 hash
      */
-    function createSubsidiary(
+    function createUnit(
         bytes32 parentOrgId,
         address director,
         string calldata orgJsonUri,
@@ -119,12 +119,12 @@ contract OrgIdInterface {
 
     /**
      * @dev Get all active organizational units of a particular ORG.ID
-     * @param orgId Parent ORG.ID hash
+     * @param parentOrgId Parent ORG.ID hash
      * @return {
          "organizationsList": "Array of ORG.ID hashes of active organizational units"
      }
      */
-    function getSubsidiaries(bytes32 orgId)
+    function getUnits(bytes32 parentOrgId)
         external
         view
         returns (bytes32[] memory);

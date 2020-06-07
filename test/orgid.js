@@ -16,7 +16,7 @@ const {
 const {
     generateHashHelper,
     createOrganizationHelper,
-    createSubsidiaryHelper
+    createUnitHelper
 } = require('./helpers/orgid');
 
 let gasLimit = 8000000; // Ropsten gas limit
@@ -347,7 +347,7 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
+                const testUnitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -448,7 +448,7 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
+                const testUnitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -573,7 +573,7 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
+                const testUnitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -717,10 +717,10 @@ contract('ORG.ID', accounts => {
             );
         });
 
-        describe('#createSubsidiary(bytes32,address,string,bytes32)', () => {
+        describe('#createUnit(bytes32,address,string,bytes32)', () => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
-                    createSubsidiaryHelper(
+                    createUnitHelper(
                         orgIdContract,
                         nonOwnerOrDirector,
                         [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -732,7 +732,7 @@ contract('ORG.ID', accounts => {
             it('should fail if parent organization not found', async () => {
                 const nonExistingOrgIdHash = generateHashHelper();
                 await assertRevert(
-                    createSubsidiaryHelper(
+                    createUnitHelper(
                         orgIdContract,
                         testOrgIdOwner,
                         [nonExistingOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -745,7 +745,7 @@ contract('ORG.ID', accounts => {
             it('should fail if director address is zero', async () => {
                 const invalidDirectorAddress = zeroAddress;
                 await assertRevert(
-                    createSubsidiaryHelper(
+                    createUnitHelper(
                         orgIdContract,
                         testOrgIdOwner,
                         [parentOrgIdHash, invalidDirectorAddress, mockOrgJsonUri, mockOrgJsonHash]
@@ -754,16 +754,16 @@ contract('ORG.ID', accounts => {
                 );
             });
 
-            it('should create a subsidiary', async () => {
+            it('should create a unit', async () => {
                 // Director is different from the organization owner
-                await createSubsidiaryHelper(
+                await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
                 // Director is the same as the organization owner
-                await createSubsidiaryHelper(
+                await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, testOrgIdOwner, mockOrgJsonUri, mockOrgJsonHash]
@@ -781,7 +781,7 @@ contract('ORG.ID', accounts => {
             let unitOrgIdHash;
 
             beforeEach(async () => {
-                unitOrgIdHash = await createSubsidiaryHelper(
+                unitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -829,7 +829,7 @@ contract('ORG.ID', accounts => {
             const newDirector = accounts[10];
 
             beforeEach(async () => {
-                unitOrgIdHash = await createSubsidiaryHelper(
+                unitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -930,7 +930,7 @@ contract('ORG.ID', accounts => {
             });
         });
 
-        describe('#getSubsidiaries(bytes32)', () => {
+        describe('#getUnits(bytes32)', () => {
             let parentOrgIdHash;
             const parentOrgIdOwner = accounts[5];
             const testOrgIdOwner = accounts[5];
@@ -948,7 +948,7 @@ contract('ORG.ID', accounts => {
                 const nonExistingOrgIdHash = generateHashHelper();
                 await assertRevert(
                     orgIdContract
-                        .methods['getSubsidiaries(bytes32)'](nonExistingOrgIdHash)
+                        .methods['getUnits(bytes32)'](nonExistingOrgIdHash)
                         .call(),
                     'ORG.ID: Organization not found'
                 );
@@ -956,7 +956,7 @@ contract('ORG.ID', accounts => {
 
             it('should return empty array if organization has no units', async () => {
                 const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
+                    .methods['getUnits(bytes32)'](parentOrgIdHash)
                     .call();
                 (subs).should.to.be.an('array');
                 (subs.length).should.equal(0);
@@ -965,20 +965,20 @@ contract('ORG.ID', accounts => {
             // TODO: I should be able to see organizations and units that are inactive or don't have directors
             // TODO: this is a wrong assumption. Organization unit may function without director just fine.
             it('should return an empty array if organization unit directorship is not confirmed', async () => {
-                await createSubsidiaryHelper(
+                await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
                 const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
+                    .methods['getUnits(bytes32)'](parentOrgIdHash)
                     .call();
                 (subs).should.to.be.an('array');
                 (subs.length).should.equal(0);
             });
 
             it('should return array of units', async () => {
-                const unitOrgIdHash = await createSubsidiaryHelper(
+                const unitOrgIdHash = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
@@ -987,7 +987,7 @@ contract('ORG.ID', accounts => {
                     .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
                     .send({ from: unitDirector });
                 const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
+                    .methods['getUnits(bytes32)'](parentOrgIdHash)
                     .call();
                 (subs).should.to.be.an('array');
                 (subs).should.to.be.an('array').that.include(unitOrgIdHash);
