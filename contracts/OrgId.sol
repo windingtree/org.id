@@ -172,34 +172,34 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organizational unit
-     * @param orgId Parent ORG.ID hash
-     * @param subsidiaryDirector Unit's director address
-     * @param orgJsonUri Unit's ORG.JSON URI
-     * @param orgJsonHash ORG.JSON's keccak256 hash
+     * @param parentOrgId Parent ORG.ID hash
+     * @param director Unit director address
+     * @param orgJsonUri Unit ORG.JSON URI
+     * @param orgJsonHash ORG.JSON keccak256 hash
      */
     function createSubsidiary(
-        bytes32 orgId,
-        address subsidiaryDirector,
+        bytes32 parentOrgId,
+        address director,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     )
         external
-        orgIdMustExist(orgId)
-        mustBeCalledByOwner(orgId)
-        returns (bytes32 id)
+        orgIdMustExist(parentOrgId)
+        mustBeCalledByOwner(parentOrgId)
+        returns (bytes32 newUnitOrgId)
     {
-        id = _createOrganization(
-            orgId,
-            subsidiaryDirector,
+        newUnitOrgId = _createOrganization(
+            parentOrgId,
+            director,
             orgJsonUri,
             orgJsonHash
         );
-        emit SubsidiaryCreated(orgId, id, subsidiaryDirector);
+        emit SubsidiaryCreated(parentOrgId, newUnitOrgId, director);
 
         // If parent ORG.ID owner indicates their address as director,
         // their directorship is automatically confirmed
-        if (subsidiaryDirector == msg.sender) {
-            emit DirectorOwnershipConfirmed(id, msg.sender);
+        if (director == msg.sender) {
+            emit DirectorOwnershipConfirmed(newUnitOrgId, msg.sender);
         }
     }
 
