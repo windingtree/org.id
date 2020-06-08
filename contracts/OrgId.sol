@@ -333,7 +333,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param _orgId ORG.ID hash
      * @dev Return parameters marked by (*) are only applicable to units
      * @return {
-         "exists": "Flag indicating ORG.ID's existence",
+         "exists": "Returns `false` if ORG.ID doesn't exist",
          "ORG.ID": "ORG.ID hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonHash": "ORG.JSON keccak256 hash",
@@ -348,7 +348,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         external
         view
         returns (
-            bool exist,
+            bool exists,
             bytes32 orgId,
             string memory orgJsonUri,
             bytes32 orgJsonHash,
@@ -359,7 +359,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             bool isDirectorshipAccepted
         )
     {
-        exist = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
+        exists = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
         orgId = organizations[_orgId].orgId;
         orgJsonUri = organizations[_orgId].orgJsonUri;
         orgJsonHash = organizations[_orgId].orgJsonHash;

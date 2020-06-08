@@ -625,29 +625,29 @@ contract('ORG.ID', accounts => {
                 testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
-            it('should return exist=false if organization not found', async () => {
+            it('should return exists=false if organization not found', async () => {
                 const randomOrgIdHash = generateHashHelper();
-                (
-                    await orgIdContract
-                        .methods['getOrganization(bytes32)'](randomOrgIdHash)
-                        .call()
-                ).should.has.property('exist').to.false;
+                const orgId = await orgIdContract
+                    .methods['getOrganization(bytes32)'](randomOrgIdHash)
+                    .call();
+
+                (orgId).should.has.property('exists').to.false;
             });
 
             it('should return an organization', async () => {
-                const org = await orgIdContract
+                const orgId = await orgIdContract
                     .methods['getOrganization(bytes32)'](testOrgIdHash)
                     .call();
 
-                (org).should.has.property('exist').to.true;
-                (org).should.has.property('orgId').to.equal(testOrgIdHash);
-                (org).should.has.property('orgJsonUri').to.equal(mockOrgJsonUri);
-                (org).should.has.property('orgJsonHash').to.equal(mockOrgJsonHash);
-                (org).should.has.property('parentOrgId').to.equal(zeroHash);
-                (org).should.has.property('owner').to.equal(testOrgIdOwner);
-                (org).should.has.property('director').to.equal(zeroAddress);
-                (org).should.has.property('isActive').to.be.true;
-                (org).should.has.property('isDirectorshipAccepted').to.be.false;
+                (orgId).should.has.property('exists').to.true;
+                (orgId).should.has.property('orgId').to.equal(testOrgIdHash);
+                (orgId).should.has.property('orgJsonUri').to.equal(mockOrgJsonUri);
+                (orgId).should.has.property('orgJsonHash').to.equal(mockOrgJsonHash);
+                (orgId).should.has.property('parentOrgId').to.equal(zeroHash);
+                (orgId).should.has.property('owner').to.equal(testOrgIdOwner);
+                (orgId).should.has.property('director').to.equal(zeroAddress);
+                (orgId).should.has.property('isActive').to.be.true;
+                (orgId).should.has.property('isDirectorshipAccepted').to.be.false;
             });
         });
     });
