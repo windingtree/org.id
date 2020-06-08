@@ -12,7 +12,7 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createOrganization
  * @dev Arguments order: [orgJsonUri(string), orgJsonHash(bytes32)]
- * @returns {Promise<{string}>} New ORG.ID hash
+ * @returns {Promise} Function call promise
  */
 module.exports.createOrganizationHelper = async (
     orgIdContract,
@@ -38,7 +38,7 @@ module.exports.createOrganizationHelper = async (
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createUnit
  * @dev Arguments order: [requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
- * @returns {Promise<{string}>} New unit's ORG.ID hash
+ * @returns {Promise} Function call promise
  */
 module.exports.createUnitHelper = async (
     orgIdContract,
@@ -59,49 +59,5 @@ module.exports.createUnitHelper = async (
         )
         .send({ from: callerAddress });
 
-    let newUnitOrgIdHash;
-    assertEvent(result, 'UnitCreated', [
-        [
-            'parentOrgId',
-            p => (p).should.equal(parentOrgIdHash)
-        ],
-        [
-            'unitOrgId',
-            p => {
-                newUnitOrgIdHash = p;
-            }
-        ],
-        [
-            'director',
-            p => (p).should.equal(directorAddress)
-        ]
-    ]);
-
-    if (callerAddress === directorAddress) {
-        assertEvent(result, 'DirectorOwnershipConfirmed', [
-            [
-                'orgId',
-                p => (p).should.equal(newUnitOrgIdHash)
-            ],
-            [
-                'director',
-                p => (p).should.equal(directorAddress)
-            ]
-        ]);
-    }
-
-    const org = await orgIdContract
-        .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
-        .call();
-
-    (org.orgId).should.equal(newUnitOrgIdHash);
-    (org.orgJsonUri).should.equal(orgJsonUri);
-    (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentOrgId).should.equal(parentOrgIdHash);
-    (org.owner).should.equal(callerAddress);
-    (org.director).should.equal(directorAddress);
-    (org.isActive).should.be.true;
-    (org.directorConfirmed).should.be[(callerAddress === directorAddress).toString()];
-
-    return newUnitOrgIdHash;
+    return result;
 };

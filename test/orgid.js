@@ -371,11 +371,12 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
                 const result = await orgIdContract
                     .methods['changeOrgJsonUri(bytes32,string)'](testUnitOrgIdHash, newOrgJsonUri)
@@ -473,11 +474,12 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
                 const result = await orgIdContract
                     .methods['changeOrgJsonHash(bytes32,bytes32)'](testUnitOrgIdHash, newOrgJsonHash)
@@ -599,11 +601,12 @@ contract('ORG.ID', accounts => {
                 const parentOrgIdOwner = testOrgIdOwner;
                 const parentOrgIdHash = testOrgIdHash;
                 const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
                 const result = await orgIdContract
                     .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testUnitOrgIdHash, newOrgJsonUri, newOrgJsonHash)
@@ -790,21 +793,45 @@ contract('ORG.ID', accounts => {
             });
 
             it('should create a unit', async () => {
-                // Director is different from the organization owner
-                await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
 
-                // Director is the same as the organization owner
-                await createUnitHelper(
+                let newUnitOrgIdHash;
+                assertEvent(call, 'UnitCreated', [
+                    [ 'parentOrgId', p => (p).should.equal(parentOrgIdHash) ],
+                    [ 'unitOrgId', p => newUnitOrgIdHash = p ],
+                    [ 'director', p => (p).should.equal(unitDirector) ]
+                ]);
+
+                const unit = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
+                    .call();
+
+                (unit.orgId).should.equal(newUnitOrgIdHash);
+                (unit.orgJsonUri).should.equal(mockOrgJsonUri);
+                (unit.orgJsonHash).should.equal(mockOrgJsonHash);
+                (unit.parentOrgId).should.equal(parentOrgIdHash);
+                (unit.owner).should.equal(testOrgIdOwner);
+                (unit.director).should.equal(unitDirector);
+                (unit.isActive).should.be.true;
+                (unit.directorConfirmed).should.be.false;
+            });
+
+            it('directorship should be automatically confirmed if director address = owner address', async () => {
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, testOrgIdOwner, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
-                // TODO: assertions are missing!!!
+                assertEvent(call, 'DirectorOwnershipConfirmed', [
+                    [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(testOrgIdOwner) ]
+                ]);
             });
         });
 
@@ -813,14 +840,15 @@ contract('ORG.ID', accounts => {
         // OR: unconfirmed director should not be able to call director-specific methods
 
         describe('#confirmDirectorOwnership(bytes32)', () => {
-            let unitOrgIdHash;
+            let testUnitOrgIdHash;
 
             beforeEach(async () => {
-                unitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -835,7 +863,7 @@ contract('ORG.ID', accounts => {
             it('should fail if not called by director', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                        .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be director)'
                 );
@@ -843,13 +871,13 @@ contract('ORG.ID', accounts => {
 
             it('should confirm directorship', async () => {
                 const result = await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
 
                 assertEvent(result, 'DirectorOwnershipConfirmed', [
                     [
                         'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
+                        p => (p).should.equal(testUnitOrgIdHash)
                     ],
                     [
                         'director',
@@ -860,17 +888,19 @@ contract('ORG.ID', accounts => {
         });
 
         describe('#transferDirectorOwnership(bytes32,address)', () => {
-            let unitOrgIdHash;
+            let testUnitOrgIdHash;
             const newDirector = accounts[10];
 
             beforeEach(async () => {
-                unitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+
                 await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
             });
 
@@ -890,7 +920,7 @@ contract('ORG.ID', accounts => {
                 await assertRevert(
                     orgIdContract
                         .methods['transferDirectorOwnership(bytes32,address)'](
-                            unitOrgIdHash,
+                            testUnitOrgIdHash,
                             newDirector
                         )
                         .send({ from: unitDirector }),
@@ -901,7 +931,7 @@ contract('ORG.ID', accounts => {
             it('should transfer directorship', async () => {
                 const result = await orgIdContract
                     .methods['transferDirectorOwnership(bytes32,address)'](
-                        unitOrgIdHash,
+                        testUnitOrgIdHash,
                         newDirector
                     )
                     .send({ from: unitOwner });
@@ -909,7 +939,7 @@ contract('ORG.ID', accounts => {
                 assertEvent(result, 'DirectorOwnershipTransferred', [
                     [
                         'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
+                        p => (p).should.equal(testUnitOrgIdHash)
                     ],
                     [
                         'previousDirector',
@@ -921,7 +951,7 @@ contract('ORG.ID', accounts => {
                     ]
                 ]);
                 let org = await orgIdContract
-                    .methods['getOrganization(bytes32)'](unitOrgIdHash)
+                    .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
                 (org.directorConfirmed).should.be.false;
             });
@@ -929,7 +959,7 @@ contract('ORG.ID', accounts => {
             it('should automatically confirm directorship if transferred to owner', async () => {
                 const result = await orgIdContract
                     .methods['transferDirectorOwnership(bytes32,address)'](
-                        unitOrgIdHash,
+                        testUnitOrgIdHash,
                         unitOwner
                     )
                     .send({ from: unitOwner });
@@ -937,7 +967,7 @@ contract('ORG.ID', accounts => {
                 assertEvent(result, 'DirectorOwnershipTransferred', [
                     [
                         'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
+                        p => (p).should.equal(testUnitOrgIdHash)
                     ],
                     [
                         'previousDirector',
@@ -951,7 +981,7 @@ contract('ORG.ID', accounts => {
                 assertEvent(result, 'DirectorOwnershipConfirmed', [
                     [
                         'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
+                        p => (p).should.equal(testUnitOrgIdHash)
                     ],
                     [
                         'director',
@@ -959,7 +989,7 @@ contract('ORG.ID', accounts => {
                     ]
                 ]);
                 let org = await orgIdContract
-                    .methods['getOrganization(bytes32)'](unitOrgIdHash)
+                    .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
                 (org.directorConfirmed).should.be.true;
             });
@@ -1014,19 +1044,20 @@ contract('ORG.ID', accounts => {
             });
 
             it('should return array of units', async () => {
-                const unitOrgIdHash = await createUnitHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,
                     [parentOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
                 await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
                 const subs = await orgIdContract
                     .methods['getUnits(bytes32)'](parentOrgIdHash)
                     .call();
                 (subs).should.to.be.an('array');
-                (subs).should.to.be.an('array').that.include(unitOrgIdHash);
+                (subs).should.to.be.an('array').that.include(testUnitOrgIdHash);
             });
         });
     });
