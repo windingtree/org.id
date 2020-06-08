@@ -92,7 +92,7 @@ module.exports.createUnitHelper = async (
             p => (p).should.equal(parentOrgIdHash)
         ],
         [
-            'subOrgId',
+            'unitOrgId',
             p => {
                 newUnitOrgIdHash = p;
             }

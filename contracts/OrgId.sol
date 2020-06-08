@@ -545,7 +545,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32[] memory source =
             orgId == bytes32(0)
             ? orgIds
-            : organizations[orgId].director;
+            : organizations[orgId].units;
         organizationsList = new bytes32[](_getOrganizationsCount(orgId));
         uint256 index;
 
@@ -583,7 +583,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32[] memory source =
             orgId == bytes32(0)
             ? orgIds
-            : organizations[orgId].director;
+            : organizations[orgId].units;
 
         for (uint256 i = 0; i < source.length; i++) {
             if (organizations[source[i]].isActive &&
