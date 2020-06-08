@@ -170,11 +170,31 @@ contract('ORG.ID', accounts => {
     describe('ORG.ID methods', () => {
         describe('#createOrganization(bytes32,string,bytes32)', () => {
             it('should create an organization', async () => {
-                await createOrganizationHelper(
+                const ownerAddress = getRandomAccount();
+                const result = await createOrganizationHelper(
                     orgIdContract,
-                    getRandomAccount(),
+                    ownerAddress,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+
+                let newOrgIdHash;
+                assertEvent(result, 'OrganizationCreated', [
+                    [ 'orgId', p => newOrgIdHash = p ],
+                    [ 'owner', p => (p).should.equal(ownerAddress) ]
+                ]);
+
+                const newOrgId = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newOrgIdHash)
+                    .call();
+
+                (newOrgId.orgId).should.equal(newOrgIdHash);
+                (newOrgId.orgJsonUri).should.equal(mockOrgJsonUri);
+                (newOrgId.orgJsonHash).should.equal(mockOrgJsonHash);
+                (newOrgId.parentOrgId).should.equal(zeroHash);
+                (newOrgId.owner).should.equal(ownerAddress);
+                (newOrgId.director).should.equal(zeroAddress);
+                (newOrgId.isActive).should.be.true;
+                (newOrgId.directorConfirmed).should.be.false;
             });
         });
 
@@ -182,11 +202,12 @@ contract('ORG.ID', accounts => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -225,11 +246,12 @@ contract('ORG.ID', accounts => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -288,11 +310,12 @@ contract('ORG.ID', accounts => {
             let newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -381,11 +404,12 @@ contract('ORG.ID', accounts => {
             let newOrgJsonHash = generateHashHelper();
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -483,11 +507,12 @@ contract('ORG.ID', accounts => {
             let newOrgJsonHash = generateHashHelper();
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -625,16 +650,19 @@ contract('ORG.ID', accounts => {
             });
 
             it('should return empty array if registry contains only inactive organizations', async () => {
-                const orgId1 = await createOrganizationHelper(
+                const call1 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddress,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                const orgId2 = await createOrganizationHelper(
+                const orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                const call2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+
                 await orgIdContract.methods['toggleOrganization(bytes32)'](orgId1)
                     .send({ from: randomAddress });
                 await orgIdContract.methods['toggleOrganization(bytes32)'](orgId2)
@@ -642,21 +670,25 @@ contract('ORG.ID', accounts => {
                 const orgs = await orgIdContract
                     .methods['getOrganizations()']()
                     .call();
+
                 (orgs).should.to.be.an('array');
                 (orgs.length).should.equal(0);
             });
 
             it('should return an array of organizations', async () => {
-                const orgId1 = await createOrganizationHelper(
+                const call1 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddress,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                const orgId2 = await createOrganizationHelper(
+                const orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                const call2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+
                 const orgs = await orgIdContract
                     .methods['getOrganizations()']()
                     .call();
@@ -669,11 +701,12 @@ contract('ORG.ID', accounts => {
             const testOrgIdOwner = accounts[5];
 
             beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should return exist=false if organization not found', async () => {
@@ -711,11 +744,12 @@ contract('ORG.ID', accounts => {
         const nonOwnerOrDirector = accounts[7];
 
         beforeEach(async () => {
-            parentOrgIdHash = await createOrganizationHelper(
+            const call = await createOrganizationHelper(
                 orgIdContract,
                 testOrgIdOwner,
                 [mockOrgJsonUri, mockOrgJsonHash]
             );
+            parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
         });
 
         describe('#createUnit(bytes32,address,string,bytes32)', () => {
@@ -938,11 +972,12 @@ contract('ORG.ID', accounts => {
             const unitDirector = accounts[6];
 
             beforeEach(async () => {
-                parentOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {

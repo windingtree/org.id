@@ -29,33 +29,7 @@ module.exports.createOrganizationHelper = async (
         )
         .send({ from: callerAddress });
 
-    let newOrgIdHash;
-    assertEvent(result, 'OrganizationCreated', [
-        [
-            'orgId',
-            p => {
-                newOrgIdHash = p;
-            }
-        ],
-        [
-            'owner',
-            p => (p).should.equal(callerAddress)
-        ]
-    ]);
-
-    const org = await orgIdContract
-        .methods['getOrganization(bytes32)'](newOrgIdHash)
-        .call();
-    (org.orgId).should.equal(newOrgIdHash);
-    (org.orgJsonUri).should.equal(orgJsonUri);
-    (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentOrgId).should.equal(zeroHash);
-    (org.owner).should.equal(callerAddress);
-    (org.director).should.equal(zeroAddress);
-    (org.isActive).should.be.true;
-    (org.directorConfirmed).should.be.false;
-
-    return newOrgIdHash;
+    return result;
 };
 
 /**
