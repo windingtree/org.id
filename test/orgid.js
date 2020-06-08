@@ -217,6 +217,7 @@ contract('ORG.ID', accounts => {
                     .send({ from: organizationOwner });
                 org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
                 (org.isActive).should.be.true;
+                // TODO: no assertions for OrganizationActiveStateChanged event
             });
         });
 

@@ -53,7 +53,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Emits when organization active/inactive state changes
      */
-    event OrganizationToggled(
+    event OrganizationActiveStateChanged(
         bytes32 indexed orgId,
         bool previousState,
         bool newState
@@ -212,7 +212,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         orgIdMustExist(orgId)
         mustBeCalledByOwner(orgId)
     {
-        emit OrganizationToggled(
+        emit OrganizationActiveStateChanged(
             orgId,
             organizations[orgId].isActive,
             !organizations[orgId].isActive
