@@ -60,9 +60,9 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     );
 
     /**
-     * @dev Emits when unit's directorship confirmed
+     * @dev Emits when unit's directorship is accepted
      */
-    event DirectorOwnershipConfirmed(
+    event DirectorshipAccepted(
         bytes32 indexed orgId,
         address indexed director
     );
@@ -70,7 +70,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Emits when unit's director changes
      */
-    event DirectorOwnershipTransferred(
+    event DirectorshipTransferred(
         bytes32 indexed orgId,
         address indexed previousDirector,
         address indexed newDirector
@@ -199,7 +199,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         // If parent ORG.ID owner indicates their address as director,
         // their directorship is automatically confirmed
         if (director == msg.sender) {
-            emit DirectorOwnershipConfirmed(newUnitOrgId, msg.sender);
+            emit DirectorshipAccepted(newUnitOrgId, msg.sender);
         }
     }
 
@@ -221,10 +221,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Unit directorship confirmation
+     * @dev Accept director role
      * @param orgId Unit's ORG.ID hash
      */
-    function confirmDirectorOwnership(bytes32 orgId)
+    function acceptDirectorship(bytes32 orgId)
         external
         orgIdMustExist(orgId)
     {
@@ -234,7 +234,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         );
 
         organizations[orgId].directorConfirmed = true;
-        emit DirectorOwnershipConfirmed(orgId, msg.sender);
+        emit DirectorshipAccepted(orgId, msg.sender);
     }
 
     /**
@@ -242,7 +242,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param orgId Unit's ORG.ID hash
      * @param newDirector New director's address
      */
-    function transferDirectorOwnership(
+    function transferDirectorship(
         bytes32 orgId,
         address newDirector
     )
@@ -255,7 +255,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             "ORG.ID: Invalid director address"
         );
 
-        emit DirectorOwnershipTransferred(
+        emit DirectorshipTransferred(
             orgId,
             organizations[orgId].director,
             newDirector
@@ -263,7 +263,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         organizations[orgId].director = newDirector;
 
         if (newDirector == msg.sender) {
-            emit DirectorOwnershipConfirmed(orgId, newDirector);
+            emit DirectorshipAccepted(orgId, newDirector);
         } else {
             organizations[orgId].directorConfirmed = false;
         }
@@ -463,8 +463,8 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
             // hierarchy interface: 0x3a3bc250
             org.createUnit.selector ^
-            org.confirmDirectorOwnership.selector ^
-            org.transferDirectorOwnership.selector ^
+            org.acceptDirectorship.selector ^
+            org.transferDirectorship.selector ^
             org.getUnits.selector
         ];
         for (uint256 i = 0; i < interfaceIds.length; i++) {

@@ -117,14 +117,8 @@ contract('ORG.ID', accounts => {
                         from: orgIdContractOwner
                     });
                 assertEvent(result, 'OwnershipTransferred', [
-                    [
-                        'previousOwner',
-                        p => (p).should.equal(orgIdContractOwner)
-                    ],
-                    [
-                        'newOwner',
-                        p => (p).should.equal(randomAddress)
-                    ],
+                    [ 'previousOwner', p => (p).should.equal(orgIdContractOwner) ],
+                    [ 'newOwner', p => (p).should.equal(randomAddress) ],
                 ]);
             });
         });
@@ -288,18 +282,9 @@ contract('ORG.ID', accounts => {
                     .send({ from: organizationOwner });
 
                 assertEvent(result, 'OrganizationOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOwner',
-                        p => (p).should.equal(organizationOwner)
-                    ],
-                    [
-                        'newOwner',
-                        p => (p).should.equal(randomAddress)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOwner', p => (p).should.equal(organizationOwner) ],
+                    [ 'newOwner', p => (p).should.equal(randomAddress) ]
                 ]);
             });
         });
@@ -352,18 +337,9 @@ contract('ORG.ID', accounts => {
                     .send({ from: testOrgIdOwner });
 
                 assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ]
                 ]);
             });
 
@@ -383,18 +359,9 @@ contract('ORG.ID', accounts => {
                     .send({ from: unitDirector });
 
                 assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ]
                 ]);
             });
         });
@@ -455,18 +422,9 @@ contract('ORG.ID', accounts => {
                     .send({ from: testOrgIdOwner });
 
                 assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
                 ]);
             });
 
@@ -486,18 +444,9 @@ contract('ORG.ID', accounts => {
                     .send({ from: unitDirector });
 
                 assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
                 ]);
             });
         });
@@ -568,32 +517,14 @@ contract('ORG.ID', accounts => {
                     .send({ from: testOrgIdOwner });
 
                 assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
                 ]);
                 assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ]
                 ]);
             });
 
@@ -613,32 +544,14 @@ contract('ORG.ID', accounts => {
                     .send({ from: unitDirector });
 
                 assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
                 ]);
                 assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ]
                 ]);
             });
         });
@@ -828,7 +741,7 @@ contract('ORG.ID', accounts => {
                 );
                 const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
-                assertEvent(call, 'DirectorOwnershipConfirmed', [
+                assertEvent(call, 'DirectorshipAccepted', [
                     [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
                     [ 'director', p => (p).should.equal(testOrgIdOwner) ]
                 ]);
@@ -839,7 +752,7 @@ contract('ORG.ID', accounts => {
         // directorship is automatically confirmed
         // OR: unconfirmed director should not be able to call director-specific methods
 
-        describe('#confirmDirectorOwnership(bytes32)', () => {
+        describe('#acceptDirectorship(bytes32)', () => {
             let testUnitOrgIdHash;
 
             beforeEach(async () => {
@@ -854,7 +767,7 @@ contract('ORG.ID', accounts => {
             it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['confirmDirectorOwnership(bytes32)'](zeroHash)
+                        .methods['acceptDirectorship(bytes32)'](zeroHash)
                         .send({ from: unitDirector }),
                     'ORG.ID: Organization not found'
                 );
@@ -863,7 +776,7 @@ contract('ORG.ID', accounts => {
             it('should fail if not called by director', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
+                        .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be director)'
                 );
@@ -871,23 +784,17 @@ contract('ORG.ID', accounts => {
 
             it('should confirm directorship', async () => {
                 const result = await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
 
-                assertEvent(result, 'DirectorOwnershipConfirmed', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'director',
-                        p => (p).should.equal(unitDirector)
-                    ]
+                assertEvent(result, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(unitDirector) ]
                 ]);
             });
         });
 
-        describe('#transferDirectorOwnership(bytes32,address)', () => {
+        describe('#transferDirectorship(bytes32,address)', () => {
             let testUnitOrgIdHash;
             const newDirector = accounts[10];
 
@@ -900,14 +807,14 @@ contract('ORG.ID', accounts => {
                 testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
                 await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
             });
 
             it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferDirectorOwnership(bytes32,address)'](
+                        .methods['transferDirectorship(bytes32,address)'](
                             generateHashHelper(),
                             newDirector
                         )
@@ -919,7 +826,7 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner (e.g. director)', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferDirectorOwnership(bytes32,address)'](
+                        .methods['transferDirectorship(bytes32,address)'](
                             testUnitOrgIdHash,
                             newDirector
                         )
@@ -930,25 +837,16 @@ contract('ORG.ID', accounts => {
 
             it('should transfer directorship', async () => {
                 const result = await orgIdContract
-                    .methods['transferDirectorOwnership(bytes32,address)'](
+                    .methods['transferDirectorship(bytes32,address)'](
                         testUnitOrgIdHash,
                         newDirector
                     )
                     .send({ from: unitOwner });
 
-                assertEvent(result, 'DirectorOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousDirector',
-                        p => (p).should.equal(unitDirector)
-                    ],
-                    [
-                        'newDirector',
-                        p => (p).should.equal(newDirector)
-                    ]
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(newDirector) ]
                 ]);
                 let org = await orgIdContract
                     .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
@@ -956,38 +854,24 @@ contract('ORG.ID', accounts => {
                 (org.directorConfirmed).should.be.false;
             });
 
-            it('should automatically confirm directorship if transferred to owner', async () => {
+            it('should automatically accept directorship if transferred to owner', async () => {
                 const result = await orgIdContract
-                    .methods['transferDirectorOwnership(bytes32,address)'](
+                    .methods['transferDirectorship(bytes32,address)'](
                         testUnitOrgIdHash,
                         unitOwner
                     )
                     .send({ from: unitOwner });
 
-                assertEvent(result, 'DirectorOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousDirector',
-                        p => (p).should.equal(unitDirector)
-                    ],
-                    [
-                        'newDirector',
-                        p => (p).should.equal(unitOwner)
-                    ]
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(unitOwner) ]
                 ]);
-                assertEvent(result, 'DirectorOwnershipConfirmed', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'director',
-                        p => (p).should.equal(unitOwner)
-                    ]
+                assertEvent(result, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(unitOwner) ]
                 ]);
+
                 let org = await orgIdContract
                     .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
@@ -1051,7 +935,7 @@ contract('ORG.ID', accounts => {
                 );
                 const testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
                 await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](testUnitOrgIdHash)
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
                 const subs = await orgIdContract
                     .methods['getUnits(bytes32)'](parentOrgIdHash)

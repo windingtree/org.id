@@ -39,17 +39,17 @@ contract OrgIdInterface {
     function toggleActiveState(bytes32 orgId) external;
 
     /**
-     * @dev Unit directorship confirmation
+     * @dev Accept director role
      * @param orgId Unit's ORG.ID hash
      */
-    function confirmDirectorOwnership(bytes32 orgId) external;
+    function acceptDirectorship(bytes32 orgId) external;
 
     /**
-     * @dev Unit directorship transfer
+     * @dev Transfer director role
      * @param orgId Unit's ORG.ID hash
      * @param newDirector New director's address
      */
-    function transferDirectorOwnership(
+    function transferDirectorship(
         bytes32 orgId,
         address newDirector
     ) external;
