@@ -92,7 +92,7 @@ module.exports.createUnitHelper = async (
             p => (p).should.equal(parentOrgIdHash)
         ],
         [
-            'subOrgId',
+            'unitOrgId',
             p => {
                 newUnitOrgIdHash = p;
             }
@@ -103,8 +103,8 @@ module.exports.createUnitHelper = async (
         ]
     ]);
 
-    if (callerAddress === directorAddress) {
-        assertEvent(result, 'DirectorOwnershipConfirmed', [
+    if (callerAddress === directorAddress || directorAddress === zeroAddress) {
+        assertEvent(result, 'DirectorshipConfirmed', [
             [
                 'orgId',
                 p => (p).should.equal(newUnitOrgIdHash)
@@ -127,7 +127,9 @@ module.exports.createUnitHelper = async (
     (org.owner).should.equal(callerAddress);
     (org.director).should.equal(directorAddress);
     (org.isActive).should.be.true;
-    (org.directorConfirmed).should.be[(callerAddress === directorAddress).toString()];
+    (org.directorConfirmed).should.be[(
+        callerAddress === directorAddress || directorAddress === zeroAddress
+    ).toString()];
 
     return newUnitOrgIdHash;
 };
