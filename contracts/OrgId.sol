@@ -333,7 +333,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param _orgId ORG.ID hash
      * @dev Return parameters marked by (*) are only applicable to units
      * @return {
-         "existed": "Flag indicating ORG.ID's existence",
+         "exists": "Flag indicating ORG.ID's existence",
          "ORG.ID": "ORG.ID hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonHash": "ORG.JSON keccak256 hash",

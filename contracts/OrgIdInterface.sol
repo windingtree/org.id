@@ -91,7 +91,7 @@ contract OrgIdInterface {
      * @dev Get organization or unit's info by ORG.ID hash
      * @param _orgId ORG.ID hash
      * @return {
-         "existed": "Flag indicating ORG.ID's existence",
+         "exists": "Returns `false` if ORG.ID doesn't exist",
          "orgId": "ORG.ID hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonHash": "ORG.JSON keccak256 hash",
@@ -106,7 +106,7 @@ contract OrgIdInterface {
         external
         view
         returns (
-            bool existed,
+            bool exists,
             bytes32 orgId,
             string memory orgJsonUri,
             bytes32 orgJsonHash,
