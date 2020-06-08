@@ -188,7 +188,7 @@ contract('ORG.ID', accounts => {
                 (newOrgId.owner).should.equal(ownerAddress);
                 (newOrgId.director).should.equal(zeroAddress);
                 (newOrgId.isActive).should.be.true;
-                (newOrgId.directorConfirmed).should.be.false;
+                (newOrgId.isDirectorshipAccepted).should.be.false;
             });
         });
 
@@ -647,7 +647,7 @@ contract('ORG.ID', accounts => {
                 (org).should.has.property('owner').to.equal(testOrgIdOwner);
                 (org).should.has.property('director').to.equal(zeroAddress);
                 (org).should.has.property('isActive').to.be.true;
-                (org).should.has.property('directorConfirmed').to.be.false;
+                (org).should.has.property('isDirectorshipAccepted').to.be.false;
             });
         });
     });
@@ -730,10 +730,10 @@ contract('ORG.ID', accounts => {
                 (unit.owner).should.equal(testOrgIdOwner);
                 (unit.director).should.equal(unitDirector);
                 (unit.isActive).should.be.true;
-                (unit.directorConfirmed).should.be.false;
+                (unit.isDirectorshipAccepted).should.be.false;
             });
 
-            it('directorship should be automatically confirmed if director address = owner address', async () => {
+            it('directorship should be automatically accepted if director address = owner address', async () => {
                 const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
@@ -749,7 +749,7 @@ contract('ORG.ID', accounts => {
         });
 
         // TODO: if unconfirmed director calls any director-specific methods,
-        // directorship is automatically confirmed
+        // directorship is automatically accepted
         // OR: unconfirmed director should not be able to call director-specific methods
 
         describe('#acceptDirectorship(bytes32)', () => {
@@ -782,7 +782,7 @@ contract('ORG.ID', accounts => {
                 );
             });
 
-            it('should confirm directorship', async () => {
+            it('should accept directorship', async () => {
                 const result = await orgIdContract
                     .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
@@ -851,7 +851,7 @@ contract('ORG.ID', accounts => {
                 let org = await orgIdContract
                     .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
-                (org.directorConfirmed).should.be.false;
+                (org.isDirectorshipAccepted).should.be.false;
             });
 
             it('should automatically accept directorship if transferred to owner', async () => {
@@ -875,7 +875,7 @@ contract('ORG.ID', accounts => {
                 let org = await orgIdContract
                     .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
-                (org.directorConfirmed).should.be.true;
+                (org.isDirectorshipAccepted).should.be.true;
             });
         });
 
@@ -914,7 +914,7 @@ contract('ORG.ID', accounts => {
 
             // TODO: I should be able to see organizations and units that are inactive or don't have directors
             // TODO: this is a wrong assumption. Organization unit may function without director just fine.
-            it('should return an empty array if organization unit directorship is not confirmed', async () => {
+            it('should return an empty array if organization unit directorship is not accepted', async () => {
                 await createUnitHelper(
                     orgIdContract,
                     parentOrgIdOwner,

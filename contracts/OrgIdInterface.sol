@@ -99,7 +99,7 @@ contract OrgIdInterface {
          "owner": "Owner's address",
          "director": "Unit director's address",
          "isActive": "Indicates whether ORG.ID is active",
-         "directorConfirmed": "Indicates whether directorship is confirmed"
+         "isDirectorshipAccepted": "Indicates whether director accepted the role"
      }
      */
     function getOrganization(bytes32 _orgId)
@@ -114,7 +114,7 @@ contract OrgIdInterface {
             address owner,
             address director,
             bool isActive,
-            bool directorConfirmed
+            bool isDirectorshipAccepted
         );
 
     /**

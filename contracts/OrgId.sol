@@ -23,7 +23,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         address owner;
         address director;
         bool isActive;
-        bool directorConfirmed;
+        bool isDirectorshipAccepted;
         bytes32[] units;
     }
 
@@ -197,7 +197,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         emit UnitCreated(parentOrgId, newUnitOrgId, director);
 
         // If parent ORG.ID owner indicates their address as director,
-        // their directorship is automatically confirmed
+        // their directorship is automatically accepted
         if (director == msg.sender) {
             emit DirectorshipAccepted(newUnitOrgId, msg.sender);
         }
@@ -233,7 +233,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             "ORG.ID: action not authorized (must be director)"
         );
 
-        organizations[orgId].directorConfirmed = true;
+        organizations[orgId].isDirectorshipAccepted = true;
         emit DirectorshipAccepted(orgId, msg.sender);
     }
 
@@ -265,7 +265,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         if (newDirector == msg.sender) {
             emit DirectorshipAccepted(orgId, newDirector);
         } else {
-            organizations[orgId].directorConfirmed = false;
+            organizations[orgId].isDirectorshipAccepted = false;
         }
     }
 
@@ -341,7 +341,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
          "owner": "Owner's address",
          "director": "Unit director's address (*)",
          "isActive": "Indicates whether ORG.ID is active",
-         "directorConfirmed": "Indicates whether directorship is confirmed (*)"
+         "isDirectorshipAccepted": "Indicates whether director accepted the role (*)"
      }
      */
     function getOrganization(bytes32 _orgId)
@@ -356,7 +356,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             address owner,
             address director,
             bool isActive,
-            bool directorConfirmed
+            bool isDirectorshipAccepted
         )
     {
         exist = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
@@ -367,7 +367,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         owner = organizations[_orgId].owner;
         director = organizations[_orgId].director;
         isActive = organizations[_orgId].isActive;
-        directorConfirmed = organizations[_orgId].directorConfirmed;
+        isDirectorshipAccepted = organizations[_orgId].isDirectorshipAccepted;
     }
 
     /**
@@ -552,13 +552,13 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         for (uint256 i = 0; i < source.length; i++) {
             // If organization is active AND
             // organization is top level (not unit) OR
-            // organization is a unit AND directorship is confirmed
+            // organization is a unit AND directorship is accepted
             if (organizations[source[i]].isActive &&
                 (
                     (orgId == bytes32(0) && organizations[source[i]].parentOrgId == bytes32(0)) ||
                     (orgId != bytes32(0) &&
                         organizations[source[i]].parentOrgId != bytes32(0) &&
-                        organizations[source[i]].directorConfirmed)
+                        organizations[source[i]].isDirectorshipAccepted)
                 )) {
 
                 organizationsList[index] = source[i];
@@ -591,7 +591,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
                     (orgId == bytes32(0) && organizations[source[i]].parentOrgId == bytes32(0)) ||
                     (orgId != bytes32(0) &&
                         organizations[source[i]].parentOrgId != bytes32(0) &&
-                        organizations[source[i]].directorConfirmed)
+                        organizations[source[i]].isDirectorshipAccepted)
                 )) {
 
                 count += 1;
