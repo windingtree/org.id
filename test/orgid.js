@@ -198,7 +198,7 @@ contract('ORG.ID', accounts => {
             });
         });
 
-        describe('#toggleOrganization(bytes32)', () => {
+        describe('#toggleActiveState(bytes32)', () => {
             let testOrgIdHash;
 
             beforeEach(async () => {
@@ -214,7 +214,7 @@ contract('ORG.ID', accounts => {
                 const randomOrgIdHash = generateHashHelper();
                 await assertRevert(
                     orgIdContract
-                        .methods['toggleOrganization(bytes32)'](randomOrgIdHash)
+                        .methods['toggleActiveState(bytes32)'](randomOrgIdHash)
                         .send({ from: organizationOwner }),
                     'ORG.ID: Organization not found'
                 );
@@ -223,18 +223,18 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['toggleOrganization(bytes32)'](testOrgIdHash)
+                        .methods['toggleActiveState(bytes32)'](testOrgIdHash)
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
             it('should toggle organization isActive state', async () => {
-                await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
+                await orgIdContract.methods['toggleActiveState(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
                 let org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
                 (org.isActive).should.be.false;
-                await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
+                await orgIdContract.methods['toggleActiveState(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
                 org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
                 (org.isActive).should.be.true;
@@ -666,9 +666,9 @@ contract('ORG.ID', accounts => {
                 );
                 const orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
 
-                await orgIdContract.methods['toggleOrganization(bytes32)'](orgId1)
+                await orgIdContract.methods['toggleActiveState(bytes32)'](orgId1)
                     .send({ from: randomAddress });
-                await orgIdContract.methods['toggleOrganization(bytes32)'](orgId2)
+                await orgIdContract.methods['toggleActiveState(bytes32)'](orgId2)
                     .send({ from: randomAddressTwo });
                 const orgs = await orgIdContract
                     .methods['getOrganizations()']()

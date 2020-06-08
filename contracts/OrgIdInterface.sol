@@ -36,7 +36,7 @@ contract OrgIdInterface {
      * @dev Toggle ORG.ID's active/inactive state
      * @param orgId ORG.ID hash
      */
-    function toggleOrganization(bytes32 orgId) external;
+    function toggleActiveState(bytes32 orgId) external;
 
     /**
      * @dev Unit directorship confirmation

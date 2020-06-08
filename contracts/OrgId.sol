@@ -207,7 +207,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @dev Toggle ORG.ID's active/inactive state
      * @param orgId ORG.ID hash
      */
-    function toggleOrganization(bytes32 orgId)
+    function toggleActiveState(bytes32 orgId)
         external
         orgIdMustExist(orgId)
         mustBeCalledByOwner(orgId)
@@ -454,7 +454,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
             // ORG.ID interface: 0x36b78f0f
             org.createOrganization.selector ^
-            org.toggleOrganization.selector ^
+            org.toggleActiveState.selector ^
             org.transferOrganizationOwnership.selector ^
             org.changeOrgJsonUri.selector ^
             org.changeOrgJsonHash.selector ^
