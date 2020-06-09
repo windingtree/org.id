@@ -23,7 +23,7 @@ ORG.ID Registry is the core smart contract of the [ORG.ID ecosystem](https://org
 docker run --rm -it -p 8545:8545 -p 8546:8546 -p 30303:30303 --name org.id-sandbox windingtree/org.id-sandbox
 ```
 
-This official [sandbox docker container](https://hub.docker.com/r/windingtree/org.id-sandbox) is the easiest way to start developing applications for the ORG.ID ecosystem.
+[ORG.ID Sandbox docker container](https://hub.docker.com/r/windingtree/org.id-sandbox) is the easiest way to start developing applications for the ORG.ID ecosystem.
 
 ## Usage
 
@@ -89,3 +89,14 @@ npm run coverage
 npm run lint
 
 ```
+
+## ORG.ID Ecosystem
+
+![ORG.ID Ecosystem](./assets/org.id-ecosystem.png)
+
+- [Winding Tree DAO](https://github.com/windingtree/dao) controls ORG.ID Registry smart contract and some Directories (including their rules)
+- **ORG.ID Registry**
+- [ORG.JSON Schema](https://github.com/windingtree/org.json-schema) is a data format for describing organizations
+- [ORG.ID Resolver](https://github.com/windingtree/org.id-resolver) is an application for fetching information about organization in [W3C DID](https://w3c.github.io/did-core/) format
+- [ORG.ID Directories](https://github.com/windingtree/org.id-directories) are curated lists of organizations
+- [Arbor](https://arbor.fm) can be used to look up an ORG.ID, and also to create and manage your own ORG.ID
