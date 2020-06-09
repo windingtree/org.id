@@ -74,7 +74,7 @@ contract('ORG.ID', accounts => {
                 .send({
                     from: orgIdContractOwner
                 });
-            (await orgIdContract.methods['newfunction ()']()
+            (await orgIdContract.methods['newFunction()']()
                 .call()).should.equal('100');
             (
                 await orgIdContract
