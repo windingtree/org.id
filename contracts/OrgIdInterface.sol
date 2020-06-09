@@ -55,6 +55,13 @@ contract OrgIdInterface {
     ) external;
 
     /**
+     * @dev Unit directorship renounce
+     * @param orgId Unit's ORG.ID hash
+     */
+    function renounceDirectorship(bytes32 orgId)
+        external;
+
+    /**
      * @dev Ownership transfer
      * @param orgId ORG.ID hash
      * @param newOwner New owner's address
@@ -70,7 +77,7 @@ contract OrgIdInterface {
      * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonHash New ORG.JSON's keccak256 hash
      */
-    function changeOrgJsonUriAndHash(
+    function setOrgJson(
         bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
@@ -78,11 +85,12 @@ contract OrgIdInterface {
 
     /**
      * @dev Get all active organizations' ORG.ID hashes
+     * @param includeInactive Includes not active units into response
      * @return {
          "organizationsList": "Array of all active organizations' ORG.ID hashes"
      }
      */
-    function getOrganizations()
+    function getOrganizations(bool includeInactive)
         external
         view
         returns (bytes32[] memory organizationsList);
@@ -120,32 +128,13 @@ contract OrgIdInterface {
     /**
      * @dev Get all active organizational units of a particular ORG.ID
      * @param parentOrgId Parent ORG.ID hash
+     * @param includeInactive Includes not active units into response
      * @return {
          "organizationsList": "Array of ORG.ID hashes of active organizational units"
      }
      */
-    function getUnits(bytes32 parentOrgId)
+    function getUnits(bytes32 parentOrgId, bool includeInactive)
         external
         view
         returns (bytes32[] memory);
-
-    /**
-     * @dev Change ORG.JSON URI (caller must be owner or director)
-     * @param orgId ORG.ID hash
-     * @param orgJsonUri New ORG.JSON URI
-     */
-    function changeOrgJsonUri(
-        bytes32 orgId,
-        string memory orgJsonUri
-    ) public;
-
-    /**
-     * @dev Change ORG.JSON hash (caller must be owner or director)
-     * @param orgId ORG.ID hash
-     * @param orgJsonHash New ORG.JSON's keccak256 hash
-     */
-    function changeOrgJsonHash(
-        bytes32 orgId,
-        bytes32 orgJsonHash
-    ) public;
 }

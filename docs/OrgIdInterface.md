@@ -1,79 +1,35 @@
 * [OrgIdInterface](#orgidinterface)
-  * [changeOrgJsonHash](#function-changeorgjsonhash)
-  * [changeOrgJsonUri](#function-changeorgjsonuri)
-  * [changeOrgJsonUriAndHash](#function-changeorgjsonuriandhash)
-  * [confirmDirectorOwnership](#function-confirmdirectorownership)
+  * [confirmDirectorship](#function-confirmdirectorship)
   * [createOrganization](#function-createorganization)
-  * [createSubsidiary](#function-createsubsidiary)
+  * [createUnit](#function-createunit)
   * [getOrganization](#function-getorganization)
   * [getOrganizations](#function-getorganizations)
-  * [getSubsidiaries](#function-getsubsidiaries)
+  * [getUnits](#function-getunits)
+  * [renounceDirectorship](#function-renouncedirectorship)
+  * [setOrgJson](#function-setorgjson)
   * [toggleOrganization](#function-toggleorganization)
-  * [transferDirectorOwnership](#function-transferdirectorownership)
+  * [transferDirectorship](#function-transferdirectorship)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
 
 # OrgIdInterface
 
 
-## *function* changeOrgJsonHash
+## *function* confirmDirectorship
 
-OrgIdInterface.changeOrgJsonHash(orgId, orgJsonHash) `nonpayable` `7fc5f5fb`
+OrgIdInterface.confirmDirectorship(orgId) `nonpayable` `9c1429b3`
 
-> Allows owner to change Organization"s orgJsonHash
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
-
-
-## *function* changeOrgJsonUri
-
-OrgIdInterface.changeOrgJsonUri(orgId, orgJsonUri) `nonpayable` `57b5e80d`
-
-> Allows owner to change Organization"s orgJsonUri
+> Unit directorship confirmation
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization OrgId |
-| *string* | orgJsonUri | New orgJsonUri pointer of this Organization |
-
-
-## *function* changeOrgJsonUriAndHash
-
-OrgIdInterface.changeOrgJsonUriAndHash(orgId, orgJsonUri, orgJsonHash) `nonpayable` `f1745894`
-
-> Shorthand method to change ORG.JSON uri and hash at the same time
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | undefined |
-| *string* | orgJsonUri | New orgJsonUri pointer of this Organization |
-| *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents. |
-
-
-## *function* confirmDirectorOwnership
-
-OrgIdInterface.confirmDirectorOwnership(orgId) `nonpayable` `4b845bef`
-
-> Confirmation of the organization director ownership
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | The organization orgId |
+| *bytes32* | orgId | Unit's ORG.ID hash |
 
 
 ## *function* createOrganization
 
-OrgIdInterface.createOrganization(orgId, orgJsonUri, orgJsonHash) `nonpayable` `0670af5c`
+OrgIdInterface.createOrganization(orgJsonUri, orgJsonHash) `nonpayable` `bdb71f05`
 
 > Create organization
 
@@ -81,84 +37,87 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization Id |
-| *string* | orgJsonUri | orgJsonUri pointer |
-| *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
+| *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
+| *bytes32* | orgJsonHash | ORG.JSON's keccak256 hash |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | id | The organization orgId |
+| *bytes32* | id | ORG.ID byte32 hash |
 
-## *function* createSubsidiary
+## *function* createUnit
 
-OrgIdInterface.createSubsidiary(orgId, subOrgId, subsidiaryDirector, orgJsonUri, orgJsonHash) `nonpayable` `981f3dcf`
+OrgIdInterface.createUnit(parentOrgId, director, orgJsonUri, orgJsonHash) `nonpayable` `cc6d8ef4`
 
-> Create subsidiary
+> Create organizational unit
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization Id |
-| *bytes32* | subOrgId | The subsidiary organization Id |
-| *address* | subsidiaryDirector | Subsidiary director address |
-| *string* | orgJsonUri | orgJsonUri pointer |
-| *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
+| *bytes32* | parentOrgId | Parent ORG.ID hash |
+| *address* | director | Unit director address |
+| *string* | orgJsonUri | Unit ORG.JSON URI |
+| *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
 
 
 ## *function* getOrganization
 
 OrgIdInterface.getOrganization(_orgId) `view` `22b3cd4e`
 
-> Get organization by orgId
+> Get organization or unit's info by ORG.ID hash
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | _orgId | The organization Id |
+| *bytes32* | _orgId | ORG.ID hash |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bool* | existed | The organizatoin existence flag |
-| *bytes32* | orgId | The organization orgId |
-| *string* | orgJsonUri | orgJsonUri pointer of this Organization |
-| *bytes32* | orgJsonHash | keccak256 hash of the new ORG.JSON contents |
-| *bytes32* | parentEntity | The parent organization orgId |
-| *address* | owner | The organization owner |
-| *address* | director | The organization director |
-| *bool* | state | State of the organization |
-| *bool* | directorConfirmed | Flag is director ownership is confirmed |
+| *bool* | existed | Flag indicating ORG.ID's existence |
+| *bytes32* | orgId | ORG.ID hash |
+| *string* | orgJsonUri | ORG.JSON URI |
+| *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
+| *bytes32* | parentOrgId | Parent ORG.ID (if applicable) |
+| *address* | owner | Owner's address |
+| *address* | director | Unit director's address |
+| *bool* | isActive | Indicates whether ORG.ID is active |
+| *bool* | directorConfirmed | Indicates whether directorship is confirmed |
 
 ## *function* getOrganizations
 
-OrgIdInterface.getOrganizations() `view` `9754a3a8`
+OrgIdInterface.getOrganizations(includeInactive) `view` `0c70d7c5`
 
-> Return an array of active organizations orgIds
-
-
-
-Outputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32[]* | organizationsList | Array of active organizations orgIds |
-
-## *function* getSubsidiaries
-
-OrgIdInterface.getSubsidiaries(orgId) `view` `5aee5dc7`
-
-> Return an array of active subsidiaries orgIds
+> Get all active organizations' ORG.ID hashes
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | undefined |
+| *bool* | includeInactive | Includes not active units into response |
+
+Outputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32[]* | organizationsList | Array of all active organizations' ORG.ID hashes |
+
+## *function* getUnits
+
+OrgIdInterface.getUnits(parentOrgId, includeInactive) `view` `0dd56c93`
+
+> Get all active organizational units of a particular ORG.ID
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | parentOrgId | Parent ORG.ID hash |
+| *bool* | includeInactive | Includes not active units into response |
 
 Outputs
 
@@ -166,45 +125,73 @@ Outputs
 |-|-|-|
 | *bytes32[]* |  | undefined |
 
+## *function* renounceDirectorship
+
+OrgIdInterface.renounceDirectorship(orgId) `nonpayable` `096dde02`
+
+> Unit directorship renounce
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | orgId | Unit's ORG.ID hash |
+
+
+## *function* setOrgJson
+
+OrgIdInterface.setOrgJson(orgId, orgJsonUri, orgJsonHash) `nonpayable` `bf9e43db`
+
+> Shorthand method to change ORG.JSON URI and hash at once
+
+Inputs
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | orgId | ORG.ID hash |
+| *string* | orgJsonUri | New ORG.JSON URI |
+| *bytes32* | orgJsonHash | New ORG.JSON's keccak256 hash |
+
+
 ## *function* toggleOrganization
 
 OrgIdInterface.toggleOrganization(orgId) `nonpayable` `07233a3d`
 
-> Toggle the organization state
+> Toggle ORG.ID's active/inactive state
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization orgId |
+| *bytes32* | orgId | ORG.ID hash |
 
 
-## *function* transferDirectorOwnership
+## *function* transferDirectorship
 
-OrgIdInterface.transferDirectorOwnership(orgId, newDirector) `nonpayable` `b34ef9b7`
+OrgIdInterface.transferDirectorship(orgId, newDirector) `nonpayable` `a954f145`
 
-> Transfer subsidiary director ownership
+> Unit directorship transfer
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization orgId |
-| *address* | newDirector | New subsidiary director address |
+| *bytes32* | orgId | Unit's ORG.ID hash |
+| *address* | newDirector | New director's address |
 
 
 ## *function* transferOrganizationOwnership
 
 OrgIdInterface.transferOrganizationOwnership(orgId, newOwner) `nonpayable` `aa73697e`
 
-> Transfer organization ownership
+> Ownership transfer
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | The organization orgId |
-| *address* | newOwner | New subsidiary director address |
+| *bytes32* | orgId | ORG.ID hash |
+| *address* | newOwner | New owner's address |
 
 
 ---
