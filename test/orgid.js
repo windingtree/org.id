@@ -44,10 +44,6 @@ contract('ORG.ID', accounts => {
     const randomAddress = accounts[2];
     const randomAddressTwo = accounts[3];
 
-    const getRandomAccount = () => {
-        return accounts[Math.floor(Math.random() * accounts.length)];
-    };
-
     let project;
     let orgIdContract;
 
@@ -166,7 +162,7 @@ contract('ORG.ID', accounts => {
     describe('ORG.ID methods', () => {
         describe('#createOrganization(bytes32,string,bytes32)', () => {
             it('should create an organization', async () => {
-                const ownerAddress = getRandomAccount();
+                const ownerAddress = randomAddress;
                 const result = await createOrganizationHelper(
                     orgIdContract,
                     ownerAddress,
