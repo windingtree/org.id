@@ -34,9 +34,9 @@ Usage: `cmd=makehash <PROPERTIES>`
 
 Generates a hash of the given json file using keccak method from solidity. This hash should be used as ORG.ID JSON validation parameter.  
 
-Parameters: 
+Parameters:
 - `file=<PATH_TO_JSON>`
-  Relative path to the ORG.ID json file. 
+  Relative path to the ORG.ID json file.
 
 ## deploy
 
@@ -44,10 +44,10 @@ Usage: `cmd=deploy <PROPERTIES>`
 
 Manages contracts deployments.
 
-Parameters: 
+Parameters:
 - `name=<CONTRACT_NAME>`  
   Contract name to deploy or upgrade  
-  
+
 - `from=<SENDER_ACCOUNT_ADDRESS>`  
   Account address that should be used to signing transactions   
 
@@ -85,15 +85,15 @@ Usage: `cmd=upgrade <PROPERTIES>`
 
 Manages contracts upgrades.
 
-Parameters: 
+Parameters:
 - `name=<CONTRACT_NAME>`  
   Contract name to deploy or upgrade  
-  
+
 - `from=<SENDER_ACCOUNT_ADDRESS>`  
   Account address that should be used to signing transactions   
 
 - `initMethod=<INITIALIZER_METHOD_NAME>`  
-  Name of the contract initializer method name. Optional. 
+  Name of the contract initializer method name. Optional.
 
 - `initArgs=<INITIALIZER_ARGUMENTS>`
   Initializer arguments separated by comma. Optional.
@@ -102,12 +102,12 @@ Parameters:
 
 Usage: `cmd=tx <PROPERTIES>`  
 
-Sending transactions to the contract instances. 
+Sending transactions to the contract instances.
 
 Properties:  
 - `name=<CONTRACT_NAME>`  
   Contract name to transaction sending  
-  
+
 - `from=<SENDER_ACCOUNT_ADDRESS>`  
   Account address that should be used to signing transactions   
 
@@ -124,12 +124,12 @@ Properties:
 
 Usage: `cmd=call <PROPERTIES>`  
 
-Sending transactions to the contract instances. 
+Sending transactions to the contract instances.
 
 Properties:  
 - `name=<CONTRACT_NAME>`  
   Contract name  
-  
+
 - `address=<CONTRACT_PROXY_ADDRESS>`  
   Address of the deployed contract (proxy) on the network
 
@@ -147,7 +147,7 @@ Running the series of predefined commands
 
 Properties:
 - `file=<PATH_TO_FILE>`
-  Relative path to the file that contains a configuration of the task. 
+  Relative path to the file that contains a configuration of the task.
 - `params=FROM:<addr>,HOLDER1:<addr>,HOLDER2:<addr>`
   Parameters that can be used as in-script commands parameters replacements.
 
@@ -187,9 +187,8 @@ Here the example of possible task configuration:
             "name": "OrgId",
             "address": "[TASK:2:contract.proxy]",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-            "method": "createOrganization(bytes32,string,bytes32)",
+            "method": "createOrganization(string,bytes32)",
             "args": [
-                "0x31f5e1745a65fd8a2dd556c8b27d8d585ed184876126779e1323c6a1f06c68f0",
                 "https://gist.githubusercontent.com/[username]/3bde88a0e8248c73c68c1aed2ca4b9be/raw/5df8c96ceff4d0fa99a32d1da63b061ad4b27ccd/ORG.ID",
                 "[TASK:2:hash]"
             ]
@@ -207,10 +206,9 @@ Here the example of possible task configuration:
             "name": "OrgId",
             "address": "[TASK:2:contract.proxy]",
             "from": "0x90f8bf6a479f320ead074411a4b0e7944ea8c9c1",
-            "method": "createSubsidiary(string,bytes32,address,string,string)",
+            "method": "createUnit(bytes32,address,string,bytes32)",
             "args": [
                 "0x31f5e1745a65fd8a2dd556c8b27d8d585ed184876126779e1323c6a1f06c68f0",
-                "0x5ba8f3df5408ee9db90015040cf8cacca679a145ca3452cbd09b66eac2e54cdc",
                 "0xa284D6724Ab7D8194b0D894C74C34318c1319391",
                 "https://gist.githubusercontent.com/[username]/3b680e83da367b68c6e84407e5f2d44/raw/569ce8f321499a8249bec31fd09f6c618bcf52cd/Subsidiary%2520ORG.ID",
                 "[TASK:4:hash]"
@@ -226,5 +224,4 @@ The explanation of this task:
 - Running `makehash` command for file `./assets/orgid-legal.json`
 - Running of `tx` command. Creation of an Organization record. The hash is obtained from previous step
 - Running `makehash` command for file `./assets/orgid-unit.json`
-- Running of `tx` command. Creation of an Subsidiary record. The hash is obtained from previous step
-
+- Running of `tx` command. Creation of a new organizational unit record. The hash is obtained from previous step

@@ -41,7 +41,7 @@ module.exports = async (options) => {
     const network = await web3.eth.net.getNetworkType();
     let initArgsParsed = [];
     let deploymentConfig = Object.assign({}, config);
-    
+
     const configFilePath = path.join(
         __dirname,
         `../../../.openzeppelin/${network}-${name}.json`
@@ -49,7 +49,7 @@ module.exports = async (options) => {
 
     if (fs.existsSync(configFilePath)) {
 
-        title('Detected existed deployment', `${network}-${name}.json`);
+        title('Detected existing deployment', `${network}-${name}.json`);
         log('Use "cmd=upgrade" for doing upgrade');
         return;
     }
@@ -89,10 +89,10 @@ module.exports = async (options) => {
         gas: truffleConfig.gas || 8000000,
         gasPrice: truffleJs.gasPrice || 10000000000
     });
-        
+
     // Setup upgradeability project
     const project = new ProxyAdminProject(name, null, null, txParams);
-    
+
     // Deployment of the contract
     const proxy = await project.createProxy(ContractSchema, Object.assign(
         {},
@@ -119,7 +119,7 @@ module.exports = async (options) => {
             packageName: name,
             contractName: name
         });
-    
+
     deploymentConfig.blockNumber = await web3.eth.getBlockNumber();
 
     fs.writeFileSync(

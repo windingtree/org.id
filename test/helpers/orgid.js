@@ -11,135 +11,53 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createOrganization
- * @dev Arguments order: [requestedOrgIdHash(bytes32), orgJsonUri(string), orgJsonHash(bytes32)]
- * @returns {Promise<{string}>} New ORG.ID hash
+ * @dev Arguments order: [orgJsonUri(string), orgJsonHash(bytes32)]
+ * @returns {Promise} Function call promise
  */
 module.exports.createOrganizationHelper = async (
     orgIdContract,
     callerAddress,
     args
 ) => {
-    const requestedOrgIdHash = args[0];
-    const orgJsonUri = args[1];
-    const orgJsonHash = args[2];
+    const orgJsonUri = args[0];
+    const orgJsonHash = args[1];
 
     const result = await orgIdContract
-        .methods['createOrganization(bytes32,string,bytes32)'](
-            requestedOrgIdHash,
+        .methods['createOrganization(string,bytes32)'](
             orgJsonUri,
             orgJsonHash
         )
         .send({ from: callerAddress });
 
-    let newOrgIdHash;
-    assertEvent(result, 'OrganizationCreated', [
-        [
-            'orgId',
-            p => {
-                if (requestedOrgIdHash !== zeroHash) {
-                    (p).should.equal(requestedOrgIdHash);
-                }
-
-                newOrgIdHash = p;
-            }
-        ],
-        [
-            'owner',
-            p => (p).should.equal(callerAddress)
-        ]
-    ]);
-
-    const org = await orgIdContract
-        .methods['getOrganization(bytes32)'](newOrgIdHash)
-        .call();
-    (org.orgId).should.equal(newOrgIdHash);
-    (org.orgJsonUri).should.equal(orgJsonUri);
-    (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentEntity).should.equal(zeroHash);
-    (org.owner).should.equal(callerAddress);
-    (org.director).should.equal(zeroAddress);
-    (org.state).should.be.true;
-    (org.directorConfirmed).should.be.false;
-
-    return newOrgIdHash;
+    return result;
 };
 
 /**
  * Helper function for creating organizational units
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
- * @param {array} args Array of arguments for the real createSubsidiary
- * @dev Arguments order: [parentOrgIdHash(bytes32), requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
- * @returns {Promise<{string}>} New unit's ORG.ID hash
+ * @param {array} args Array of arguments for the real createUnit
+ * @dev Arguments order: [requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
+ * @returns {Promise} Function call promise
  */
-module.exports.createSubsidiaryHelper = async (
+module.exports.createUnitHelper = async (
     orgIdContract,
     callerAddress,
     args
 ) => {
     const parentOrgIdHash = args[0];
-    const requestedUnitHash = args[1];
-    const directorAddress = args[2];
-    const orgJsonUri = args[3];
-    const orgJsonHash = args[4];
+    const directorAddress = args[1];
+    const orgJsonUri = args[2];
+    const orgJsonHash = args[3];
 
     const result = await orgIdContract
-        .methods['createSubsidiary(bytes32,bytes32,address,string,bytes32)'](
+        .methods['createUnit(bytes32,address,string,bytes32)'](
             parentOrgIdHash,
-            requestedUnitHash,
             directorAddress,
             orgJsonUri,
             orgJsonHash
         )
         .send({ from: callerAddress });
 
-    let newUnitOrgIdHash;
-    assertEvent(result, 'SubsidiaryCreated', [
-        [
-            'parentOrgId',
-            p => (p).should.equal(parentOrgIdHash)
-        ],
-        [
-            'subOrgId',
-            p => {
-                if (requestedUnitHash !== zeroHash) {
-                    (p).should.equal(requestedUnitHash);
-                }
-
-                newUnitOrgIdHash = p;
-            }
-        ],
-        [
-            'director',
-            p => (p).should.equal(directorAddress)
-        ]
-    ]);
-
-    if (callerAddress === directorAddress) {
-        assertEvent(result, 'DirectorOwnershipConfirmed', [
-            [
-                'orgId',
-                p => (p).should.equal(newUnitOrgIdHash)
-            ],
-            [
-                'director',
-                p => (p).should.equal(directorAddress)
-            ]
-        ]);
-    }
-
-    const org = await orgIdContract
-        .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
-        .call();
-
-    (org.orgId).should.equal(newUnitOrgIdHash);
-    (org.orgJsonUri).should.equal(orgJsonUri);
-    (org.orgJsonHash).should.equal(orgJsonHash);
-    (org.parentEntity).should.equal(parentOrgIdHash);
-    (org.owner).should.equal(callerAddress);
-    (org.director).should.equal(directorAddress);
-    (org.state).should.be.true;
-    (org.directorConfirmed).should.be[(callerAddress === directorAddress).toString()];
-
-    return newUnitOrgIdHash;
+    return result;
 };

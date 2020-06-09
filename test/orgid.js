@@ -16,7 +16,7 @@ const {
 const {
     generateHashHelper,
     createOrganizationHelper,
-    createSubsidiaryHelper
+    createUnitHelper
 } = require('./helpers/orgid');
 
 let gasLimit = 8000000; // Ropsten gas limit
@@ -74,10 +74,12 @@ contract('ORG.ID', accounts => {
                 }
             );
             orgIdContract = await OrgIdUpgradeabilityContract.at(orgIdContract.address);
-            await orgIdContract.methods['setupNewStorage(uint256)']('100').send({
-                from: orgIdContractOwner
-            });
-            (await orgIdContract.methods['newFunction()']().call()).should.equal('100');
+            await orgIdContract.methods['setupNewStorage(uint256)']('100')
+                .send({
+                    from: orgIdContractOwner
+                });
+            (await orgIdContract.methods['newFunction()']()
+                .call()).should.equal('100');
             (
                 await orgIdContract
                     .methods['supportsInterface(bytes4)']('0x1b28d63e')
@@ -117,14 +119,8 @@ contract('ORG.ID', accounts => {
                         from: orgIdContractOwner
                     });
                 assertEvent(result, 'OwnershipTransferred', [
-                    [
-                        'previousOwner',
-                        p => (p).should.equal(orgIdContractOwner)
-                    ],
-                    [
-                        'newOwner',
-                        p => (p).should.equal(randomAddress)
-                    ],
+                    [ 'previousOwner', p => (p).should.equal(orgIdContractOwner) ],
+                    [ 'newOwner', p => (p).should.equal(randomAddress) ],
                 ]);
             });
         });
@@ -154,14 +150,14 @@ contract('ORG.ID', accounts => {
 
         it('should support hierarchy interface', async () => {
             (await orgIdContract
-                .methods['supportsInterface(bytes4)']('0x3a3bc250')
+                .methods['supportsInterface(bytes4)']('0xfd95e493')
                 .call()
             ).should.be.true;
         });
 
         it('should support ORG.ID interface', async () => {
             (await orgIdContract
-                .methods['supportsInterface(bytes4)']('0x36b78f0f')
+                .methods['supportsInterface(bytes4)']('0x81ba1516')
                 .call()
             ).should.be.true;
         });
@@ -169,62 +165,52 @@ contract('ORG.ID', accounts => {
 
     describe('ORG.ID methods', () => {
         describe('#createOrganization(bytes32,string,bytes32)', () => {
-            it('should fail if requested ORG.ID hash is not unique', async () => {
-                const requestedOrgIdHash = generateHashHelper();
-
-                // Create an org with `requestedId`
-                await createOrganizationHelper(
+            it('should create an organization', async () => {
+                const ownerAddress = getRandomAccount();
+                const result = await createOrganizationHelper(
                     orgIdContract,
-                    randomAddress,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    ownerAddress,
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
 
-                // Try to create another org with the same id (`requestedId`)
-                await assertRevert(
-                    createOrganizationHelper(
-                        orgIdContract,
-                        randomAddressTwo,
-                        [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                    ),
-                    'ORG.ID: requested ORG.ID hash already exists'
-                );
-            });
+                let newOrgIdHash;
+                assertEvent(result, 'OrganizationCreated', [
+                    [ 'orgId', p => newOrgIdHash = p ],
+                    [ 'owner', p => (p).should.equal(ownerAddress) ]
+                ]);
 
-            it('should create organization with requested ORG.ID hash', async () => {
-                const requestedOrgIdHash = generateHashHelper();
-                await createOrganizationHelper(
-                    orgIdContract,
-                    getRandomAccount(),
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-            });
+                const newOrgId = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newOrgIdHash)
+                    .call();
 
-            it('should create organization with random new ORG.ID hash (zeroHash should be sent as requested hash in this case)', async () => {
-                await createOrganizationHelper(
-                    orgIdContract,
-                    getRandomAccount(),
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
+                (newOrgId.orgId).should.equal(newOrgIdHash);
+                (newOrgId.orgJsonUri).should.equal(mockOrgJsonUri);
+                (newOrgId.orgJsonHash).should.equal(mockOrgJsonHash);
+                (newOrgId.parentOrgId).should.equal(zeroHash);
+                (newOrgId.owner).should.equal(ownerAddress);
+                (newOrgId.director).should.equal(zeroAddress);
+                (newOrgId.isActive).should.be.true;
+                (newOrgId.isDirectorshipAccepted).should.be.false;
             });
         });
 
-        describe('#toggleOrganization(bytes32)', () => {
+        describe('#toggleActiveState(bytes32)', () => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
                 const randomOrgIdHash = generateHashHelper();
                 await assertRevert(
                     orgIdContract
-                        .methods['toggleOrganization(bytes32)'](randomOrgIdHash)
+                        .methods['toggleActiveState(bytes32)'](randomOrgIdHash)
                         .send({ from: organizationOwner }),
                     'ORG.ID: Organization not found'
                 );
@@ -233,21 +219,24 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['toggleOrganization(bytes32)'](testOrgIdHash)
+                        .methods['toggleActiveState(bytes32)'](testOrgIdHash)
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
-            it('should toggle organization state', async () => {
-                await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
+            it('should toggle organization isActive state', async () => {
+                await orgIdContract.methods['toggleActiveState(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
-                let org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
-                (org.state).should.be.false;
-                await orgIdContract.methods['toggleOrganization(bytes32)'](testOrgIdHash)
+                let org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash)
+                    .call();
+                (org.isActive).should.be.false;
+                await orgIdContract.methods['toggleActiveState(bytes32)'](testOrgIdHash)
                     .send({ from: organizationOwner });
-                org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash).call();
-                (org.state).should.be.true;
+                org = await orgIdContract.methods['getOrganization(bytes32)'](testOrgIdHash)
+                    .call();
+                (org.isActive).should.be.true;
+                // TODO: no assertions for OrganizationActiveStateChanged event
             });
         });
 
@@ -255,19 +244,22 @@ contract('ORG.ID', accounts => {
             let testOrgIdHash;
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     organizationOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
                 const randomOrgIdHash = generateHashHelper();
                 await assertRevert(
                     orgIdContract
-                        .methods['transferOrganizationOwnership(bytes32,address)'](randomOrgIdHash, randomAddress)
+                        .methods['transferOrganizationOwnership(bytes32,address)'](
+                            randomOrgIdHash,
+                            randomAddress
+                        )
                         .send({ from: organizationOwner }),
                     'ORG.ID: Organization not found'
                 );
@@ -276,7 +268,10 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferOrganizationOwnership(bytes32,address)'](testOrgIdHash, randomAddress)
+                        .methods['transferOrganizationOwnership(bytes32,address)'](
+                            testOrgIdHash,
+                            randomAddress
+                        )
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be owner)'
                 );
@@ -285,7 +280,10 @@ contract('ORG.ID', accounts => {
             it('should fail if new owner has zero address', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferOrganizationOwnership(bytes32,address)'](testOrgIdHash, zeroAddress)
+                        .methods['transferOrganizationOwnership(bytes32,address)'](
+                            testOrgIdHash,
+                            zeroAddress
+                        )
                         .send({ from: organizationOwner }),
                     'ORG.ID: Invalid owner address'
                 );
@@ -293,244 +291,44 @@ contract('ORG.ID', accounts => {
 
             it('should transfer organization ownership', async () => {
                 const result = await orgIdContract
-                    .methods['transferOrganizationOwnership(bytes32,address)'](testOrgIdHash, randomAddress)
+                    .methods['transferOrganizationOwnership(bytes32,address)'](
+                        testOrgIdHash,
+                        randomAddress
+                    )
                     .send({ from: organizationOwner });
 
                 assertEvent(result, 'OrganizationOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOwner',
-                        p => (p).should.equal(organizationOwner)
-                    ],
-                    [
-                        'newOwner',
-                        p => (p).should.equal(randomAddress)
-                    ]
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOwner', p => (p).should.equal(organizationOwner) ],
+                    [ 'newOwner', p => (p).should.equal(randomAddress) ]
                 ]);
             });
         });
 
-        describe('#changeOrgJsonUri(bytes32,string)', () => {
-            let testOrgIdHash;
-            const testOrgIdOwner = accounts[5];
-            const requestedOrgIdHash = zeroHash;
-            let newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
-
-            beforeEach(async () => {
-                testOrgIdHash = await createOrganizationHelper(
-                    orgIdContract,
-                    testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-            });
-
-            it('should fail if organization not found', async () => {
-                const randomOrgIdHash = generateHashHelper();
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonUri(bytes32,string)'](randomOrgIdHash, newOrgJsonUri)
-                        .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Organization not found'
-                );
-            });
-
-            it('should fail if called by non-owner', async () => {
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonUri(bytes32,string)'](testOrgIdHash, newOrgJsonUri)
-                        .send({ from: randomAddress }),
-                    'ORG.ID: action not authorized (must be owner or director)'
-                );
-            });
-
-            it('should fail if empty string provided', async () => {
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonUri(bytes32,string)'](testOrgIdHash, '')
-                        .send({ from: testOrgIdOwner }),
-                    'ORG.ID: ORG.JSON URI cannot be empty'
-                );
-            });
-
-            it('should change ORG.JSON URI', async () => {
-                const result = await orgIdContract
-                    .methods['changeOrgJsonUri(bytes32,string)'](testOrgIdHash, newOrgJsonUri)
-                    .send({ from: testOrgIdOwner });
-
-                assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
-                ]);
-            });
-
-            it('should change unit ORG.JSON URI requested by director', async () => {
-                const parentOrgIdOwner = testOrgIdOwner;
-                const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
-                const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
-                    orgIdContract,
-                    parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
-                );
-
-                const result = await orgIdContract
-                    .methods['changeOrgJsonUri(bytes32,string)'](testUnitOrgIdHash, newOrgJsonUri)
-                    .send({ from: unitDirector });
-
-                assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
-                ]);
-            });
-        });
-
-        describe('#changeOrgJsonHash(bytes32,bytes32)', () => {
-            let testOrgIdHash;
-            const testOrgIdOwner = accounts[5];
-            let newOrgJsonHash = generateHashHelper();
-
-            beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
-                testOrgIdHash = await createOrganizationHelper(
-                    orgIdContract,
-                    testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-            });
-
-            it('should fail if organization not found', async () => {
-                const randomOrgIdHash = generateHashHelper();
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonHash(bytes32,bytes32)'](randomOrgIdHash, newOrgJsonHash)
-                        .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Organization not found'
-                );
-            });
-
-            it('should fail if called by non-owner', async () => {
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonHash(bytes32,bytes32)'](testOrgIdHash, newOrgJsonHash)
-                        .send({ from: randomAddress }),
-                    'ORG.ID: action not authorized (must be owner or director)'
-                );
-            });
-
-            it('should fail if hash is all zeroes', async () => {
-                await assertRevert(
-                    orgIdContract
-                        .methods['changeOrgJsonHash(bytes32,bytes32)'](testOrgIdHash, zeroHash)
-                        .send({ from: testOrgIdOwner }),
-                    'ORG.ID: ORG.JSON hash cannot be zero'
-                );
-            });
-
-            it('should fail if hash is an empty string', async () => {
-                assert.throws(() => {
-                    orgIdContract
-                        .methods['changeOrgJsonHash(bytes32,bytes32)'](testOrgIdHash, '')
-                        .send({ from: testOrgIdOwner });
-                }, /invalid bytes32 value/);
-            });
-
-            it('should change ORG.JSON hash', async () => {
-                const result = await orgIdContract
-                    .methods['changeOrgJsonHash(bytes32,bytes32)'](testOrgIdHash, newOrgJsonHash)
-                    .send({ from: testOrgIdOwner });
-
-                assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
-                ]);
-            });
-
-            it('should change unit ORG.JSON hash requested by director', async () => {
-                const parentOrgIdOwner = testOrgIdOwner;
-                const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
-                const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
-                    orgIdContract,
-                    parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
-                );
-
-                const result = await orgIdContract
-                    .methods['changeOrgJsonHash(bytes32,bytes32)'](testUnitOrgIdHash, newOrgJsonHash)
-                    .send({ from: unitDirector });
-
-                assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
-                ]);
-            });
-        });
-
-        describe('#changeOrgJsonUriAndHash(bytes32,string,bytes32)', () => {
+        describe('#setOrgJson(bytes32,string,bytes32)', () => {
             let testOrgIdHash;
             const testOrgIdOwner = accounts[5];
             let newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
             let newOrgJsonHash = generateHashHelper();
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
                 const randomOrgIdHash = generateHashHelper();
                 await assertRevert(
                     orgIdContract
-                        .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](randomOrgIdHash, newOrgJsonUri, newOrgJsonHash)
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            randomOrgIdHash,
+                            newOrgJsonUri,
+                            newOrgJsonHash
+                        )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: Organization not found'
                 );
@@ -539,7 +337,11 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testOrgIdHash, newOrgJsonUri, newOrgJsonHash)
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testOrgIdHash,
+                            newOrgJsonUri,
+                            newOrgJsonHash
+                        )
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be owner or director)'
                 );
@@ -548,7 +350,11 @@ contract('ORG.ID', accounts => {
             it('should fail if URI is an empty string', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testOrgIdHash, '', newOrgJsonHash)
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testOrgIdHash,
+                            '',
+                            newOrgJsonHash
+                        )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: ORG.JSON URI cannot be empty'
                 );
@@ -557,7 +363,11 @@ contract('ORG.ID', accounts => {
             it('should fail if hash is all zeroes', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testOrgIdHash, newOrgJsonUri, zeroHash)
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testOrgIdHash,
+                            newOrgJsonUri,
+                            zeroHash
+                        )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: ORG.JSON hash cannot be zero'
                 );
@@ -566,138 +376,181 @@ contract('ORG.ID', accounts => {
             it('should fail if hash is an empty string', async () => {
                 assert.throws(() => {
                     orgIdContract
-                        .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testOrgIdHash, newOrgJsonUri, '')
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testOrgIdHash,
+                            newOrgJsonUri,
+                            ''
+                        )
                         .send({ from: testOrgIdOwner });
                 }, /invalid bytes32 value/);
             });
 
             it('should change ORG.JSON URI and hash', async () => {
                 const result = await orgIdContract
-                    .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testOrgIdHash, newOrgJsonUri, newOrgJsonHash)
+                    .methods['setOrgJson(bytes32,string,bytes32)'](
+                        testOrgIdHash,
+                        newOrgJsonUri,
+                        newOrgJsonHash
+                    )
                     .send({ from: testOrgIdOwner });
 
-                assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
-                ]);
-                assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
+                assertEvent(result, 'OrgJsonChanged', [
+                    [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ],
+                    [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
                 ]);
             });
 
-            it('should change unit ORG.JSON URI requested by director', async () => {
-                const parentOrgIdOwner = testOrgIdOwner;
-                const parentOrgIdHash = testOrgIdHash;
-                const requestedUnitOrgIdHash = zeroHash;
-                const unitDirector = randomAddressTwo;
-                const testUnitOrgIdHash = await createSubsidiaryHelper(
-                    orgIdContract,
-                    parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
-                );
+            describe('Changing ORG.JSON URI and hash by unit director', () => {
+                const unitDirector = accounts[6];
+                let testUnitOrgIdHash;
 
-                const result = await orgIdContract
-                    .methods['changeOrgJsonUriAndHash(bytes32,string,bytes32)'](testUnitOrgIdHash, newOrgJsonUri, newOrgJsonHash)
-                    .send({ from: unitDirector });
+                beforeEach(async () => {
+                    const call = await createUnitHelper(
+                        orgIdContract,
+                        testOrgIdOwner,
+                        [
+                            testOrgIdHash,
+                            unitDirector,
+                            mockOrgJsonUri,
+                            mockOrgJsonHash
+                        ]
+                    );
+                    testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                });
 
-                assertEvent(result, 'OrgJsonHashChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonHash',
-                        p => (p).should.equal(mockOrgJsonHash)
-                    ],
-                    [
-                        'newOrgJsonHash',
-                        p => (p).should.equal(newOrgJsonHash)
-                    ]
-                ]);
-                assertEvent(result, 'OrgJsonUriChanged', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(testUnitOrgIdHash)
-                    ],
-                    [
-                        'previousOrgJsonUri',
-                        p => (p).should.equal(mockOrgJsonUri)
-                    ],
-                    [
-                        'newOrgJsonUri',
-                        p => (p).should.equal(newOrgJsonUri)
-                    ]
-                ]);
+                it('should fail if called by non-owner or non-director', async () => {
+                    await assertRevert(
+                        orgIdContract
+                            .methods['setOrgJson(bytes32,string,bytes32)'](
+                                testUnitOrgIdHash,
+                                newOrgJsonUri,
+                                newOrgJsonHash
+                            )
+                            .send({ from: randomAddress }),
+                        'ORG.ID: action not authorized (must be owner or director)'
+                    );
+                });
+
+                // TODO: it should not matter if director is confirmed or not (next test is about that)
+                it('should succeed if called by confirmed director', async () => {
+                    await orgIdContract
+                        .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
+                        .send({ from: unitDirector });
+                    const result = await orgIdContract
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testUnitOrgIdHash,
+                            newOrgJsonUri,
+                            newOrgJsonHash
+                        )
+                        .send({ from: unitDirector });
+
+                    assertEvent(result, 'OrgJsonChanged', [
+                        [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                        [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                        [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ],
+                        [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                        [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
+                    ]);
+                });
+
+                it('should change ORG.JSON URI and hash if called by non-confirmed director', async () => {
+                    const result = await orgIdContract
+                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                            testUnitOrgIdHash,
+                            newOrgJsonUri,
+                            newOrgJsonHash
+                        )
+                        .send({ from: unitDirector });
+
+                    assertEvent(result, 'DirectorshipAccepted', [
+                        [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                        [ 'director', p => (p).should.equal(unitDirector) ]
+                    ]);
+
+                    assertEvent(result, 'OrgJsonChanged', [
+                        [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                        [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                        [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ],
+                        [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
+                        [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
+                    ]);
+                });
             });
         });
 
-        describe('#getOrganizations()', () => {
+        describe('#getOrganizations(bool)', () => {
             it('should return empty array if registry is empty', async () => {
                 const orgs = await orgIdContract
-                    .methods['getOrganizations()']()
+                    .methods['getOrganizations(bool)'](false)
                     .call();
                 (orgs).should.to.be.an('array');
                 (orgs.length).should.equal(0);
             });
 
-            it('should return empty array if registry contains only inactive organizations', async () => {
-                const orgId1 = await createOrganizationHelper(
-                    orgIdContract,
-                    randomAddress,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-                const orgId2 = await createOrganizationHelper(
-                    orgIdContract,
-                    randomAddressTwo,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
-                );
-                await orgIdContract.methods['toggleOrganization(bytes32)'](orgId1)
-                    .send({ from: randomAddress });
-                await orgIdContract.methods['toggleOrganization(bytes32)'](orgId2)
-                    .send({ from: randomAddressTwo });
-                const orgs = await orgIdContract
-                    .methods['getOrganizations()']()
-                    .call();
-                (orgs).should.to.be.an('array');
-                (orgs.length).should.equal(0);
+            describe('with incative organizations', () => {
+                let orgId1;
+                let orgId2;
+
+                beforeEach(async () => {
+                    const call1 = await createOrganizationHelper(
+                        orgIdContract,
+                        randomAddress,
+                        [mockOrgJsonUri, mockOrgJsonHash]
+                    );
+                    orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                    const call2 = await createOrganizationHelper(
+                        orgIdContract,
+                        randomAddressTwo,
+                        [mockOrgJsonUri, mockOrgJsonHash]
+                    );
+                    orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+                    await orgIdContract.methods['toggleActiveState(bytes32)'](orgId1)
+                        .send({ from: randomAddress });
+                    await orgIdContract.methods['toggleActiveState(bytes32)'](orgId2)
+                        .send({ from: randomAddressTwo });
+                });
+
+                it('should return empty array if registry contains only inactive organizations', async () => {
+                    const orgs = await orgIdContract
+                        .methods['getOrganizations(bool)'](false)
+                        .call();
+                    (orgs).should.to.be.an('array');
+                    (orgs.length).should.equal(0);
+                });
+
+                it('should return array which includes inactive organizations', async () => {
+                    const orgs = await orgIdContract
+                        .methods['getOrganizations(bool)'](true)
+                        .call();
+                    (orgs).should.to.be.an('array');
+                    (orgs.length).should.equal(2);
+                });
             });
 
             it('should return an array of organizations', async () => {
-                const orgId1 = await createOrganizationHelper(
+                const call1 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddress,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                const orgId2 = await createOrganizationHelper(
+                const orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                const call2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
-                    [zeroHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                const orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+
                 const orgs = await orgIdContract
-                    .methods['getOrganizations()']()
+                    .methods['getOrganizations(bool)'](false)
                     .call();
-                (orgs).should.to.be.an('array').that.include.members([orgId1, orgId2]);
+                (orgs).should.to.be.an('array').that.include.members([
+                    orgId1,
+                    orgId2
+                ]);
             });
         });
 
@@ -706,37 +559,37 @@ contract('ORG.ID', accounts => {
             const testOrgIdOwner = accounts[5];
 
             beforeEach(async () => {
-                const requestedOrgIdHash = zeroHash;
-                testOrgIdHash = await createOrganizationHelper(
+                const call = await createOrganizationHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
-            it('should return exist=false if organization not found', async () => {
+            it('should return exists=false if organization not found', async () => {
                 const randomOrgIdHash = generateHashHelper();
-                (
-                    await orgIdContract
-                        .methods['getOrganization(bytes32)'](randomOrgIdHash)
-                        .call()
-                ).should.has.property('exist').to.false;
+                const orgId = await orgIdContract
+                    .methods['getOrganization(bytes32)'](randomOrgIdHash)
+                    .call();
+
+                (orgId).should.has.property('exists').to.false;
             });
 
             it('should return an organization', async () => {
-                const org = await orgIdContract
+                const orgId = await orgIdContract
                     .methods['getOrganization(bytes32)'](testOrgIdHash)
                     .call();
 
-                (org).should.has.property('exist').to.true;
-                (org).should.has.property('orgId').to.equal(testOrgIdHash);
-                (org).should.has.property('orgJsonUri').to.equal(mockOrgJsonUri);
-                (org).should.has.property('orgJsonHash').to.equal(mockOrgJsonHash);
-                (org).should.has.property('parentEntity').to.equal(zeroHash);
-                (org).should.has.property('owner').to.equal(testOrgIdOwner);
-                (org).should.has.property('director').to.equal(zeroAddress);
-                (org).should.has.property('state').to.be.true;
-                (org).should.has.property('directorConfirmed').to.be.false;
+                (orgId).should.has.property('exists').to.true;
+                (orgId).should.has.property('orgId').to.equal(testOrgIdHash);
+                (orgId).should.has.property('orgJsonUri').to.equal(mockOrgJsonUri);
+                (orgId).should.has.property('orgJsonHash').to.equal(mockOrgJsonHash);
+                (orgId).should.has.property('parentOrgId').to.equal(zeroHash);
+                (orgId).should.has.property('owner').to.equal(testOrgIdOwner);
+                (orgId).should.has.property('director').to.equal(zeroAddress);
+                (orgId).should.has.property('isActive').to.be.true;
+                (orgId).should.has.property('isDirectorshipAccepted').to.be.false;
             });
         });
     });
@@ -747,24 +600,28 @@ contract('ORG.ID', accounts => {
         const testOrgIdOwner = unitOwner;
         const unitDirector = accounts[6];
         const nonOwnerOrDirector = accounts[7];
-        const requestedOrgIdHash = zeroHash;
-        const requestedUnitOrgIdHash = zeroHash;
 
         beforeEach(async () => {
-            parentOrgIdHash = await createOrganizationHelper(
+            const call = await createOrganizationHelper(
                 orgIdContract,
                 testOrgIdOwner,
-                [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                [mockOrgJsonUri, mockOrgJsonHash]
             );
+            parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
         });
 
-        describe('#createSubsidiary(bytes32,bytes32,address,string,bytes32)', () => {
+        describe('#createUnit(bytes32,address,string,bytes32)', () => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
-                    createSubsidiaryHelper(
+                    createUnitHelper(
                         orgIdContract,
                         nonOwnerOrDirector,
-                        [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                        [
+                            parentOrgIdHash,
+                            unitDirector,
+                            mockOrgJsonUri,
+                            mockOrgJsonHash
+                        ]
                     ),
                     'ORG.ID: action not authorized (must be owner)'
                 );
@@ -773,66 +630,129 @@ contract('ORG.ID', accounts => {
             it('should fail if parent organization not found', async () => {
                 const nonExistingOrgIdHash = generateHashHelper();
                 await assertRevert(
-                    createSubsidiaryHelper(
+                    createUnitHelper(
                         orgIdContract,
                         testOrgIdOwner,
-                        [nonExistingOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                        [
+                            nonExistingOrgIdHash,
+                            unitDirector,
+                            mockOrgJsonUri,
+                            mockOrgJsonHash
+                        ]
                     ),
                     'ORG.ID: Organization not found'
                 );
             });
 
-            // TODO: This should NOT fail. Director address could be assigned later
-            it('should fail if director address is zero', async () => {
-                const invalidDirectorAddress = zeroAddress;
-                await assertRevert(
-                    createSubsidiaryHelper(
-                        orgIdContract,
-                        testOrgIdOwner,
-                        [parentOrgIdHash, requestedUnitOrgIdHash, invalidDirectorAddress, mockOrgJsonUri, mockOrgJsonHash]
-                    ),
-                    'ORG.ID: Invalid director address'
+            it('should create a unit', async () => {
+                const call = await createUnitHelper(
+                    orgIdContract,
+                    testOrgIdOwner,
+                    [
+                        parentOrgIdHash,
+                        unitDirector,
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
                 );
+
+                let newUnitOrgIdHash;
+                assertEvent(call, 'UnitCreated', [
+                    [ 'parentOrgId', p => (p).should.equal(parentOrgIdHash) ],
+                    [ 'unitOrgId', p => newUnitOrgIdHash = p ],
+                    [ 'director', p => (p).should.equal(unitDirector) ]
+                ]);
+
+                const unit = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
+                    .call();
+
+                (unit.orgId).should.equal(newUnitOrgIdHash);
+                (unit.orgJsonUri).should.equal(mockOrgJsonUri);
+                (unit.orgJsonHash).should.equal(mockOrgJsonHash);
+                (unit.parentOrgId).should.equal(parentOrgIdHash);
+                (unit.owner).should.equal(testOrgIdOwner);
+                (unit.director).should.equal(unitDirector);
+                (unit.isActive).should.be.true;
+                (unit.isDirectorshipAccepted).should.be.false;
             });
 
-            it('should create a subsidiary', async () => {
-                // Director is different from the organization owner
-                await createSubsidiaryHelper(
+            it('directorship should be automatically accepted if director address = owner address', async () => {
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [
+                        parentOrgIdHash,
+                        testOrgIdOwner, // director address
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
                 );
+                const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
-                // Director is the same as the organization owner
-                await createSubsidiaryHelper(
+                assertEvent(call, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(testOrgIdOwner) ]
+                ]);
+
+                const unit = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
+                    .call();
+
+                (unit.isDirectorshipAccepted).should.be.true;
+            });
+
+            // TODO: confirming zero address doesn't make sense
+            it('directorship should be automatically accepted if director address = zero address', async () => {
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, testOrgIdOwner, mockOrgJsonUri, mockOrgJsonHash]
+                    [
+                        parentOrgIdHash,
+                        zeroAddress, // director address
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
                 );
+                const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
 
-                // TODO: assertions are missing!!!
+                assertEvent(call, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(zeroAddress) ]
+                ]);
+
+                const unit = await orgIdContract
+                    .methods['getOrganization(bytes32)'](newUnitOrgIdHash)
+                    .call();
+
+                (unit.isDirectorshipAccepted).should.be.true;
             });
         });
 
-        // TODO: if unconfirmed director calls any director-specific methods,
-        // directorship is automatically confirmed
-        // OR: unconfirmed director should not be able to call director-specific methods
+        // TODO: if nominated director calls any director-specific methods,
+        // directorship is automatically accepted
 
-        describe('#confirmDirectorOwnership(bytes32)', () => {
-            let unitOrgIdHash;
+        describe('#acceptDirectorship(bytes32)', () => {
+            let testUnitOrgIdHash;
 
             beforeEach(async () => {
-                unitOrgIdHash = await createSubsidiaryHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [
+                        parentOrgIdHash,
+                        unitDirector,
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
                 );
+                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
             });
 
             it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['confirmDirectorOwnership(bytes32)'](zeroHash)
+                        .methods['acceptDirectorship(bytes32)'](zeroHash)
                         .send({ from: unitDirector }),
                     'ORG.ID: Organization not found'
                 );
@@ -841,49 +761,50 @@ contract('ORG.ID', accounts => {
             it('should fail if not called by director', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                        .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be director)'
                 );
             });
 
-            it('should confirm directorship', async () => {
+            it('should accept directorship', async () => {
                 const result = await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
 
-                assertEvent(result, 'DirectorOwnershipConfirmed', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
-                    ],
-                    [
-                        'director',
-                        p => (p).should.equal(unitDirector)
-                    ]
+                assertEvent(result, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(unitDirector) ]
                 ]);
             });
         });
 
-        describe('#transferDirectorOwnership(bytes32,address)', () => {
-            let unitOrgIdHash;
+        describe('#transferDirectorship(bytes32,address)', () => {
+            let testUnitOrgIdHash;
             const newDirector = accounts[10];
 
             beforeEach(async () => {
-                unitOrgIdHash = await createSubsidiaryHelper(
+                const call = await createUnitHelper(
                     orgIdContract,
                     testOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
+                    [
+                        parentOrgIdHash,
+                        unitDirector,
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
                 );
+                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+
                 await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
             });
 
             it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferDirectorOwnership(bytes32,address)'](
+                        .methods['transferDirectorship(bytes32,address)'](
                             generateHashHelper(),
                             newDirector
                         )
@@ -895,145 +816,223 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner (e.g. director)', async () => {
                 await assertRevert(
                     orgIdContract
-                        .methods['transferDirectorOwnership(bytes32,address)'](
-                            unitOrgIdHash,
+                        .methods['transferDirectorship(bytes32,address)'](
+                            testUnitOrgIdHash,
                             newDirector
                         )
-                        .send({ from: unitDirector }),
+                        .send({ from: nonOwnerOrDirector }),
                     'ORG.ID: action not authorized (must be owner)'
                 );
             });
 
             it('should transfer directorship', async () => {
                 const result = await orgIdContract
-                    .methods['transferDirectorOwnership(bytes32,address)'](
-                        unitOrgIdHash,
+                    .methods['transferDirectorship(bytes32,address)'](
+                        testUnitOrgIdHash,
                         newDirector
                     )
                     .send({ from: unitOwner });
 
-                assertEvent(result, 'DirectorOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
-                    ],
-                    [
-                        'previousDirector',
-                        p => (p).should.equal(unitDirector)
-                    ],
-                    [
-                        'newDirector',
-                        p => (p).should.equal(newDirector)
-                    ]
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(newDirector) ]
                 ]);
                 let org = await orgIdContract
-                    .methods['getOrganization(bytes32)'](unitOrgIdHash)
+                    .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
-                (org.directorConfirmed).should.be.false;
+                (org.isDirectorshipAccepted).should.be.false;
             });
 
-            it('should automatically confirm directorship if transferred to owner', async () => {
+            it('should automatically accept directorship if transferred to owner', async () => {
                 const result = await orgIdContract
-                    .methods['transferDirectorOwnership(bytes32,address)'](
-                        unitOrgIdHash,
+                    .methods['transferDirectorship(bytes32,address)'](
+                        testUnitOrgIdHash,
                         unitOwner
                     )
                     .send({ from: unitOwner });
 
-                assertEvent(result, 'DirectorOwnershipTransferred', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
-                    ],
-                    [
-                        'previousDirector',
-                        p => (p).should.equal(unitDirector)
-                    ],
-                    [
-                        'newDirector',
-                        p => (p).should.equal(unitOwner)
-                    ]
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(unitOwner) ]
                 ]);
-                assertEvent(result, 'DirectorOwnershipConfirmed', [
-                    [
-                        'orgId',
-                        p => (p).should.equal(unitOrgIdHash)
-                    ],
-                    [
-                        'director',
-                        p => (p).should.equal(unitOwner)
-                    ]
+                assertEvent(result, 'DirectorshipAccepted', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'director', p => (p).should.equal(unitOwner) ]
                 ]);
+
                 let org = await orgIdContract
-                    .methods['getOrganization(bytes32)'](unitOrgIdHash)
+                    .methods['getOrganization(bytes32)'](testUnitOrgIdHash)
                     .call();
-                (org.directorConfirmed).should.be.true;
+                (org.isDirectorshipAccepted).should.be.true;
             });
         });
 
-        describe('#getSubsidiaries(bytes32)', () => {
+        describe('#renounceDirectorship(bytes32)', () => {
+            let testUnitOrgIdHash;
+            const unitDirector = accounts[10];
+
+            beforeEach(async () => {
+                const call = await createUnitHelper(
+                    orgIdContract,
+                    testOrgIdOwner,
+                    [
+                        parentOrgIdHash,
+                        unitDirector,
+                        mockOrgJsonUri,
+                        mockOrgJsonHash
+                    ]
+                );
+                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                await orgIdContract
+                    .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
+                    .send({ from: unitDirector });
+            });
+
+            it('should fail if organization not found', async () => {
+                await assertRevert(
+                    orgIdContract
+                        .methods['renounceDirectorship(bytes32)'](
+                            generateHashHelper()
+                        )
+                        .send({ from: organizationOwner }),
+                    'ORG.ID: Organization not found'
+                );
+            });
+
+            it('should fail if called by non-owner (e.g. director)', async () => {
+                await assertRevert(
+                    orgIdContract
+                        .methods['renounceDirectorship(bytes32)'](
+                            testUnitOrgIdHash
+                        )
+                        .send({ from: nonOwnerOrDirector }),
+                    'ORG.ID: action not authorized (must be owner or director)'
+                );
+            });
+
+            it('should renounce directorship owner', async () => {
+                const result = await orgIdContract
+                    .methods['renounceDirectorship(bytes32)'](
+                        testUnitOrgIdHash
+                    )
+                    .send({ from: unitOwner });
+
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(zeroAddress) ]
+                ]);
+            });
+
+            it('should renounce directorship director', async () => {
+                const result = await orgIdContract
+                    .methods['renounceDirectorship(bytes32)'](
+                        testUnitOrgIdHash
+                    )
+                    .send({ from: unitDirector });
+
+                assertEvent(result, 'DirectorshipTransferred', [
+                    [ 'orgId', p => (p).should.equal(testUnitOrgIdHash) ],
+                    [ 'previousDirector', p => (p).should.equal(unitDirector) ],
+                    [ 'newDirector', p => (p).should.equal(zeroAddress) ]
+                ]);
+            });
+        });
+
+        describe('#getUnits(bytes32,bool)', function() {
+            let o;
             let parentOrgIdHash;
             const parentOrgIdOwner = accounts[5];
             const testOrgIdOwner = accounts[5];
             const unitDirector = accounts[6];
-            const requestedOrgIdHash = zeroHash;
-            const requestedUnitOrgIdHash = zeroHash;
 
-            beforeEach(async () => {
-                parentOrgIdHash = await createOrganizationHelper(
-                    orgIdContract,
+            before(async function() {
+                o = await project.createProxy(OrgIdContract, {
+                    initMethod: 'initialize',
+                    initArgs: [
+                        orgIdContractOwner
+                    ]
+                });
+
+                const call = await createOrganizationHelper(
+                    o,
                     testOrgIdOwner,
-                    [requestedOrgIdHash, mockOrgJsonUri, mockOrgJsonHash]
+                    [mockOrgJsonUri, mockOrgJsonHash]
                 );
+                parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
             });
 
-            it('should fail if organization not found', async () => {
+            it('should fail if organization not found', async function() {
                 const nonExistingOrgIdHash = generateHashHelper();
                 await assertRevert(
-                    orgIdContract
-                        .methods['getSubsidiaries(bytes32)'](nonExistingOrgIdHash)
+                    o
+                        .methods['getUnits(bytes32,bool)'](
+                            nonExistingOrgIdHash,
+                            false
+                        )
                         .call(),
                     'ORG.ID: Organization not found'
                 );
             });
 
-            it('should return empty array if organization has no units', async () => {
-                const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
+            it('should return empty array if organization has no units', async function() {
+                const units = await o
+                    .methods['getUnits(bytes32,bool)'](parentOrgIdHash, true)
                     .call();
-                (subs).should.to.be.an('array');
-                (subs.length).should.equal(0);
+
+                (units).should.to.be.an('array');
+                (units.length).should.equal(0);
             });
 
-            // TODO: I should be able to see organizations and units that are inactive or don't have directors
-            // TODO: this is a wrong assumption. Organization unit may function without director just fine.
-            it('should return an empty array if organization unit directorship is not confirmed', async () => {
-                await createSubsidiaryHelper(
-                    orgIdContract,
-                    parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
-                );
-                const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
-                    .call();
-                (subs).should.to.be.an('array');
-                (subs.length).should.equal(0);
-            });
+            describe('counting and getting units', function() {
+                let allUnitHashes = [];
+                let activeUnitHashes = [];
 
-            it('should return array of units', async () => {
-                const unitOrgIdHash = await createSubsidiaryHelper(
-                    orgIdContract,
-                    parentOrgIdOwner,
-                    [parentOrgIdHash, requestedUnitOrgIdHash, unitDirector, mockOrgJsonUri, mockOrgJsonHash]
-                );
-                await orgIdContract
-                    .methods['confirmDirectorOwnership(bytes32)'](unitOrgIdHash)
-                    .send({ from: unitDirector });
-                const subs = await orgIdContract
-                    .methods['getSubsidiaries(bytes32)'](parentOrgIdHash)
-                    .call();
-                (subs).should.to.be.an('array');
-                (subs).should.to.be.an('array').that.include(unitOrgIdHash);
+                before(async function() {
+                    for (let i = 0; i < 7; i++) {
+                        const call = await createUnitHelper(
+                            o,
+                            parentOrgIdOwner,
+                            [
+                                parentOrgIdHash,
+                                unitDirector,
+                                mockOrgJsonUri,
+                                mockOrgJsonHash
+                            ]
+                        );
+                        const h = call.events['UnitCreated'].returnValues.unitOrgId;
+
+                        allUnitHashes.push(h);
+                        if (i % 2 === 0) {
+                            // units are active by default
+                            activeUnitHashes.push(h);
+                        } else {
+                            // deactivate unit
+                            await o.methods['toggleActiveState(bytes32)'](h)
+                                .send({ from: parentOrgIdOwner });
+                        }
+                    }
+                });
+
+                it('should return an array of ACTIVE units only, if "includeInactive" flag set to "false"', async function() {
+                    const units = await o
+                        .methods['getUnits(bytes32,bool)'](parentOrgIdHash, false)
+                        .call();
+
+                    (units).should.to.be.an('array');
+                    (units.length).should.equal(activeUnitHashes.length);
+                });
+
+                it('should return an array of ALL units, if "includeInactive" flag set to "true"', async function() {
+                    const units = await o
+                        .methods['getUnits(bytes32,bool)'](parentOrgIdHash, true)
+                        .call();
+
+                    (units).should.to.be.an('array');
+                    (units.length).should.equal(allUnitHashes.length);
+                });
             });
         });
     });

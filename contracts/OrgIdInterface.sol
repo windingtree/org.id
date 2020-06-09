@@ -7,7 +7,6 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organization
-     * @param orgId Organization's desired ORG.ID hash (TODO: remove from production implementation)
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @return {
@@ -15,23 +14,20 @@ contract OrgIdInterface {
      }
      */
     function createOrganization(
-        bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     ) external returns (bytes32 id);
 
     /**
      * @dev Create organizational unit
-     * @param orgId Parent ORG.ID hash
-     * @param subOrgId Unit's desired ORG.ID hash (TODO: remove from production implementation)
-     * @param subsidiaryDirector Unit's director address
-     * @param orgJsonUri Unit's ORG.JSON URI
-     * @param orgJsonHash ORG.JSON's keccak256 hash
+     * @param parentOrgId Parent ORG.ID hash
+     * @param director Unit director address
+     * @param orgJsonUri Unit ORG.JSON URI
+     * @param orgJsonHash ORG.JSON keccak256 hash
      */
-    function createSubsidiary(
-        bytes32 orgId,
-        bytes32 subOrgId,
-        address subsidiaryDirector,
+    function createUnit(
+        bytes32 parentOrgId,
+        address director,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
     ) external returns (bytes32 id);
@@ -40,23 +36,30 @@ contract OrgIdInterface {
      * @dev Toggle ORG.ID's active/inactive state
      * @param orgId ORG.ID hash
      */
-    function toggleOrganization(bytes32 orgId) external;
+    function toggleActiveState(bytes32 orgId) external;
 
     /**
-     * @dev Unit directorship confirmation
+     * @dev Accept director role
      * @param orgId Unit's ORG.ID hash
      */
-    function confirmDirectorOwnership(bytes32 orgId) external;
+    function acceptDirectorship(bytes32 orgId) external;
 
     /**
-     * @dev Unit directorship transfer
+     * @dev Transfer director role
      * @param orgId Unit's ORG.ID hash
      * @param newDirector New director's address
      */
-    function transferDirectorOwnership(
+    function transferDirectorship(
         bytes32 orgId,
         address newDirector
     ) external;
+
+    /**
+     * @dev Unit directorship renounce
+     * @param orgId Unit's ORG.ID hash
+     */
+    function renounceDirectorship(bytes32 orgId)
+        external;
 
     /**
      * @dev Ownership transfer
@@ -74,7 +77,7 @@ contract OrgIdInterface {
      * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonHash New ORG.JSON's keccak256 hash
      */
-    function changeOrgJsonUriAndHash(
+    function setOrgJson(
         bytes32 orgId,
         string calldata orgJsonUri,
         bytes32 orgJsonHash
@@ -82,11 +85,12 @@ contract OrgIdInterface {
 
     /**
      * @dev Get all active organizations' ORG.ID hashes
+     * @param includeInactive Includes not active units into response
      * @return {
          "organizationsList": "Array of all active organizations' ORG.ID hashes"
      }
      */
-    function getOrganizations()
+    function getOrganizations(bool includeInactive)
         external
         view
         returns (bytes32[] memory organizationsList);
@@ -95,61 +99,42 @@ contract OrgIdInterface {
      * @dev Get organization or unit's info by ORG.ID hash
      * @param _orgId ORG.ID hash
      * @return {
-         "existed": "Flag indicating ORG.ID's existence",
+         "exists": "Returns `false` if ORG.ID doesn't exist",
          "orgId": "ORG.ID hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonHash": "ORG.JSON keccak256 hash",
-         "parentEntity": "Parent ORG.ID (if applicable)",
+         "parentOrgId": "Parent ORG.ID (if applicable)",
          "owner": "Owner's address",
          "director": "Unit director's address",
-         "state": "Indicates whether ORG.ID is active",
-         "directorConfirmed": "Indicates whether directorship is confirmed"
+         "isActive": "Indicates whether ORG.ID is active",
+         "isDirectorshipAccepted": "Indicates whether director accepted the role"
      }
      */
     function getOrganization(bytes32 _orgId)
         external
         view
         returns (
-            bool existed,
+            bool exists,
             bytes32 orgId,
             string memory orgJsonUri,
             bytes32 orgJsonHash,
-            bytes32 parentEntity,
+            bytes32 parentOrgId,
             address owner,
             address director,
-            bool state,
-            bool directorConfirmed
+            bool isActive,
+            bool isDirectorshipAccepted
         );
 
     /**
      * @dev Get all active organizational units of a particular ORG.ID
-     * @param orgId Parent ORG.ID hash
+     * @param parentOrgId Parent ORG.ID hash
+     * @param includeInactive Includes not active units into response
      * @return {
          "organizationsList": "Array of ORG.ID hashes of active organizational units"
      }
      */
-    function getSubsidiaries(bytes32 orgId)
+    function getUnits(bytes32 parentOrgId, bool includeInactive)
         external
         view
         returns (bytes32[] memory);
-
-    /**
-     * @dev Change ORG.JSON URI (caller must be owner or director)
-     * @param orgId ORG.ID hash
-     * @param orgJsonUri New ORG.JSON URI
-     */
-    function changeOrgJsonUri(
-        bytes32 orgId,
-        string memory orgJsonUri
-    ) public;
-
-    /**
-     * @dev Change ORG.JSON hash (caller must be owner or director)
-     * @param orgId ORG.ID hash
-     * @param orgJsonHash New ORG.JSON's keccak256 hash
-     */
-    function changeOrgJsonHash(
-        bytes32 orgId,
-        bytes32 orgJsonHash
-    ) public;
 }

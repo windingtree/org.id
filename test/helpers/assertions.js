@@ -21,6 +21,7 @@ module.exports.assertRevert = async (promise, expectedReason = null) => {
         if (!revertFound) {
             assert(false, '"revert" keyword not found in error message: ' + msg);
         }
+        
         if (!expectedReasonFound) {
             assert(false, `Expected revert reason was not found in error message.
 
