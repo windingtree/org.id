@@ -582,7 +582,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Unit directorship acceptance  
+     * @dev Unit directorship acceptance
      * @param orgId ORG.ID hash
      */
     function _acceptDirectorship(bytes32 orgId) internal {
