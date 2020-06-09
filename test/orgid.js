@@ -78,7 +78,7 @@ contract('ORG.ID', accounts => {
                 .send({
                     from: orgIdContractOwner
                 });
-            (await orgIdContract.methods['newFunction()']()
+            (await orgIdContract.methods['newfunction ()']()
                 .call()).should.equal('100');
             (
                 await orgIdContract
@@ -203,7 +203,7 @@ contract('ORG.ID', accounts => {
                     organizationOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+                testOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -249,7 +249,7 @@ contract('ORG.ID', accounts => {
                     organizationOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+                testOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -317,7 +317,7 @@ contract('ORG.ID', accounts => {
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+                testOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -418,7 +418,7 @@ contract('ORG.ID', accounts => {
                             mockOrgJsonHash
                         ]
                     );
-                    testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                    testUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
                 });
 
                 it('should fail if called by non-owner or non-director', async () => {
@@ -500,13 +500,13 @@ contract('ORG.ID', accounts => {
                         randomAddress,
                         [mockOrgJsonUri, mockOrgJsonHash]
                     );
-                    orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                    orgId1 = call1.events.OrganizationCreated.returnValues.orgId;
                     const call2 = await createOrganizationHelper(
                         orgIdContract,
                         randomAddressTwo,
                         [mockOrgJsonUri, mockOrgJsonHash]
                     );
-                    orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+                    orgId2 = call2.events.OrganizationCreated.returnValues.orgId;
                     await orgIdContract.methods['toggleActiveState(bytes32)'](orgId1)
                         .send({ from: randomAddress });
                     await orgIdContract.methods['toggleActiveState(bytes32)'](orgId2)
@@ -536,13 +536,13 @@ contract('ORG.ID', accounts => {
                     randomAddress,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                const orgId1 = call1.events['OrganizationCreated'].returnValues.orgId;
+                const orgId1 = call1.events.OrganizationCreated.returnValues.orgId;
                 const call2 = await createOrganizationHelper(
                     orgIdContract,
                     randomAddressTwo,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                const orgId2 = call2.events['OrganizationCreated'].returnValues.orgId;
+                const orgId2 = call2.events.OrganizationCreated.returnValues.orgId;
 
                 const orgs = await orgIdContract
                     .methods['getOrganizations(bool)'](false)
@@ -564,7 +564,7 @@ contract('ORG.ID', accounts => {
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                testOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+                testOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
             });
 
             it('should return exists=false if organization not found', async () => {
@@ -607,7 +607,7 @@ contract('ORG.ID', accounts => {
                 testOrgIdOwner,
                 [mockOrgJsonUri, mockOrgJsonHash]
             );
-            parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+            parentOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
         });
 
         describe('#createUnit(bytes32,address,string,bytes32)', () => {
@@ -688,7 +688,7 @@ contract('ORG.ID', accounts => {
                         mockOrgJsonHash
                     ]
                 );
-                const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                const newUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
 
                 assertEvent(call, 'DirectorshipAccepted', [
                     [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
@@ -714,7 +714,7 @@ contract('ORG.ID', accounts => {
                         mockOrgJsonHash
                     ]
                 );
-                const newUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                const newUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
 
                 assertEvent(call, 'DirectorshipAccepted', [
                     [ 'orgId', p => (p).should.equal(newUnitOrgIdHash) ],
@@ -746,7 +746,7 @@ contract('ORG.ID', accounts => {
                         mockOrgJsonHash
                     ]
                 );
-                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                testUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
             });
 
             it('should fail if organization not found', async () => {
@@ -794,7 +794,7 @@ contract('ORG.ID', accounts => {
                         mockOrgJsonHash
                     ]
                 );
-                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                testUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
 
                 await orgIdContract
                     .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
@@ -884,7 +884,7 @@ contract('ORG.ID', accounts => {
                         mockOrgJsonHash
                     ]
                 );
-                testUnitOrgIdHash = call.events['UnitCreated'].returnValues.unitOrgId;
+                testUnitOrgIdHash = call.events.UnitCreated.returnValues.unitOrgId;
                 await orgIdContract
                     .methods['acceptDirectorship(bytes32)'](testUnitOrgIdHash)
                     .send({ from: unitDirector });
@@ -941,14 +941,14 @@ contract('ORG.ID', accounts => {
             });
         });
 
-        describe('#getUnits(bytes32,bool)', function() {
+        describe('#getUnits(bytes32,bool)', function () {
             let o;
             let parentOrgIdHash;
             const parentOrgIdOwner = accounts[5];
             const testOrgIdOwner = accounts[5];
             const unitDirector = accounts[6];
 
-            before(async function() {
+            before(async function () {
                 o = await project.createProxy(OrgIdContract, {
                     initMethod: 'initialize',
                     initArgs: [
@@ -961,10 +961,10 @@ contract('ORG.ID', accounts => {
                     testOrgIdOwner,
                     [mockOrgJsonUri, mockOrgJsonHash]
                 );
-                parentOrgIdHash = call.events['OrganizationCreated'].returnValues.orgId;
+                parentOrgIdHash = call.events.OrganizationCreated.returnValues.orgId;
             });
 
-            it('should fail if organization not found', async function() {
+            it('should fail if organization not found', async function () {
                 const nonExistingOrgIdHash = generateHashHelper();
                 await assertRevert(
                     o
@@ -977,7 +977,7 @@ contract('ORG.ID', accounts => {
                 );
             });
 
-            it('should return empty array if organization has no units', async function() {
+            it('should return empty array if organization has no units', async function () {
                 const units = await o
                     .methods['getUnits(bytes32,bool)'](parentOrgIdHash, true)
                     .call();
@@ -986,11 +986,11 @@ contract('ORG.ID', accounts => {
                 (units.length).should.equal(0);
             });
 
-            describe('counting and getting units', function() {
+            describe('counting and getting units', function () {
                 let allUnitHashes = [];
                 let activeUnitHashes = [];
 
-                before(async function() {
+                before(async function () {
                     for (let i = 0; i < 7; i++) {
                         const call = await createUnitHelper(
                             o,
@@ -1002,7 +1002,7 @@ contract('ORG.ID', accounts => {
                                 mockOrgJsonHash
                             ]
                         );
-                        const h = call.events['UnitCreated'].returnValues.unitOrgId;
+                        const h = call.events.UnitCreated.returnValues.unitOrgId;
 
                         allUnitHashes.push(h);
                         if (i % 2 === 0) {
@@ -1016,7 +1016,7 @@ contract('ORG.ID', accounts => {
                     }
                 });
 
-                it('should return an array of ACTIVE units only, if "includeInactive" flag set to "false"', async function() {
+                it('should return an array of ACTIVE units only, if "includeInactive" flag set to "false"', async function () {
                     const units = await o
                         .methods['getUnits(bytes32,bool)'](parentOrgIdHash, false)
                         .call();
@@ -1025,7 +1025,7 @@ contract('ORG.ID', accounts => {
                     (units.length).should.equal(activeUnitHashes.length);
                 });
 
-                it('should return an array of ALL units, if "includeInactive" flag set to "true"', async function() {
+                it('should return an array of ALL units, if "includeInactive" flag set to "true"', async function () {
                     const units = await o
                         .methods['getUnits(bytes32,bool)'](parentOrgIdHash, true)
                         .call();

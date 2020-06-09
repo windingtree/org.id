@@ -1,8 +1,5 @@
-const { assertEvent } = require('../helpers/assertions');
-const { zeroAddress, zeroHash } = require('../helpers/constants');
-
 /**
- * Generates an ID from string and salt
+ * Generates random byte32 keccak hash
  */
 module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toString());
 
