@@ -38,35 +38,37 @@ require('chai')
     .use(require('bn-chai')(web3.utils.BN))
     .should();
 
-contract('ORG.ID', function (accounts) {
+contract('ORG.ID', accounts => {
     const orgIdContractOwner = accounts[0];
     const randomAddress = accounts[18]; // isn't it funny?
-    const randomAddressTwo = accounts[19];
+    // const randomAddressTwo = accounts[19];
 
-    async function setUpProject() {
+    const setUpProject = async () => {
         const project = await TestHelper({
             from: orgIdContractOwner
         });
         return project;
-    }
+    };
 
-    async function deployNewOrgIdContract(project) {
+    const deployNewOrgIdContract = async project => {
         const instance = await project.createProxy(OrgIdContract, {
             initMethod: 'initialize',
             initArgs: [ orgIdContractOwner ]
         });
         return instance;
-    }
+    };
 
-    let project, orgIdContractInstance;
-    before(async function () {
+    let project;
+    let orgIdContractInstance;
+
+    before(async () => {
         project = await setUpProject();
         orgIdContractInstance = await deployNewOrgIdContract(project);
     });
 
-    describe('ORG.ID upgradeability', function () {
-        it('should upgrade proxy and reveal a new function and interface', async function () {
-            let newProxy = await project.upgradeProxy(
+    describe('ORG.ID upgradeability', () => {
+        it('should upgrade proxy and reveal a new function and interface', async () => {
+            const newProxy = await project.upgradeProxy(
                 orgIdContractInstance.address,
                 OrgIdUpgradeabilityContract,
                 {
@@ -74,7 +76,7 @@ contract('ORG.ID', function (accounts) {
                     initArgs: []
                 }
             );
-            let upgradeabilityInstance = await OrgIdUpgradeabilityContract.at(newProxy.address);
+            const upgradeabilityInstance = OrgIdUpgradeabilityContract.at(newProxy.address);
 
             await upgradeabilityInstance
                 .methods['setupNewStorage(uint256)']('100')
@@ -88,11 +90,11 @@ contract('ORG.ID', function (accounts) {
         });
     });
 
-    describe('ORG.ID ownable interface', function () {
+    describe('ORG.ID ownable interface', () => {
         const newOrgIdContractOwner = accounts[7];
 
-        describe('#transferOwnership(address)', function () {
-            it('should fail if called by non-owner', async function () {
+        describe('#transferOwnership(address)', () => {
+            it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['transferOwnership(address)'](randomAddress)
@@ -102,7 +104,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if new owner has zero address', async function () {
+            it('should fail if new owner has zero address', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['transferOwnership(address)'](zeroAddress)
@@ -112,7 +114,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should transfer contract ownership', async function () {
+            it('should transfer contract ownership', async () => {
                 const result = await orgIdContractInstance
                     .methods['transferOwnership(address)'](newOrgIdContractOwner)
                     .send({ from: orgIdContractOwner });
@@ -124,23 +126,23 @@ contract('ORG.ID', function (accounts) {
             });
         });
 
-        describe('#owner()', async function () {
-            it('should return contract owner (changed in previous test)', async function () {
+        describe('#owner()', async () => {
+            it('should return contract owner (changed in previous test)', async () => {
                 (await orgIdContractInstance.methods['owner()']().call())
                     .should.equal(newOrgIdContractOwner);
             });
         });
     });
 
-    describe('ERC165 interfaces', function () {
-        it('should support IERC165 interface', async function () {
+    describe('ERC165 interfaces', () => {
+        it('should support IERC165 interface', async () => {
             (await orgIdContractInstance
                 .methods['supportsInterface(bytes4)']('0x01ffc9a7')
                 .call()
             ).should.be.true;
         });
 
-        it('should support ownable interface', async function () {
+        it('should support ownable interface', async () => {
             (await orgIdContractInstance
                 .methods['supportsInterface(bytes4)']('0x7f5828d0')
                 .call()
@@ -162,28 +164,28 @@ contract('ORG.ID', function (accounts) {
         });
     });
 
-    describe('ORG.ID methods', function () {
+    describe('ORG.ID methods', () => {
         const testOrgIdOwner = accounts[1];
         const randomOrgIdHash = generateHashHelper();
+        let orgCreationResult;
+        let testOrgIdHash;
 
-        let orgCreationResult, testOrgIdHash;
-        async function newOrg() {
+        const newOrg = async () => {
             orgCreationResult = await createOrganizationHelper(
                 orgIdContractInstance,
                 testOrgIdOwner,
                 [mockOrgJsonUri, mockOrgJsonHash]
             );
-            testOrgIdHash = orgCreationResult.events.OrganizationCreated.returnValues.orgId;
-        }
+            testOrgIdHash = orgCreationResult
+                .events.OrganizationCreated.returnValues.orgId;
+        };
 
-        before(async function () {
+        before(async () => {
             await newOrg();
         });
 
-        describe('#createOrganization(bytes32,string,bytes32)', function () {
-            it('TODO: test for #createOrganization fails and errors');
-
-            it('should create an organization with correct properties', async function () {
+        describe('#createOrganization(bytes32,string,bytes32)', () => {
+            it('should create an organization with correct properties', async () => {
                 assertEvent(orgCreationResult, 'OrganizationCreated', [
                     [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
                     [ 'owner', p => (p).should.equal(testOrgIdOwner) ]
@@ -205,8 +207,8 @@ contract('ORG.ID', function (accounts) {
             });
         });
 
-        describe('#toggleActiveState(bytes32)', function () {
-            it('should fail if organization not found', async function () {
+        describe('#toggleActiveState(bytes32)', () => {
+            it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['toggleActiveState(bytes32)'](randomOrgIdHash)
@@ -215,7 +217,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if called by non-owner', async function () {
+            it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['toggleActiveState(bytes32)'](testOrgIdHash)
@@ -224,7 +226,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should toggle organization isActive state', async function () {
+            it('should toggle organization isActive state', async () => {
                 let testOrgId;
 
                 // Deactivate
@@ -259,8 +261,8 @@ contract('ORG.ID', function (accounts) {
             });
         });
 
-        describe('#transferOrganizationOwnership(bytes32,address)', function () {
-            it('should fail if organization not found', async function () {
+        describe('#transferOrganizationOwnership(bytes32,address)', () => {
+            it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['transferOrganizationOwnership(bytes32,address)'](
@@ -272,7 +274,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if called by non-owner', async function () {
+            it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['transferOrganizationOwnership(bytes32,address)'](
@@ -284,7 +286,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if new owner has zero address', async function () {
+            it('should fail if new owner has zero address', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['transferOrganizationOwnership(bytes32,address)'](
@@ -296,7 +298,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should transfer organization ownership', async function () {
+            it('should transfer organization ownership', async () => {
                 const newOrgIdOwner = accounts[2];
                 const result = await orgIdContractInstance
                     .methods['transferOrganizationOwnership(bytes32,address)'](
@@ -312,16 +314,16 @@ contract('ORG.ID', function (accounts) {
                 ]);
             });
 
-            after(async function () {
+            after(async () => {
                 await newOrg();
             });
         });
 
-        describe('#setOrgJson(bytes32,string,bytes32)', function () {
-            let newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
-            let newOrgJsonHash = generateHashHelper();
+        describe('#setOrgJson(bytes32,string,bytes32)', () => {
+            const newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
+            const newOrgJsonHash = generateHashHelper();
 
-            it('should fail if organization not found', async function () {
+            it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -334,7 +336,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if called by non-owner', async function () {
+            it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -347,7 +349,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if URI is an empty string', async function () {
+            it('should fail if URI is an empty string', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -360,7 +362,7 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if hash is all zeroes', async function () {
+            it('should fail if hash is all zeroes', async () => {
                 await assertRevert(
                     orgIdContractInstance
                         .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -373,8 +375,8 @@ contract('ORG.ID', function (accounts) {
                 );
             });
 
-            it('should fail if hash is an empty string', async function () {
-                assert.throws(function () {
+            it('should fail if hash is an empty string', async () => {
+                assert.throws(() => {
                     orgIdContractInstance
                         .methods['setOrgJson(bytes32,string,bytes32)'](
                             testOrgIdHash,
@@ -385,7 +387,7 @@ contract('ORG.ID', function (accounts) {
                 }, /invalid bytes32 value/);
             });
 
-            it('should change ORG.JSON URI and hash', async function () {
+            it('should change ORG.JSON URI and hash', async () => {
                 const result = await orgIdContractInstance
                     .methods['setOrgJson(bytes32,string,bytes32)'](
                         testOrgIdHash,
@@ -404,13 +406,14 @@ contract('ORG.ID', function (accounts) {
             });
         });
 
-        describe('#getOrganizations(bool)', function () {
+        describe('#getOrganizations(bool)', () => {
             let newOrgIdContractInstance;
-            before(async function () {
+
+            before(async () => {
                 newOrgIdContractInstance = await deployNewOrgIdContract(project);
             });
 
-            it('should return empty array if registry is empty', async function () {
+            it('should return empty array if registry is empty', async () => {
                 const orgs = await newOrgIdContractInstance
                     .methods['getOrganizations(bool)'](false)
                     .call();
@@ -419,11 +422,11 @@ contract('ORG.ID', function (accounts) {
                 (orgs.length).should.equal(0);
             });
 
-            describe('getting organizations from registry', function () {
-                let allOrgs = [],
-                    activeOrgs = [];
+            describe('getting organizations from registry', () => {
+                let allOrgs = [];
+                let activeOrgs = [];
 
-                before(async function () {
+                before(async () => {
                     for (let i = 0; i < 10; i++) {
                         const call = await createOrganizationHelper(
                             newOrgIdContractInstance,
@@ -448,9 +451,9 @@ contract('ORG.ID', function (accounts) {
                     }
                 });
 
-                it('should return correct number of ALL organizations', async function () {
+                it('should return correct number of ALL organizations', async () => {
                     const orgs = await newOrgIdContractInstance
-                         // "true" means include ALL organizations, even inactive ones
+                        // "true" means include ALL organizations, even inactive ones
                         .methods['getOrganizations(bool)'](true)
                         .call();
 
@@ -458,7 +461,7 @@ contract('ORG.ID', function (accounts) {
                     (orgs.length).should.equal(allOrgs.length);
                 });
 
-                it('should return correct number of ACTIVE organizations', async function () {
+                it('should return correct number of ACTIVE organizations', async () => {
                     const orgs = await newOrgIdContractInstance
                         .methods['getOrganizations(bool)'](false)
                         .call();
@@ -469,8 +472,8 @@ contract('ORG.ID', function (accounts) {
             });
         });
 
-        describe('#getOrganization(bytes32)', function () {
-            it('should return exists=false if organization not found', async function () {
+        describe('#getOrganization(bytes32)', () => {
+            it('should return exists=false if organization not found', async () => {
                 const orgId = await orgIdContractInstance
                     .methods['getOrganization(bytes32)'](randomOrgIdHash)
                     .call();
@@ -478,18 +481,17 @@ contract('ORG.ID', function (accounts) {
                 (orgId).should.has.property('exists').to.be.false;
             });
 
-            it('should return an organization', function () {
+            it('should return an organization', () => {
                 // This is tested extensively in previous tests
                 assert(true);
             });
         });
 
-        describe('Organizational Units (or simply "units")', function () {
-            const parentOrgIdHash = testOrgIdHash;
+        describe('Organizational Units (or simply "units")', () => {
             const unitDirector = accounts[5];
 
-            describe('#createUnit(bytes32,address,string,bytes32)', function () {
-                it('should fail if called by non-owner', async function () {
+            describe('#createUnit(bytes32,address,string,bytes32)', () => {
+                it('should fail if called by non-owner', async () => {
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
@@ -505,7 +507,7 @@ contract('ORG.ID', function (accounts) {
                     );
                 });
 
-                it('should fail if parent organization not found', async function () {
+                it('should fail if parent organization not found', async () => {
                     const nonExistingOrgIdHash = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
@@ -522,7 +524,7 @@ contract('ORG.ID', function (accounts) {
                     );
                 });
 
-                it('should automatically set isDirectorshipAccepted to `true` if director is unit owner', async function () {
+                it('should automatically set isDirectorshipAccepted to `true` if director is unit owner', async () => {
                     const call = await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
@@ -547,35 +549,11 @@ contract('ORG.ID', function (accounts) {
                     (unit.isDirectorshipAccepted).should.be.true;
                 });
 
-                // TODO: confirming zero address doesn't make sense
-                it('should automatically set isDirectorshipAccepted to `true` if director is zero', async function () {
-                    const call = await createUnitHelper(
-                        orgIdContractInstance,
-                        testOrgIdOwner,
-                        [
-                            testOrgIdHash,
-                            zeroAddress, // director = zero
-                            mockOrgJsonUri,
-                            mockOrgJsonHash
-                        ]
-                    );
-                    const testUnitHash = call.events.UnitCreated.returnValues.unitOrgId;
+                describe('unit created successfully...', () => {
+                    let unitCreationResult;
+                    let testUnitHash;
 
-                    assertEvent(call, 'DirectorshipAccepted', [
-                        [ 'orgId', p => (p).should.equal(testUnitHash) ],
-                        [ 'director', p => (p).should.equal(zeroAddress) ]
-                    ]);
-
-                    const unit = await orgIdContractInstance
-                        .methods['getOrganization(bytes32)'](testUnitHash)
-                        .call();
-
-                    (unit.isDirectorshipAccepted).should.be.true;
-                });
-
-                describe('unit created successfully...', function () {
-                    let unitCreationResult, testUnitHash;
-                    async function newUnit() {
+                    const newUnit = async () => {
                         unitCreationResult = await createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
@@ -587,13 +565,13 @@ contract('ORG.ID', function (accounts) {
                             ]
                         );
                         testUnitHash = unitCreationResult.events.UnitCreated.returnValues.unitOrgId;
-                    }
+                    };
 
-                    before(async function () {
+                    before(async () => {
                         await newUnit();
                     });
 
-                    it('should create a unit with correct properties', async function () {
+                    it('should create a unit with correct properties', async () => {
                         assertEvent(unitCreationResult, 'UnitCreated', [
                             [ 'parentOrgId', p => (p).should.equal(testOrgIdHash) ],
                             [ 'unitOrgId', p => (p).should.equal(testUnitHash) ],
@@ -615,8 +593,8 @@ contract('ORG.ID', function (accounts) {
                         (unit).should.have.property('isDirectorshipAccepted').to.be.false;
                     });
 
-                    describe('#acceptDirectorship(bytes32)', function () {
-                        it('should fail if organization not found', async function () {
+                    describe('#acceptDirectorship(bytes32)', () => {
+                        it('should fail if organization not found', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['acceptDirectorship(bytes32)'](randomOrgIdHash)
@@ -625,7 +603,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should fail if not called by director', async function () {
+                        it('should fail if not called by director', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['acceptDirectorship(bytes32)'](testUnitHash)
@@ -634,7 +612,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should accept directorship', async function () {
+                        it('should accept directorship', async () => {
                             const result = await orgIdContractInstance
                                 .methods['acceptDirectorship(bytes32)'](testUnitHash)
                                 .send({ from: unitDirector });
@@ -652,10 +630,10 @@ contract('ORG.ID', function (accounts) {
                         });
                     });
 
-                    describe('#transferDirectorship(bytes32,address)', function () {
+                    describe('#transferDirectorship(bytes32,address)', () => {
                         const newDirector = accounts[9];
 
-                        it('should fail if organization not found', async function () {
+                        it('should fail if organization not found', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['transferDirectorship(bytes32,address)'](
@@ -667,7 +645,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should fail if called by non-owner (e.g. director)', async function () {
+                        it('should fail if called by non-owner (e.g. director)', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['transferDirectorship(bytes32,address)'](
@@ -679,7 +657,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should transfer directorship', async function () {
+                        it('should transfer directorship', async () => {
                             const result = await orgIdContractInstance
                                 .methods['transferDirectorship(bytes32,address)'](
                                     testUnitHash,
@@ -693,14 +671,14 @@ contract('ORG.ID', function (accounts) {
                                 [ 'newDirector', p => (p).should.equal(newDirector) ]
                             ]);
 
-                            let org = await orgIdContractInstance
+                            const org = await orgIdContractInstance
                                 .methods['getOrganization(bytes32)'](testUnitHash)
                                 .call();
 
                             (org.isDirectorshipAccepted).should.be.false;
                         });
 
-                        it('should automatically accept directorship if transferred to owner', async function () {
+                        it('should automatically accept directorship if transferred to owner', async () => {
                             const result = await orgIdContractInstance
                                 .methods['transferDirectorship(bytes32,address)'](
                                     testUnitHash,
@@ -721,8 +699,8 @@ contract('ORG.ID', function (accounts) {
                         });
                     });
 
-                    describe('#renounceDirectorship(bytes32)', function () {
-                        it('should fail if organization not found', async function () {
+                    describe('#renounceDirectorship(bytes32)', () => {
+                        it('should fail if organization not found', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['renounceDirectorship(bytes32)'](
@@ -733,7 +711,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should fail if called by non-owner or non-director)', async function () {
+                        it('should fail if called by non-owner or non-director)', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['renounceDirectorship(bytes32)'](
@@ -744,9 +722,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('TODO: Maybe owner being a director makes no sense at all!');
-
-                        it('should set director address to zero if unit OWNER renounces their directorship', async function () {
+                        it('should set director address to zero if unit OWNER renounces their directorship', async () => {
                             const result = await orgIdContractInstance
                                 .methods['renounceDirectorship(bytes32)'](
                                     testUnitHash
@@ -760,7 +736,7 @@ contract('ORG.ID', function (accounts) {
                             ]);
                         });
 
-                        it('should set director address to zero if unit DIRECTOR renounces their directorship', async function () {
+                        it('should set director address to zero if unit DIRECTOR renounces their directorship', async () => {
                             await orgIdContractInstance
                                 .methods['transferDirectorship(bytes32,address)'](
                                     testUnitHash,
@@ -786,8 +762,8 @@ contract('ORG.ID', function (accounts) {
                         });
                     });
 
-                    describe('Changing ORG.JSON URI and hash by unit director', function () {
-                        before(async function () {
+                    describe('Changing ORG.JSON URI and hash by unit director', () => {
+                        before(async () => {
                             await orgIdContractInstance
                                 .methods['transferDirectorship(bytes32,address)'](
                                     testUnitHash,
@@ -796,9 +772,21 @@ contract('ORG.ID', function (accounts) {
                                 .send({ from: testOrgIdOwner });
                         });
 
-                        it('should fail if unit not found');
+                        it('should fail if unit not found', async () => {
+                            const unknownUnitId = generateHashHelper();
+                            await assertRevert(
+                                orgIdContractInstance
+                                    .methods['setOrgJson(bytes32,string,bytes32)'](
+                                        unknownUnitId,
+                                        mockOrgJsonUri,
+                                        mockOrgJsonHash
+                                    )
+                                    .send({ from: unitDirector }),
+                                'ORG.ID: Organization not found'
+                            );
+                        });
 
-                        it('should fail if called by non-owner or non-director', async function () {
+                        it('should fail if called by non-owner or non-director', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -811,7 +799,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should change ORG.JSON URI and hash if called by nominated director; it means automatic acceptance of their role', async function () {
+                        it('should change ORG.JSON URI and hash if called by nominated director; it means automatic acceptance of their role', async () => {
                             let unit = await orgIdContractInstance
                                 .methods['getOrganization(bytes32)'](testUnitHash)
                                 .call();
@@ -846,7 +834,7 @@ contract('ORG.ID', function (accounts) {
                             (unit.isDirectorshipAccepted).should.be.true;
                         });
 
-                        it('should succeed if called by confirmed director', async function () {
+                        it('should succeed if called by confirmed director', async () => {
                             const randomOrgJsonHash = generateHashHelper();
                             const result = await orgIdContractInstance
                                 .methods['setOrgJson(bytes32,string,bytes32)'](
@@ -866,12 +854,12 @@ contract('ORG.ID', function (accounts) {
                         });
                     });
 
-                    describe('#getUnits(bytes32,bool)', function () {
-                        before(async function () {
+                    describe('#getUnits(bytes32,bool)', () => {
+                        before(async () => {
                             await newOrg();
                         });
 
-                        it('should fail if organization not found', async function () {
+                        it('should fail if organization not found', async () => {
                             await assertRevert(
                                 orgIdContractInstance
                                     .methods['getUnits(bytes32,bool)'](
@@ -883,7 +871,7 @@ contract('ORG.ID', function (accounts) {
                             );
                         });
 
-                        it('should return empty array if organization has no units', async function () {
+                        it('should return empty array if organization has no units', async () => {
                             const units = await orgIdContractInstance
                                 .methods['getUnits(bytes32,bool)'](testOrgIdHash, true)
                                 .call();
@@ -892,11 +880,11 @@ contract('ORG.ID', function (accounts) {
                             (units.length).should.equal(0);
                         });
 
-                        describe('counting and getting units', function () {
-                            let allUnitHashes = [];
-                            let activeUnitHashes = [];
+                        describe('counting and getting units', () => {
+                            const allUnitHashes = [];
+                            const activeUnitHashes = [];
 
-                            before(async function () {
+                            before(async () => {
                                 for (let i = 0; i < 10; i++) {
                                     const call = await createUnitHelper(
                                         orgIdContractInstance,
@@ -913,7 +901,7 @@ contract('ORG.ID', function (accounts) {
                                     allUnitHashes.push(h);
                                     if (i % 2 === 0) {
                                         // units are active by default
-                                        activeUnitHashes.push(h)
+                                        activeUnitHashes.push(h);
                                     } else {
                                         // deactivate unit
                                         await orgIdContractInstance
@@ -923,7 +911,7 @@ contract('ORG.ID', function (accounts) {
                                 }
                             });
 
-                            it('should return an array of ACTIVE units only, if "includeInactive" flag set to "false"', async function () {
+                            it('should return an array of ACTIVE units only, if "includeInactive" flag set to "false"', async () => {
                                 const units = await orgIdContractInstance
                                     .methods['getUnits(bytes32,bool)'](testOrgIdHash, false)
                                     .call();
@@ -933,7 +921,7 @@ contract('ORG.ID', function (accounts) {
                                 (units).should.have.members(activeUnitHashes);
                             });
 
-                            it('should return an array of ALL units, if "includeInactive" flag set to "true"', async function () {
+                            it('should return an array of ALL units, if "includeInactive" flag set to "true"', async () => {
                                 const units = await orgIdContractInstance
                                     .methods['getUnits(bytes32,bool)'](testOrgIdHash, true)
                                     .call();

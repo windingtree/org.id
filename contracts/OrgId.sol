@@ -194,11 +194,6 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         if (director == msg.sender) {
             emit DirectorshipAccepted(newUnitOrgId, msg.sender);
         }
-
-        // TODO
-        if (parentOrgId != bytes32(0) && director == address(0)) {
-            emit DirectorshipAccepted(newUnitOrgId, director);
-        }
     }
 
     /**
