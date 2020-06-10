@@ -78,7 +78,7 @@ contract('ORG.ID', accounts => {
                 .send({
                     from: orgIdContractOwner
                 });
-            (await orgIdContract.methods['newfunction ()']()
+            (await orgIdContract.methods['newFunction()']()
                 .call()).should.equal('100');
             (
                 await orgIdContract
@@ -150,14 +150,14 @@ contract('ORG.ID', accounts => {
 
         it('should support hierarchy interface', async () => {
             (await orgIdContract
-                .methods['supportsInterface(bytes4)']('0xfd95e493')
+                .methods['supportsInterface(bytes4)']('0x199b5b21')
                 .call()
             ).should.be.true;
         });
 
         it('should support ORG.ID interface', async () => {
             (await orgIdContract
-                .methods['supportsInterface(bytes4)']('0x81ba1516')
+                .methods['supportsInterface(bytes4)']('0x8490efc4')
                 .call()
             ).should.be.true;
         });
