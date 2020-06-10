@@ -435,7 +435,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             own.owner.selector ^
             own.transferOwnership.selector,
 
-            // ORG.ID interface: 0x81ba1516
+            // ORG.ID interface: 0x8490efc4
             org.createOrganization.selector ^
             org.toggleActiveState.selector ^
             org.transferOrganizationOwnership.selector ^
@@ -443,7 +443,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.getOrganizations.selector ^
             org.getOrganization.selector,
 
-            // hierarchy interface: 0xfd95e493
+            // hierarchy interface: 0x199b5b21
             org.createUnit.selector ^
             org.acceptDirectorship.selector ^
             org.transferDirectorship.selector ^

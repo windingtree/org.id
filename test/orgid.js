@@ -147,16 +147,16 @@ contract('ORG.ID', function (accounts) {
             ).should.be.true;
         });
 
-        it('should support hierarchy interface', async function () {
-            (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0xfd95e493')
+        it('should support hierarchy interface', async () => {
+            (await orgIdContract
+                .methods['supportsInterface(bytes4)']('0x199b5b21')
                 .call()
             ).should.be.true;
         });
 
-        it('should support ORG.ID interface', async function () {
-            (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x81ba1516')
+        it('should support ORG.ID interface', async () => {
+            (await orgIdContract
+                .methods['supportsInterface(bytes4)']('0x8490efc4')
                 .call()
             ).should.be.true;
         });
