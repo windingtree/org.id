@@ -148,14 +148,14 @@ contract('ORG.ID', function (accounts) {
         });
 
         it('should support hierarchy interface', async () => {
-            (await orgIdContract
+            (await orgIdContractInstance
                 .methods['supportsInterface(bytes4)']('0x199b5b21')
                 .call()
             ).should.be.true;
         });
 
         it('should support ORG.ID interface', async () => {
-            (await orgIdContract
+            (await orgIdContractInstance
                 .methods['supportsInterface(bytes4)']('0x8490efc4')
                 .call()
             ).should.be.true;
