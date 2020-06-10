@@ -255,6 +255,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         organizations[orgId].director = newDirector;
 
         if (newDirector == msg.sender) {
+            organizations[orgId].isDirectorshipAccepted = true;
             emit DirectorshipAccepted(orgId, newDirector);
         } else {
             organizations[orgId].isDirectorshipAccepted = false;
