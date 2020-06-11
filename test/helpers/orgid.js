@@ -8,7 +8,12 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createOrganization
- * @dev Arguments order: [orgJsonUri(string), orgJsonHash(bytes32)]
+ * Arguments order: [
+ *   orgJsonHash(bytes32),
+ *   orgJsonUri(string),
+ *   orgJsonUriBackup1(string),
+ *   orgJsonUriBackup2(string)
+ * ]
  * @returns {Promise} Function call promise
  */
 module.exports.createOrganizationHelper = async (
@@ -16,13 +21,19 @@ module.exports.createOrganizationHelper = async (
     callerAddress,
     args
 ) => {
-    const orgJsonUri = args[0];
-    const orgJsonHash = args[1];
+    const [
+        orgJsonHash,
+        orgJsonUri,
+        orgJsonUriBackup1,
+        orgJsonUriBackup2
+    ] = args;
 
     const result = await orgIdContract
-        .methods['createOrganization(string,bytes32)'](
+        .methods['createOrganization(bytes32,string,string,string)'](
+            orgJsonHash,
             orgJsonUri,
-            orgJsonHash
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
         )
         .send({ from: callerAddress });
 
@@ -34,7 +45,14 @@ module.exports.createOrganizationHelper = async (
  * @param {Object} orgIdContract ORG.ID contract instance
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createUnit
- * @dev Arguments order: [requestedUnitHash(bytes32), directorAddress(address), orgJsonUri(string), orgJsonHash(bytes32)]
+ * Arguments order: [
+ *   requestedUnitHash(bytes32),
+ *   directorAddress(address),
+ *   orgJsonHash(bytes32),
+ *   orgJsonUri(string),
+ *   orgJsonUriBackup1(string),
+ *   orgJsonUriBackup2(string)
+ * ]
  * @returns {Promise} Function call promise
  */
 module.exports.createUnitHelper = async (
@@ -42,17 +60,23 @@ module.exports.createUnitHelper = async (
     callerAddress,
     args
 ) => {
-    const parentOrgIdHash = args[0];
-    const directorAddress = args[1];
-    const orgJsonUri = args[2];
-    const orgJsonHash = args[3];
+    const [
+        parentOrgIdHash,
+        directorAddress,
+        orgJsonHash,
+        orgJsonUri,
+        orgJsonUriBackup1,
+        orgJsonUriBackup2
+    ] = args;
 
     const result = await orgIdContract
-        .methods['createUnit(bytes32,address,string,bytes32)'](
+        .methods['createUnit(bytes32,address,bytes32,string,string,string)'](
             parentOrgIdHash,
             directorAddress,
+            orgJsonHash,
             orgJsonUri,
-            orgJsonHash
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
         )
         .send({ from: callerAddress });
 

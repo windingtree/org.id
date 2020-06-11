@@ -17,8 +17,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /// @dev Organization structure
     struct Organization {
         bytes32 orgId;
-        string orgJsonUri;
         bytes32 orgJsonHash;
+        string orgJsonUri;
+        string orgJsonUriBackup1;
+        string orgJsonUriBackup2;
         bytes32 parentOrgId;
         address owner;
         address director;
@@ -90,10 +92,14 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      */
     event OrgJsonChanged(
         bytes32 indexed orgId,
-        string previousOrgJsonUri,
-        string newOrgJsonUri,
         bytes32 indexed previousOrgJsonHash,
-        bytes32 indexed newOrgJsonHash
+        string previousOrgJsonUri,
+        string previousOrgJsonUriBackup1,
+        string previousOrgJsonUriBackup2,
+        bytes32 indexed newOrgJsonHash,
+        string newOrgJsonUri,
+        string newOrgJsonUriBackup1,
+        string newOrgJsonUriBackup2
     );
 
     /**
@@ -144,21 +150,27 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organization
-     * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonHash ORG.JSON's keccak256 hash
+     * @param orgJsonUri ORG.JSON URI (stored off-chain)
+     * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
+     * @param orgJsonUriBackup2 ORG.JSON URI backup (stored off-chain)
      * @return {
          "id": "ORG.ID byte32 hash"
      }
      */
     function createOrganization(
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
     ) external returns (bytes32 id) {
         id = _createOrganization(
             bytes32(0),
             address(0),
+            orgJsonHash,
             orgJsonUri,
-            orgJsonHash
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
         );
         emit OrganizationCreated(id, msg.sender);
     }
@@ -167,14 +179,18 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @dev Create organizational unit
      * @param parentOrgId Parent ORG.ID hash
      * @param director Unit director address
-     * @param orgJsonUri Unit ORG.JSON URI
      * @param orgJsonHash ORG.JSON keccak256 hash
+     * @param orgJsonUri Unit ORG.JSON URI
+     * @param orgJsonUriBackup1 Unit ORG.JSON URI backup
+     * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
         bytes32 parentOrgId,
         address director,
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
     )
         external
         orgIdMustExist(parentOrgId)
@@ -184,8 +200,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         newUnitOrgId = _createOrganization(
             parentOrgId,
             director,
+            orgJsonHash,
             orgJsonUri,
-            orgJsonHash
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
         );
         emit UnitCreated(parentOrgId, newUnitOrgId, director);
 
@@ -305,25 +323,29 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Shorthand method to change ORG.JSON URI and hash at once
      * @param orgId ORG.ID hash
-     * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonHash New ORG.JSON's keccak256 hash
+     * @param orgJsonUri New ORG.JSON URI
+     * @param orgJsonUriBackup1 New ORG.JSON URI backup
+     * @param orgJsonUriBackup2 New ORG.JSON URI backup
      */
     function setOrgJson(
         bytes32 orgId,
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
     )
         external
         orgIdMustExist(orgId)
         mustBeCalledByOwnerOrDirector(orgId)
     {
         require(
-            bytes(orgJsonUri).length != 0,
-            "ORG.ID: ORG.JSON URI cannot be empty"
-        );
-        require(
             orgJsonHash != bytes32(0),
             "ORG.ID: ORG.JSON hash cannot be zero"
+        );
+        require(
+            bytes(orgJsonUri).length != 0,
+            "ORG.ID: ORG.JSON URI cannot be empty"
         );
 
         if (msg.sender == organizations[orgId].director &&
@@ -333,13 +355,19 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
         emit OrgJsonChanged(
             orgId,
-            organizations[orgId].orgJsonUri,
-            orgJsonUri,
             organizations[orgId].orgJsonHash,
-            orgJsonHash
+            organizations[orgId].orgJsonUri,
+            organizations[orgId].orgJsonUriBackup1,
+            organizations[orgId].orgJsonUriBackup2,
+            orgJsonHash,
+            orgJsonUri,
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
         );
-        organizations[orgId].orgJsonUri = orgJsonUri;
         organizations[orgId].orgJsonHash = orgJsonHash;
+        organizations[orgId].orgJsonUri = orgJsonUri;
+        organizations[orgId].orgJsonUriBackup1 = orgJsonUriBackup1;
+        organizations[orgId].orgJsonUriBackup2 = orgJsonUriBackup2;
     }
 
     /**
@@ -364,8 +392,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @return {
          "exists": "Returns `false` if ORG.ID doesn't exist",
          "ORG.ID": "ORG.ID hash",
-         "orgJsonUri": "ORG.JSON URI",
          "orgJsonHash": "ORG.JSON keccak256 hash",
+         "orgJsonUri": "ORG.JSON URI",
+         "orgJsonUriBackup1": "ORG.JSON URI backup",
+         "orgJsonUriBackup2": "ORG.JSON URI backup",
          "parentOrgId": "Parent ORG.ID (*)",
          "owner": "Owner's address",
          "director": "Unit director's address (*)",
@@ -379,8 +409,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         returns (
             bool exists,
             bytes32 orgId,
-            string memory orgJsonUri,
             bytes32 orgJsonHash,
+            string memory orgJsonUri,
+            string memory orgJsonUriBackup1,
+            string memory orgJsonUriBackup2,
             bytes32 parentOrgId,
             address owner,
             address director,
@@ -390,8 +422,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         exists = _orgId != bytes32(0) && organizations[_orgId].orgId == _orgId;
         orgId = organizations[_orgId].orgId;
-        orgJsonUri = organizations[_orgId].orgJsonUri;
         orgJsonHash = organizations[_orgId].orgJsonHash;
+        orgJsonUri = organizations[_orgId].orgJsonUri;
+        orgJsonUriBackup1 = organizations[_orgId].orgJsonUriBackup1;
+        orgJsonUriBackup2 = organizations[_orgId].orgJsonUriBackup2;
         parentOrgId = organizations[_orgId].parentOrgId;
         owner = organizations[_orgId].owner;
         director = organizations[_orgId].director;
@@ -430,7 +464,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             own.owner.selector ^
             own.transferOwnership.selector,
 
-            // ORG.ID interface: 0x8490efc4
+            // ORG.ID interface: 0x212862a6
             org.createOrganization.selector ^
             org.toggleActiveState.selector ^
             org.transferOrganizationOwnership.selector ^
@@ -438,7 +472,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.getOrganizations.selector ^
             org.getOrganization.selector,
 
-            // hierarchy interface: 0x199b5b21
+            // hierarchy interface: 0x326bc55f
             org.createUnit.selector ^
             org.acceptDirectorship.selector ^
             org.transferDirectorship.selector ^
@@ -452,10 +486,12 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create new organization and add it to storage
-     * @param orgJsonUri ORG.JSON URI
-     * @param orgJsonHash ORG.JSON keccak256 hash
      * @param parentOrgId Parent ORG.ID hash (if applicable)
      * @param director Unit director address (if applicable)
+     * @param orgJsonHash ORG.JSON keccak256 hash
+     * @param orgJsonUri ORG.JSON URI
+     * @param orgJsonUriBackup1 ORG.JSON URI backup
+     * @param orgJsonUriBackup2 ORG.JSON URI backup
      * @return {
          "ORG.ID": "New ORG.ID hash"
      }
@@ -463,8 +499,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function _createOrganization(
         bytes32 parentOrgId,
         address director,
+        bytes32 orgJsonHash,
         string memory orgJsonUri,
-        bytes32 orgJsonHash
+        string memory orgJsonUriBackup1,
+        string memory orgJsonUriBackup2
     ) internal returns (bytes32) {
         // If this is a unit...
         if (parentOrgId != bytes32(0)) {
@@ -484,8 +522,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
         organizations[orgId] = Organization(
             orgId,
-            orgJsonUri,
             orgJsonHash,
+            orgJsonUri,
+            orgJsonUriBackup1,
+            orgJsonUriBackup2,
             parentOrgId,
             msg.sender,
             director,

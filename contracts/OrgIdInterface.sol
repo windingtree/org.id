@@ -7,30 +7,40 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organization
-     * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonHash ORG.JSON's keccak256 hash
+     * @param orgJsonUri ORG.JSON URI (stored off-chain)
+     * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
+     * @param orgJsonUriBackup2 ORG.JSON URI backup (stored off-chain)
      * @return {
          "id": "ORG.ID byte32 hash"
      }
      */
     function createOrganization(
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
     ) external returns (bytes32 id);
 
     /**
      * @dev Create organizational unit
      * @param parentOrgId Parent ORG.ID hash
      * @param director Unit director address
-     * @param orgJsonUri Unit ORG.JSON URI
      * @param orgJsonHash ORG.JSON keccak256 hash
+     * @param orgJsonUri Unit ORG.JSON URI
+     * @param orgJsonUriBackup1 Unit ORG.JSON URI backup
+     * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
         bytes32 parentOrgId,
         address director,
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
-    ) external returns (bytes32 id);
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
+    )
+        external
+        returns (bytes32 newUnitOrgId);
 
     /**
      * @dev Toggle ORG.ID's active/inactive state
@@ -74,13 +84,17 @@ contract OrgIdInterface {
     /**
      * @dev Shorthand method to change ORG.JSON URI and hash at once
      * @param orgId ORG.ID hash
-     * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonHash New ORG.JSON's keccak256 hash
+     * @param orgJsonUri New ORG.JSON URI
+     * @param orgJsonUriBackup1 New ORG.JSON URI backup
+     * @param orgJsonUriBackup2 New ORG.JSON URI backup
      */
     function setOrgJson(
         bytes32 orgId,
+        bytes32 orgJsonHash,
         string calldata orgJsonUri,
-        bytes32 orgJsonHash
+        string calldata orgJsonUriBackup1,
+        string calldata orgJsonUriBackup2
     ) external;
 
     /**
@@ -98,16 +112,19 @@ contract OrgIdInterface {
     /**
      * @dev Get organization or unit's info by ORG.ID hash
      * @param _orgId ORG.ID hash
+     * @dev Return parameters marked by (*) are only applicable to units
      * @return {
          "exists": "Returns `false` if ORG.ID doesn't exist",
-         "orgId": "ORG.ID hash",
-         "orgJsonUri": "ORG.JSON URI",
+         "ORG.ID": "ORG.ID hash",
          "orgJsonHash": "ORG.JSON keccak256 hash",
-         "parentOrgId": "Parent ORG.ID (if applicable)",
+         "orgJsonUri": "ORG.JSON URI",
+         "orgJsonUriBackup1": "ORG.JSON URI backup",
+         "orgJsonUriBackup2": "ORG.JSON URI backup",
+         "parentOrgId": "Parent ORG.ID (*)",
          "owner": "Owner's address",
-         "director": "Unit director's address",
+         "director": "Unit director's address (*)",
          "isActive": "Indicates whether ORG.ID is active",
-         "isDirectorshipAccepted": "Indicates whether director accepted the role"
+         "isDirectorshipAccepted": "Indicates whether director accepted the role (*)"
      }
      */
     function getOrganization(bytes32 _orgId)
@@ -116,8 +133,10 @@ contract OrgIdInterface {
         returns (
             bool exists,
             bytes32 orgId,
-            string memory orgJsonUri,
             bytes32 orgJsonHash,
+            string memory orgJsonUri,
+            string memory orgJsonUriBackup1,
+            string memory orgJsonUriBackup2,
             bytes32 parentOrgId,
             address owner,
             address director,

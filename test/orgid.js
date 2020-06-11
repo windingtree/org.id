@@ -10,6 +10,8 @@ const {
     zeroAddress,
     zeroHash,
     mockOrgJsonUri,
+    mockOrgJsonUriBackup1,
+    mockOrgJsonUriBackup2,
     mockOrgJsonHash
 } = require('./helpers/constants');
 
@@ -151,14 +153,14 @@ contract('ORG.ID', accounts => {
 
         it('should support hierarchy interface', async () => {
             (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x199b5b21')
+                .methods['supportsInterface(bytes4)']('0x326bc55f')
                 .call()
             ).should.be.true;
         });
 
         it('should support ORG.ID interface', async () => {
             (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x8490efc4')
+                .methods['supportsInterface(bytes4)']('0x212862a6')
                 .call()
             ).should.be.true;
         });
@@ -174,7 +176,12 @@ contract('ORG.ID', accounts => {
             orgCreationResult = await createOrganizationHelper(
                 orgIdContractInstance,
                 testOrgIdOwner,
-                [mockOrgJsonUri, mockOrgJsonHash]
+                [
+                    mockOrgJsonHash,
+                    mockOrgJsonUri,
+                    mockOrgJsonUriBackup1,
+                    mockOrgJsonUriBackup2
+                ]
             );
             testOrgIdHash = orgCreationResult
                 .events.OrganizationCreated.returnValues.orgId;
@@ -184,7 +191,7 @@ contract('ORG.ID', accounts => {
             await newOrg();
         });
 
-        describe('#createOrganization(bytes32,string,bytes32)', () => {
+        describe('#createOrganization(bytes32,string,string,string)', () => {
             it('should create an organization with correct properties', async () => {
                 assertEvent(orgCreationResult, 'OrganizationCreated', [
                     [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
@@ -197,8 +204,10 @@ contract('ORG.ID', accounts => {
 
                 (testOrgId).should.have.property('exists').to.be.true;
                 (testOrgId).should.have.property('orgId').to.equal(testOrgIdHash);
-                (testOrgId).should.have.property('orgJsonUri').to.equal(mockOrgJsonUri);
                 (testOrgId).should.have.property('orgJsonHash').to.equal(mockOrgJsonHash);
+                (testOrgId).should.have.property('orgJsonUri').to.equal(mockOrgJsonUri);
+                (testOrgId).should.have.property('orgJsonUriBackup1').to.equal(mockOrgJsonUriBackup1);
+                (testOrgId).should.have.property('orgJsonUriBackup2').to.equal(mockOrgJsonUriBackup2);
                 (testOrgId).should.have.property('parentOrgId').to.equal(zeroHash);
                 (testOrgId).should.have.property('owner').to.equal(testOrgIdOwner);
                 (testOrgId).should.have.property('director').to.equal(zeroAddress);
@@ -319,17 +328,21 @@ contract('ORG.ID', accounts => {
             });
         });
 
-        describe('#setOrgJson(bytes32,string,bytes32)', () => {
+        describe('#setOrgJson(bytes32,bytes32,string,string,string)', () => {
             const newOrgJsonUri = mockOrgJsonUri + '/some/random/path/org.json';
+            const newOrgJsonUriBackup1 = mockOrgJsonUri + '/another/random/path/org.json';
+            const newOrgJsonUriBackup2 = '';
             const newOrgJsonHash = generateHashHelper();
 
             it('should fail if organization not found', async () => {
                 await assertRevert(
                     orgIdContractInstance
-                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                        .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                             randomOrgIdHash,
+                            newOrgJsonHash,
                             newOrgJsonUri,
-                            newOrgJsonHash
+                            newOrgJsonUriBackup1,
+                            newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: Organization not found'
@@ -339,10 +352,12 @@ contract('ORG.ID', accounts => {
             it('should fail if called by non-owner', async () => {
                 await assertRevert(
                     orgIdContractInstance
-                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                        .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                             testOrgIdHash,
+                            newOrgJsonHash,
                             newOrgJsonUri,
-                            newOrgJsonHash
+                            newOrgJsonUriBackup1,
+                            newOrgJsonUriBackup2
                         )
                         .send({ from: randomAddress }),
                     'ORG.ID: action not authorized (must be owner or director)'
@@ -352,10 +367,12 @@ contract('ORG.ID', accounts => {
             it('should fail if URI is an empty string', async () => {
                 await assertRevert(
                     orgIdContractInstance
-                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                        .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                             testOrgIdHash,
+                            newOrgJsonHash,
                             '',
-                            newOrgJsonHash
+                            newOrgJsonUriBackup1,
+                            newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: ORG.JSON URI cannot be empty'
@@ -365,10 +382,12 @@ contract('ORG.ID', accounts => {
             it('should fail if hash is all zeroes', async () => {
                 await assertRevert(
                     orgIdContractInstance
-                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                        .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                             testOrgIdHash,
+                            zeroHash,
                             newOrgJsonUri,
-                            zeroHash
+                            newOrgJsonUriBackup1,
+                            newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
                     'ORG.ID: ORG.JSON hash cannot be zero'
@@ -378,10 +397,12 @@ contract('ORG.ID', accounts => {
             it('should fail if hash is an empty string', async () => {
                 assert.throws(() => {
                     orgIdContractInstance
-                        .methods['setOrgJson(bytes32,string,bytes32)'](
+                        .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                             testOrgIdHash,
+                            '',
                             newOrgJsonUri,
-                            ''
+                            newOrgJsonUriBackup1,
+                            newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner });
                 }, /invalid bytes32 value/);
@@ -389,19 +410,25 @@ contract('ORG.ID', accounts => {
 
             it('should change ORG.JSON URI and hash', async () => {
                 const result = await orgIdContractInstance
-                    .methods['setOrgJson(bytes32,string,bytes32)'](
+                    .methods['setOrgJson(bytes32,bytes32,string,string,string)'](
                         testOrgIdHash,
+                        newOrgJsonHash,
                         newOrgJsonUri,
-                        newOrgJsonHash
+                        newOrgJsonUriBackup1,
+                        newOrgJsonUriBackup2
                     )
                     .send({ from: testOrgIdOwner });
 
                 assertEvent(result, 'OrgJsonChanged', [
                     [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
-                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
-                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ],
                     [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
-                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ]
+                    [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                    [ 'previousOrgJsonUriBackup1', p => (p).should.equal(mockOrgJsonUriBackup1) ],
+                    [ 'previousOrgJsonUriBackup2', p => (p).should.equal(mockOrgJsonUriBackup2) ],
+                    [ 'newOrgJsonHash', p => (p).should.equal(newOrgJsonHash) ],
+                    [ 'newOrgJsonUri', p => (p).should.equal(newOrgJsonUri) ],
+                    [ 'newOrgJsonUriBackup1', p => (p).should.equal(newOrgJsonUriBackup1) ],
+                    [ 'newOrgJsonUriBackup2', p => (p).should.equal(newOrgJsonUriBackup2) ]
                 ]);
             });
         });
@@ -483,6 +510,8 @@ contract('ORG.ID', accounts => {
 
             it('should return an organization', () => {
                 // This is tested extensively in previous tests
+                // #createOrganization(bytes32,string,string,string) ->
+                // "should create an organization with correct properties"
                 assert(true);
             });
         });
@@ -490,7 +519,7 @@ contract('ORG.ID', accounts => {
         describe('Organizational Units (or simply "units")', () => {
             const unitDirector = accounts[5];
 
-            describe('#createUnit(bytes32,address,string,bytes32)', () => {
+            describe('#createUnit(bytes32,address,bytes32,string,string,string)', () => {
                 it('should fail if called by non-owner', async () => {
                     await assertRevert(
                         createUnitHelper(
@@ -499,8 +528,10 @@ contract('ORG.ID', accounts => {
                             [
                                 testOrgIdHash,
                                 unitDirector,
+                                mockOrgJsonHash,
                                 mockOrgJsonUri,
-                                mockOrgJsonHash
+                                mockOrgJsonUriBackup1,
+                                mockOrgJsonUriBackup2
                             ]
                         ),
                         'ORG.ID: action not authorized (must be owner)'
@@ -516,8 +547,10 @@ contract('ORG.ID', accounts => {
                             [
                                 nonExistingOrgIdHash,
                                 unitDirector,
+                                mockOrgJsonHash,
                                 mockOrgJsonUri,
-                                mockOrgJsonHash
+                                mockOrgJsonUriBackup1,
+                                mockOrgJsonUriBackup2
                             ]
                         ),
                         'ORG.ID: Organization not found'
@@ -531,8 +564,10 @@ contract('ORG.ID', accounts => {
                         [
                             testOrgIdHash,
                             testOrgIdOwner, // director = owner
+                            mockOrgJsonHash,
                             mockOrgJsonUri,
-                            mockOrgJsonHash
+                            mockOrgJsonUriBackup1,
+                            mockOrgJsonUriBackup2
                         ]
                     );
                     const testUnitHash = call.events.UnitCreated.returnValues.unitOrgId;
@@ -560,8 +595,10 @@ contract('ORG.ID', accounts => {
                             [
                                 testOrgIdHash,
                                 unitDirector,
+                                mockOrgJsonHash,
                                 mockOrgJsonUri,
-                                mockOrgJsonHash
+                                mockOrgJsonUriBackup1,
+                                mockOrgJsonUriBackup2
                             ]
                         );
                         testUnitHash = unitCreationResult.events.UnitCreated.returnValues.unitOrgId;
@@ -584,8 +621,10 @@ contract('ORG.ID', accounts => {
 
                         (unit).should.have.property('exists').to.be.true;
                         (unit).should.have.property('orgId').to.equal(testUnitHash);
-                        (unit).should.have.property('orgJsonUri').to.equal(mockOrgJsonUri);
                         (unit).should.have.property('orgJsonHash').to.equal(mockOrgJsonHash);
+                        (unit).should.have.property('orgJsonUri').to.equal(mockOrgJsonUri);
+                        (unit).should.have.property('orgJsonUriBackup1').to.equal(mockOrgJsonUriBackup1);
+                        (unit).should.have.property('orgJsonUriBackup2').to.equal(mockOrgJsonUriBackup2);
                         (unit).should.have.property('parentOrgId').to.equal(testOrgIdHash);
                         (unit).should.have.property('owner').to.equal(testOrgIdOwner);
                         (unit).should.have.property('director').to.equal(unitDirector);
@@ -807,20 +846,29 @@ contract('ORG.ID', accounts => {
                             (unit.isDirectorshipAccepted).should.be.false;
 
                             const randomOrgJsonHash = generateHashHelper();
+                            const newJsonUri = mockOrgJsonUri + 'new';
+                            const newJsonUriBackup1 = mockOrgJsonUriBackup1 + 'new';
+                            const newJsonUriBackup2 = mockOrgJsonUriBackup2 + '/new';
                             const result = await orgIdContractInstance
                                 .methods['setOrgJson(bytes32,string,bytes32)'](
                                     testUnitHash,
-                                    mockOrgJsonUri + 'new',
-                                    randomOrgJsonHash
+                                    randomOrgJsonHash,
+                                    newJsonUri,
+                                    newJsonUriBackup1,
+                                    newJsonUriBackup2
                                 )
                                 .send({ from: unitDirector });
 
                             assertEvent(result, 'OrgJsonChanged', [
                                 [ 'orgId', p => (p).should.equal(testUnitHash) ],
-                                [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
-                                [ 'newOrgJsonUri', p => (p).should.equal(mockOrgJsonUri + 'new') ],
                                 [ 'previousOrgJsonHash', p => (p).should.equal(mockOrgJsonHash) ],
-                                [ 'newOrgJsonHash', p => (p).should.equal(randomOrgJsonHash) ]
+                                [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri) ],
+                                [ 'previousOrgJsonUriBackup1', p => (p).should.equal(mockOrgJsonUriBackup1) ],
+                                [ 'previousOrgJsonUriBackup2', p => (p).should.equal(mockOrgJsonUriBackup2) ],
+                                [ 'newOrgJsonHash', p => (p).should.equal(randomOrgJsonHash) ],
+                                [ 'newOrgJsonUri', p => (p).should.equal(newJsonUri) ],
+                                [ 'newOrgJsonUriBackup1', p => (p).should.equal(newJsonUriBackup1) ],
+                                [ 'newOrgJsonUriBackup2', p => (p).should.equal(newJsonUriBackup2) ]
                             ]);
 
                             assertEvent(result, 'DirectorshipAccepted', [
@@ -836,20 +884,33 @@ contract('ORG.ID', accounts => {
 
                         it('should succeed if called by confirmed director', async () => {
                             const randomOrgJsonHash = generateHashHelper();
+                            const newJsonUri = mockOrgJsonUri + 'newer';
+                            const newJsonUriBackup1 = mockOrgJsonUriBackup1 + 'newer';
+                            const newJsonUriBackup2 = mockOrgJsonUriBackup2 + '/newer';
                             const result = await orgIdContractInstance
                                 .methods['setOrgJson(bytes32,string,bytes32)'](
                                     testUnitHash,
-                                    mockOrgJsonUri + 'newer',
-                                    randomOrgJsonHash
+                                    randomOrgJsonHash,
+                                    newJsonUri,
+                                    newJsonUriBackup1,
+                                    newJsonUriBackup2
                                 )
                                 .send({ from: unitDirector });
+                            
+                            const previousState = await orgIdContractInstance
+                                .methods['getOrganization()'](testUnitHash)
+                                .call();
 
                             assertEvent(result, 'OrgJsonChanged', [
                                 [ 'orgId', p => (p).should.equal(testUnitHash) ],
-                                [ 'previousOrgJsonUri', p => (p).should.equal(mockOrgJsonUri + 'new') ],
-                                [ 'newOrgJsonUri', p => (p).should.equal(mockOrgJsonUri + 'newer') ],
-                                [ 'previousOrgJsonHash', () => {} ], // well, we don't have the previous random hash
-                                [ 'newOrgJsonHash', p => (p).should.equal(randomOrgJsonHash) ]
+                                [ 'previousOrgJsonHash', p => (p).should.equal(previousState.orgJsonHash) ],
+                                [ 'previousOrgJsonUri', p => (p).should.equal(previousState.orgJsonUri) ],
+                                [ 'previousOrgJsonUriBackup1', p => (p).should.equal(previousState.orgJsonUriBackup1) ],
+                                [ 'previousOrgJsonUriBackup2', p => (p).should.equal(previousState.orgJsonUriBackup2) ],
+                                [ 'newOrgJsonHash', p => (p).should.equal(randomOrgJsonHash) ],
+                                [ 'newOrgJsonUri', p => (p).should.equal(newJsonUri) ],
+                                [ 'newOrgJsonUriBackup1', p => (p).should.equal(newJsonUriBackup1) ],
+                                [ 'newOrgJsonUriBackup2', p => (p).should.equal(newJsonUriBackup2) ]
                             ]);
                         });
                     });
