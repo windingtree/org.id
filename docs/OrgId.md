@@ -1,13 +1,13 @@
 * [OrgId](#orgid)
-  * [DirectorshipConfirmed](#event-directorshipconfirmed)
+  * [DirectorshipAccepted](#event-directorshipaccepted)
   * [DirectorshipTransferred](#event-directorshiptransferred)
   * [OrgJsonChanged](#event-orgjsonchanged)
+  * [OrganizationActiveStateChanged](#event-organizationactivestatechanged)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationOwnershipTransferred](#event-organizationownershiptransferred)
-  * [OrganizationToggled](#event-organizationtoggled)
   * [OwnershipTransferred](#event-ownershiptransferred)
   * [UnitCreated](#event-unitcreated)
-  * [confirmDirectorship](#function-confirmdirectorship)
+  * [acceptDirectorship](#function-acceptdirectorship)
   * [createOrganization](#function-createorganization)
   * [createUnit](#function-createunit)
   * [getOrganization](#function-getorganization)
@@ -21,16 +21,16 @@
   * [setInterfaces](#function-setinterfaces)
   * [setOrgJson](#function-setorgjson)
   * [supportsInterface](#function-supportsinterface)
-  * [toggleOrganization](#function-toggleorganization)
+  * [toggleActiveState](#function-toggleactivestate)
   * [transferDirectorship](#function-transferdirectorship)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
   * [transferOwnership](#function-transferownership)
 
 # OrgId
 
-## *event* DirectorshipConfirmed
+## *event* DirectorshipAccepted
 
-OrgId.DirectorshipConfirmed(orgId, director) `1e8793fd`
+OrgId.DirectorshipAccepted(orgId, director) `2f2df3ca`
 
 Arguments
 
@@ -53,17 +53,33 @@ Arguments
 
 ## *event* OrgJsonChanged
 
-OrgId.OrgJsonChanged(orgId, previousOrgJsonUri, newOrgJsonUri, previousOrgJsonHash, newOrgJsonHash) `dc7a54f1`
+OrgId.OrgJsonChanged(orgId, previousOrgJsonHash, previousOrgJsonUri, previousOrgJsonUriBackup1, previousOrgJsonUriBackup2, newOrgJsonHash, newOrgJsonUri, newOrgJsonUriBackup1, newOrgJsonUriBackup2) `f4652552`
 
 Arguments
 
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes32* | orgId | indexed |
-| *string* | previousOrgJsonUri | not indexed |
-| *string* | newOrgJsonUri | not indexed |
 | *bytes32* | previousOrgJsonHash | indexed |
+| *string* | previousOrgJsonUri | not indexed |
+| *string* | previousOrgJsonUriBackup1 | not indexed |
+| *string* | previousOrgJsonUriBackup2 | not indexed |
 | *bytes32* | newOrgJsonHash | indexed |
+| *string* | newOrgJsonUri | not indexed |
+| *string* | newOrgJsonUriBackup1 | not indexed |
+| *string* | newOrgJsonUriBackup2 | not indexed |
+
+## *event* OrganizationActiveStateChanged
+
+OrgId.OrganizationActiveStateChanged(orgId, previousState, newState) `74dc7d69`
+
+Arguments
+
+| **type** | **name** | **description** |
+|-|-|-|
+| *bytes32* | orgId | indexed |
+| *bool* | previousState | not indexed |
+| *bool* | newState | not indexed |
 
 ## *event* OrganizationCreated
 
@@ -87,18 +103,6 @@ Arguments
 | *bytes32* | orgId | indexed |
 | *address* | previousOwner | indexed |
 | *address* | newOwner | indexed |
-
-## *event* OrganizationToggled
-
-OrgId.OrganizationToggled(orgId, previousState, newState) `e6a96d99`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *bytes32* | orgId | indexed |
-| *bool* | previousState | not indexed |
-| *bool* | newState | not indexed |
 
 ## *event* OwnershipTransferred
 
@@ -124,11 +128,11 @@ Arguments
 | *address* | director | indexed |
 
 
-## *function* confirmDirectorship
+## *function* acceptDirectorship
 
-OrgId.confirmDirectorship(orgId) `nonpayable` `9c1429b3`
+OrgId.acceptDirectorship(orgId) `nonpayable` `781a9601`
 
-> Unit directorship confirmation
+> Accept director role
 
 Inputs
 
@@ -139,7 +143,7 @@ Inputs
 
 ## *function* createOrganization
 
-OrgId.createOrganization(orgJsonUri, orgJsonHash) `nonpayable` `bdb71f05`
+OrgId.createOrganization(orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `9ca2c238`
 
 > Create organization
 
@@ -147,8 +151,10 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
 | *bytes32* | orgJsonHash | ORG.JSON's keccak256 hash |
+| *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
+| *string* | orgJsonUriBackup1 | ORG.JSON URI backup (stored off-chain) |
+| *string* | orgJsonUriBackup2 | ORG.JSON URI backup (stored off-chain) |
 
 Outputs
 
@@ -158,7 +164,7 @@ Outputs
 
 ## *function* createUnit
 
-OrgId.createUnit(parentOrgId, director, orgJsonUri, orgJsonHash) `nonpayable` `cc6d8ef4`
+OrgId.createUnit(parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `e79d108a`
 
 > Create organizational unit
 
@@ -168,8 +174,10 @@ Inputs
 |-|-|-|
 | *bytes32* | parentOrgId | Parent ORG.ID hash |
 | *address* | director | Unit director address |
-| *string* | orgJsonUri | Unit ORG.JSON URI |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
+| *string* | orgJsonUri | Unit ORG.JSON URI |
+| *string* | orgJsonUriBackup1 | Unit ORG.JSON URI backup |
+| *string* | orgJsonUriBackup2 | Unit ORG.JSON URI backup |
 
 
 ## *function* getOrganization
@@ -188,15 +196,17 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bool* | exist | undefined |
+| *bool* | exists | Returns `false` if ORG.ID doesn't exist |
 | *bytes32* | orgId | undefined |
-| *string* | orgJsonUri | ORG.JSON URI |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
+| *string* | orgJsonUri | ORG.JSON URI |
+| *string* | orgJsonUriBackup1 | ORG.JSON URI backup |
+| *string* | orgJsonUriBackup2 | ORG.JSON URI backup |
 | *bytes32* | parentOrgId | Parent ORG.ID (*) |
 | *address* | owner | Owner's address |
 | *address* | director | Unit director's address (*) |
 | *bool* | isActive | Indicates whether ORG.ID is active |
-| *bool* | directorConfirmed | Indicates whether directorship is confirmed (*) |
+| *bool* | isDirectorshipAccepted | Indicates whether director accepted the role (*) |
 
 ## *function* getOrganizations
 
@@ -299,7 +309,7 @@ OrgId.setInterfaces() `nonpayable` `fca85eb3`
 
 ## *function* setOrgJson
 
-OrgId.setOrgJson(orgId, orgJsonUri, orgJsonHash) `nonpayable` `bf9e43db`
+OrgId.setOrgJson(orgId, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `3b331384`
 
 > Shorthand method to change ORG.JSON URI and hash at once
 
@@ -308,8 +318,10 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes32* | orgId | ORG.ID hash |
-| *string* | orgJsonUri | New ORG.JSON URI |
 | *bytes32* | orgJsonHash | New ORG.JSON's keccak256 hash |
+| *string* | orgJsonUri | New ORG.JSON URI |
+| *string* | orgJsonUriBackup1 | New ORG.JSON URI backup |
+| *string* | orgJsonUriBackup2 | New ORG.JSON URI backup |
 
 
 ## *function* supportsInterface
@@ -325,9 +337,9 @@ Inputs
 | *bytes4* | interfaceId | undefined |
 
 
-## *function* toggleOrganization
+## *function* toggleActiveState
 
-OrgId.toggleOrganization(orgId) `nonpayable` `07233a3d`
+OrgId.toggleActiveState(orgId) `nonpayable` `0209c0ef`
 
 > Toggle ORG.ID's active/inactive state
 

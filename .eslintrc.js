@@ -22,10 +22,10 @@ module.exports = {
         "strict": 0,
 
         // Code style
-        "indent": ["error", 4, {
+        "indent": ["error", 2, {
             "SwitchCase": 1
         }],
-        "quotes": [2, "single"],
+        "quotes": [4, "single"],
         "semi": ["error", "always"],
         "space-before-function-paren": ["error", "always"],
         "no-use-before-define": 0,
@@ -45,9 +45,7 @@ module.exports = {
             "before": false,
             "after": true
         }],
-        "camelcase": [2, {
-            "properties": "always"
-        }],
+        "camelcase": 0,
         "no-mixed-spaces-and-tabs": [2, "smart-tabs"],
         "comma-dangle": [1, "only-multiline"],
         "no-dupe-args": 2,

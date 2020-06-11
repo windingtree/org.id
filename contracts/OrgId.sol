@@ -353,21 +353,13 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             _acceptDirectorship(orgId);
         }
 
-        emit OrgJsonChanged(
+        _updateOrgJson(
             orgId,
-            organizations[orgId].orgJsonHash,
-            organizations[orgId].orgJsonUri,
-            organizations[orgId].orgJsonUriBackup1,
-            organizations[orgId].orgJsonUriBackup2,
             orgJsonHash,
             orgJsonUri,
             orgJsonUriBackup1,
             orgJsonUriBackup2
         );
-        organizations[orgId].orgJsonHash = orgJsonHash;
-        organizations[orgId].orgJsonUri = orgJsonUri;
-        organizations[orgId].orgJsonUriBackup1 = orgJsonUriBackup1;
-        organizations[orgId].orgJsonUriBackup2 = orgJsonUriBackup2;
     }
 
     /**
@@ -624,5 +616,38 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     function _acceptDirectorship(bytes32 orgId) internal {
         organizations[orgId].isDirectorshipAccepted = true;
         emit DirectorshipAccepted(orgId, msg.sender);
+    }
+
+    /**
+     * @dev ORG.JSON storage update
+     * @param orgId ORG.ID hash
+     * @param orgJsonHash ORG.JSON keccak256 hash
+     * @param orgJsonUri ORG.JSON URI
+     * @param orgJsonUriBackup1 ORG.JSON URI backup
+     * @param orgJsonUriBackup2 ORG.JSON URI backup
+     */
+    function _updateOrgJson(
+        bytes32 orgId,
+        bytes32 orgJsonHash,
+        string memory orgJsonUri,
+        string memory orgJsonUriBackup1,
+        string memory orgJsonUriBackup2
+    ) internal {
+        emit OrgJsonChanged(
+            orgId,
+            organizations[orgId].orgJsonHash,
+            organizations[orgId].orgJsonUri,
+            organizations[orgId].orgJsonUriBackup1,
+            organizations[orgId].orgJsonUriBackup2,
+            orgJsonHash,
+            orgJsonUri,
+            orgJsonUriBackup1,
+            orgJsonUriBackup2
+        );
+        
+        organizations[orgId].orgJsonHash = orgJsonHash;
+        organizations[orgId].orgJsonUri = orgJsonUri;
+        organizations[orgId].orgJsonUriBackup1 = orgJsonUriBackup1;
+        organizations[orgId].orgJsonUriBackup2 = orgJsonUriBackup2;
     }
 }
