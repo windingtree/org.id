@@ -138,12 +138,12 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | Unit's ORG.ID hash |
+| *bytes32* | orgId | Unit's ORGiD hash |
 
 
 ## *function* createOrganization
 
-OrgId.createOrganization(orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `9ca2c238`
+OrgId.createOrganization(solt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
 
 > Create organization
 
@@ -151,6 +151,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
+| *bytes32* | solt | Unique hash required for identifier creation |
 | *bytes32* | orgJsonHash | ORG.JSON's keccak256 hash |
 | *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
 | *string* | orgJsonUriBackup1 | ORG.JSON URI backup (stored off-chain) |
@@ -160,11 +161,11 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | id | ORG.ID byte32 hash |
+| *bytes32* | id | ORGiD byte32 hash |
 
 ## *function* createUnit
 
-OrgId.createUnit(parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `e79d108a`
+OrgId.createUnit(solt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
 
 > Create organizational unit
 
@@ -172,7 +173,8 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | parentOrgId | Parent ORG.ID hash |
+| *bytes32* | solt | Unique hash required for identifier creation |
+| *bytes32* | parentOrgId | Parent ORGiD hash |
 | *address* | director | Unit director address |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
 | *string* | orgJsonUri | Unit ORG.JSON URI |
@@ -184,35 +186,35 @@ Inputs
 
 OrgId.getOrganization(_orgId) `view` `22b3cd4e`
 
-> Get organization or unit's info by ORG.ID hashReturn parameters marked by (*) are only applicable to units
+> Get organization or unit's info by ORGiD hashReturn parameters marked by (*) are only applicable to units
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | _orgId | ORG.ID hash |
+| *bytes32* | _orgId | ORGiD hash |
 
 Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bool* | exists | Returns `false` if ORG.ID doesn't exist |
-| *bytes32* | orgId | undefined |
+| *bool* | exists | Returns `false` if ORGiD doesn't exist |
+| *bytes32* | orgId | ORGiD hash |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
 | *string* | orgJsonUri | ORG.JSON URI |
 | *string* | orgJsonUriBackup1 | ORG.JSON URI backup |
 | *string* | orgJsonUriBackup2 | ORG.JSON URI backup |
-| *bytes32* | parentOrgId | Parent ORG.ID (*) |
+| *bytes32* | parentOrgId | Parent ORGiD (*) |
 | *address* | owner | Owner's address |
 | *address* | director | Unit director's address (*) |
-| *bool* | isActive | Indicates whether ORG.ID is active |
+| *bool* | isActive | Indicates whether ORGiD is active |
 | *bool* | isDirectorshipAccepted | Indicates whether director accepted the role (*) |
 
 ## *function* getOrganizations
 
 OrgId.getOrganizations(includeInactive) `view` `0c70d7c5`
 
-> Get all active organizations' ORG.ID hashes
+> Get all active organizations' ORGiD hashes
 
 Inputs
 
@@ -230,13 +232,13 @@ Outputs
 
 OrgId.getUnits(parentOrgId, includeInactive) `view` `0dd56c93`
 
-> Get all active organizational units of a particular ORG.ID
+> Get all active organizational units of a particular ORGiD
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | parentOrgId | Parent ORG.ID hash |
+| *bytes32* | parentOrgId | Parent ORGiD hash |
 | *bool* | includeInactive | Includes not active units into response |
 
 Outputs
@@ -286,7 +288,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | Unit's ORG.ID hash |
+| *bytes32* | orgId | Unit's ORGiD hash |
 
 
 ## *function* renounceOwnership
@@ -317,7 +319,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | ORG.ID hash |
+| *bytes32* | orgId | ORGiD hash |
 | *bytes32* | orgJsonHash | New ORG.JSON's keccak256 hash |
 | *string* | orgJsonUri | New ORG.JSON URI |
 | *string* | orgJsonUriBackup1 | New ORG.JSON URI backup |
@@ -341,13 +343,13 @@ Inputs
 
 OrgId.toggleActiveState(orgId) `nonpayable` `0209c0ef`
 
-> Toggle ORG.ID's active/inactive state
+> Toggle ORGiD's active/inactive state
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | ORG.ID hash |
+| *bytes32* | orgId | ORGiD hash |
 
 
 ## *function* transferDirectorship
@@ -360,7 +362,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | Unit's ORG.ID hash |
+| *bytes32* | orgId | Unit's ORGiD hash |
 | *address* | newDirector | New director's address |
 
 
@@ -374,7 +376,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | orgId | ORG.ID hash |
+| *bytes32* | orgId | ORGiD hash |
 | *address* | newOwner | New owner's address |
 
 

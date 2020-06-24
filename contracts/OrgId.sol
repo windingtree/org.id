@@ -8,7 +8,7 @@ import "@openzeppelin/upgrades/contracts/Initializable.sol";
 import "./OrgIdInterface.sol";
 
 /**
- * @title ORG.ID Registry Smart Contract
+ * @title ORGiD Registry Smart Contract
  */
 contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
@@ -32,7 +32,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /// @dev Mapped list of Organizations
     mapping (bytes32 => Organization) internal organizations;
 
-    /// @dev List of ORG.ID hashes
+    /// @dev List of ORGiD hashes
     bytes32[] internal orgIds;
 
     /**
@@ -79,7 +79,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     );
 
     /**
-     * @dev Emits when ORG.ID owner changes
+     * @dev Emits when ORGiD owner changes
      */
     event OrganizationOwnershipTransferred(
         bytes32 indexed orgId,
@@ -103,13 +103,13 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     );
 
     /**
-     * @dev Throws if ORG.ID does not exist
+     * @dev Throws if ORGiD does not exist
      */
     modifier orgIdMustExist(bytes32 orgId) {
         require(
             orgId != bytes32(0) &&
             organizations[orgId].orgId == orgId,
-            "ORG.ID: Organization not found"
+            "OrgId: Organization not found"
         );
         _;
     }
@@ -120,7 +120,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     modifier mustBeCalledByOwner(bytes32 orgId) {
         require(
             organizations[orgId].owner == msg.sender,
-            "ORG.ID: action not authorized (must be owner)"
+            "OrgId: action not authorized (must be owner)"
         );
         _;
     }
@@ -132,7 +132,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         require(
             organizations[orgId].owner == msg.sender ||
             organizations[orgId].director == msg.sender,
-            "ORG.ID: action not authorized (must be owner or director)"
+            "OrgId: action not authorized (must be owner or director)"
         );
         _;
     }
@@ -150,21 +150,24 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organization
+     * @param solt Unique hash required for identifier creation
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
      * @param orgJsonUriBackup2 ORG.JSON URI backup (stored off-chain)
      * @return {
-         "id": "ORG.ID byte32 hash"
+         "id": "ORGiD byte32 hash"
      }
      */
     function createOrganization(
+        bytes32 solt,
         bytes32 orgJsonHash,
         string calldata orgJsonUri,
         string calldata orgJsonUriBackup1,
         string calldata orgJsonUriBackup2
     ) external returns (bytes32 id) {
         id = _createOrganization(
+            solt,
             bytes32(0),
             address(0),
             orgJsonHash,
@@ -177,7 +180,8 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organizational unit
-     * @param parentOrgId Parent ORG.ID hash
+     * @param solt Unique hash required for identifier creation
+     * @param parentOrgId Parent ORGiD hash
      * @param director Unit director address
      * @param orgJsonHash ORG.JSON keccak256 hash
      * @param orgJsonUri Unit ORG.JSON URI
@@ -185,6 +189,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
+        bytes32 solt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
@@ -198,6 +203,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         returns (bytes32 newUnitOrgId)
     {
         newUnitOrgId = _createOrganization(
+            solt,
             parentOrgId,
             director,
             orgJsonHash,
@@ -207,7 +213,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         );
         emit UnitCreated(parentOrgId, newUnitOrgId, director);
 
-        // If parent ORG.ID owner indicates their address as director,
+        // If parent ORGiD owner indicates their address as director,
         // their directorship is automatically accepted
         if (director == msg.sender) {
             emit DirectorshipAccepted(newUnitOrgId, msg.sender);
@@ -215,8 +221,8 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Toggle ORG.ID's active/inactive state
-     * @param orgId ORG.ID hash
+     * @dev Toggle ORGiD's active/inactive state
+     * @param orgId ORGiD hash
      */
     function toggleActiveState(bytes32 orgId)
         external
@@ -233,7 +239,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Accept director role
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      */
     function acceptDirectorship(bytes32 orgId)
         external
@@ -241,7 +247,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         require(
             organizations[orgId].director == msg.sender,
-            "ORG.ID: action not authorized (must be director)"
+            "OrgId: action not authorized (must be director)"
         );
 
         _acceptDirectorship(orgId);
@@ -249,7 +255,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Unit directorship transfer
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      * @param newDirector New director's address
      */
     function transferDirectorship(
@@ -277,7 +283,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Unit directorship renounce
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      */
     function renounceDirectorship(bytes32 orgId)
         external
@@ -296,7 +302,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Ownership transfer
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      * @param newOwner New owner's address
      */
     function transferOrganizationOwnership(
@@ -309,7 +315,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         require(
             newOwner != address(0),
-            "ORG.ID: Invalid owner address"
+            "OrgId: Invalid owner address"
         );
 
         emit OrganizationOwnershipTransferred(
@@ -322,7 +328,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Shorthand method to change ORG.JSON URI and hash at once
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      * @param orgJsonHash New ORG.JSON's keccak256 hash
      * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonUriBackup1 New ORG.JSON URI backup
@@ -341,11 +347,11 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     {
         require(
             orgJsonHash != bytes32(0),
-            "ORG.ID: ORG.JSON hash cannot be zero"
+            "OrgId: ORG.JSON hash cannot be zero"
         );
         require(
             bytes(orgJsonUri).length != 0,
-            "ORG.ID: ORG.JSON URI cannot be empty"
+            "OrgId: ORG.JSON URI cannot be empty"
         );
 
         if (msg.sender == organizations[orgId].director &&
@@ -363,10 +369,10 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Get all active organizations' ORG.ID hashes
+     * @dev Get all active organizations' ORGiD hashes
      * @param includeInactive Includes not active organizations into response
      * @return {
-         "organizationsList": "Array of all active organizations' ORG.ID hashes"
+         "organizationsList": "Array of all active organizations' ORGiD hashes"
      }
      */
     function getOrganizations(bool includeInactive)
@@ -378,20 +384,20 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Get organization or unit's info by ORG.ID hash
-     * @param _orgId ORG.ID hash
+     * @dev Get organization or unit's info by ORGiD hash
+     * @param _orgId ORGiD hash
      * @dev Return parameters marked by (*) are only applicable to units
      * @return {
-         "exists": "Returns `false` if ORG.ID doesn't exist",
-         "ORG.ID": "ORG.ID hash",
+         "exists": "Returns `false` if ORGiD doesn't exist",
+         "orgId": "ORGiD hash",
          "orgJsonHash": "ORG.JSON keccak256 hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonUriBackup1": "ORG.JSON URI backup",
          "orgJsonUriBackup2": "ORG.JSON URI backup",
-         "parentOrgId": "Parent ORG.ID (*)",
+         "parentOrgId": "Parent ORGiD (*)",
          "owner": "Owner's address",
          "director": "Unit director's address (*)",
-         "isActive": "Indicates whether ORG.ID is active",
+         "isActive": "Indicates whether ORGiD is active",
          "isDirectorshipAccepted": "Indicates whether director accepted the role (*)"
      }
      */
@@ -426,11 +432,11 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Get all active organizational units of a particular ORG.ID
-     * @param parentOrgId Parent ORG.ID hash
+     * @dev Get all active organizational units of a particular ORGiD
+     * @param parentOrgId Parent ORGiD hash
      * @param includeInactive Includes not active units into response
      * @return {
-         "organizationsList": "Array of ORG.ID hashes of active organizational units"
+         "organizationsList": "Array of ORGiD hashes of active organizational units"
      }
      */
     function getUnits(bytes32 parentOrgId, bool includeInactive)
@@ -456,7 +462,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             own.owner.selector ^
             own.transferOwnership.selector,
 
-            // ORG.ID interface: 0x212862a6
+            // ORGiD interface: 0x0f4893ef
             org.createOrganization.selector ^
             org.toggleActiveState.selector ^
             org.transferOrganizationOwnership.selector ^
@@ -464,7 +470,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             org.getOrganizations.selector ^
             org.getOrganization.selector,
 
-            // hierarchy interface: 0x326bc55f
+            // hierarchy interface: 0x6af2fb27
             org.createUnit.selector ^
             org.acceptDirectorship.selector ^
             org.transferDirectorship.selector ^
@@ -478,17 +484,19 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create new organization and add it to storage
-     * @param parentOrgId Parent ORG.ID hash (if applicable)
+     * @param solt Unique hash required for identifier creation
+     * @param parentOrgId Parent ORGiD hash (if applicable)
      * @param director Unit director address (if applicable)
      * @param orgJsonHash ORG.JSON keccak256 hash
      * @param orgJsonUri ORG.JSON URI
      * @param orgJsonUriBackup1 ORG.JSON URI backup
      * @param orgJsonUriBackup2 ORG.JSON URI backup
      * @return {
-         "ORG.ID": "New ORG.ID hash"
+         "ORGiD": "New ORGiD hash"
      }
      */
     function _createOrganization(
+        bytes32 solt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
@@ -496,20 +504,27 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         string memory orgJsonUriBackup1,
         string memory orgJsonUriBackup2
     ) internal returns (bytes32) {
-        // If this is a unit...
-        if (parentOrgId != bytes32(0)) {
-            require(
-                organizations[parentOrgId].orgId == parentOrgId,
-                "ORG.ID: Parent ORG.ID not found"
-            );
-        }
+        require(
+            parentOrgId == bytes32(0) ||
+            (
+                // If this is a unit...
+                parentOrgId != bytes32(0) &&
+                organizations[parentOrgId].orgId == parentOrgId
+            ),
+            "OrgId: Parent ORGiD not found"
+        );
 
         // Organization unique Id creation
         bytes32 orgId = keccak256(
             abi.encodePacked(
                 msg.sender,
-                blockhash(block.number.sub(1))
+                solt
             )
+        );
+
+        require(
+            organizations[orgId].orgId == bytes32(0),
+            "OrgId: Organizarion already exists"
         );
 
         organizations[orgId] = Organization(
@@ -536,12 +551,12 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     }
 
     /**
-     * @dev Get all active organizations' ORG.ID hashes in the registry (if no input provided)
-     * @dev OR, if input is a valid ORG.ID, get all active units' ORG.ID hashes
-     * @param orgId ORG.ID hash or zero bytes
+     * @dev Get all active organizations' ORGiD hashes in the registry (if no input provided)
+     * @dev OR, if input is a valid ORGiD, get all active units' ORGiD hashes
+     * @param orgId ORGiD hash or zero bytes
      * @param includeInactive Includes not active organizations into response
      * @return {
-         "organizationsList": "Array of ORG.ID hashes"
+         "organizationsList": "Array of ORGiD hashes"
      }
      */
     function _getOrganizations(bytes32 orgId, bool includeInactive)
@@ -577,11 +592,11 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Get a number of active organizations in the registry (if input is zero bytes)
-     * @dev OR, if input is a valid ORG.ID, get a number of active organizational units
-     * @param orgId ORG.ID hash or zero bytes
+     * @dev OR, if input is a valid ORGiD, get a number of active organizational units
+     * @param orgId ORGiD hash or zero bytes
      * @param includeInactive Includes not active organizations into response
      * @return {
-         "count": "ORG.ID count"
+         "count": "ORGiD count"
      }
      */
     function _getOrganizationsCount(bytes32 orgId, bool includeInactive)
@@ -611,7 +626,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Unit directorship acceptance
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      */
     function _acceptDirectorship(bytes32 orgId) internal {
         organizations[orgId].isDirectorshipAccepted = true;
@@ -620,7 +635,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev ORG.JSON storage update
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      * @param orgJsonHash ORG.JSON keccak256 hash
      * @param orgJsonUri ORG.JSON URI
      * @param orgJsonUriBackup1 ORG.JSON URI backup

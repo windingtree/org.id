@@ -40,7 +40,7 @@ require('chai')
     .use(require('bn-chai')(web3.utils.BN))
     .should();
 
-contract('ORG.ID', accounts => {
+contract('OrgId', accounts => {
     const orgIdContractOwner = accounts[0];
     const randomAddress = accounts[18]; // isn't it funny?
     // const randomAddressTwo = accounts[19];
@@ -68,7 +68,7 @@ contract('ORG.ID', accounts => {
         orgIdContractInstance = await deployNewOrgIdContract(project);
     });
 
-    describe('ORG.ID upgradeability', () => {
+    describe('OrgId upgradeability', () => {
         it('should upgrade proxy and reveal a new function and interface', async () => {
             const newProxy = await project.upgradeProxy(
                 orgIdContractInstance.address,
@@ -92,7 +92,7 @@ contract('ORG.ID', accounts => {
         });
     });
 
-    describe('ORG.ID ownable interface', () => {
+    describe('OrgId ownable interface', () => {
         const newOrgIdContractOwner = accounts[7];
 
         describe('#transferOwnership(address)', () => {
@@ -153,30 +153,32 @@ contract('ORG.ID', accounts => {
 
         it('should support hierarchy interface', async () => {
             (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x326bc55f')
+                .methods['supportsInterface(bytes4)']('0x6af2fb27')
                 .call()
             ).should.be.true;
         });
 
-        it('should support ORG.ID interface', async () => {
+        it('should support OrgId interface', async () => {
             (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x212862a6')
+                .methods['supportsInterface(bytes4)']('0x0f4893ef')
                 .call()
             ).should.be.true;
         });
     });
 
-    describe('ORG.ID methods', () => {
+    describe('OrgId methods', () => {
         const testOrgIdOwner = accounts[1];
         const randomOrgIdHash = generateHashHelper();
         let orgCreationResult;
         let testOrgIdHash;
 
-        const newOrg = async () => {
+        const newOrg = async (soltOverride = null) => {
+            const randomSolt = generateHashHelper();
             orgCreationResult = await createOrganizationHelper(
                 orgIdContractInstance,
                 testOrgIdOwner,
                 [
+                    soltOverride || randomSolt,
                     mockOrgJsonHash,
                     mockOrgJsonUri,
                     mockOrgJsonUriBackup1,
@@ -185,13 +187,21 @@ contract('ORG.ID', accounts => {
             );
             testOrgIdHash = orgCreationResult
                 .events.OrganizationCreated.returnValues.orgId;
+            
+            return {
+                randomSolt,
+                mockOrgJsonHash,
+                mockOrgJsonUri,
+                mockOrgJsonUriBackup1,
+                mockOrgJsonUriBackup2
+            };
         };
 
         before(async () => {
             await newOrg();
         });
 
-        describe('#createOrganization(bytes32,string,string,string)', () => {
+        describe('#createOrganization(bytes32,bytes32,string,string,string)', () => {
             it('should create an organization with correct properties', async () => {
                 assertEvent(orgCreationResult, 'OrganizationCreated', [
                     [ 'orgId', p => (p).should.equal(testOrgIdHash) ],
@@ -214,6 +224,14 @@ contract('ORG.ID', accounts => {
                 (testOrgId).should.have.property('isActive').to.be.true;
                 (testOrgId).should.have.property('isDirectorshipAccepted').to.be.false;
             });
+
+            it('should fail if sent already used solt', async () => {
+                const { randomSolt } = await newOrg();
+                await assertRevert(
+                    newOrg(randomSolt),
+                    'OrgId: Organizarion already exists'
+                );
+            });
         });
 
         describe('#toggleActiveState(bytes32)', () => {
@@ -222,7 +240,7 @@ contract('ORG.ID', accounts => {
                     orgIdContractInstance
                         .methods['toggleActiveState(bytes32)'](randomOrgIdHash)
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Organization not found'
+                    'OrgId: Organization not found'
                 );
             });
 
@@ -231,7 +249,7 @@ contract('ORG.ID', accounts => {
                     orgIdContractInstance
                         .methods['toggleActiveState(bytes32)'](testOrgIdHash)
                         .send({ from: randomAddress }),
-                    'ORG.ID: action not authorized (must be owner)'
+                    'OrgId: action not authorized (must be owner)'
                 );
             });
 
@@ -279,7 +297,7 @@ contract('ORG.ID', accounts => {
                             randomAddress
                         )
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Organization not found'
+                    'OrgId: Organization not found'
                 );
             });
 
@@ -291,7 +309,7 @@ contract('ORG.ID', accounts => {
                             randomAddress
                         )
                         .send({ from: randomAddress }),
-                    'ORG.ID: action not authorized (must be owner)'
+                    'OrgId: action not authorized (must be owner)'
                 );
             });
 
@@ -303,7 +321,7 @@ contract('ORG.ID', accounts => {
                             zeroAddress
                         )
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Invalid owner address'
+                    'OrgId: Invalid owner address'
                 );
             });
 
@@ -345,7 +363,7 @@ contract('ORG.ID', accounts => {
                             newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: Organization not found'
+                    'OrgId: Organization not found'
                 );
             });
 
@@ -360,7 +378,7 @@ contract('ORG.ID', accounts => {
                             newOrgJsonUriBackup2
                         )
                         .send({ from: randomAddress }),
-                    'ORG.ID: action not authorized (must be owner or director)'
+                    'OrgId: action not authorized (must be owner or director)'
                 );
             });
 
@@ -375,7 +393,7 @@ contract('ORG.ID', accounts => {
                             newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: ORG.JSON URI cannot be empty'
+                    'OrgId: ORG.JSON URI cannot be empty'
                 );
             });
 
@@ -390,7 +408,7 @@ contract('ORG.ID', accounts => {
                             newOrgJsonUriBackup2
                         )
                         .send({ from: testOrgIdOwner }),
-                    'ORG.ID: ORG.JSON hash cannot be zero'
+                    'OrgId: ORG.JSON hash cannot be zero'
                 );
             });
 
@@ -455,10 +473,12 @@ contract('ORG.ID', accounts => {
 
                 before(async () => {
                     for (let i = 0; i < 10; i++) {
+                        const randomSolt = generateHashHelper();
                         const call = await createOrganizationHelper(
                             newOrgIdContractInstance,
                             randomAddress,
                             [
+                                randomSolt,
                                 mockOrgJsonHash,
                                 mockOrgJsonUri,
                                 mockOrgJsonUriBackup1,
@@ -512,7 +532,7 @@ contract('ORG.ID', accounts => {
 
             it('should return an organization', () => {
                 // This is tested extensively in previous tests
-                // #createOrganization(bytes32,string,string,string) ->
+                // #createOrganization(bytes32,bytes32,string,string,string) ->
                 // "should create an organization with correct properties"
                 assert(true);
             });
@@ -521,13 +541,15 @@ contract('ORG.ID', accounts => {
         describe('Organizational Units (or simply "units")', () => {
             const unitDirector = accounts[5];
 
-            describe('#createUnit(bytes32,address,bytes32,string,string,string)', () => {
+            describe('#createUnit(bytes32,bytes32,address,bytes32,string,string,string)', () => {
                 it('should fail if called by non-owner', async () => {
+                    const randomSolt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             randomAddress, // caller is non-owner
                             [
+                                randomSolt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -536,17 +558,19 @@ contract('ORG.ID', accounts => {
                                 mockOrgJsonUriBackup2
                             ]
                         ),
-                        'ORG.ID: action not authorized (must be owner)'
+                        'OrgId: action not authorized (must be owner)'
                     );
                 });
 
                 it('should fail if parent organization not found', async () => {
                     const nonExistingOrgIdHash = generateHashHelper();
+                    const randomSolt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
+                                randomSolt,
                                 nonExistingOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -555,15 +579,50 @@ contract('ORG.ID', accounts => {
                                 mockOrgJsonUriBackup2
                             ]
                         ),
-                        'ORG.ID: Organization not found'
+                        'OrgId: Organization not found'
+                    );
+                });
+
+                it('should fail if sent already used solt', async () => {
+                    const randomSolt = generateHashHelper();
+                    await createUnitHelper(
+                        orgIdContractInstance,
+                        testOrgIdOwner,
+                        [
+                            randomSolt,
+                            testOrgIdHash,
+                            unitDirector,
+                            mockOrgJsonHash,
+                            mockOrgJsonUri,
+                            mockOrgJsonUriBackup1,
+                            mockOrgJsonUriBackup2
+                        ]
+                    );
+                    await assertRevert(
+                        createUnitHelper(
+                            orgIdContractInstance,
+                            testOrgIdOwner,
+                            [
+                                randomSolt, // used
+                                testOrgIdHash,
+                                unitDirector,
+                                mockOrgJsonHash,
+                                mockOrgJsonUri,
+                                mockOrgJsonUriBackup1,
+                                mockOrgJsonUriBackup2
+                            ]
+                        ),
+                        'OrgId: Organizarion already exists'
                     );
                 });
 
                 it('should automatically set isDirectorshipAccepted to `true` if director is unit owner', async () => {
+                    const randomSolt = generateHashHelper();
                     const call = await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
                         [
+                            randomSolt,
                             testOrgIdHash,
                             testOrgIdOwner, // director = owner
                             mockOrgJsonHash,
@@ -591,10 +650,12 @@ contract('ORG.ID', accounts => {
                     let testUnitHash;
 
                     const newUnit = async () => {
+                        const randomSolt = generateHashHelper();
                         unitCreationResult = await createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
+                                randomSolt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -640,7 +701,7 @@ contract('ORG.ID', accounts => {
                                 orgIdContractInstance
                                     .methods['acceptDirectorship(bytes32)'](randomOrgIdHash)
                                     .send({ from: unitDirector }),
-                                'ORG.ID: Organization not found'
+                                'OrgId: Organization not found'
                             );
                         });
 
@@ -649,7 +710,7 @@ contract('ORG.ID', accounts => {
                                 orgIdContractInstance
                                     .methods['acceptDirectorship(bytes32)'](testUnitHash)
                                     .send({ from: randomAddress }),
-                                'ORG.ID: action not authorized (must be director)'
+                                'OrgId: action not authorized (must be director)'
                             );
                         });
 
@@ -682,7 +743,7 @@ contract('ORG.ID', accounts => {
                                         newDirector
                                     )
                                     .send({ from: testOrgIdOwner }),
-                                'ORG.ID: Organization not found'
+                                'OrgId: Organization not found'
                             );
                         });
 
@@ -694,7 +755,7 @@ contract('ORG.ID', accounts => {
                                         newDirector
                                     )
                                     .send({ from: randomAddress }),
-                                'ORG.ID: action not authorized (must be owner)'
+                                'OrgId: action not authorized (must be owner)'
                             );
                         });
 
@@ -748,7 +809,7 @@ contract('ORG.ID', accounts => {
                                         randomOrgIdHash
                                     )
                                     .send({ from: testOrgIdOwner }),
-                                'ORG.ID: Organization not found'
+                                'OrgId: Organization not found'
                             );
                         });
 
@@ -759,7 +820,7 @@ contract('ORG.ID', accounts => {
                                         testUnitHash
                                     )
                                     .send({ from: randomAddress }),
-                                'ORG.ID: action not authorized (must be owner or director)'
+                                'OrgId: action not authorized (must be owner or director)'
                             );
                         });
 
@@ -825,7 +886,7 @@ contract('ORG.ID', accounts => {
                                         mockOrgJsonUriBackup2
                                     )
                                     .send({ from: unitDirector }),
-                                'ORG.ID: Organization not found'
+                                'OrgId: Organization not found'
                             );
                         });
 
@@ -840,7 +901,7 @@ contract('ORG.ID', accounts => {
                                         mockOrgJsonUriBackup2
                                     )
                                     .send({ from: randomAddress }),
-                                'ORG.ID: action not authorized (must be owner or director)'
+                                'OrgId: action not authorized (must be owner or director)'
                             );
                         });
 
@@ -934,7 +995,7 @@ contract('ORG.ID', accounts => {
                                         false
                                     )
                                     .call(),
-                                'ORG.ID: Organization not found'
+                                'OrgId: Organization not found'
                             );
                         });
 
@@ -953,10 +1014,12 @@ contract('ORG.ID', accounts => {
 
                             before(async () => {
                                 for (let i = 0; i < 10; i++) {
+                                    const randomSolt = generateHashHelper();
                                     const call = await createUnitHelper(
                                         orgIdContractInstance,
                                         testOrgIdOwner,
                                         [
+                                            randomSolt,
                                             testOrgIdHash,
                                             unitDirector,
                                             mockOrgJsonHash,

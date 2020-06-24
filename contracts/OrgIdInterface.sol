@@ -1,21 +1,23 @@
 pragma solidity >=0.5.16;
 
 /**
- * @title ORG.ID Registry Smart Contract Interface
+ * @title ORGiD Registry Smart Contract Interface
  */
 contract OrgIdInterface {
 
     /**
      * @dev Create organization
+     * @param solt Unique hash required for identifier creation
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
      * @param orgJsonUriBackup2 ORG.JSON URI backup (stored off-chain)
      * @return {
-         "id": "ORG.ID byte32 hash"
+         "id": "ORGiD byte32 hash"
      }
      */
     function createOrganization(
+        bytes32 solt,
         bytes32 orgJsonHash,
         string calldata orgJsonUri,
         string calldata orgJsonUriBackup1,
@@ -24,7 +26,8 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organizational unit
-     * @param parentOrgId Parent ORG.ID hash
+     * @param solt Unique hash required for identifier creation
+     * @param parentOrgId Parent ORGiD hash
      * @param director Unit director address
      * @param orgJsonHash ORG.JSON keccak256 hash
      * @param orgJsonUri Unit ORG.JSON URI
@@ -32,6 +35,7 @@ contract OrgIdInterface {
      * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
+        bytes32 solt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
@@ -43,20 +47,20 @@ contract OrgIdInterface {
         returns (bytes32 newUnitOrgId);
 
     /**
-     * @dev Toggle ORG.ID's active/inactive state
-     * @param orgId ORG.ID hash
+     * @dev Toggle ORGiD's active/inactive state
+     * @param orgId ORGiD hash
      */
     function toggleActiveState(bytes32 orgId) external;
 
     /**
      * @dev Accept director role
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      */
     function acceptDirectorship(bytes32 orgId) external;
 
     /**
      * @dev Transfer director role
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      * @param newDirector New director's address
      */
     function transferDirectorship(
@@ -66,14 +70,14 @@ contract OrgIdInterface {
 
     /**
      * @dev Unit directorship renounce
-     * @param orgId Unit's ORG.ID hash
+     * @param orgId Unit's ORGiD hash
      */
     function renounceDirectorship(bytes32 orgId)
         external;
 
     /**
      * @dev Ownership transfer
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      * @param newOwner New owner's address
      */
     function transferOrganizationOwnership(
@@ -83,7 +87,7 @@ contract OrgIdInterface {
 
     /**
      * @dev Shorthand method to change ORG.JSON URI and hash at once
-     * @param orgId ORG.ID hash
+     * @param orgId ORGiD hash
      * @param orgJsonHash New ORG.JSON's keccak256 hash
      * @param orgJsonUri New ORG.JSON URI
      * @param orgJsonUriBackup1 New ORG.JSON URI backup
@@ -98,10 +102,10 @@ contract OrgIdInterface {
     ) external;
 
     /**
-     * @dev Get all active organizations' ORG.ID hashes
+     * @dev Get all active organizations' ORGiD hashes
      * @param includeInactive Includes not active units into response
      * @return {
-         "organizationsList": "Array of all active organizations' ORG.ID hashes"
+         "organizationsList": "Array of all active organizations' ORGiD hashes"
      }
      */
     function getOrganizations(bool includeInactive)
@@ -110,20 +114,20 @@ contract OrgIdInterface {
         returns (bytes32[] memory organizationsList);
 
     /**
-     * @dev Get organization or unit's info by ORG.ID hash
-     * @param _orgId ORG.ID hash
+     * @dev Get organization or unit's info by ORGiD hash
+     * @param _orgId ORGiD hash
      * @dev Return parameters marked by (*) are only applicable to units
      * @return {
-         "exists": "Returns `false` if ORG.ID doesn't exist",
-         "ORG.ID": "ORG.ID hash",
+         "exists": "Returns `false` if ORGiD doesn't exist",
+         "orgId": "ORGiD hash",
          "orgJsonHash": "ORG.JSON keccak256 hash",
          "orgJsonUri": "ORG.JSON URI",
          "orgJsonUriBackup1": "ORG.JSON URI backup",
          "orgJsonUriBackup2": "ORG.JSON URI backup",
-         "parentOrgId": "Parent ORG.ID (*)",
+         "parentOrgId": "Parent ORGiD (*)",
          "owner": "Owner's address",
          "director": "Unit director's address (*)",
-         "isActive": "Indicates whether ORG.ID is active",
+         "isActive": "Indicates whether ORGiD is active",
          "isDirectorshipAccepted": "Indicates whether director accepted the role (*)"
      }
      */
@@ -145,11 +149,11 @@ contract OrgIdInterface {
         );
 
     /**
-     * @dev Get all active organizational units of a particular ORG.ID
-     * @param parentOrgId Parent ORG.ID hash
+     * @dev Get all active organizational units of a particular ORGiD
+     * @param parentOrgId Parent ORGiD hash
      * @param includeInactive Includes not active units into response
      * @return {
-         "organizationsList": "Array of ORG.ID hashes of active organizational units"
+         "organizationsList": "Array of ORGiD hashes of active organizational units"
      }
      */
     function getUnits(bytes32 parentOrgId, bool includeInactive)
