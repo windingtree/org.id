@@ -1,11 +1,11 @@
 {
-  "version": "0.11.4",
+  "version": "1.0.0",
   "contract": {
     "name": "OrgId",
-    "implementation": "0xd863861E680B4C881A91fC92C36bAB1d09F8cd3A",
-    "proxy": "0xc8fD300bE7e4613bCa573ad820a6F1f0b915CfcA"
+    "implementation": "0x67D560DCA7156ae683AE533313e231AC50bd3CC5",
+    "proxy": "0x595815C6E25268073cb7b5D8D9b23e62F7EdABcb"
   },
   "owner": "0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959",
-  "proxyAdmin": "0x9F67949EE6aA9C94c959Ba64F03781a11ed130fD",
-  "blockNumber": 7455603
+  "proxyAdmin": "0x7C29c5B93ccbA63DBB0eDAA7D8676465051F0996",
+  "blockNumber": 8159389
 }

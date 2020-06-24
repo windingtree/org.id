@@ -9,13 +9,11 @@ ORG.ID Registry is the core smart contract of the [ORG.ID ecosystem](https://org
 
 ### Mainnet
 
-`0xC1A0A8b02351F7E3e2ebD9B5b6a80fF7cdAF93D1` [full config](./.openzeppelin/main-OrgId.json)
-
-**Warning: ownership should be transferred to [DAO](https://github.com/windingtree/dao).**
+`0xC1A0A8b02351F7E3e2ebD9B5b6a80fF7cdAF93D1` [full config](./.openzeppelin/main-OrgId.json) v0.12.1
 
 ### Ropsten
 
-`0xc8fD300bE7e4613bCa573ad820a6F1f0b915CfcA` [full config](./.openzeppelin/ropsten-OrgId.json)
+`0x595815C6E25268073cb7b5D8D9b23e62F7EdABcb` [full config](./.openzeppelin/ropsten-OrgId.json) v1.0.0
 
 ### ORG.ID Sandbox
 
@@ -97,6 +95,6 @@ npm run lint
 - [Winding Tree DAO](https://github.com/windingtree/dao) controls ORG.ID Registry smart contract and some Directories (including their rules)
 - **ORG.ID Registry**
 - [ORG.JSON Schema](https://github.com/windingtree/org.json-schema) is a data format for describing organizations
-- [ORG.ID Resolver](https://github.com/windingtree/org.id-resolver) is an application for fetching information about organization in [W3C DID](https://w3c.github.io/did-core/) format
+- [ORG.ID Resolver](https://github.com/windingtree/org.id-resolver) is an utility for fetching information about organization in [W3C DID](https://w3c.github.io/did-core/) format
 - [ORG.ID Directories](https://github.com/windingtree/org.id-directories) are curated lists of organizations
 - [Arbor](https://arbor.fm) can be used to look up an ORG.ID, and also to create and manage your own ORG.ID
