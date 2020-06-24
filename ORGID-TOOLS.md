@@ -1,4 +1,4 @@
-# ORG.ID Tools
+# ORGiD Tools
 
 Deployments, upgrades, and many other tasks may be performed using [orgid-tools](./management/tools/README.md).
 
@@ -16,15 +16,15 @@ Auto-generated deployment configuration will be saved in `./openzeppelin/<NETWOR
 
 ```json
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "contract": {
     "name": "OrgId",
-    "implementation": "0x67D560DCA7156ae683AE533313e231AC50bd3CC5",
-    "proxy": "0x595815C6E25268073cb7b5D8D9b23e62F7EdABcb"
+    "implementation": "0xd83b0E72616D00649D22Da7B49718fd3264837Bc",
+    "proxy": "0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E"
   },
   "owner": "0xA0B74BFE28223c9e08d6DBFa74B5bf4Da763f959",
-  "proxyAdmin": "0x7C29c5B93ccbA63DBB0eDAA7D8676465051F0996",
-  "blockNumber": 8159389
+  "proxyAdmin": "0x77941f25B85Ab5e299285C173475572a1B21518E",
+  "blockNumber": 8160736
 }
 ```
 
