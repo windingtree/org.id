@@ -81,7 +81,7 @@ npm run test ./<path_to_test_file>.js
 npm run coverage
 ```
 
-### Linting
+### Lint
 
 ```sh
 npm run lint
@@ -93,7 +93,7 @@ npm run lint
 ![ORGiD Ecosystem](./assets/org.id-ecosystem.png)
 
 - [Winding Tree DAO](https://github.com/windingtree/dao) controls ORGiD Registry smart contract and some Directories (including their rules)
-- **ORGiD Registry**
+- **ORG.ID Registry (you are here)**
 - [ORG.JSON Schema](https://github.com/windingtree/org.json-schema) is a data format for describing organizations
 - [ORGiD Resolver](https://github.com/windingtree/org.id-resolver) is an utility for fetching information about organization in [W3C DID](https://w3c.github.io/did-core/) format
 - [ORGiD Directories](https://github.com/windingtree/org.id-directories) are curated lists of organizations
