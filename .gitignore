@@ -22,6 +22,7 @@ scTopics
 
 # ETH keys
 keys.json
+keys2.json
 
 # OpenZeppelin SDK
 .zos.session

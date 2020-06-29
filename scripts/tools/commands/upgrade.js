@@ -100,7 +100,7 @@ module.exports = async (options) => {
     const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
         from,
         gas: truffleConfig.gas || 8000000,
-        gasPrice: truffleJs.gasPrice || 10000000000
+        gasPrice: truffleConfig.gasPrice || 40000000000
     });
         
     // Setup upgradeability project
