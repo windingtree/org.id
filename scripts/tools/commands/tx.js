@@ -59,11 +59,11 @@ module.exports = async (options) => {
     const truffleConfig = truffleJs.networks[network === 'private' ? 'development' : network];
     const txParams = Object.assign({}, Contracts.getDefaultTxParams(), {
         from,
-        gas: truffleConfig.gas || 8000000,
-        gasPrice: truffleConfig.gasPrice || 40000000000
+        gas: truffleConfig.gas,
+        gasPrice: truffleConfig.gasPrice
     });
     const contract = ContractSchema.at(address);
-
+    
     const result = await (await contract.methods[method].apply(contract, argsParsed)).send(txParams);
 
     log('Result', parseCallResult(result));

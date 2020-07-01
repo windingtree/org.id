@@ -21,8 +21,7 @@ scTopics
 .coverage_artifacts
 
 # ETH keys
-keys.json
-keys2.json
+keys*.json
 
 # OpenZeppelin SDK
 .zos.session
