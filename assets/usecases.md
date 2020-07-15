@@ -1,5 +1,5 @@
 # OrgId Use-Cases
-A list of use-case that can be applied to the OrgId smart contact usage
+A list of use-cases that can be applied to the OrgId smart contact
 
 ## Actors
 
