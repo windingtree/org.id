@@ -59,6 +59,9 @@ Additionally, unit's ORGiD may contain:
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `isDirectorshipAccepted` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
+## Use-cases
+[A list of the OrgId use-cases](./assets/usecases.md)
+
 ## Development
 
 ### Setup
