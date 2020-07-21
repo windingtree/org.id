@@ -25,7 +25,7 @@ const getInfuraConfig = (networkName, networkId) => {
             );
         },
         gas: 8000000,
-        gasPrice: 20000000000
+        gasPrice: 80000000000
     };
 };
 
@@ -41,7 +41,7 @@ module.exports = {
             port: 8545,
             network_id: '*', // eslint-disable-line camelcase
             gas: 8000000,
-            gasPrice: 20000000000
+            gasPrice: 80000000000
         },
         main: getInfuraConfig('mainnet', 1),
         ropsten: getInfuraConfig('ropsten', 3),
