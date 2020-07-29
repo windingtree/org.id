@@ -172,13 +172,13 @@ contract('OrgId', accounts => {
         let orgCreationResult;
         let testOrgIdHash;
 
-        const newOrg = async (soltOverride = null) => {
-            const randomSolt = generateHashHelper();
+        const newOrg = async (saltOverride = null) => {
+            const randomsalt = generateHashHelper();
             orgCreationResult = await createOrganizationHelper(
                 orgIdContractInstance,
                 testOrgIdOwner,
                 [
-                    soltOverride || randomSolt,
+                    saltOverride || randomsalt,
                     mockOrgJsonHash,
                     mockOrgJsonUri,
                     mockOrgJsonUriBackup1,
@@ -187,9 +187,9 @@ contract('OrgId', accounts => {
             );
             testOrgIdHash = orgCreationResult
                 .events.OrganizationCreated.returnValues.orgId;
-            
+
             return {
-                randomSolt,
+                randomsalt,
                 mockOrgJsonHash,
                 mockOrgJsonUri,
                 mockOrgJsonUriBackup1,
@@ -225,10 +225,10 @@ contract('OrgId', accounts => {
                 (testOrgId).should.have.property('isDirectorshipAccepted').to.be.false;
             });
 
-            it('should fail if sent already used solt', async () => {
-                const { randomSolt } = await newOrg();
+            it('should fail if sent already used salt', async () => {
+                const { randomsalt } = await newOrg();
                 await assertRevert(
-                    newOrg(randomSolt),
+                    newOrg(randomsalt),
                     'OrgId: Organizarion already exists'
                 );
             });
@@ -473,12 +473,12 @@ contract('OrgId', accounts => {
 
                 before(async () => {
                     for (let i = 0; i < 10; i++) {
-                        const randomSolt = generateHashHelper();
+                        const randomsalt = generateHashHelper();
                         const call = await createOrganizationHelper(
                             newOrgIdContractInstance,
                             randomAddress,
                             [
-                                randomSolt,
+                                randomsalt,
                                 mockOrgJsonHash,
                                 mockOrgJsonUri,
                                 mockOrgJsonUriBackup1,
@@ -543,13 +543,13 @@ contract('OrgId', accounts => {
 
             describe('#createUnit(bytes32,bytes32,address,bytes32,string,string,string)', () => {
                 it('should fail if called by non-owner', async () => {
-                    const randomSolt = generateHashHelper();
+                    const randomsalt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             randomAddress, // caller is non-owner
                             [
-                                randomSolt,
+                                randomsalt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -564,13 +564,13 @@ contract('OrgId', accounts => {
 
                 it('should fail if parent organization not found', async () => {
                     const nonExistingOrgIdHash = generateHashHelper();
-                    const randomSolt = generateHashHelper();
+                    const randomsalt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomSolt,
+                                randomsalt,
                                 nonExistingOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -583,13 +583,13 @@ contract('OrgId', accounts => {
                     );
                 });
 
-                it('should fail if sent already used solt', async () => {
-                    const randomSolt = generateHashHelper();
+                it('should fail if sent already used salt', async () => {
+                    const randomsalt = generateHashHelper();
                     await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
                         [
-                            randomSolt,
+                            randomsalt,
                             testOrgIdHash,
                             unitDirector,
                             mockOrgJsonHash,
@@ -603,7 +603,7 @@ contract('OrgId', accounts => {
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomSolt, // used
+                                randomsalt, // used
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -617,12 +617,12 @@ contract('OrgId', accounts => {
                 });
 
                 it('should automatically set isDirectorshipAccepted to `true` if director is unit owner', async () => {
-                    const randomSolt = generateHashHelper();
+                    const randomsalt = generateHashHelper();
                     const call = await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
                         [
-                            randomSolt,
+                            randomsalt,
                             testOrgIdHash,
                             testOrgIdOwner, // director = owner
                             mockOrgJsonHash,
@@ -650,12 +650,12 @@ contract('OrgId', accounts => {
                     let testUnitHash;
 
                     const newUnit = async () => {
-                        const randomSolt = generateHashHelper();
+                        const randomsalt = generateHashHelper();
                         unitCreationResult = await createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomSolt,
+                                randomsalt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -967,7 +967,7 @@ contract('OrgId', accounts => {
                                     newJsonUriBackup2
                                 )
                                 .send({ from: unitDirector });
-                            
+
                             assertEvent(result, 'OrgJsonChanged', [
                                 [ 'orgId', p => (p).should.equal(testUnitHash) ],
                                 [ 'previousOrgJsonHash', p => (p).should.equal(initialState.orgJsonHash) ],
@@ -1014,12 +1014,12 @@ contract('OrgId', accounts => {
 
                             before(async () => {
                                 for (let i = 0; i < 10; i++) {
-                                    const randomSolt = generateHashHelper();
+                                    const randomsalt = generateHashHelper();
                                     const call = await createUnitHelper(
                                         orgIdContractInstance,
                                         testOrgIdOwner,
                                         [
-                                            randomSolt,
+                                            randomsalt,
                                             testOrgIdHash,
                                             unitDirector,
                                             mockOrgJsonHash,

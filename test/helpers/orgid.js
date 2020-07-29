@@ -9,7 +9,7 @@ module.exports.generateHashHelper = () => web3.utils.keccak256(Math.random().toS
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createOrganization
  * Arguments order: [
- *   solt(bytes32),
+ *   salt(bytes32),
  *   orgJsonHash(bytes32),
  *   orgJsonUri(string),
  *   orgJsonUriBackup1(string),
@@ -23,7 +23,7 @@ module.exports.createOrganizationHelper = async (
     args
 ) => {
     const [
-        solt,
+        salt,
         orgJsonHash,
         orgJsonUri,
         orgJsonUriBackup1,
@@ -32,7 +32,7 @@ module.exports.createOrganizationHelper = async (
 
     const result = await orgIdContract
         .methods['createOrganization(bytes32,bytes32,string,string,string)'](
-            solt,
+            salt,
             orgJsonHash,
             orgJsonUri,
             orgJsonUriBackup1,
@@ -49,7 +49,7 @@ module.exports.createOrganizationHelper = async (
  * @param {address} callerAddress Caller address
  * @param {array} args Array of arguments for the real createUnit
  * Arguments order: [
- *   solt(bytes32),
+ *   salt(bytes32),
  *   parentOrgIdHash(bytes32),
  *   directorAddress(address),
  *   orgJsonHash(bytes32),
@@ -65,7 +65,7 @@ module.exports.createUnitHelper = async (
     args
 ) => {
     const [
-        solt,
+        salt,
         parentOrgIdHash,
         directorAddress,
         orgJsonHash,
@@ -76,7 +76,7 @@ module.exports.createUnitHelper = async (
 
     const result = await orgIdContract
         .methods['createUnit(bytes32,bytes32,address,bytes32,string,string,string)'](
-            solt,
+            salt,
             parentOrgIdHash,
             directorAddress,
             orgJsonHash,

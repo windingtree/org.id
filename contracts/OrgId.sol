@@ -150,7 +150,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organization
-     * @param solt Unique hash required for identifier creation
+     * @param salt Unique hash required for identifier creation
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
@@ -160,14 +160,14 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      }
      */
     function createOrganization(
-        bytes32 solt,
+        bytes32 salt,
         bytes32 orgJsonHash,
         string calldata orgJsonUri,
         string calldata orgJsonUriBackup1,
         string calldata orgJsonUriBackup2
     ) external returns (bytes32 id) {
         id = _createOrganization(
-            solt,
+            salt,
             bytes32(0),
             address(0),
             orgJsonHash,
@@ -180,7 +180,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create organizational unit
-     * @param solt Unique hash required for identifier creation
+     * @param salt Unique hash required for identifier creation
      * @param parentOrgId Parent ORGiD hash
      * @param director Unit director address
      * @param orgJsonHash ORG.JSON keccak256 hash
@@ -189,7 +189,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
-        bytes32 solt,
+        bytes32 salt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
@@ -203,7 +203,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         returns (bytes32 newUnitOrgId)
     {
         newUnitOrgId = _createOrganization(
-            solt,
+            salt,
             parentOrgId,
             director,
             orgJsonHash,
@@ -484,7 +484,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Create new organization and add it to storage
-     * @param solt Unique hash required for identifier creation
+     * @param salt Unique hash required for identifier creation
      * @param parentOrgId Parent ORGiD hash (if applicable)
      * @param director Unit director address (if applicable)
      * @param orgJsonHash ORG.JSON keccak256 hash
@@ -496,7 +496,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
      }
      */
     function _createOrganization(
-        bytes32 solt,
+        bytes32 salt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
@@ -518,7 +518,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         bytes32 orgId = keccak256(
             abi.encodePacked(
                 msg.sender,
-                solt
+                salt
             )
         );
 
@@ -659,7 +659,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
             orgJsonUriBackup1,
             orgJsonUriBackup2
         );
-        
+
         organizations[orgId].orgJsonHash = orgJsonHash;
         organizations[orgId].orgJsonUri = orgJsonUri;
         organizations[orgId].orgJsonUriBackup1 = orgJsonUriBackup1;
