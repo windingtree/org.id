@@ -5,7 +5,7 @@
 
 ## ORGiD Registry
 
-ORGiD Registry is the core smart contract of the [ORGiD ecosystem](https://orgid.tech). It is a list of all organizations and their organizational units. Its interface allows to retrieve information about all and any organization or unit, as well as create and change them.
+ORGiD Registry is the core smart contract of the [ORGiD Ecosystem](https://orgid.tech). It is a database of all organizations and their organizational units. Its interface allows to retrieve information about all and any organization or unit, as well as create and change them.
 
 ### Mainnet
 
@@ -34,6 +34,59 @@ const { OrgIdContract, OrgIdInterfaceContract, addresses } = require('@windingtr
 // Contract addresses
 const { mainnet, ropsten } = addresses;
 ```
+
+## Concept
+
+The core idea behind ORGiD is to assign unique IDs to real world organizations (legal entities) and their individual business units. This goal is achieved via the ORGiD Registry smart contract, where we have two types of records: legal entities and units.
+
+While "legal entity" is self-explanatory and strictly defined, the concept of the "unit" is intentionally left open to interpretation. A unit can represent a department (legal, sales, accounting), or a separate business that the legal entity operates (Acme Anvils, Acme Explosives, Acme Whistles).
+
+There is a clear two-level hierarchy: units (second level) can't exist on their own, they must belong to a parent legal entity record (first level). Legal entity may have an unlimited number of units.
+
+Storing data on Ethereum is impractical, therefore ORGiD Record data is stored off the chain, in specially formatted JSON files we call ORG.JSON. Each ORGiD Record must have its own ORG.JSON file, which, therefore, must either describe a legal entity or a unit (not both together). ORG.JSON integrity is ensured by storing its hash in the registry.
+
+Each ORGiD Record has an owner (Ethereum address) that may execute all the functions exposed by the smart contract interface. Think of it as of the owner of the company or an manager that is authorized to control their company's ORGiD Record.
+
+In case of a unit, it can also be controlled by a director, an Ethereum addresses explicitly assigned by the unit owner. Directorship must be accepted explicitly (via calling `acceptDirectorship`) or implicitly (via calling any other function available to director). Only a subset of owner functionality is available to directors. Think of this as a department director, or a store manager, who can control certain aspects of their units.
+
+ORGiD Records are never removed from the registry, they are deactivated instead.
+
+### Example
+
+#### Step 1: Legal Entity Record
+
+Acme, Inc. manager (ethereum addresss `0x111AAA`) creates a record for their company, with registry-assigned ID `0x3bEf0a`.
+
+ID | Parent ID | Owner | Director | Directorship Accepted | ORG.JSON URI | ORG.JSON Hash |
+--- | --- | --- | --- | --- | --- | ---
+`0x3bEf0a` | `null` | `0x111AAA` | `0x000000` | `false` | `http://` | `0x123456`
+
+#### Step 2: Units
+
+`0x111AAA` may now add business units to their company: Acme Anvils, Acme Whistles, and Acme Explosives. They also specified that Acme Explosives' director will be `0x222bbb`.
+
+ID | Parent ID | Owner | Director | Directorship Accepted | ORG.JSON URI | ORG.JSON Hash |
+--- | --- | --- | --- | --- | --- | ---
+`0x3bEf0a` | `null` | `0x111AAA` | `0x000000` | `false` | `http://111111` | `0x111111`
+`0x0c9e31` | `0x3bEf0a` | `0x111AAA` | `0x000000` | `false` | `http://222222` | `0x222222`
+`0x081600` | `0x3bEf0a` | `0x111AAA` | `0x000000` | `false` | `http://333333` | `0x333333`
+`0x631D68` | `0x3bEf0a` | `0x111AAA` | `0x222bbb` | `false` | `ipfs://444444` | `0x444444`
+
+#### Step 3: Directors
+
+`0x111AAA` may assign or remove unit directors at any time. Every time a new director is appointed, they have to accept their role. After `0x222bbb` does that, the result is
+
+ID | Parent ID | Owner | Director | Directorship Accepted | ORG.JSON URI | ORG.JSON Hash |
+--- | --- | --- | --- | --- | --- | ---
+`0x631D68` | `0x3bEf0a` | `0x111AAA` | `0x222bbb` | `true` | `ipfs://444444` | `0x444444`
+
+#### Step 4: Changing ORG.JSON
+
+Both owner and director may change ORG.JSON files, in which case they will have to update its hash.
+
+ID | Parent ID | Owner | Director | Directorship Accepted | ORG.JSON URI | ORG.JSON Hash |
+--- | --- | --- | --- | --- | --- | ---
+`0x631D68` | `0x3bEf0a` | `0x111AAA` | `0x222bbb` | `true` | `ipfs://567890` | `0x567890`
 
 ## Interface
 
