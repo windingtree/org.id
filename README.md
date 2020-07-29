@@ -112,8 +112,7 @@ Additionally, unit's ORGiD may contain:
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `isDirectorshipAccepted` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
-## Use-cases
-[A list of the OrgId use-cases](./assets/usecases.md)
+## [Use Cases](./USECASES.md)
 
 ## Development
 
@@ -144,13 +143,30 @@ npm run lint
 
 ```
 
+## Contribution Guide
+
+We welcome all contributions to the ORGiD Ecosystem. It doesn't have to be code, you may work on [documentation](https://github.com/windingtree/orgid.tech/), [branding](https://github.com/windingtree/branding), or simply participate in community discussions on our [forum](https://forum.windingtree.com) and in [Telegram](https://t.me/windingtree).
+
+If you would like to participate in development of any of our [codebases](https://github.com/windingtree/), please try to stick to the following guidelines.
+
+### In doubt? Create an Issue!
+
+If you want to request a feature or report a bug, or if you're not sure how to fix something, please create an issue in a relevant GitHub repository.
+
+### Pull Request
+
+Let's follow the standard [Pull Request flow](https://gist.github.com/Chaser324/ce0505fbed06b947d962).
+
+Thank you for your time and code!
+
 ## ORGiD Ecosystem
 
-![ORGiD Ecosystem](./assets/org.id-ecosystem.png)
+![ORGiD Ecosystem](https://raw.githubusercontent.com/windingtree/org.id/develop/assets/org.id-ecosystem.png)
 
-- [Winding Tree DAO](https://github.com/windingtree/dao) controls ORGiD Registry smart contract and some Directories (including their rules)
-- **ORG.ID Registry (you are here)**
-- [ORG.JSON Schema](https://github.com/windingtree/org.json-schema) is a data format for describing organizations
-- [ORGiD Resolver](https://github.com/windingtree/org.id-resolver) is an utility for fetching information about organization in [W3C DID](https://w3c.github.io/did-core/) format
-- [ORGiD Directories](https://github.com/windingtree/org.id-directories) are curated lists of organizations
-- [Arbor](https://arbor.fm) can be used to look up an ORGiD, and also to create and manage your own ORGiD
+- **[Winding Tree DAO](https://dao.windingtree.com)** ([repo](https://github.com/windingtree/dao)) controls ORGiD Registry smart contract and some Directories
+- **[ORGiD Website](https://orgid.tech)** ([repo](https://github.com/windingtree/orgid.tech/))
+- **ORGiD Registry** ([repo](https://github.com/windingtree/org.id/)) is the main smart contract, a database of organizations and their business units
+- **ORG.JSON Schema** ([repo](https://github.com/windingtree/org.json-schema)) is a data format for describing organizations
+- **ORGiD Resolver** ([repo](https://github.com/windingtree/org.id-resolver)) is an utility for fetching organization data in [W3C DID](https://w3c.github.io/did-core/) format
+- **Arbor** ([fe](https://github.com/windingtree/arbor-frontend) [be](https://github.com/windingtree/arbor-backend)) is the application behind **[Winding Tree Marketplace](https://marketplace.windingtree.com).** It can be used to look up an ORGiD, and also to create and manage your own ORGiD.
+- **[ORGiD Directories](https://marketplace.windingtree.com)** ([repo](https://github.com/windingtree/org.id-directories)) are curated lists of organizations
