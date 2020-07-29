@@ -3,10 +3,10 @@
 ## Actors
 
 - ORGiD Registry owner
-- Owner of an organization
-- Director of an organizational unit
-- An external smart contract developer
-- Customer of an organization
+- ORGiD Registry user
+- Organization owner
+- Unit director
+- External smart contract developer
 
 ## ORGiD Registry Owner
 
@@ -63,208 +63,32 @@ The `transferOwnership`, which requires a single `address` parameter (the new ow
 
 Upon a successful completion of the transaction, an `OwnershipTransferred` event will be emitted, and the ownership transferred.
 
+### As ORGiD owner, I want to transfer smart contract upgradeability ownership to another Ethereum account
 
+See OpenZeppelin's [Ownable](https://docs.openzeppelin.com/contracts/2.x/api/ownership).
 
+## ORGiD Registry user
 
-
-> As ORGiD owner, I want to move smart contract upgradeability ownership to another owner
-
-The ProxyAdmin smart contract instance which is a part of the OpenZeppelin upgradeability schema also uses known `Ownable` behaviour so for the transferring of the ProxyAdmin ownership, a current owner should send a transaction as same as described earlier.
-This step is required in case of the OrgId ownership changing because of ProxyAdmin is a part which able to change proxy implementation and also should be owned by the new owner.  
-
-## Organization owner's cases
-
-> As an organization owner, I want to create a unique, not changeable and ownable identifier (ORGiD) which can calculated using pre-defined salt value and owner ethereum address
-
-An ORGiD indentifier can be calculated as `keccak256(<sender_address>,<bytes32_salt>)` before it will be created and saved to the smart contract storage.   
-This feature allows users to save org.json URI and hash in one transaction aside with the ORGiD creation (one transaction instead of two).  
-After the ORGiD is created and saved to the OrgId smart contract storage this identifier cannot be changed. The creator of the ORGiD becomes its owner and able to change associated data, create and update organizational units and transfer ORGiD ownership.  
-The sender cannot use `salt` twice for different ORGiD creation transaction because of an ORGiD must be unique. The second ORGiD creation transaction will results with failure and returns a error `OrgId: Organizarion already exists`.
-
-For the creation of an ORGiD a transaction should be sent:
-
-- function: `createOrganization(bytes32,bytes32,string,string,string)`
-- arguments:
-    - `salt - bytes32 hash`
-    - `org.json keccak256 hash`
-    - `org.json primary URI`
-    - `org.json backup URI #1`
-    - `org.json backup URI #2`
-
-As a result of this transaction will be updated related organization's storage and the `OrganizationCreated` event will be emitted.  
-
-> As an organization owner, I want to `save` and `change` associated with ORGiD the following information:
->  - org.json permanent URI
->  - org.json permanent backup URI #1
->  - org.json permanent backup URI #2
->  - org.json ketchak256 hash
-
-Initially, associated information is saved during the ORGiD creation. To change this information an owner should sent a transaction:
-
-- function: `setOrgJson(bytes32,bytes32,string,string,string)`
-- arguments:
-    - `ORGiD`
-    - `org.json keccak256 hash`
-    - `org.json primary URI`
-    - `org.json backup URI #1`
-    - `org.json backup URI #2`
-
-As a result of this transaction the `OrgJsonChanged` event will be emitted.  
-
-> As an organization owner, I want to create an organizational unit where I will be a director
-
-This case can be implemented by the sending of the transaction:
-
-- function: `createUnit(bytes32,bytes32,address,bytes32,string,string,string)`
-- arguments:
-    - `salt`
-    - `parent ORGiD`
-    - `parent ORGiD owner address`
-    - `unit org.json primary URI`
-    - `unit org.json backup URI #1`
-    - `unit org.json backup URI #2`
-
-As a result of this transaction the `UnitCreated` event will be emitted.
-
-> As an organization owner, I want to create an organizational unit where will be a separate director
-
-This case can be implemented by the sending of the transaction:
-
-- function: `createUnit(bytes32,bytes32,address,bytes32,string,string,string)`
-- arguments:
-    - `salt`
-    - `parent ORGiD`
-    - `unit director address`
-    - `unit org.json primary URI`
-    - `unit org.json backup URI #1`
-    - `unit org.json backup URI #2`
-
-As a result of this transaction the `UnitCreated` event will be emitted.  
-
-> As an organization owner, I want to transfer own organizational unit to the another director
-
-This case can be implemented by the sending of the transaction (only allowed for the ORGiD owner):
-
-- function: `transferDirectorship(bytes32,address)`
-- arguments:
-    - `ORGiD`
-    - `new unit director address`
-
-As a result of this transaction the `DirectorshipTransferred` event will be emitted.
-
-> As an organization owner, I want to renounce directorship of the own organizational unit
-
-This case can be implemented by the sending of the transaction (only allowed for the ORGiD owner and unit director as well):
-
-- function: `renounceDirectorship(bytes32)`
-- arguments:
-    - `ORGiD`
-
-As a result of this transaction an unit director will be set to zero address value (`0x0`) and the `DirectorshipTransferred` event will be emitted.  
-
-> As an organization owner, I want to transfer ORGiD ownership to the another owner  
-
-This case can be implemented by the sending of the transaction (only allowed for the ORGiD owner):
-
-- function: `transferOrganizationOwnership(bytes32,address)`
-- arguments:
-    - `ORGiD`
-    - `new organization owner address`
-
-As a result of this transaction an ownership of ORGiD will be transferred the new owner and the `OrganizationOwnershipTransferred` event will be emitted.
-
-> As an organization owner, I want to get a list of all own organizational units  
-
-This case can be implemented by the calling of the public function:
+### I want to get a list of all organizations in the registry
 
 - function: `getOrganizations(bool)`
 - arguments:
-    - `boolean flag that means: include inactive organizations`
+    - `bool setting to true will include inactive organizations`
 
-The inactive organization is an organization with active status set to `false` value.  
+### I want to get a list of all units of a particular ORGiD
 
-> As an organization owner, I want to change active status of the own organization
-
-This case can be implemented by the sending of the transaction:
-
-- function: `toggleActiveState(bytes32)`
+- function: `_getOrganizations(bytes32,bool)`
 - arguments:
-    - `ORGiD`
+    - `bytes32 ORGiD`
+    - `bool setting to true will include inactive units`
 
-As a result of this transaction will be inverted previous active state value and the `OrganizationActiveStateChanged` event will be emitted.
-
-> As an organization owner, I want to monitor all ORGiD changes
-
-This case can be implemented by `listening` of the OrgId smart contracts events.
-The whole list of events is:
-
-- `OrganizationCreated`
-- `UnitCreated`
-- `OrganizationActiveStateChanged`
-- `DirectorshipAccepted`
-- `DirectorshipTransferred`
-- `OrganizationOwnershipTransferred`
-- `OrgJsonChanged`
-
-## Organizational Unit director's cases
-
-> As an organizational unit director, I want to confirm my directorship
->  - automatically by starting using of available smart-contract functions
->  - directly by sending a special transaction
-
-Initially, a directorship acceptance status is set to `false` value. This status will be automatically changed to `true` in case of director will sends `setOrgJson(bytes32,bytes32,string,string,string)` transaction.
-Also, this status can be changed by sending of the transaction (allowed for the unit director only):
-
-- function: `acceptDirectorship(bytes32)`
-- arguments:
-    - `ORGiD`
-
-An event `DirectorshipAccepted` will be emitted if directorship acceptance status will be set to the `true` value.  
-
-> As an organizational unit director, I want to `change` associated with ORGiD the following information:
->  - org.json permanent URI
->  - org.json permanent backup URI #1
->  - org.json permanent backup URI #2
->  - org.json ketchak256 hash
-
-> As an organizational unit director, I want to monitor all ORGiD changes
-
-For the unit director is available all events that emitted during transactions (see the events list in the organization owner cases section).  
-
-## External smart contract's cases
-
-> As an external smart contract, I want to have an OrgId interface
-
-The OrgId repository contains special contract `OrgIdInterface` which implements a standard OrgId smart contract interface.  
-
-> As an external smart contract, I want to have an ability to validate deployed OrgId smart contract instance by its interface
-
-The OrgId smart contact supports `ERC165` standard which allowing interfaces validataion.  
-Here the whole list of interfaces that can be checked on the OrgId smart contract by the external smart contracts:  
-
-- ERC165 interface: `0x01ffc9a7`
-- Ownable interface: `0x7f5828d0`
-- ORGiD interface: `0x0f4893ef`
-- Hierarchy (organizational units) interface: `0x6af2fb27`
-
-> As an external smart contract, I want to get a list of existed ORGiDs of organizations and organizational units  
-
-This case can be implemented by calling of the following functions:  
-
-- `getOrganizations(bool)` with boolean (includeInactive) value as argument  
-- `getUnits(bytes32,bool)` with ORGiD and boolean (includeInactive) value as arguments  
-
-## Organization (and organizational unit) Client's cases
-
-> As an organization client, I want to get an organization information by its ORGiD
-
-This case can be implemented by the calling of the public function:
+### I want to get data of a certain ORGiD
 
 - function: `getOrganization(bytes32)`
 - arguments:
     - `ORGiD`
 
-As a result of calling this function the following tuple will be returned:  
+The following data will be returned:
 
 - bool `exists`,
 - bytes32 `orgId`,
@@ -278,20 +102,136 @@ As a result of calling this function the following tuple will be returned:
 - bool `isActive`,
 - bool `isDirectorshipAccepted`
 
-In the case of non-existent organization `exists` value will be set to the `false` value.  
+In case requested `ORGiD` does not exist, the `exists` parameter will be `false`.
 
-> As an organization client, I want to get an actual organization (or organizational unit) org.json URI and hash
+### I want to know when new organizations are added to the registry and when they information is updated
 
-This case can be implemented by calling the function `getOrganization(bytes32)` as described in the previous case.  
+Monitor these events:
 
-> As an organization client, I want to get a current active status of the organization
+- `OrganizationCreated`
+- `UnitCreated`
+- `OrganizationActiveStateChanged`
+- `DirectorshipAccepted`
+- `DirectorshipTransferred`
+- `OrganizationOwnershipTransferred`
+- `OrgJsonChanged`
 
-This case can be implemented by calling the function `getOrganization(bytes32)` as described in the previous case.
+The inactive organization is an organization with active status set to `false` value.  
 
-> As an organizational unit client, I want to get information about the directorship and its acceptance status
+## Organization Owner
 
-This case can be implemented by calling the function `getOrganization(bytes32)` as described in the previous case.
+### Before I send a transaction to create a new organization, I'd like to calculate its ID.
 
-> As an organizational unit client, I want to get an ORGiD of the parent organization
+Organization and unit identifiers are calculated via `keccak256(<sender_address>,<bytes32_salt>)`. This allows users to create ORG.JSON files beforehand, otherwise they would have needed two transactions, since ORG.JSON schema requires the ID to be present.
 
-This case can be implemented by calling the function `getOrganization(bytes32)` as described in the previous case.
+The sender cannot use the same `salt` twice, since it will generated the same identifier, and in this case the smart contract will refuse to create a new record.
+
+### I want to create a new organization
+
+- function: `createOrganization(bytes32,bytes32,string,string,string)`
+- arguments:
+    - `salt - bytes32 hash`
+    - `org.json keccak256 hash`
+    - `org.json primary URI`
+    - `org.json backup URI #1`
+    - `org.json backup URI #2`
+
+Event: `OrganizationCreated`
+
+### I want to change ORG.JSON URIs and hash
+
+- function: `setOrgJson(bytes32,bytes32,string,string,string)`
+- arguments:
+    - `ORGiD`
+    - `org.json keccak256 hash`
+    - `org.json primary URI`
+    - `org.json backup URI #1`
+    - `org.json backup URI #2`
+
+Event: `OrgJsonChanged`
+
+### I want to add a unit to my organization
+
+- function: `createUnit(bytes32,bytes32,address,bytes32,string,string,string)`
+- arguments:
+    - `salt`
+    - `Parent ORGiD`
+    - `unit director address`
+    - `unit org.json primary URI`
+    - `unit org.json backup URI #1`
+    - `unit org.json backup URI #2`
+
+Event: `UnitCreated`
+
+### I want to assign someone as director of a unit
+
+- function: `transferDirectorship(bytes32,address)`
+- arguments:
+    - `Unit ORGiD`
+    - `new unit director address`
+
+Event: `DirectorshipTransferred`
+
+### I want to transfer an ORGiD ownership to another Ethereum account
+
+- function: `transferOrganizationOwnership(bytes32,address)`
+- arguments:
+    - `ORGiD`
+    - `new organization owner address`
+
+Event: `OrganizationOwnershipTransferred`
+
+### I want to deactivate an ORGiD
+
+- function: `toggleActiveState(bytes32)`
+- arguments:
+    - `ORGiD`
+
+Event: `OrganizationActiveStateChanged`
+
+## Unit director
+
+### As a newly assigned director, I want to confirm my role explicitly
+
+- function: `acceptDirectorship(bytes32)`
+- arguments:
+    - `ORGiD`
+
+Event: `DirectorshipAccepted`
+
+### I want to change ORG.JSON data of my unit
+
+- function: `setOrgJson(bytes32,bytes32,string,string,string)`
+- arguments:
+    - `ORGiD`
+    - `org.json keccak256 hash`
+    - `org.json primary URI`
+    - `org.json backup URI #1`
+    - `org.json backup URI #2`
+
+Event: `OrgJsonChanged`
+
+In case directorship status was not accepted, using this function will automatically accept the role, and `DirectorshipAccepted` will be emitted.
+
+### I want to renounce my directorship
+
+- function: `renounceDirectorship(bytes32)`
+- arguments:
+    - `ORGiD`
+
+Event: `DirectorshipTransferred`
+
+## External smart contract developer
+
+### I would like my new smart contract to have an ORGiD interface.
+
+Please have a look at `OrgIdInterface.sol`.
+
+### How do I validate ORGiD deployment using its interface?
+
+ORGiD supports `ERC165` standard which allows interface validataion. ORGiD implements the following interfaces:
+
+- ERC165: `0x01ffc9a7`
+- Ownable: `0x7f5828d0`
+- ORGiD: `0x0f4893ef`
+- Hierarchy (units): `0x6af2fb27`
