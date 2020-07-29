@@ -7,7 +7,7 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organization
-     * @param solt Unique hash required for identifier creation
+     * @param salt Unique hash required for identifier creation
      * @param orgJsonHash ORG.JSON's keccak256 hash
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @param orgJsonUriBackup1 ORG.JSON URI backup (stored off-chain)
@@ -17,7 +17,7 @@ contract OrgIdInterface {
      }
      */
     function createOrganization(
-        bytes32 solt,
+        bytes32 salt,
         bytes32 orgJsonHash,
         string calldata orgJsonUri,
         string calldata orgJsonUriBackup1,
@@ -26,7 +26,7 @@ contract OrgIdInterface {
 
     /**
      * @dev Create organizational unit
-     * @param solt Unique hash required for identifier creation
+     * @param salt Unique hash required for identifier creation
      * @param parentOrgId Parent ORGiD hash
      * @param director Unit director address
      * @param orgJsonHash ORG.JSON keccak256 hash
@@ -35,7 +35,7 @@ contract OrgIdInterface {
      * @param orgJsonUriBackup2 Unit ORG.JSON URI backup
      */
     function createUnit(
-        bytes32 solt,
+        bytes32 salt,
         bytes32 parentOrgId,
         address director,
         bytes32 orgJsonHash,
