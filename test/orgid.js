@@ -43,7 +43,7 @@ require('chai')
 contract('OrgId', accounts => {
     const orgIdContractOwner = accounts[0];
     const randomAddress = accounts[18]; // isn't it funny?
-    // const randomAddressTwo = accounts[19];
+    const randomAddressTwo = accounts[19];
 
     const setUpProject = async () => {
         const project = await TestHelper({
@@ -65,10 +65,33 @@ contract('OrgId', accounts => {
 
     before(async () => {
         project = await setUpProject();
-        orgIdContractInstance = await deployNewOrgIdContract(project);
     });
 
     describe('OrgId upgradeability', () => {
+        let orgIdHash;
+
+        before(async () => {
+            orgIdContractInstance = await deployNewOrgIdContract(project);
+            const randomSalt = generateHashHelper();
+            const orgCreationResult = await createOrganizationHelper(
+                orgIdContractInstance,
+                randomAddressTwo,
+                [
+                    randomSalt,
+                    mockOrgJsonHash,
+                    mockOrgJsonUri,
+                    mockOrgJsonUriBackup1,
+                    mockOrgJsonUriBackup2
+                ]
+            );
+            orgIdHash = orgCreationResult
+                .events.OrganizationCreated.returnValues.orgId;
+        });
+
+        after(async () => {
+            project = await setUpProject();
+        });
+
         it('should upgrade proxy and reveal a new function and interface', async () => {
             const newProxy = await project.upgradeProxy(
                 orgIdContractInstance.address,
@@ -80,6 +103,11 @@ contract('OrgId', accounts => {
             );
             const upgradeabilityInstance = OrgIdUpgradeabilityContract.at(newProxy.address);
 
+            (await orgIdContractInstance
+                .methods['getOrganization(bytes32)'](orgIdHash)
+                .call())
+                .should.be.an('object')
+                .to.have.property('exists').to.be.true;
             await upgradeabilityInstance
                 .methods['setupNewStorage(uint256)']('100')
                 .send({ from: orgIdContractOwner });
