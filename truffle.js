@@ -5,7 +5,7 @@ const getInfuraConfig = (networkName, networkId) => {
     var keys = {};
 
     try {
-        keys = require('./keys.json');
+        keys = require('./keys2.json');
 
         if (keys.MYTHX_API_KEY) {
             process.env.MYTHX_API_KEY = keys.MYTHX_API_KEY;
@@ -44,13 +44,12 @@ module.exports = {
             gasPrice: 80000000000
         },
         main: getInfuraConfig('mainnet', 1),
-        ropsten: getInfuraConfig('ropsten', 3),
-        rinkeby: getInfuraConfig('rinkeby', 4),
+        ropsten: getInfuraConfig('ropsten', 3)
     },
 
     compilers: {
         solc: {
-            version: '0.5.16',
+            version: '0.5.17',
             settings: {
                 optimizer: {
                     enabled: true,

@@ -55,7 +55,7 @@ contract('OrgId', accounts => {
     const deployNewOrgIdContract = async project => {
         const instance = await project.createProxy(OrgIdContract, {
             initMethod: 'initialize',
-            initArgs: [ orgIdContractOwner ]
+            initArgs: []
         });
         return instance;
     };
@@ -74,7 +74,7 @@ contract('OrgId', accounts => {
                 orgIdContractInstance.address,
                 OrgIdUpgradeabilityContract,
                 {
-                    initMethod: 'initialize',
+                    initMethod: 'initializeNew',
                     initArgs: []
                 }
             );
@@ -92,61 +92,10 @@ contract('OrgId', accounts => {
         });
     });
 
-    describe('OrgId ownable interface', () => {
-        const newOrgIdContractOwner = accounts[7];
-
-        describe('#transferOwnership(address)', () => {
-            it('should fail if called by non-owner', async () => {
-                await assertRevert(
-                    orgIdContractInstance
-                        .methods['transferOwnership(address)'](randomAddress)
-                        .send({ from: randomAddress }),
-                    // This error message defined in @openzeppelin Ownable.sol
-                    'Ownable: caller is not the owner'
-                );
-            });
-
-            it('should fail if new owner has zero address', async () => {
-                await assertRevert(
-                    orgIdContractInstance
-                        .methods['transferOwnership(address)'](zeroAddress)
-                        .send({ from: orgIdContractOwner }),
-                    // This error message defined in @openzeppelin Ownable.sol
-                    'Ownable: new owner is the zero address'
-                );
-            });
-
-            it('should transfer contract ownership', async () => {
-                const result = await orgIdContractInstance
-                    .methods['transferOwnership(address)'](newOrgIdContractOwner)
-                    .send({ from: orgIdContractOwner });
-
-                assertEvent(result, 'OwnershipTransferred', [
-                    [ 'previousOwner', p => (p).should.equal(orgIdContractOwner) ],
-                    [ 'newOwner', p => (p).should.equal(newOrgIdContractOwner) ],
-                ]);
-            });
-        });
-
-        describe('#owner()', async () => {
-            it('should return contract owner (changed in previous test)', async () => {
-                (await orgIdContractInstance.methods['owner()']().call())
-                    .should.equal(newOrgIdContractOwner);
-            });
-        });
-    });
-
     describe('ERC165 interfaces', () => {
         it('should support IERC165 interface', async () => {
             (await orgIdContractInstance
                 .methods['supportsInterface(bytes4)']('0x01ffc9a7')
-                .call()
-            ).should.be.true;
-        });
-
-        it('should support ownable interface', async () => {
-            (await orgIdContractInstance
-                .methods['supportsInterface(bytes4)']('0x7f5828d0')
                 .call()
             ).should.be.true;
         });
@@ -173,12 +122,12 @@ contract('OrgId', accounts => {
         let testOrgIdHash;
 
         const newOrg = async (saltOverride = null) => {
-            const randomsalt = generateHashHelper();
+            const randomSalt = generateHashHelper();
             orgCreationResult = await createOrganizationHelper(
                 orgIdContractInstance,
                 testOrgIdOwner,
                 [
-                    saltOverride || randomsalt,
+                    saltOverride || randomSalt,
                     mockOrgJsonHash,
                     mockOrgJsonUri,
                     mockOrgJsonUriBackup1,
@@ -189,7 +138,7 @@ contract('OrgId', accounts => {
                 .events.OrganizationCreated.returnValues.orgId;
 
             return {
-                randomsalt,
+                randomSalt,
                 mockOrgJsonHash,
                 mockOrgJsonUri,
                 mockOrgJsonUriBackup1,
@@ -226,9 +175,9 @@ contract('OrgId', accounts => {
             });
 
             it('should fail if sent already used salt', async () => {
-                const { randomsalt } = await newOrg();
+                const { randomSalt } = await newOrg();
                 await assertRevert(
-                    newOrg(randomsalt),
+                    newOrg(randomSalt),
                     'OrgId: Organizarion already exists'
                 );
             });
@@ -473,12 +422,12 @@ contract('OrgId', accounts => {
 
                 before(async () => {
                     for (let i = 0; i < 10; i++) {
-                        const randomsalt = generateHashHelper();
+                        const randomSalt = generateHashHelper();
                         const call = await createOrganizationHelper(
                             newOrgIdContractInstance,
                             randomAddress,
                             [
-                                randomsalt,
+                                randomSalt,
                                 mockOrgJsonHash,
                                 mockOrgJsonUri,
                                 mockOrgJsonUriBackup1,
@@ -543,13 +492,13 @@ contract('OrgId', accounts => {
 
             describe('#createUnit(bytes32,bytes32,address,bytes32,string,string,string)', () => {
                 it('should fail if called by non-owner', async () => {
-                    const randomsalt = generateHashHelper();
+                    const randomSalt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             randomAddress, // caller is non-owner
                             [
-                                randomsalt,
+                                randomSalt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -564,13 +513,13 @@ contract('OrgId', accounts => {
 
                 it('should fail if parent organization not found', async () => {
                     const nonExistingOrgIdHash = generateHashHelper();
-                    const randomsalt = generateHashHelper();
+                    const randomSalt = generateHashHelper();
                     await assertRevert(
                         createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomsalt,
+                                randomSalt,
                                 nonExistingOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -584,12 +533,12 @@ contract('OrgId', accounts => {
                 });
 
                 it('should fail if sent already used salt', async () => {
-                    const randomsalt = generateHashHelper();
+                    const randomSalt = generateHashHelper();
                     await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
                         [
-                            randomsalt,
+                            randomSalt,
                             testOrgIdHash,
                             unitDirector,
                             mockOrgJsonHash,
@@ -603,7 +552,7 @@ contract('OrgId', accounts => {
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomsalt, // used
+                                randomSalt, // used
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -617,12 +566,12 @@ contract('OrgId', accounts => {
                 });
 
                 it('should automatically set isDirectorshipAccepted to `true` if director is unit owner', async () => {
-                    const randomsalt = generateHashHelper();
+                    const randomSalt = generateHashHelper();
                     const call = await createUnitHelper(
                         orgIdContractInstance,
                         testOrgIdOwner,
                         [
-                            randomsalt,
+                            randomSalt,
                             testOrgIdHash,
                             testOrgIdOwner, // director = owner
                             mockOrgJsonHash,
@@ -650,12 +599,12 @@ contract('OrgId', accounts => {
                     let testUnitHash;
 
                     const newUnit = async () => {
-                        const randomsalt = generateHashHelper();
+                        const randomSalt = generateHashHelper();
                         unitCreationResult = await createUnitHelper(
                             orgIdContractInstance,
                             testOrgIdOwner,
                             [
-                                randomsalt,
+                                randomSalt,
                                 testOrgIdHash,
                                 unitDirector,
                                 mockOrgJsonHash,
@@ -836,6 +785,12 @@ contract('OrgId', accounts => {
                                 [ 'previousDirector', p => (p).should.equal(testOrgIdOwner) ],
                                 [ 'newDirector', p => (p).should.equal(zeroAddress) ]
                             ]);
+
+                            const org = await orgIdContractInstance
+                                .methods['getOrganization(bytes32)'](testUnitHash)
+                                .call();
+
+                            (org.isDirectorshipAccepted).should.be.false;
                         });
 
                         it('should set director address to zero if unit DIRECTOR renounces their directorship', async () => {
@@ -861,6 +816,12 @@ contract('OrgId', accounts => {
                                 [ 'previousDirector', p => (p).should.equal(unitDirector) ],
                                 [ 'newDirector', p => (p).should.equal(zeroAddress) ]
                             ]);
+
+                            const org = await orgIdContractInstance
+                                .methods['getOrganization(bytes32)'](testUnitHash)
+                                .call();
+
+                            (org.isDirectorshipAccepted).should.be.false;
                         });
                     });
 
@@ -1014,12 +975,12 @@ contract('OrgId', accounts => {
 
                             before(async () => {
                                 for (let i = 0; i < 10; i++) {
-                                    const randomsalt = generateHashHelper();
+                                    const randomSalt = generateHashHelper();
                                     const call = await createUnitHelper(
                                         orgIdContractInstance,
                                         testOrgIdOwner,
                                         [
-                                            randomsalt,
+                                            randomSalt,
                                             testOrgIdHash,
                                             unitDirector,
                                             mockOrgJsonHash,
