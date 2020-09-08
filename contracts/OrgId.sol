@@ -3,13 +3,14 @@ pragma solidity 0.5.17;
 
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
-import "./OrgIdInterface.sol";
 import "./ERC165/ERC165.sol";
+import "./OwnablePatch.sol";
+import "./OrgIdInterface.sol";
 
 /**
  * @title ORGiD Registry Smart Contract
  */
-contract OrgId is OrgIdInterface, ERC165, Initializable {
+contract OrgId is OrgIdInterface, OwnablePatch, ERC165, Initializable {
 
     using SafeMath for uint256;
 
