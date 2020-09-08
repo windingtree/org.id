@@ -103,6 +103,8 @@ module.exports = async (options) => {
         gasPrice: truffleConfig.gasPrice
     });
 
+    // console.log('@@@', txParams, await web3.eth.getBlock('latest'));
+
     // Setup upgradeability project
     const project = await ProxyAdminProject.fetch(
         name,

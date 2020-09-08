@@ -24,7 +24,7 @@ const getInfuraConfig = (networkName, networkId) => {
                 10
             );
         },
-        gas: 8000000,
+        gas: 3000000,
         gasPrice: 80000000000
     };
 };
