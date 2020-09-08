@@ -29,7 +29,7 @@ Inputs
 
 ## *function* createOrganization
 
-OrgIdInterface.createOrganization(solt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
+OrgIdInterface.createOrganization(salt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
 
 > Create organization
 
@@ -37,7 +37,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | solt | Unique hash required for identifier creation |
+| *bytes32* | salt | Unique hash required for identifier creation |
 | *bytes32* | orgJsonHash | ORG.JSON's keccak256 hash |
 | *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
 | *string* | orgJsonUriBackup1 | ORG.JSON URI backup (stored off-chain) |
@@ -51,7 +51,7 @@ Outputs
 
 ## *function* createUnit
 
-OrgIdInterface.createUnit(solt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
+OrgIdInterface.createUnit(salt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
 
 > Create organizational unit
 
@@ -59,7 +59,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | solt | Unique hash required for identifier creation |
+| *bytes32* | salt | Unique hash required for identifier creation |
 | *bytes32* | parentOrgId | Parent ORGiD hash |
 | *address* | director | Unit director address |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |

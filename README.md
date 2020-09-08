@@ -13,7 +13,7 @@ ORGiD Registry is the core smart contract of the [ORGiD Ecosystem](https://orgid
 
 ### Ropsten
 
-`0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E` [full config](./.openzeppelin/ropsten-OrgId.json) v1.0.1
+`0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E` [full config](./.openzeppelin/ropsten-OrgId.json) v1.1.0
 
 ### ORGiD Sandbox
 
