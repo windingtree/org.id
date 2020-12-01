@@ -1,4 +1,5 @@
-pragma solidity >=0.5.16;
+// SPDX-License-Identifier: GPL-3.0-only;
+pragma solidity 0.5.17;
 
 import "../OrgId.sol";
 
@@ -13,11 +14,11 @@ contract OrgIdUpgradeability is OrgId {
         return test;
     }
 
-    function initialize() external {
+    function initializeNew() external {
         _registerInterface(this.newFunction.selector);// 0x1b28d63e
     }
 
-    function setupNewStorage(uint256 value) external onlyOwner {
+    function setupNewStorage(uint256 value) external {
         test = value;
     }
 }

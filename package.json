@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/org.id",
-  "version": "1.1.0",
+  "version": "1.1.3",
   "description": "ORG.ID is Decentralized Identifier (DID) Protocol for Organizations",
   "directories": {
     "test": "test",
@@ -50,22 +50,23 @@
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.2.8",
-    "@truffle/hdwallet-provider": "1.0.35",
+    "@truffle/contract": "4.2.21",
+    "@truffle/hdwallet-provider": "1.2.0",
     "chai": "4.2.0",
     "bn-chai": "1.0.1",
     "coveralls": "3.1.0",
-    "eslint": "7.2.0",
-    "ganache-cli": "6.9.1",
-    "husky": "4.2.5",
+    "eslint": "7.8.1",
+    "ganache-cli": "6.10.1",
+    "husky": "4.3.0",
     "rimraf": "3.0.2",
-    "solc": "0.6.9",
-    "solhint": "3.0.0",
-    "solidity-coverage": "0.7.5",
+    "solc": "0.7.1",
+    "solhint": "3.2.0",
+    "solidity-coverage": "0.7.10",
     "solmd": "0.4.0",
-    "truffle": "5.1.29",
-    "truffle-flattener": "1.4.4",
-    "truffle-security": "1.7.1"
+    "truffle": "5.1.53",
+    "truffle-flattener": "1.5.0",
+    "truffle-security": "1.7.3",
+    "@windingtree/smart-contracts-tools": "0.1.1"
   },
   "engines": {
     "node": ">=10"

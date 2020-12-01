@@ -18,21 +18,20 @@ const getInfuraConfig = (networkName, networkId) => {
         network_id: networkId, // eslint-disable-line camelcase
         provider: () => {
             return new HDWalletProvider(
-                keys.mnemonic,
+                keys.keys,
                 `https://${networkName}.infura.io/v3/` + keys.infura_projectid,
                 0,
                 10
             );
         },
-        gas: 8000000,
-        gasPrice: 80000000000
+        gas: 4000000,
+        gasPrice: 70000000000
     };
 };
 
 module.exports = {
     plugins: [
-        'solidity-coverage',
-        'truffle-security'
+        'solidity-coverage'
     ],
 
     networks: {
@@ -44,13 +43,12 @@ module.exports = {
             gasPrice: 80000000000
         },
         main: getInfuraConfig('mainnet', 1),
-        ropsten: getInfuraConfig('ropsten', 3),
-        rinkeby: getInfuraConfig('rinkeby', 4),
+        ropsten: getInfuraConfig('ropsten', 3)
     },
 
     compilers: {
         solc: {
-            version: '0.5.16',
+            version: '0.5.17',
             settings: {
                 optimizer: {
                     enabled: true,

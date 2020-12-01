@@ -16,7 +16,7 @@
         "runs": "200"
       }
     },
-    "solcVersion": "0.5.16",
+    "solcVersion": "0.5.17",
     "artifactsDir": "build/contracts",
     "contractsDir": "contracts",
     "typechain": {

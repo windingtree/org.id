@@ -5,7 +5,6 @@
   * [OrganizationActiveStateChanged](#event-organizationactivestatechanged)
   * [OrganizationCreated](#event-organizationcreated)
   * [OrganizationOwnershipTransferred](#event-organizationownershiptransferred)
-  * [OwnershipTransferred](#event-ownershiptransferred)
   * [UnitCreated](#event-unitcreated)
   * [acceptDirectorship](#function-acceptdirectorship)
   * [createOrganization](#function-createorganization)
@@ -14,13 +13,10 @@
   * [getOrganizations](#function-getorganizations)
   * [getUnits](#function-getunits)
   * [initialize](#function-initialize)
-  * [initialize](#function-initialize)
-  * [isOwner](#function-isowner)
+  * [initializeNew](#function-initializenew)
+  * [initializeUpgrade110](#function-initializeupgrade110)
   * [newFunction](#function-newfunction)
-  * [owner](#function-owner)
   * [renounceDirectorship](#function-renouncedirectorship)
-  * [renounceOwnership](#function-renounceownership)
-  * [setInterfaces](#function-setinterfaces)
   * [setOrgJson](#function-setorgjson)
   * [setupNewStorage](#function-setupnewstorage)
   * [supportsInterface](#function-supportsinterface)
@@ -28,7 +24,6 @@
   * [toggleActiveState](#function-toggleactivestate)
   * [transferDirectorship](#function-transferdirectorship)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
-  * [transferOwnership](#function-transferownership)
 
 # OrgIdUpgradeability
 
@@ -108,17 +103,6 @@ Arguments
 | *address* | previousOwner | indexed |
 | *address* | newOwner | indexed |
 
-## *event* OwnershipTransferred
-
-OrgIdUpgradeability.OwnershipTransferred(previousOwner, newOwner) `8be0079c`
-
-Arguments
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | previousOwner | indexed |
-| *address* | newOwner | indexed |
-
 ## *event* UnitCreated
 
 OrgIdUpgradeability.UnitCreated(parentOrgId, unitOrgId, director) `01b4c566`
@@ -147,7 +131,7 @@ Inputs
 
 ## *function* createOrganization
 
-OrgIdUpgradeability.createOrganization(solt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
+OrgIdUpgradeability.createOrganization(salt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
 
 > Create organization
 
@@ -155,7 +139,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | solt | Unique hash required for identifier creation |
+| *bytes32* | salt | Unique hash required for identifier creation |
 | *bytes32* | orgJsonHash | ORG.JSON's keccak256 hash |
 | *string* | orgJsonUri | ORG.JSON URI (stored off-chain) |
 | *string* | orgJsonUriBackup1 | ORG.JSON URI backup (stored off-chain) |
@@ -169,7 +153,7 @@ Outputs
 
 ## *function* createUnit
 
-OrgIdUpgradeability.createUnit(solt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
+OrgIdUpgradeability.createUnit(salt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
 
 > Create organizational unit
 
@@ -177,7 +161,7 @@ Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32* | solt | Unique hash required for identifier creation |
+| *bytes32* | salt | Unique hash required for identifier creation |
 | *bytes32* | parentOrgId | Parent ORGiD hash |
 | *address* | director | Unit director address |
 | *bytes32* | orgJsonHash | ORG.JSON keccak256 hash |
@@ -255,28 +239,24 @@ Outputs
 
 OrgIdUpgradeability.initialize() `nonpayable` `8129fc1c`
 
-
-
-
-
-## *function* initialize
-
-OrgIdUpgradeability.initialize(__owner) `nonpayable` `c4d66de8`
-
 > Initializer for upgradeable contracts
 
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | __owner | Contract owner's address |
 
 
-## *function* isOwner
 
-OrgIdUpgradeability.isOwner() `view` `8f32d59b`
+## *function* initializeNew
 
-> Returns true if the caller is the current owner.
+OrgIdUpgradeability.initializeNew() `nonpayable` `f09ded77`
+
+
+
+
+
+## *function* initializeUpgrade110
+
+OrgIdUpgradeability.initializeUpgrade110() `nonpayable` `0631bae9`
+
+> Initializer for the version 1.1.0
 
 
 
@@ -285,15 +265,6 @@ OrgIdUpgradeability.isOwner() `view` `8f32d59b`
 
 OrgIdUpgradeability.newFunction() `view` `1b28d63e`
 
-
-
-
-
-## *function* owner
-
-OrgIdUpgradeability.owner() `view` `8da5cb5b`
-
-> Returns the address of the current owner.
 
 
 
@@ -309,24 +280,6 @@ Inputs
 | **type** | **name** | **description** |
 |-|-|-|
 | *bytes32* | orgId | Unit's ORGiD hash |
-
-
-## *function* renounceOwnership
-
-OrgIdUpgradeability.renounceOwnership() `nonpayable` `715018a6`
-
-> Leaves the contract without owner. It will not be possible to call `onlyOwner` functions anymore. Can only be called by the current owner.     * NOTE: Renouncing ownership will leave the contract without an owner, thereby removing any functionality that is only available to the owner.
-
-
-
-
-## *function* setInterfaces
-
-OrgIdUpgradeability.setInterfaces() `nonpayable` `fca85eb3`
-
-> Set supported contract interfaces
-
-
 
 
 ## *function* setOrgJson
@@ -362,13 +315,13 @@ Inputs
 
 OrgIdUpgradeability.supportsInterface(interfaceId) `view` `01ffc9a7`
 
-> See {IERC165-supportsInterface}.     * Time complexity O(1), guaranteed to always use less than 30 000 gas.
+> Interface of the ERC165 standard, as defined in the https://eips.ethereum.org/EIPS/eip-165[EIP].
 
 Inputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes4* | interfaceId | undefined |
+| *bytes4* | interfaceId | Interface Id |
 
 
 ## *function* test
@@ -418,19 +371,6 @@ Inputs
 |-|-|-|
 | *bytes32* | orgId | ORGiD hash |
 | *address* | newOwner | New owner's address |
-
-
-## *function* transferOwnership
-
-OrgIdUpgradeability.transferOwnership(newOwner) `nonpayable` `f2fde38b`
-
-> Transfers ownership of the contract to a new account (`newOwner`). Can only be called by the current owner.
-
-Inputs
-
-| **type** | **name** | **description** |
-|-|-|-|
-| *address* | newOwner | undefined |
 
 
 ---

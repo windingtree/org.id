@@ -1,16 +1,16 @@
-pragma solidity >=0.5.16;
+// SPDX-License-Identifier: GPL-3.0-only;
+pragma solidity 0.5.17;
 
-import "@openzeppelin/contracts/introspection/ERC165.sol";
-import "@openzeppelin/contracts/introspection/ERC165Checker.sol";
-import "@openzeppelin/contracts/ownership/Ownable.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/upgrades/contracts/Initializable.sol";
+import "./ERC165/ERC165.sol";
+import "./OwnablePatch.sol";
 import "./OrgIdInterface.sol";
 
 /**
  * @title ORGiD Registry Smart Contract
  */
-contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
+contract OrgId is OrgIdInterface, OwnablePatch, ERC165, Initializable {
 
     using SafeMath for uint256;
 
@@ -139,13 +139,17 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
 
     /**
      * @dev Initializer for upgradeable contracts
-     * @param __owner Contract owner's address
      */
-    function initialize(
-        address payable __owner
-    ) public initializer {
-        _transferOwnership(__owner);
-        setInterfaces();
+    function initialize() public initializer {
+        _setInterfaces();
+    }
+
+    /**
+     * @dev Initializer for the version 1.1.0
+     */
+    function initializeUpgrade110() public {
+        // ownable interface has been removed in version 1.1.0
+        _removeInterface(0x7f5828d0);
     }
 
     /**
@@ -297,7 +301,7 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
         );
 
         organizations[orgId].director = address(0);
-        organizations[orgId].isDirectorshipAccepted = true;
+        organizations[orgId].isDirectorshipAccepted = false;
     }
 
     /**
@@ -451,16 +455,11 @@ contract OrgId is OrgIdInterface, Ownable, ERC165, Initializable {
     /**
      * @dev Set supported contract interfaces
      */
-    function setInterfaces() public {
+    function _setInterfaces() internal {
         OrgIdInterface org;
-        Ownable own;
-        bytes4[4] memory interfaceIds = [
+        bytes4[3] memory interfaceIds = [
             // ERC165 interface: 0x01ffc9a7
             bytes4(0x01ffc9a7),
-
-            // ownable interface: 0x7f5828d0
-            own.owner.selector ^
-            own.transferOwnership.selector,
 
             // ORGiD interface: 0x0f4893ef
             org.createOrganization.selector ^

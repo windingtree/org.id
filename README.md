@@ -9,11 +9,11 @@ ORGiD Registry is the core smart contract of the [ORGiD Ecosystem](https://orgid
 
 ### Mainnet
 
-`0x6434DEC2f4548C2aA9D88E8Ff821f387be3D7F0D` [full config](./.openzeppelin/main-OrgId.json) v1.0.1
+`0x6434DEC2f4548C2aA9D88E8Ff821f387be3D7F0D` [full config](./.openzeppelin/main-OrgId.json) v1.1.0
 
 ### Ropsten
 
-`0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E` [full config](./.openzeppelin/ropsten-OrgId.json) v1.0.1
+`0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E` [full config](./.openzeppelin/ropsten-OrgId.json) v1.1.0
 
 ### ORGiD Sandbox
 
@@ -112,7 +112,9 @@ Additionally, unit's ORGiD may contain:
 | `director` | `address` | Director may change unit's ORG.JSON and its hash |
 | `isDirectorshipAccepted` | `bool` | Director must accept their role explicitly, in which case this flag is set to `true` |
 
-## [Use Cases](./USECASES.md)
+## Use Cases
+
+[Use Cases and implementations](./USECASES.md)
 
 ## Development
 
@@ -143,6 +145,10 @@ npm run lint
 
 ```
 
+## Deployment and upgrade
+
+For for bulk deployment, upgrade and interaction with smart contracts is recommended to use [Smart contracts tools](https://github.com/windingtree/smart-contracts-tools) package.
+
 ## Contribution Guide
 
 We welcome all contributions to the ORGiD Ecosystem. It doesn't have to be code, you may work on [documentation](https://github.com/windingtree/orgid.tech/), [branding](https://github.com/windingtree/branding), or simply participate in community discussions on our [forum](https://forum.windingtree.com) and in [Telegram](https://t.me/windingtree).
@@ -170,3 +176,4 @@ Thank you for your time and code!
 - **ORGiD Resolver** ([repo](https://github.com/windingtree/org.id-resolver)) is an utility for fetching organization data in [W3C DID](https://w3c.github.io/did-core/) format
 - **Arbor** ([fe](https://github.com/windingtree/arbor-frontend) [be](https://github.com/windingtree/arbor-backend)) is the application behind **[Winding Tree Marketplace](https://marketplace.windingtree.com).** It can be used to look up an ORGiD, and also to create and manage your own ORGiD.
 - **[ORGiD Directories](https://marketplace.windingtree.com)** ([repo](https://github.com/windingtree/org.id-directories)) are curated lists of organizations
+- **[Smart contract tools](https://github.com/windingtree/smart-contracts-tools)** ([repo](https://github.com/windingtree/smart-contracts-tools)) Tools for bulk deployment, upgrade and interaction with smart contracts
