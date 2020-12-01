@@ -51,7 +51,7 @@
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
     "@truffle/contract": "4.2.21",
-    "@truffle/hdwallet-provider": "1.0.43",
+    "@truffle/hdwallet-provider": "1.2.0",
     "chai": "4.2.0",
     "bn-chai": "1.0.1",
     "coveralls": "3.1.0",
@@ -63,9 +63,10 @@
     "solhint": "3.2.0",
     "solidity-coverage": "0.7.10",
     "solmd": "0.4.0",
-    "truffle": "5.1.43",
-    "truffle-flattener": "1.4.4",
-    "truffle-security": "1.7.3"
+    "truffle": "5.1.53",
+    "truffle-flattener": "1.5.0",
+    "truffle-security": "1.7.3",
+    "@windingtree/smart-contracts-tools": "0.1.1"
   },
   "engines": {
     "node": ">=10"

@@ -5,7 +5,7 @@ const getInfuraConfig = (networkName, networkId) => {
     var keys = {};
 
     try {
-        keys = require('./keys2.json');
+        keys = require('./keys.json');
 
         if (keys.MYTHX_API_KEY) {
             process.env.MYTHX_API_KEY = keys.MYTHX_API_KEY;
@@ -18,21 +18,20 @@ const getInfuraConfig = (networkName, networkId) => {
         network_id: networkId, // eslint-disable-line camelcase
         provider: () => {
             return new HDWalletProvider(
-                keys.mnemonic,
+                keys.keys,
                 `https://${networkName}.infura.io/v3/` + keys.infura_projectid,
                 0,
                 10
             );
         },
-        gas: 3000000,
-        gasPrice: 80000000000
+        gas: 4000000,
+        gasPrice: 70000000000
     };
 };
 
 module.exports = {
     plugins: [
-        'solidity-coverage',
-        'truffle-security'
+        'solidity-coverage'
     ],
 
     networks: {
