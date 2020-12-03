@@ -523,7 +523,7 @@ contract OrgId is OrgIdInterface, OwnablePatch, ERC165, Initializable {
 
         require(
             organizations[orgId].orgId == bytes32(0),
-            "OrgId: Organizarion already exists"
+            "OrgId: Organization already exists"
         );
 
         organizations[orgId] = Organization(

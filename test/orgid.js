@@ -206,7 +206,7 @@ contract('OrgId', accounts => {
                 const { randomSalt } = await newOrg();
                 await assertRevert(
                     newOrg(randomSalt),
-                    'OrgId: Organizarion already exists'
+                    'OrgId: Organization already exists'
                 );
             });
         });
@@ -589,7 +589,7 @@ contract('OrgId', accounts => {
                                 mockOrgJsonUriBackup2
                             ]
                         ),
-                        'OrgId: Organizarion already exists'
+                        'OrgId: Organization already exists'
                     );
                 });
 
