@@ -10,7 +10,7 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: npm ci
+      - run: npm i
       - run: npm run coverage
         env:
           COVERALLS_REPO_TOKEN: ${{secrets.coveralls_repo_token}}
