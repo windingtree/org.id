@@ -157,7 +157,7 @@ If you would like to participate in development of any of our [codebases](https:
 
 ### In doubt? Create an Issue!
 
-If you want to request a feature or report a bug, or if you're not sure how to fix something, please create an issue in a relevant GitHub repository.
+If you want to request a feature or report a bug, or if you're not sure how to fix something, please create an issue in the relevant GitHub repository.
 
 ### Pull Request
 
