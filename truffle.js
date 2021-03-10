@@ -1,6 +1,6 @@
 var HDWalletProvider = require('@truffle/hdwallet-provider');
 
-// Netowrk configuration factory
+// Network configuration factory
 const getInfuraConfig = (networkName, networkId) => {
     var keys = {};
 
