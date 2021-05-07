@@ -32,7 +32,7 @@ npm i @windingtree/org.id
 // ABI
 const { OrgIdContract, OrgIdInterfaceContract, addresses } = require('@windingtree/org.id');
 // Contract addresses
-const { mainnet, ropsten } = addresses;
+const { main, ropsten } = addresses;
 ```
 
 ## Concept
