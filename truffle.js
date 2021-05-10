@@ -5,7 +5,7 @@ const getInfuraConfig = (networkName, networkId) => {
     var keys = {};
 
     try {
-        keys = require('./keys.json');
+        keys = require('./keys2.json');
 
         if (keys.MYTHX_API_KEY) {
             process.env.MYTHX_API_KEY = keys.MYTHX_API_KEY;
@@ -25,7 +25,7 @@ const getInfuraConfig = (networkName, networkId) => {
             );
         },
         gas: 4000000,
-        gasPrice: 70000000000
+        gasPrice: 115000000000
     };
 };
 
