@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/org.id",
-  "version": "1.1.5",
+  "version": "2.0.0",
   "description": "ORG.ID is Decentralized Identifier (DID) Protocol for Organizations",
   "directories": {
     "test": "test",
@@ -11,7 +11,7 @@
     "lint": "npx eslint test scripts && npx solhint 'contracts/**/*.sol'",
     "lint:fix": "npx eslint test scripts --fix && npx solhint 'contracts/**/*.sol'",
     "verify": "npx truffle run verify --mode=quick --ci OrgId.sol",
-    "dev-net": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
+    "ganache": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
     "geth": "scripts/geth.sh",
     "coverage": "SOLIDITY_COVERAGE=true npm run test",
     "soldoc": "scripts/soldoc.sh",
@@ -47,25 +47,24 @@
   },
   "devDependencies": {
     "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.2.21",
-    "@truffle/hdwallet-provider": "1.2.0",
-    "chai": "4.2.0",
+    "@truffle/contract": "4.3.16",
+    "@truffle/hdwallet-provider": "1.4.0",
+    "@windingtree/smart-contracts-tools": "0.1.1",
     "bn-chai": "1.0.1",
+    "chai": "4.3.4",
     "coveralls": "3.1.0",
-    "eslint": "7.8.1",
-    "ganache-cli": "6.10.1",
-    "husky": "4.3.0",
+    "eslint": "7.26.0",
+    "ganache-cli": "6.12.2",
     "rimraf": "3.0.2",
-    "solc": "0.7.1",
-    "solhint": "3.2.0",
-    "solidity-coverage": "0.7.10",
+    "solc": "0.8.4",
+    "solhint": "3.3.4",
+    "solidity-coverage": "0.7.16",
     "solmd": "0.4.0",
-    "truffle": "5.1.53",
+    "truffle": "5.3.6",
     "truffle-flattener": "1.5.0",
-    "truffle-security": "1.7.3",
-    "@windingtree/smart-contracts-tools": "0.1.1"
+    "truffle-security": "1.7.3"
   },
   "engines": {
-    "node": ">=10"
+    "node": ">=12"
   }
 }

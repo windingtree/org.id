@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0-only;
 pragma solidity 0.5.17;
 
-import "../OrgId.sol";
+import "../OrgId_1_1_5.sol";
 
 /**
  * @title OrgIdUpgradeability
  * @dev A contract for testing OrgId upgradeability behaviour
  */
-contract OrgIdUpgradeability is OrgId {
+contract OrgIdUpgradeability is OrgId_1_1_5 {
     uint256 public test;
 
     function newFunction() external view returns (uint256) {

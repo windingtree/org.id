@@ -48,7 +48,8 @@ contract ERC165 {
      * @param interfaceId Interface Id
      */
     function _removeInterface(bytes4 interfaceId) internal {
-        require(_supportedInterfaces[interfaceId], "ERC165: unknown interface id");
-        _supportedInterfaces[interfaceId] = false;
+        if (_supportedInterfaces[interfaceId]) {
+            delete _supportedInterfaces[interfaceId];
+        }
     }
 }
