@@ -63,13 +63,6 @@ contract('ERC165', () => {
             await registerInterface(erc165, '0x7f5828d0');
         });
 
-        it('should fail if unknown interface id has been provided', async () => {
-            await assertRevert(
-                removeInterface(erc165, '0xffffffff'),
-                'ERC165: unknown interface id'
-            );
-        });
-
         it('should remove registered interface', async () => {
             await removeInterface(erc165, '0x7f5828d0');
             const result = await erc165.methods.supportsInterface('0x7f5828d0').call();

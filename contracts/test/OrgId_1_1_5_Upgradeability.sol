@@ -7,7 +7,8 @@ import "../OrgId_1_1_5.sol";
  * @title OrgIdUpgradeability
  * @dev A contract for testing OrgId upgradeability behaviour
  */
-contract OrgIdUpgradeability is OrgId_1_1_5 {
+/* solhint-disable contract-name-camelcase */
+contract OrgId_1_1_5_Upgradeability is OrgId_1_1_5 {
     uint256 public test;
 
     function newFunction() external view returns (uint256) {

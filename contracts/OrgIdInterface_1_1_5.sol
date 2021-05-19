@@ -4,6 +4,7 @@ pragma solidity >=0.5.17;
 /**
  * @title ORGiD Registry Smart Contract Interface
  */
+/* solhint-disable contract-name-camelcase */
 contract OrgIdInterface_1_1_5 {
 
     /**

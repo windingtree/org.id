@@ -10,6 +10,7 @@ import "./OrgIdInterface_1_1_5.sol";
 /**
  * @title ORGiD Registry Smart Contract
  */
+/* solhint-disable contract-name-camelcase */
 contract OrgId_1_1_5 is OrgIdInterface_1_1_5, OwnablePatch, ERC165, Initializable {
 
     using SafeMath for uint256;

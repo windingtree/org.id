@@ -16,14 +16,20 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
     /// orgIds storage is already defined in the parent contract
     // bytes32[] internal orgIds;
 
-    // event OrganizationCreated is defined in the parent contract
+    /**
+     * @dev Emits when new ORGiD created
+     */
+    event OrgIdCreated(
+        bytes32 indexed orgId,
+        address indexed owner
+    );
 
     /**
      * @dev Emits when ORG.JSON changes
      */
     event OrgJsonUriChanged(
         bytes32 indexed orgId,
-        string previousOrgJsonUri
+        string orgJsonUri
     );
 
     /**
@@ -42,7 +48,7 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
         require(
             orgId != bytes32(0) &&
             organizationsList[orgId] != address(0),
-            "OrgId: Organization not found"
+            "OrgId: ORGiD not found"
         );
         _;
     }
@@ -96,6 +102,11 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
         bytes32 salt,
         string calldata orgJsonUri
     ) external returns (bytes32 orgId) {
+        require(
+            bytes(orgJsonUri).length != 0,
+            "OrgId: orgJsonUri cannot be empty"
+        );
+
         // Organization unique Id creation
         orgId = keccak256(
             abi.encodePacked(
@@ -106,7 +117,7 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
 
         require(
             organizationsList[orgId] == address(0),
-            "OrgId: Organization already exists"
+            "OrgId: ORGiD already exists"
         );
 
         organizationsList[orgId] = msg.sender;
@@ -117,7 +128,7 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
             orgJsonUri
         );
 
-        emit OrganizationCreated(orgId, msg.sender);
+        emit OrgIdCreated(orgId, msg.sender);
     }
 
     /**
@@ -172,11 +183,11 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
 
     /**
      * @dev Check ORGiD existence
-     * @param _orgId ORGiD hash
+     * @param orgId ORGiD hash
      * @dev Return parameters marked by (*) are only applicable to units
      * @return ORGiD existence
      */
-    function getOrgId(bytes32 _orgId)
+    function getOrgId(bytes32 orgId)
         external
         view
         returns (
@@ -184,14 +195,27 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
             address owner
         )
     {
-        exists = _orgId != bytes32(0) && organizationsList[_orgId] != address(0);
-        owner = organizationsList[_orgId];
+        exists = orgId != bytes32(0) && organizationsList[orgId] != address(0);
+        owner = organizationsList[orgId];
     }
 
     /**
-     * @dev Get all organizations' ORGiD hashes
+     * @dev Check registered ORGiD count
+     * @dev Return count of ORGiD hashes
+     * @return ORGiD count
+     */
+    function getOrgIdsCount()
+        external
+        view
+        returns (uint256)
+    {
+        return orgIds.length;
+    }
+
+    /**
+     * @dev Get all organizations' ORGiD hashes list
      * @return {
-         "organizationsList": "Array of all organizations' ORGiD hashes"
+         "orgIds": "Array of all organizations' ORGiD hashes"
      }
      */
     function getOrgIds()
@@ -200,5 +224,42 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
         returns (bytes32[] memory)
     {
         return orgIds;
+    }
+
+    /**
+     * @dev Get paginated ORGiDs hashes list
+     * @param cursor Index of the ORGiD from which to start querying
+     * @param count Number of ORGiDs to go through
+     * @return orgIdsPage Array of ORGiDs hashes
+     */
+    function getOrgIds(uint256 cursor, uint256 count)
+        external
+        view
+        returns (bytes32[] memory orgIdsPage)
+    {
+        bytes32[] memory orgIdsPageRaw = new bytes32[](count);
+        uint256 index;
+        uint256 nonZeroCount;
+
+        // slice orgIds list by parameters
+        for (uint256 i = cursor; i < orgIds.length && (i < cursor + count); i++) {
+            orgIdsPageRaw[index] = orgIds[i];
+
+            if (orgIds[i] != bytes32(0)) {
+                nonZeroCount++;
+            }
+
+            index++;
+        }
+
+        // Filter zero elements
+        orgIdsPage = new bytes32[](nonZeroCount);
+        index = 0;
+        for (uint256 i = 0; i < orgIdsPageRaw.length; i++) {
+            if (orgIdsPageRaw[i] != bytes32(0)) {
+                orgIdsPage[index] = orgIdsPageRaw[i];
+                index++;
+            }
+        }
     }
 }
