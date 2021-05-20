@@ -129,6 +129,12 @@ contract('OrgId_2_0_0', accounts => {
                     }
                 )
             );
+
+            // Contract has to support OLD OrgId interface
+            (await orgIdInstance
+                .methods['supportsInterface(bytes4)']('0x0f4893ef')
+                .call()
+            ).should.be.true;
         });
 
         it('should upgrade proxy', async () => {
@@ -143,8 +149,9 @@ contract('OrgId_2_0_0', accounts => {
             );
             const newOrgIdInstance = OrgIdContract.at(newProxy.address);
 
+            // Upgraded contract has to support new OrgId interface
             (await newOrgIdInstance
-                .methods['supportsInterface(bytes4)']('0xb60f258f')
+                .methods['supportsInterface(bytes4)']('0xafaa40a0')
                 .call()
             )
                 .should.be.true;
@@ -222,7 +229,7 @@ contract('OrgId_2_0_0', accounts => {
 
             it('should support OrgId interface', async () => {
                 (await orgIdInstance
-                    .methods['supportsInterface(bytes4)']('0xb60f258f')
+                    .methods['supportsInterface(bytes4)']('0xafaa40a0')
                     .call()
                 ).should.be.true;
             });

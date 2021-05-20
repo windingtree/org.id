@@ -74,11 +74,16 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
         // Remove hierarchy interface
         _removeInterface(0x6af2fb27);
 
-        // Register new OrgId interface: 0xb60f258f
+        // Register new OrgId interface: 0xafaa40a0
         OrgIdInterface org;
         _registerInterface(
             org.createOrgId.selector ^
-            org.transferOrgIdOwnership.selector
+            org.transferOrgIdOwnership.selector ^
+            org.setOrgJson.selector ^
+            org.getOrgId.selector ^
+            org.getOrgIdsCount.selector ^
+            bytes4(keccak256("getOrgIds()")) ^
+            bytes4(keccak256("getOrgIds(uint256,uint256)"))
         );
 
         // Migrate OrgIds structures to the new mapping style
@@ -91,7 +96,7 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
     }
 
     /**
-     * @dev Create organization Id
+     * @dev Create ORGiD
      * @param salt Unique hash required for identifier creation
      * @param orgJsonUri ORG.JSON URI (stored off-chain)
      * @return {
@@ -220,15 +225,15 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
     /**
      * @dev Get all organizations' ORGiD hashes list
      * @return {
-         "orgIds": "Array of all organizations' ORGiD hashes"
+         "orgIdsList": "Array of all ORGiDs hashes"
      }
      */
     function getOrgIds()
         external
         view
-        returns (bytes32[] memory)
+        returns (bytes32[] memory orgIdsList)
     {
-        return orgIds;
+        orgIdsList = orgIds;
     }
 
     /**
@@ -236,13 +241,13 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
      * @param cursor Index of the ORGiD from which to start querying
      * @param count Number of ORGiDs to go through
      * @return {
-        "orgIdsPage": "Array of ORGiDs hashes"
+        "orgIdsList": "Array of ORGiDs hashes"
      }
      */
     function getOrgIds(uint256 cursor, uint256 count)
         external
         view
-        returns (bytes32[] memory orgIdsPage)
+        returns (bytes32[] memory orgIdsList)
     {
         bytes32[] memory orgIdsPageRaw = new bytes32[](count);
         uint256 index;
@@ -260,11 +265,11 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
         }
 
         // Filter zero elements
-        orgIdsPage = new bytes32[](nonZeroCount);
+        orgIdsList = new bytes32[](nonZeroCount);
         index = 0;
         for (uint256 i = 0; i < orgIdsPageRaw.length; i++) {
             if (orgIdsPageRaw[i] != bytes32(0)) {
-                orgIdsPage[index] = orgIdsPageRaw[i];
+                orgIdsList[index] = orgIdsPageRaw[i];
                 index++;
             }
         }
