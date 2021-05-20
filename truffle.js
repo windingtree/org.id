@@ -1,17 +1,17 @@
-var HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('@truffle/hdwallet-provider');
 
 // Netowrk configuration factory
 const getInfuraConfig = (networkName, networkId) => {
     var keys = {};
 
     try {
-        keys = require('./keys.json');
+        keys = require('./keys2.json');
 
         if (keys.MYTHX_API_KEY) {
             process.env.MYTHX_API_KEY = keys.MYTHX_API_KEY;
         }
     } catch (err) {
-        console.log('could not find ./keys.json');
+        console.log('could not find keys');
     }
 
     return {
