@@ -174,7 +174,7 @@ Inputs
 
 OrgId.createOrgId(salt, orgJsonUri) `nonpayable` `0ad0abce`
 
-> Create organization Id
+> Create ORGiD
 
 Inputs
 
@@ -266,7 +266,7 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32[]* | orgIdsPage | Array of ORGiDs hashes |
+| *bytes32[]* | orgIdsList | Array of ORGiDs hashes |
 
 ## *function* getOrgIds
 
@@ -280,7 +280,7 @@ Outputs
 
 | **type** | **name** | **description** |
 |-|-|-|
-| *bytes32[]* |  | undefined |
+| *bytes32[]* | orgIdsList | Array of all ORGiDs hashes |
 
 ## *function* getOrgIdsCount
 
