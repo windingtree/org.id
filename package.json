@@ -62,6 +62,7 @@
     "solmd": "0.4.0",
     "truffle": "5.3.6",
     "truffle-flattener": "1.5.0",
+    "truffle-plugin-verify": "0.5.8",
     "truffle-security": "1.7.3"
   },
   "engines": {

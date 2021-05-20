@@ -31,8 +31,13 @@ const getInfuraConfig = (networkName, networkId) => {
 
 module.exports = {
     plugins: [
-        'solidity-coverage'
+        'solidity-coverage',
+        'truffle-plugin-verify'
     ],
+
+    api_keys: {
+        etherscan: ''
+    },
 
     networks: {
         development: {
