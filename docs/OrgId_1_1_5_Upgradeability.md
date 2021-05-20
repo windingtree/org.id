@@ -1,4 +1,4 @@
-* [OrgIdUpgradeability](#orgidupgradeability)
+* [OrgId_1_1_5_Upgradeability](#orgid_1_1_5_upgradeability)
   * [DirectorshipAccepted](#event-directorshipaccepted)
   * [DirectorshipTransferred](#event-directorshiptransferred)
   * [OrgJsonChanged](#event-orgjsonchanged)
@@ -25,11 +25,11 @@
   * [transferDirectorship](#function-transferdirectorship)
   * [transferOrganizationOwnership](#function-transferorganizationownership)
 
-# OrgIdUpgradeability
+# OrgId_1_1_5_Upgradeability
 
 ## *event* DirectorshipAccepted
 
-OrgIdUpgradeability.DirectorshipAccepted(orgId, director) `2f2df3ca`
+OrgId_1_1_5_Upgradeability.DirectorshipAccepted(orgId, director) `2f2df3ca`
 
 Arguments
 
@@ -40,7 +40,7 @@ Arguments
 
 ## *event* DirectorshipTransferred
 
-OrgIdUpgradeability.DirectorshipTransferred(orgId, previousDirector, newDirector) `f48a0476`
+OrgId_1_1_5_Upgradeability.DirectorshipTransferred(orgId, previousDirector, newDirector) `f48a0476`
 
 Arguments
 
@@ -52,7 +52,7 @@ Arguments
 
 ## *event* OrgJsonChanged
 
-OrgIdUpgradeability.OrgJsonChanged(orgId, previousOrgJsonHash, previousOrgJsonUri, previousOrgJsonUriBackup1, previousOrgJsonUriBackup2, newOrgJsonHash, newOrgJsonUri, newOrgJsonUriBackup1, newOrgJsonUriBackup2) `f4652552`
+OrgId_1_1_5_Upgradeability.OrgJsonChanged(orgId, previousOrgJsonHash, previousOrgJsonUri, previousOrgJsonUriBackup1, previousOrgJsonUriBackup2, newOrgJsonHash, newOrgJsonUri, newOrgJsonUriBackup1, newOrgJsonUriBackup2) `f4652552`
 
 Arguments
 
@@ -70,7 +70,7 @@ Arguments
 
 ## *event* OrganizationActiveStateChanged
 
-OrgIdUpgradeability.OrganizationActiveStateChanged(orgId, previousState, newState) `74dc7d69`
+OrgId_1_1_5_Upgradeability.OrganizationActiveStateChanged(orgId, previousState, newState) `74dc7d69`
 
 Arguments
 
@@ -82,7 +82,7 @@ Arguments
 
 ## *event* OrganizationCreated
 
-OrgIdUpgradeability.OrganizationCreated(orgId, owner) `5bf391b9`
+OrgId_1_1_5_Upgradeability.OrganizationCreated(orgId, owner) `5bf391b9`
 
 Arguments
 
@@ -93,7 +93,7 @@ Arguments
 
 ## *event* OrganizationOwnershipTransferred
 
-OrgIdUpgradeability.OrganizationOwnershipTransferred(orgId, previousOwner, newOwner) `92cbe7f5`
+OrgId_1_1_5_Upgradeability.OrganizationOwnershipTransferred(orgId, previousOwner, newOwner) `92cbe7f5`
 
 Arguments
 
@@ -105,7 +105,7 @@ Arguments
 
 ## *event* UnitCreated
 
-OrgIdUpgradeability.UnitCreated(parentOrgId, unitOrgId, director) `01b4c566`
+OrgId_1_1_5_Upgradeability.UnitCreated(parentOrgId, unitOrgId, director) `01b4c566`
 
 Arguments
 
@@ -118,7 +118,7 @@ Arguments
 
 ## *function* acceptDirectorship
 
-OrgIdUpgradeability.acceptDirectorship(orgId) `nonpayable` `781a9601`
+OrgId_1_1_5_Upgradeability.acceptDirectorship(orgId) `nonpayable` `781a9601`
 
 > Accept director role
 
@@ -131,7 +131,7 @@ Inputs
 
 ## *function* createOrganization
 
-OrgIdUpgradeability.createOrganization(salt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
+OrgId_1_1_5_Upgradeability.createOrganization(salt, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `b2c23371`
 
 > Create organization
 
@@ -153,7 +153,7 @@ Outputs
 
 ## *function* createUnit
 
-OrgIdUpgradeability.createUnit(salt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
+OrgId_1_1_5_Upgradeability.createUnit(salt, parentOrgId, director, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `bf042ef2`
 
 > Create organizational unit
 
@@ -172,7 +172,7 @@ Inputs
 
 ## *function* getOrganization
 
-OrgIdUpgradeability.getOrganization(_orgId) `view` `22b3cd4e`
+OrgId_1_1_5_Upgradeability.getOrganization(_orgId) `view` `22b3cd4e`
 
 > Get organization or unit's info by ORGiD hashReturn parameters marked by (*) are only applicable to units
 
@@ -200,7 +200,7 @@ Outputs
 
 ## *function* getOrganizations
 
-OrgIdUpgradeability.getOrganizations(includeInactive) `view` `0c70d7c5`
+OrgId_1_1_5_Upgradeability.getOrganizations(includeInactive) `view` `0c70d7c5`
 
 > Get all active organizations' ORGiD hashes
 
@@ -218,7 +218,7 @@ Outputs
 
 ## *function* getUnits
 
-OrgIdUpgradeability.getUnits(parentOrgId, includeInactive) `view` `0dd56c93`
+OrgId_1_1_5_Upgradeability.getUnits(parentOrgId, includeInactive) `view` `0dd56c93`
 
 > Get all active organizational units of a particular ORGiD
 
@@ -237,7 +237,7 @@ Outputs
 
 ## *function* initialize
 
-OrgIdUpgradeability.initialize() `nonpayable` `8129fc1c`
+OrgId_1_1_5_Upgradeability.initialize() `nonpayable` `8129fc1c`
 
 > Initializer for upgradeable contracts
 
@@ -246,7 +246,7 @@ OrgIdUpgradeability.initialize() `nonpayable` `8129fc1c`
 
 ## *function* initializeNew
 
-OrgIdUpgradeability.initializeNew() `nonpayable` `f09ded77`
+OrgId_1_1_5_Upgradeability.initializeNew() `nonpayable` `f09ded77`
 
 
 
@@ -254,7 +254,7 @@ OrgIdUpgradeability.initializeNew() `nonpayable` `f09ded77`
 
 ## *function* initializeUpgrade110
 
-OrgIdUpgradeability.initializeUpgrade110() `nonpayable` `0631bae9`
+OrgId_1_1_5_Upgradeability.initializeUpgrade110() `nonpayable` `0631bae9`
 
 > Initializer for the version 1.1.0
 
@@ -263,7 +263,7 @@ OrgIdUpgradeability.initializeUpgrade110() `nonpayable` `0631bae9`
 
 ## *function* newFunction
 
-OrgIdUpgradeability.newFunction() `view` `1b28d63e`
+OrgId_1_1_5_Upgradeability.newFunction() `view` `1b28d63e`
 
 
 
@@ -271,7 +271,7 @@ OrgIdUpgradeability.newFunction() `view` `1b28d63e`
 
 ## *function* renounceDirectorship
 
-OrgIdUpgradeability.renounceDirectorship(orgId) `nonpayable` `096dde02`
+OrgId_1_1_5_Upgradeability.renounceDirectorship(orgId) `nonpayable` `096dde02`
 
 > Unit directorship renounce
 
@@ -284,7 +284,7 @@ Inputs
 
 ## *function* setOrgJson
 
-OrgIdUpgradeability.setOrgJson(orgId, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `3b331384`
+OrgId_1_1_5_Upgradeability.setOrgJson(orgId, orgJsonHash, orgJsonUri, orgJsonUriBackup1, orgJsonUriBackup2) `nonpayable` `3b331384`
 
 > Shorthand method to change ORG.JSON URI and hash at once
 
@@ -301,7 +301,7 @@ Inputs
 
 ## *function* setupNewStorage
 
-OrgIdUpgradeability.setupNewStorage(value) `nonpayable` `00551333`
+OrgId_1_1_5_Upgradeability.setupNewStorage(value) `nonpayable` `00551333`
 
 
 Inputs
@@ -313,7 +313,7 @@ Inputs
 
 ## *function* supportsInterface
 
-OrgIdUpgradeability.supportsInterface(interfaceId) `view` `01ffc9a7`
+OrgId_1_1_5_Upgradeability.supportsInterface(interfaceId) `view` `01ffc9a7`
 
 > Interface of the ERC165 standard, as defined in the https://eips.ethereum.org/EIPS/eip-165[EIP].
 
@@ -326,7 +326,7 @@ Inputs
 
 ## *function* test
 
-OrgIdUpgradeability.test() `view` `f8a8fd6d`
+OrgId_1_1_5_Upgradeability.test() `view` `f8a8fd6d`
 
 
 
@@ -334,7 +334,7 @@ OrgIdUpgradeability.test() `view` `f8a8fd6d`
 
 ## *function* toggleActiveState
 
-OrgIdUpgradeability.toggleActiveState(orgId) `nonpayable` `0209c0ef`
+OrgId_1_1_5_Upgradeability.toggleActiveState(orgId) `nonpayable` `0209c0ef`
 
 > Toggle ORGiD's active/inactive state
 
@@ -347,7 +347,7 @@ Inputs
 
 ## *function* transferDirectorship
 
-OrgIdUpgradeability.transferDirectorship(orgId, newDirector) `nonpayable` `a954f145`
+OrgId_1_1_5_Upgradeability.transferDirectorship(orgId, newDirector) `nonpayable` `a954f145`
 
 > Unit directorship transfer
 
@@ -361,7 +361,7 @@ Inputs
 
 ## *function* transferOrganizationOwnership
 
-OrgIdUpgradeability.transferOrganizationOwnership(orgId, newOwner) `nonpayable` `aa73697e`
+OrgId_1_1_5_Upgradeability.transferOrganizationOwnership(orgId, newOwner) `nonpayable` `aa73697e`
 
 > Ownership transfer
 

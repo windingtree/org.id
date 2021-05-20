@@ -185,7 +185,10 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
      * @dev Check ORGiD existence
      * @param orgId ORGiD hash
      * @dev Return parameters marked by (*) are only applicable to units
-     * @return ORGiD existence
+     * @return {
+        "exists": "ORGiD existence",
+        "owner": "ORGiD owner address"
+     }
      */
     function getOrgId(bytes32 orgId)
         external
@@ -202,14 +205,16 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
     /**
      * @dev Check registered ORGiD count
      * @dev Return count of ORGiD hashes
-     * @return ORGiD count
+     * @return {
+        "count": "ORGiDs count"
+     }
      */
     function getOrgIdsCount()
         external
         view
-        returns (uint256)
+        returns (uint256 count)
     {
-        return orgIds.length;
+        count = orgIds.length;
     }
 
     /**
@@ -230,7 +235,9 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
      * @dev Get paginated ORGiDs hashes list
      * @param cursor Index of the ORGiD from which to start querying
      * @param count Number of ORGiDs to go through
-     * @return orgIdsPage Array of ORGiDs hashes
+     * @return {
+        "orgIdsPage": "Array of ORGiDs hashes"
+     }
      */
     function getOrgIds(uint256 cursor, uint256 count)
         external
