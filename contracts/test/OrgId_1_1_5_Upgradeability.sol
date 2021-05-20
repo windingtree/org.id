@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-only;
 pragma solidity 0.5.17;
 
-import "../OrgId_1_1_5.sol";
+import "./OrgId_1_1_5.sol";
 
 /**
  * @title OrgIdUpgradeability

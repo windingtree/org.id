@@ -1,20 +1,23 @@
 // SPDX-License-Identifier: GPL-3.0-only;
 pragma solidity 0.5.17;
 
-import "./OrgId_1_1_5.sol";
+import "./OrgId_1_1_5_Storage.sol";
 import "./OrgIdInterface.sol";
 
 
 /**
  * @title ORGiD Registry Smart Contract
  */
-contract OrgId is OrgId_1_1_5, OrgIdInterface {
+contract OrgId is OrgId_1_1_5_Storage, OrgIdInterface {
 
     /// @dev Mapped list of Organizations
     mapping (bytes32 => address) internal organizationsList;
 
     /// orgIds storage is already defined in the parent contract
     // bytes32[] internal orgIds;
+
+    /// @dev Version 2.0.0 initialization flag
+    bool private initialized200;
 
     /**
      * @dev Emits when new ORGiD created
@@ -68,7 +71,12 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
      * @dev Initializer for the version 2.0.0
      */
     /* solhint-disable func-name-mixedcase */
-    function initializeUpgrade_2_0_0() public {
+    function initializeUpgrade_2_0_0() external {
+        require(
+            !initialized200,
+            "OrgId: has already been initialized"
+        );
+
         // Remove old OrgId interface
         _removeInterface(0x0f4893ef);
         // Remove hierarchy interface
@@ -93,6 +101,9 @@ contract OrgId is OrgId_1_1_5, OrgIdInterface {
             // Remove organization structure from the storage
             delete organizations[orgIds[i]];
         }
+
+        // Mark this contract version initialized
+        initialized200 = true;
     }
 
     /**

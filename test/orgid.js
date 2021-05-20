@@ -218,6 +218,20 @@ contract('OrgId_2_0_0', accounts => {
                 .events.OrgIdCreated.returnValues.orgId;
         });
 
+        describe('Initializer', () => {
+
+            it('should fail', async () => {
+                await assertRevert(
+                    orgIdInstance
+                        .methods['initializeUpgrade_2_0_0()']()
+                        .send({
+                            from: randomAddress
+                        }),
+                    'OrgId: has already been initialized'
+                );
+            });
+        });
+
         describe('ERC165 interfaces', () => {
 
             it('should support IERC165 interface', async () => {
