@@ -227,7 +227,14 @@ contract('OrgId_2_0_0', accounts => {
                 ).should.be.true;
             });
 
-            it('should support OrgId interface', async () => {
+            it('should NOT support OLD OrgId interface', async () => {
+                (await orgIdInstance
+                    .methods['supportsInterface(bytes4)']('0x0f4893ef')
+                    .call()
+                ).should.be.false;
+            });
+
+            it('should support NEW OrgId interface', async () => {
                 (await orgIdInstance
                     .methods['supportsInterface(bytes4)']('0xafaa40a0')
                     .call()
