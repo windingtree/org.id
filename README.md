@@ -15,13 +15,8 @@ ORGiD Registry is the core smart contract of the [ORGiD Ecosystem](https://orgid
 
 `0x2cb8dCf26830B969555E04C2EDe3fc1D1BaD504E` [full config](./.openzeppelin/ropsten-OrgId.json) v1.1.0
 
-### ORGiD Sandbox
+v2.0.0 Will be available soon
 
-```sh
-docker run --rm -it -p 8545:8545 -p 8546:8546 -p 30303:30303 --name org.id-sandbox windingtree/org.id-sandbox
-```
-
-[ORGiD Sandbox docker container](https://hub.docker.com/r/windingtree/org.id-sandbox) is the easiest way to start developing applications for the ORGiD ecosystem.
 
 ## Usage
 
@@ -32,7 +27,7 @@ npm i @windingtree/org.id
 // ABI
 const { OrgIdContract, OrgIdInterfaceContract, addresses } = require('@windingtree/org.id');
 // Contract addresses
-const { mainnet, ropsten } = addresses;
+const { main, ropsten } = addresses;
 ```
 
 ## Concept
