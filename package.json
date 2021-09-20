@@ -1,69 +1,68 @@
 {
   "name": "@windingtree/org.id",
-  "version": "2.0.0",
-  "description": "ORG.ID is Decentralized Identifier (DID) Protocol for Organizations",
-  "directories": {
-    "test": "test",
-    "doc": "doc"
-  },
-  "scripts": {
-    "test": "scripts/test.sh",
-    "lint": "npx eslint test scripts && npx solhint 'contracts/**/*.sol'",
-    "lint:fix": "npx eslint test scripts --fix && npx solhint 'contracts/**/*.sol'",
-    "verify": "npx truffle run verify --mode=quick --ci OrgId.sol",
-    "ganache": "npx ganache-cli --gasLimit 0xfffffffffff -m --port 8545 --deterministic",
-    "geth": "scripts/geth.sh",
-    "coverage": "SOLIDITY_COVERAGE=true npm run test",
-    "soldoc": "scripts/soldoc.sh",
-    "flattener": "scripts/flattener.sh",
-    "clean": "rimraf build",
-    "build:index": "node scripts/build-index.js > index.js",
-    "set-oz-version": "npx openzeppelin bump `node -e \"const p = require('./package.json');console.log(p.version);\"`",
-    "version": "npm run set-oz-version && git add .openzeppelin/project.json && npm run build:index",
-    "prebuild": "npm run clean",
-    "build": "npx truffle compile && npm run build:index"
-  },
+  "version": "3.0.0",
+  "description": "ORGiD is Decentralized Identifier (DID) Protocol for Organizations",
+  "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public"
+  },
+  "main": "index.js",
+  "types": "typechain/index.ts",
+  "scripts": {
+    "test": "npx hardhat test",
+    "test:opt": "npx hardhat --network optimismLocalhost test",
+    "lint": "npx solhint contracts/*.sol",
+    "compile": "npx hardhat compile",
+    "build": "yarn compile",
+    "coverage": "npx hardhat coverage --testfiles \"test/**/*.spec.ts\"",
+    "coverage:coveralls": "yarn coverage && cat coverage/lcov.info | npx coveralls",
+    "node:opt": "docker-compose -f ./optimism/opt/docker-compose-nobuild.yml up -t 60"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/windingtree/org.id"
   },
   "keywords": [
-    "org.id",
     "orgid",
-    "winding-tree",
-    "security",
-    "encryption",
-    "smart-contract",
-    "solidity"
+    "winding tree",
+    "smart contract",
+    "solidity",
+    "typescript"
   ],
-  "main": "index.js",
   "author": "Winding Tree Developers <dev@windingtree.com>",
-  "license": "GPL-3.0-only",
+  "contributors": [
+    "Kostiantyn Smyrnov <kostysh@gmail.com>"
+  ],
+  "bugs": {
+    "url": "https://github.com/windingtree/org.id/issues"
+  },
+  "homepage": "https://github.com/windingtree/org.id/tree/master#readme",
   "dependencies": {
-    "@openzeppelin/contracts": "2.5.0"
+    "@openzeppelin/contracts-upgradeable": "4.3.2"
   },
   "devDependencies": {
-    "@openzeppelin/cli": "2.7.1",
-    "@truffle/contract": "4.3.16",
-    "@truffle/hdwallet-provider": "1.4.0",
-    "@windingtree/smart-contracts-tools": "0.1.1",
-    "bn-chai": "1.0.1",
+    "@types/node": "16.9.4",
+    "@types/mocha": "9.0.0",
+    "@types/chai": "4.2.21",
+    "ethereum-waffle": "3.4.0",
+    "@nomiclabs/hardhat-ethers": "2.0.2",
+    "@nomiclabs/hardhat-waffle": "2.0.1",
+    "@nomiclabs/hardhat-etherscan": "2.1.6",
+    "@eth-optimism/hardhat-ovm": "0.2.3",
+    "@openzeppelin/hardhat-upgrades": "1.10.0",
+    "ts-node": "10.2.1",
+    "ethers": "5.4.7",
+    "solhint": "3.3.6",
     "chai": "4.3.4",
-    "coveralls": "3.1.0",
-    "eslint": "7.26.0",
-    "ganache-cli": "6.12.2",
-    "rimraf": "3.0.2",
-    "solc": "0.8.4",
-    "solhint": "3.3.4",
-    "solidity-coverage": "0.7.16",
-    "solmd": "0.4.0",
-    "truffle": "5.3.6",
-    "truffle-flattener": "1.5.0",
-    "truffle-plugin-verify": "0.5.8",
-    "truffle-security": "1.7.3"
+    "hardhat": "2.6.4",
+    "typescript": "4.4.3",
+    "solc": "0.8.7-fixed",
+    "solidity-coverage": "0.7.17",
+    "coveralls": "3.1.1",
+    "typechain": "5.1.2",
+    "@typechain/hardhat": "2.3.0",
+    "@typechain/ethers-v5": "7.1.0",
+    "@windingtree/secure-env-cli": "1.0.3"
   },
   "engines": {
     "node": ">=12"

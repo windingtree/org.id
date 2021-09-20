@@ -1,6 +1,0 @@
-* [OwnablePatch](#ownablepatch)
-
-# OwnablePatch
-
-
----

@@ -1,38 +1,19 @@
-# Logs
-logs
-*.log
-npm-debug.log*
-.node-xmlhttprequest-sync-[0-9]*
-
-# Compiled
-build
-./index.js
-
-# Dependency directories
 node_modules
+keys.json
+networks.json
+.env
+*.env
+.senv
+*.senv
 
-# Coverage artifacts
+#Hardhat files
 coverage
 coverage.json
-.flattened
-allFiredEvents
-coverageEnv
-scTopics
-.coverage_artifacts
+cache
+artifacts/build-info
+artifacts/**/*.dbg.json
 
-# ETH keys
-keys*.json
+.openzeppelin/unknown-31337.json
 
-# OpenZeppelin SDK
-.zos.session
-zos.dev-*
-.openzeppelin/*
-!.openzeppelin/project.json
-
-# Project deployments
-!.openzeppelin/ropsten-OrgId.json
-!.openzeppelin/rinkeby-OrgId.json
-!.openzeppelin/main-OrgId.json
-
-# Etc
-temp
+# Optimism Ethereum node
+optimism

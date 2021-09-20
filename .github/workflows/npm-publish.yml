@@ -12,8 +12,10 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: npm i
-      - run: npm test
+      - run: yarn install
+      - run: yarn coverage:coveralls
+        env:
+          COVERALLS_REPO_TOKEN: ${{secrets.coveralls_repo_token}}
 
   publish-npm:
     needs: build
@@ -24,8 +26,8 @@ jobs:
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
-      - run: npm i
-      - run: npm run build
+      - run: yarn install
+      - run: yarn build
       - run: npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}

@@ -1,0 +1,5 @@
+{
+    "solidity.compileUsingRemoteVersion": "latest",
+    "solidity.packageDefaultDependenciesContractsDirectory": "",
+    "solidity.packageDefaultDependenciesDirectory": "node_modules"
+}

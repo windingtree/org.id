@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2019",
+    "lib": [
+      "ES2020"
+    ],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "outDir": "dist",
+    "declaration": true,
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "strictNullChecks": true
+  },
+  "exclude": [
+    "node_modules",
+    "dist"
+  ],
+  "files": [
+    "hardhat.config.ts"
+  ]
+}

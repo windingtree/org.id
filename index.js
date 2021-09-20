@@ -1,17 +1,8 @@
-
-const OrgIdContract = require('./build/contracts/OrgId.json');
-const OrgIdInterfaceContract = require('./build/contracts/OrgIdInterface.json');
-const mainConfig = require('./.openzeppelin/main-OrgId.json');
-const ropstenConfig = require('./.openzeppelin/ropsten-OrgId.json');
-const v115Config = require('./.openzeppelin/v115-ropsten-OrgId.json');
+const OrgIdContract = require('./artifacts/contracts/OrgId.sol/OrgId.json');
+const OrgIdContractInterface = require('./artifacts/contracts/IOrgIdRegistry.sol/IOrgIdRegistry.json');
 
 module.exports = {
     OrgIdContract: OrgIdContract,
-    OrgIdInterfaceContract: OrgIdInterfaceContract,
-    addresses: {
-        main: mainConfig.contract.proxy,
-        ropsten: ropstenConfig.contract.proxy,
-        v115: v115Config.contract.proxy,
-    }
+    OrgIdAbi: OrgIdContract.abi,
+    OrgIdContractInterface: OrgIdContractInterface
 };
-
