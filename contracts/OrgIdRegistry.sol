@@ -7,7 +7,7 @@ import "./IOrgIdRegistry.sol";
 
 abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721EnumerableUpgradeable {
 
-  /// @dev Mapping of the organization hash to the token Id
+  /// @dev Mapping of the organization hash to the tokenId
   mapping (bytes32 => uint256) private _organizationTokens;
 
   /// @dev Mapping of the token Id to the orgJsonUri
@@ -36,16 +36,19 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IOrgIdRegistry-getTokenId(bytes32)}.
+   * @dev See {IERC721Metadata-tokenURI}.
    */
-  function getTokenId(bytes32 orgId)
-    external
+  function tokenURI(uint256 tokenId)
+    public
     view
     virtual
-    override
-    returns (uint256 tokenId)
+    override(ERC721Upgradeable)
+    returns (string memory)
   {
-    tokenId = _organizationTokens[orgId];
+    if (!_exists(tokenId)) {
+      revert TokenNotFound(tokenId);
+    }
+    return _orgJsonUris[tokenId];
   }
 
   /**
@@ -59,6 +62,19 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     returns (string memory orgJsonUri)
   {
     orgJsonUri = _orgJsonUris[_organizationTokens[orgId]];
+  }
+
+  /**
+   * @dev See {IOrgIdRegistry-getTokenId(bytes32)}.
+   */
+  function getTokenId(bytes32 orgId)
+    external
+    view
+    virtual
+    override
+    returns (uint256 tokenId)
+  {
+    tokenId = _organizationTokens[orgId];
   }
 
   /**
@@ -110,22 +126,6 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IERC721Metadata-tokenURI}.
-   */
-  function tokenURI(uint256 tokenId)
-    public
-    view
-    virtual
-    override(ERC721Upgradeable)
-    returns (string memory)
-  {
-    if (!_exists(tokenId)) {
-      revert TokenNotFound(tokenId);
-    }
-    return _orgJsonUris[tokenId];
-  }
-
-  /**
    * @dev See {IERC721Metadata-createOrgId(bytes32,string)}.
   */
   function createOrgId(
@@ -154,7 +154,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
       revert OrgIdAlreadyExists(orgId);
     }
 
-    tokenId = totalSupply();
+    tokenId = totalSupply() + 1;
     _safeMint(orgIdOwner, tokenId);
     _organizationTokens[orgId] = tokenId;
     _orgJsonUris[tokenId] = orgJsonUri;

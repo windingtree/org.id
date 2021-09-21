@@ -16,6 +16,10 @@
     "experimentalDecorators": true,
     "strictNullChecks": true
   },
+  "include": [
+    "./scripts",
+    "./test"
+  ],
   "exclude": [
     "node_modules",
     "dist"
