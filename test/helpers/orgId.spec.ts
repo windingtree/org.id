@@ -69,18 +69,11 @@ describe('ORGiD contract', () => {
       it('should set new orgJsonUri value', async () => {});
     });
 
-    describe('#getOrgJsonUri(bytes32)', () => {
+    describe('#getOrgId(bytes32)', () => {
 
-      it('should return empty string if ORGiD not exists', async () => {});
+      it('should return zero-valued ORGiD not exists', async () => {});
 
-      it('should return orgJsonUri', async () => {});
-    });
-
-    describe('#getTokenId(bytes32)', () => {
-
-      it('should return zero is token ton exists', async () => {});
-
-      it('should return token Id', async () => {});
+      it('should return ORGiD', async () => {});
     });
 
     describe('#getOrgIds()', () => {

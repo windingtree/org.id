@@ -52,29 +52,22 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IOrgIdRegistry-getOrgJsonUri(bytes32)}.
+   * @dev See {IOrgIdRegistry-getOrgId(bytes32)}.
    */
-  function getOrgJsonUri(bytes32 orgId)
-    public
-    view
-    virtual
-    override
-    returns (string memory orgJsonUri)
-  {
-    orgJsonUri = _orgJsonUris[_organizationTokens[orgId]];
-  }
-
-  /**
-   * @dev See {IOrgIdRegistry-getTokenId(bytes32)}.
-   */
-  function getTokenId(bytes32 orgId)
+  function getOrgId(bytes32 orgId)
     external
     view
     virtual
     override
-    returns (uint256 tokenId)
+    returns (
+      string memory orgJsonUri,
+      uint256 tokenId,
+      address owner
+    )
   {
+    orgJsonUri = _orgJsonUris[_organizationTokens[orgId]];
     tokenId = _organizationTokens[orgId];
+    owner = ownerOf(tokenId);
   }
 
   /**

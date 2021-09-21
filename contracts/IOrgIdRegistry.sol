@@ -44,26 +44,21 @@ abstract contract IOrgIdRegistry {
   error CalledNotByOrgIdOwner();
 
   /**
-   * @dev Returns an ORG.JSON URI
+   * @dev Returns an ORGiD
    * @param orgId ORGiD hash
+   * @return orgJsonUri ORG.JSON URI
    * @return tokenId Token Id
+   * @return owner ORGiD owner
    */
-  function getTokenId(bytes32 orgId)
+  function getOrgId(bytes32 orgId)
     external
     view
     virtual
-    returns (uint256 tokenId);
-
-  /**
-   * @dev Changes an ORG.JSON URI
-   * @param orgId ORGiD hash
-   * @return orgJsonUri ORG.JSON URI
-   */
-  function getOrgJsonUri(bytes32 orgId)
-    public
-    view
-    virtual
-    returns (string memory orgJsonUri);
+    returns (
+      string memory orgJsonUri,
+      uint256 tokenId,
+      address owner
+    );
 
   /**
    * @dev Returns all organizations' ORGiD hashes list

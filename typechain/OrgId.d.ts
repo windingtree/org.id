@@ -25,9 +25,8 @@ interface OrgIdInterface extends ethers.utils.Interface {
     "balanceOf(address)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getOrgId(bytes32)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
-    "getOrgJsonUri(bytes32)": FunctionFragment;
-    "getTokenId(bytes32)": FunctionFragment;
     "initialize()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
@@ -57,17 +56,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
     functionFragment: "getApproved",
     values: [BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "getOrgId", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getOrgIds",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getOrgJsonUri",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenId",
-    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "initialize",
@@ -130,12 +122,8 @@ interface OrgIdInterface extends ethers.utils.Interface {
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOrgIds", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getOrgJsonUri",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getTokenId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
@@ -303,6 +291,28 @@ export class OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -312,26 +322,6 @@ export class OrgId extends BaseContract {
     "getOrgIds()"(
       overrides?: CallOverrides
     ): Promise<[string[]] & { orgIds: string[] }>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string] & { orgJsonUri: string }>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string] & { orgJsonUri: string }>;
-
-    getTokenId(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
 
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -512,6 +502,28 @@ export class OrgId extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
+  getOrgId(
+    orgId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, string] & {
+      orgJsonUri: string;
+      tokenId: BigNumber;
+      owner: string;
+    }
+  >;
+
+  "getOrgId(bytes32)"(
+    orgId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, string] & {
+      orgJsonUri: string;
+      tokenId: BigNumber;
+      owner: string;
+    }
+  >;
+
   "getOrgIds(uint256,uint256)"(
     cursor: BigNumberish,
     count: BigNumberish,
@@ -519,20 +531,6 @@ export class OrgId extends BaseContract {
   ): Promise<string[]>;
 
   "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getOrgJsonUri(orgId: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  "getOrgJsonUri(bytes32)"(
-    orgId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getTokenId(bytes32)"(
-    orgId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   initialize(
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -707,6 +705,28 @@ export class OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -714,20 +734,6 @@ export class OrgId extends BaseContract {
     ): Promise<string[]>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getOrgJsonUri(orgId: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     initialize(overrides?: CallOverrides): Promise<void>;
 
@@ -981,6 +987,13 @@ export class OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    getOrgId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -988,23 +1001,6 @@ export class OrgId extends BaseContract {
     ): Promise<BigNumber>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -1189,6 +1185,16 @@ export class OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -1196,26 +1202,6 @@ export class OrgId extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenId(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     initialize(
       overrides?: Overrides & { from?: string | Promise<string> }

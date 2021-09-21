@@ -123,6 +123,35 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
+      },
+    ],
+    name: "getOrgId",
+    outputs: [
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "cursor",
         type: "uint256",
@@ -152,44 +181,6 @@ const _abi = [
         internalType: "bytes32[]",
         name: "orgIds",
         type: "bytes32[]",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "orgId",
-        type: "bytes32",
-      },
-    ],
-    name: "getOrgJsonUri",
-    outputs: [
-      {
-        internalType: "string",
-        name: "orgJsonUri",
-        type: "string",
-      },
-    ],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "orgId",
-        type: "bytes32",
-      },
-    ],
-    name: "getTokenId",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
       },
     ],
     stateMutability: "view",

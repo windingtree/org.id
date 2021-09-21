@@ -22,9 +22,8 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 interface IOrgIdRegistryInterface extends ethers.utils.Interface {
   functions: {
     "createOrgId(bytes32,string)": FunctionFragment;
+    "getOrgId(bytes32)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
-    "getOrgJsonUri(bytes32)": FunctionFragment;
-    "getTokenId(bytes32)": FunctionFragment;
     "setOrgJson(bytes32,string)": FunctionFragment;
   };
 
@@ -32,17 +31,10 @@ interface IOrgIdRegistryInterface extends ethers.utils.Interface {
     functionFragment: "createOrgId",
     values: [BytesLike, string]
   ): string;
+  encodeFunctionData(functionFragment: "getOrgId", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "getOrgIds",
     values: [BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getOrgJsonUri",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getTokenId",
-    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "setOrgJson",
@@ -53,12 +45,8 @@ interface IOrgIdRegistryInterface extends ethers.utils.Interface {
     functionFragment: "createOrgId",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOrgIds", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "getOrgJsonUri",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "getTokenId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setOrgJson", data: BytesLike): Result;
 
   events: {
@@ -134,6 +122,28 @@ export class IOrgIdRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -143,26 +153,6 @@ export class IOrgIdRegistry extends BaseContract {
     "getOrgIds()"(
       overrides?: CallOverrides
     ): Promise<[string[]] & { orgIds: string[] }>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string] & { orgJsonUri: string }>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string] & { orgJsonUri: string }>;
-
-    getTokenId(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
 
     setOrgJson(
       orgId: BytesLike,
@@ -189,6 +179,28 @@ export class IOrgIdRegistry extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  getOrgId(
+    orgId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, string] & {
+      orgJsonUri: string;
+      tokenId: BigNumber;
+      owner: string;
+    }
+  >;
+
+  "getOrgId(bytes32)"(
+    orgId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<
+    [string, BigNumber, string] & {
+      orgJsonUri: string;
+      tokenId: BigNumber;
+      owner: string;
+    }
+  >;
+
   "getOrgIds(uint256,uint256)"(
     cursor: BigNumberish,
     count: BigNumberish,
@@ -196,20 +208,6 @@ export class IOrgIdRegistry extends BaseContract {
   ): Promise<string[]>;
 
   "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
-
-  getOrgJsonUri(orgId: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-  "getOrgJsonUri(bytes32)"(
-    orgId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-  "getTokenId(bytes32)"(
-    orgId: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<BigNumber>;
 
   setOrgJson(
     orgId: BytesLike,
@@ -236,6 +234,28 @@ export class IOrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string, BigNumber] & { orgId: string; tokenId: BigNumber }>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<
+      [string, BigNumber, string] & {
+        orgJsonUri: string;
+        tokenId: BigNumber;
+        owner: string;
+      }
+    >;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -243,20 +263,6 @@ export class IOrgIdRegistry extends BaseContract {
     ): Promise<string[]>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
-
-    getOrgJsonUri(orgId: BytesLike, overrides?: CallOverrides): Promise<string>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     setOrgJson(
       orgId: BytesLike,
@@ -312,6 +318,13 @@ export class IOrgIdRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    getOrgId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -319,23 +332,6 @@ export class IOrgIdRegistry extends BaseContract {
     ): Promise<BigNumber>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    getTokenId(orgId: BytesLike, overrides?: CallOverrides): Promise<BigNumber>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     setOrgJson(
       orgId: BytesLike,
@@ -363,6 +359,16 @@ export class IOrgIdRegistry extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
+    getOrgId(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrgId(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     "getOrgIds(uint256,uint256)"(
       cursor: BigNumberish,
       count: BigNumberish,
@@ -370,26 +376,6 @@ export class IOrgIdRegistry extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     "getOrgIds()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getOrgJsonUri(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getOrgJsonUri(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    getTokenId(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "getTokenId(bytes32)"(
-      orgId: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     setOrgJson(
       orgId: BytesLike,
