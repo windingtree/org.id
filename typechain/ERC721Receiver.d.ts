@@ -18,25 +18,34 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface InitializableVersionInterface extends ethers.utils.Interface {
+interface ERC721ReceiverInterface extends ethers.utils.Interface {
   functions: {
-    "c_0x19e4eb6c(bytes32)": FunctionFragment;
+    "c_0x63b7ff9d(bytes32)": FunctionFragment;
+    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "c_0x19e4eb6c",
+    functionFragment: "c_0x63b7ff9d",
     values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "onERC721Received",
+    values: [string, string, BigNumberish, BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "c_0x19e4eb6c",
+    functionFragment: "c_0x63b7ff9d",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC721Received",
     data: BytesLike
   ): Result;
 
   events: {};
 }
 
-export class InitializableVersion extends BaseContract {
+export class ERC721Receiver extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -77,64 +86,144 @@ export class InitializableVersion extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: InitializableVersionInterface;
+  interface: ERC721ReceiverInterface;
 
   functions: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0x63b7ff9d(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<[void]>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0x63b7ff9d(bytes32)"(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<[void]>;
+
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    "onERC721Received(address,address,uint256,bytes)"(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
   };
 
-  c_0x19e4eb6c(
-    c__0x19e4eb6c: BytesLike,
+  c_0x63b7ff9d(
+    c__0x63b7ff9d: BytesLike,
     overrides?: CallOverrides
   ): Promise<void>;
 
-  "c_0x19e4eb6c(bytes32)"(
-    c__0x19e4eb6c: BytesLike,
+  "c_0x63b7ff9d(bytes32)"(
+    c__0x63b7ff9d: BytesLike,
     overrides?: CallOverrides
   ): Promise<void>;
+
+  onERC721Received(
+    operator: string,
+    from: string,
+    tokenId: BigNumberish,
+    data: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "onERC721Received(address,address,uint256,bytes)"(
+    operator: string,
+    from: string,
+    tokenId: BigNumberish,
+    data: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
 
   callStatic: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0x63b7ff9d(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0x63b7ff9d(bytes32)"(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "onERC721Received(address,address,uint256,bytes)"(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
   };
 
   filters: {};
 
   estimateGas: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0x63b7ff9d(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0x63b7ff9d(bytes32)"(
+      c__0x63b7ff9d: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "onERC721Received(address,address,uint256,bytes)"(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0x63b7ff9d(
+      c__0x63b7ff9d: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0x63b7ff9d(bytes32)"(
+      c__0x63b7ff9d: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    onERC721Received(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "onERC721Received(address,address,uint256,bytes)"(
+      operator: string,
+      from: string,
+      tokenId: BigNumberish,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };

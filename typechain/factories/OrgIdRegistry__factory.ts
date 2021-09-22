@@ -204,6 +204,32 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
+        name: "c__0xc39a2e1c",
+        type: "bytes32",
+      },
+    ],
+    name: "c_0xc39a2e1c",
+    outputs: [],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "c__0xf29f1bae",
+        type: "bytes32",
+      },
+    ],
+    name: "c_0xf29f1bae",
+    outputs: [],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
         name: "salt",
         type: "bytes32",
       },
@@ -214,18 +240,7 @@ const _abi = [
       },
     ],
     name: "createOrgId",
-    outputs: [
-      {
-        internalType: "bytes32",
-        name: "orgId",
-        type: "bytes32",
-      },
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -259,14 +274,19 @@ const _abi = [
     name: "getOrgId",
     outputs: [
       {
-        internalType: "string",
-        name: "orgJsonUri",
-        type: "string",
+        internalType: "bool",
+        name: "exists",
+        type: "bool",
       },
       {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
       },
       {
         internalType: "address",

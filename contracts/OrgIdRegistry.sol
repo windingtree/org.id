@@ -5,6 +5,9 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721Enumer
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "./IOrgIdRegistry.sol";
 
+/**
+ * @dev OrgIdRegistry contract
+ */
 abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721EnumerableUpgradeable {
 
   /// @dev Mapping of the organization hash to the tokenId
@@ -17,7 +20,8 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   bytes32[] private _orgIds;
 
   /// @dev OrgIdRegistry contract initializer
-  function __OrgIdRegistry_init() internal initializer { // solhint-disable-line func-name-mixedcase
+  // solhint-disable-next-line func-name-mixedcase
+  function __OrgIdRegistry_init() internal initializer {
     __ERC721Enumerable_init();
   }
 
@@ -60,14 +64,18 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     virtual
     override
     returns (
-      string memory orgJsonUri,
+      bool exists,
       uint256 tokenId,
+      string memory orgJsonUri,
       address owner
     )
   {
-    orgJsonUri = _orgJsonUris[_organizationTokens[orgId]];
     tokenId = _organizationTokens[orgId];
-    owner = ownerOf(tokenId);
+    exists = _exists(tokenId);
+    if (exists) {
+      orgJsonUri = _orgJsonUris[tokenId];
+      owner = ownerOf(tokenId);
+    }
   }
 
   /**
@@ -79,7 +87,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
       override
       returns (bytes32[] memory orgIds)
   {
-      orgIds = _orgIds;
+    orgIds = _orgIds;
   }
 
   /**
@@ -92,30 +100,31 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
       override
       returns (bytes32[] memory orgIds)
   {
-      bytes32[] memory orgIdsPageRaw = new bytes32[](count);
-      uint256 index;
-      uint256 nonZeroCount;
+    bytes32[] memory orgIdsPageRaw = new bytes32[](count);
+    uint256 index;
+    uint256 nonZeroCount;
 
-      // slice orgIds list by parameters
-      for (uint256 i = cursor; i < _orgIds.length && (i < cursor + count); i++) {
-        orgIdsPageRaw[index] = _orgIds[i];
+    // slice orgIds list by parameters
+    for (uint256 i = cursor; i < _orgIds.length && (i < cursor + count); i++) {
+      orgIdsPageRaw[index] = _orgIds[i];
 
-        if (_orgIds[i] != bytes32(0)) {
-          nonZeroCount++;
-        }
+      if (_orgIds[i] != bytes32(0)) {
+        nonZeroCount++;
+      }
 
+      index++;
+    }
+
+    orgIds = new bytes32[](nonZeroCount);
+    index = 0;
+
+    // Filter zero elements
+    for (uint256 i = 0; i < orgIdsPageRaw.length; i++) {
+      if (orgIdsPageRaw[i] != bytes32(0)) {
+        orgIds[index] = orgIdsPageRaw[i];
         index++;
       }
-
-      // Filter zero elements
-      orgIds = new bytes32[](nonZeroCount);
-      index = 0;
-      for (uint256 i = 0; i < orgIdsPageRaw.length; i++) {
-        if (orgIdsPageRaw[i] != bytes32(0)) {
-          orgIds[index] = orgIdsPageRaw[i];
-          index++;
-        }
-      }
+    }
   }
 
   /**
@@ -128,7 +137,6 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     external
     virtual
     override
-    returns (bytes32 orgId, uint256 tokenId)
   {
     if (bytes(orgJsonUri).length == 0) {
       revert OrgJsonUriEmpty();
@@ -136,28 +144,25 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
 
     address orgIdOwner = _msgSender();
 
-    orgId = keccak256(
+    bytes32 orgId = keccak256(
       abi.encodePacked(
         orgIdOwner,
         salt
       )
     );
+    _orgIds.push(orgId);
 
     if (_organizationTokens[orgId] != 0) {
       revert OrgIdAlreadyExists(orgId);
     }
 
-    tokenId = totalSupply() + 1;
+    uint256 tokenId = totalSupply() + 1;
     _safeMint(orgIdOwner, tokenId);
     _organizationTokens[orgId] = tokenId;
     _orgJsonUris[tokenId] = orgJsonUri;
 
     emit OrgIdCreated(orgId, orgIdOwner);
-
-    emit OrgJsonUriChanged(
-      orgId,
-      orgJsonUri
-    );
+    emit OrgJsonUriChanged(orgId, orgJsonUri);
   }
 
   /**
@@ -171,7 +176,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     virtual
     override
   {
-    if (orgId == bytes32(0)) {
+    if (orgId == bytes32(0) || _organizationTokens[orgId] == 0) {
       revert OrgIdNotFound(orgId);
     }
     if (bytes(orgJsonUri).length == 0) {
@@ -183,10 +188,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
 
     _orgJsonUris[_organizationTokens[orgId]] = orgJsonUri;
 
-    emit OrgJsonUriChanged(
-      orgId,
-      orgJsonUri
-    );
+    emit OrgJsonUriChanged(orgId, orgJsonUri);
   }
 
   uint256[51] private __gap;

@@ -5,6 +5,16 @@
 
 ORGiD Registry is the core smart contract of the [ORGiD Ecosystem](https://orgid.tech). It is a database of all organizations and their organizational units. Its interface allows to retrieve information about all and any organization or unit, as well as create and change them.
 
+### Supported interfaces
+
+ORGiD is ERC165 compatible smart contract that supports the following interfaces:
+
+- ERC165 interface: `0x01ffc9a7`
+- ORGiD interface: `0xd9d4c2b6`
+- ERC721Metadata interface: `0x5b5e139f`
+- ERC721 interface: `0x80ac58cd`
+- ERC721Enumerable interface: `0x780e9d63`
+
 ## Management
 
 > To run the code you will need to initialize the following environment variables:

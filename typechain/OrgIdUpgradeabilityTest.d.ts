@@ -19,10 +19,13 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
-interface OrgIdInterface extends ethers.utils.Interface {
+interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
   functions: {
+    "__OrgIdV2_init()": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "c_0x19e4eb6c(bytes32)": FunctionFragment;
+    "c_0x2664f453(bytes32)": FunctionFragment;
     "c_0xc39a2e1c(bytes32)": FunctionFragment;
     "c_0xf29f1bae(bytes32)": FunctionFragment;
     "c_0xf78ce2b1(bytes32)": FunctionFragment;
@@ -44,13 +47,26 @@ interface OrgIdInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
+    "version()": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "__OrgIdV2_init",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "c_0x19e4eb6c",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "c_0x2664f453",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "c_0xc39a2e1c",
     values: [BytesLike]
@@ -126,9 +142,22 @@ interface OrgIdInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
+  decodeFunctionResult(
+    functionFragment: "__OrgIdV2_init",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0x19e4eb6c",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0x2664f453",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "c_0xc39a2e1c",
     data: BytesLike
@@ -189,6 +218,7 @@ interface OrgIdInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -233,7 +263,7 @@ export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-export class OrgId extends BaseContract {
+export class OrgIdUpgradeabilityTest extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -274,9 +304,17 @@ export class OrgId extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: OrgIdInterface;
+  interface: OrgIdUpgradeabilityTestInterface;
 
   functions: {
+    __OrgIdV2_init(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "__OrgIdV2_init()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -295,6 +333,26 @@ export class OrgId extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    c_0x19e4eb6c(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0x19e4eb6c(bytes32)"(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    c_0x2664f453(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0x2664f453(bytes32)"(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     c_0xc39a2e1c(
       c__0xc39a2e1c: BytesLike,
@@ -518,7 +576,19 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    version(overrides?: CallOverrides): Promise<[string]>;
+
+    "version()"(overrides?: CallOverrides): Promise<[string]>;
   };
+
+  __OrgIdV2_init(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "__OrgIdV2_init()"(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   approve(
     to: string,
@@ -538,6 +608,26 @@ export class OrgId extends BaseContract {
     owner: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
+
+  c_0x19e4eb6c(
+    c__0x19e4eb6c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0x19e4eb6c(bytes32)"(
+    c__0x19e4eb6c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  c_0x2664f453(
+    c__0x2664f453: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0x2664f453(bytes32)"(
+    c__0x2664f453: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
 
   c_0xc39a2e1c(
     c__0xc39a2e1c: BytesLike,
@@ -754,7 +844,15 @@ export class OrgId extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  version(overrides?: CallOverrides): Promise<string>;
+
+  "version()"(overrides?: CallOverrides): Promise<string>;
+
   callStatic: {
+    __OrgIdV2_init(overrides?: CallOverrides): Promise<void>;
+
+    "__OrgIdV2_init()"(overrides?: CallOverrides): Promise<void>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -773,6 +871,26 @@ export class OrgId extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    c_0x19e4eb6c(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0x19e4eb6c(bytes32)"(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    c_0x2664f453(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0x2664f453(bytes32)"(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     c_0xc39a2e1c(
       c__0xc39a2e1c: BytesLike,
@@ -984,6 +1102,10 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    version(overrides?: CallOverrides): Promise<string>;
+
+    "version()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -1069,6 +1191,14 @@ export class OrgId extends BaseContract {
   };
 
   estimateGas: {
+    __OrgIdV2_init(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "__OrgIdV2_init()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1085,6 +1215,26 @@ export class OrgId extends BaseContract {
 
     "balanceOf(address)"(
       owner: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0x19e4eb6c(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0x19e4eb6c(bytes32)"(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0x2664f453(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0x2664f453(bytes32)"(
+      c__0x2664f453: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1291,9 +1441,21 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    version(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "version()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
+    __OrgIdV2_init(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "__OrgIdV2_init()"(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1313,6 +1475,26 @@ export class OrgId extends BaseContract {
 
     "balanceOf(address)"(
       owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0x19e4eb6c(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0x19e4eb6c(bytes32)"(
+      c__0x19e4eb6c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0x2664f453(
+      c__0x2664f453: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0x2664f453(bytes32)"(
+      c__0x2664f453: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1522,5 +1704,9 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
+
+    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "version()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }

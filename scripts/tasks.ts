@@ -3,7 +3,7 @@ import { task } from 'hardhat/config';
 // Deployment task
 task('deploy', 'Deploys the token')
   .setAction(async (_, hre) => {
-    const contractName = 'ORGiD';
+    const contractName = 'OrgId';
     const contract = await hre.ethers.getContractFactory(contractName);
     console.log(`Deploying the ${contractName} proxy...`);
     const proxy = await hre.upgrades.deployProxy(

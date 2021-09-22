@@ -60,6 +60,18 @@ declare module "hardhat/types/runtime" {
       name: "OrgIdRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OrgIdRegistry__factory>;
+    getContractFactory(
+      name: "ERC721Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721Receiver__factory>;
+    getContractFactory(
+      name: "NonERC721Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.NonERC721Receiver__factory>;
+    getContractFactory(
+      name: "OrgIdUpgradeabilityTest",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OrgIdUpgradeabilityTest__factory>;
 
     // default types
     getContractFactory(

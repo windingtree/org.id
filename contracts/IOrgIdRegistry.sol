@@ -46,8 +46,9 @@ abstract contract IOrgIdRegistry {
   /**
    * @dev Returns an ORGiD
    * @param orgId ORGiD hash
-   * @return orgJsonUri ORG.JSON URI
+   * @return exists ORGiD existence flag
    * @return tokenId Token Id
+   * @return orgJsonUri ORG.JSON URI
    * @return owner ORGiD owner
    */
   function getOrgId(bytes32 orgId)
@@ -55,8 +56,9 @@ abstract contract IOrgIdRegistry {
     view
     virtual
     returns (
-      string memory orgJsonUri,
+      bool exists,
       uint256 tokenId,
+      string memory orgJsonUri,
       address owner
     );
 
@@ -86,8 +88,6 @@ abstract contract IOrgIdRegistry {
    * @dev Create ORGiD
    * @param salt Unique hash required for identifier creation
    * @param orgJsonUri ORG.JSON URI (stored off-chain)
-   * @return orgId ORGiD hash
-   * @return tokenId Token Id
    *
    * Requirements:
    * - `orgJsonUri` must not be an empty string
@@ -99,8 +99,7 @@ abstract contract IOrgIdRegistry {
     string calldata orgJsonUri
   )
     external
-    virtual
-    returns (bytes32 orgId, uint256 tokenId);
+    virtual;
 
   /**
    * @dev Changes an ORG.JSON URI

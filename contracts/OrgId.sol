@@ -6,6 +6,9 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 // import "./InitializableVersion.sol";
 import "./OrgIdRegistry.sol";
 
+/**
+ * @dev OrgId contract
+ */
 contract OrgId is Initializable, OrgIdRegistry {
 
   /// @dev OrgId contract initializer
