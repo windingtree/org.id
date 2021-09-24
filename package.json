@@ -16,7 +16,9 @@
     "build": "yarn compile",
     "coverage": "npx hardhat coverage --testfiles \"test/**/*.spec.ts\"",
     "coverage:coveralls": "yarn coverage && cat coverage/lcov.info | npx coveralls",
-    "node:opt": "docker-compose -f ./optimism/opt/docker-compose-nobuild.yml up -t 60"
+    "node:opt": "docker-compose -f optimism/ops/docker-compose-nobuild.yml up -t 60",
+    "deploy:ropsten": "npx senv ./arbRinkeby.senv \"npx hardhat --network ropsten deploy\"",
+    "deploy:arb:rinkeby": "npx senv ./arbRinkeby.senv \"npx hardhat --network arbitrumRinkeby deploy\""
   },
   "repository": {
     "type": "git",

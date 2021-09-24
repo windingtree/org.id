@@ -23,8 +23,6 @@ interface OrgIdRegistryInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "c_0xc39a2e1c(bytes32)": FunctionFragment;
-    "c_0xf29f1bae(bytes32)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getOrgId(bytes32)": FunctionFragment;
@@ -49,14 +47,6 @@ interface OrgIdRegistryInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "c_0xc39a2e1c",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "c_0xf29f1bae",
-    values: [BytesLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "createOrgId",
     values: [BytesLike, string]
@@ -119,14 +109,6 @@ interface OrgIdRegistryInterface extends ethers.utils.Interface {
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "c_0xc39a2e1c",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "c_0xf29f1bae",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "createOrgId",
     data: BytesLike
@@ -280,26 +262,6 @@ export class OrgIdRegistry extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
-
-    c_0xc39a2e1c(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    "c_0xc39a2e1c(bytes32)"(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    c_0xf29f1bae(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    "c_0xf29f1bae(bytes32)"(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
 
     createOrgId(
       salt: BytesLike,
@@ -506,26 +468,6 @@ export class OrgIdRegistry extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  c_0xc39a2e1c(
-    c__0xc39a2e1c: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  "c_0xc39a2e1c(bytes32)"(
-    c__0xc39a2e1c: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  c_0xf29f1bae(
-    c__0xf29f1bae: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  "c_0xf29f1bae(bytes32)"(
-    c__0xf29f1bae: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
   createOrgId(
     salt: BytesLike,
     orgJsonUri: string,
@@ -722,26 +664,6 @@ export class OrgIdRegistry extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    c_0xc39a2e1c(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "c_0xc39a2e1c(bytes32)"(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    c_0xf29f1bae(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "c_0xf29f1bae(bytes32)"(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
 
     createOrgId(
       salt: BytesLike,
@@ -1023,26 +945,6 @@ export class OrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    c_0xc39a2e1c(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "c_0xc39a2e1c(bytes32)"(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    c_0xf29f1bae(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "c_0xf29f1bae(bytes32)"(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,
@@ -1230,26 +1132,6 @@ export class OrgIdRegistry extends BaseContract {
 
     "balanceOf(address)"(
       owner: string,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    c_0xc39a2e1c(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "c_0xc39a2e1c(bytes32)"(
-      c__0xc39a2e1c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    c_0xf29f1bae(
-      c__0xf29f1bae: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "c_0xf29f1bae(bytes32)"(
-      c__0xf29f1bae: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

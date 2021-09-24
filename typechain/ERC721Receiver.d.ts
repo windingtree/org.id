@@ -20,23 +20,14 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface ERC721ReceiverInterface extends ethers.utils.Interface {
   functions: {
-    "c_0x63b7ff9d(bytes32)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "c_0x63b7ff9d",
-    values: [BytesLike]
-  ): string;
   encodeFunctionData(
     functionFragment: "onERC721Received",
     values: [string, string, BigNumberish, BytesLike]
   ): string;
 
-  decodeFunctionResult(
-    functionFragment: "c_0x63b7ff9d",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "onERC721Received",
     data: BytesLike
@@ -89,16 +80,6 @@ export class ERC721Receiver extends BaseContract {
   interface: ERC721ReceiverInterface;
 
   functions: {
-    c_0x63b7ff9d(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    "c_0x63b7ff9d(bytes32)"(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
     onERC721Received(
       operator: string,
       from: string,
@@ -115,16 +96,6 @@ export class ERC721Receiver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
   };
-
-  c_0x63b7ff9d(
-    c__0x63b7ff9d: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  "c_0x63b7ff9d(bytes32)"(
-    c__0x63b7ff9d: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
 
   onERC721Received(
     operator: string,
@@ -143,16 +114,6 @@ export class ERC721Receiver extends BaseContract {
   ): Promise<string>;
 
   callStatic: {
-    c_0x63b7ff9d(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "c_0x63b7ff9d(bytes32)"(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     onERC721Received(
       operator: string,
       from: string,
@@ -173,16 +134,6 @@ export class ERC721Receiver extends BaseContract {
   filters: {};
 
   estimateGas: {
-    c_0x63b7ff9d(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "c_0x63b7ff9d(bytes32)"(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     onERC721Received(
       operator: string,
       from: string,
@@ -201,16 +152,6 @@ export class ERC721Receiver extends BaseContract {
   };
 
   populateTransaction: {
-    c_0x63b7ff9d(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "c_0x63b7ff9d(bytes32)"(
-      c__0x63b7ff9d: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     onERC721Received(
       operator: string,
       from: string,

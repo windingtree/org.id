@@ -42,9 +42,12 @@ yarn lint
 yarn test
 ```
 
-### Testing on the OPtimism Ethereum node
+### Testing on the Optimism Ethereum node
 
 > Before testing you must setup an Optimism Ethereum node according to [these guidelines](./OPTIMISM.md)
+
+> Currently, testing and deployment with Optimism is not supported because of OVM solidity compiler version limitations.
+> We expecting that [in the middle of Oct 2021 version 0.8.7 will be supported by OVM](https://community.optimism.io/docs/developers/l2/future.html)
 
 ```bash
 yarn node:opt

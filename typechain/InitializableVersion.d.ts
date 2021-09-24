@@ -11,7 +11,6 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
-  CallOverrides,
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
@@ -19,19 +18,7 @@ import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface InitializableVersionInterface extends ethers.utils.Interface {
-  functions: {
-    "c_0x19e4eb6c(bytes32)": FunctionFragment;
-  };
-
-  encodeFunctionData(
-    functionFragment: "c_0x19e4eb6c",
-    values: [BytesLike]
-  ): string;
-
-  decodeFunctionResult(
-    functionFragment: "c_0x19e4eb6c",
-    data: BytesLike
-  ): Result;
+  functions: {};
 
   events: {};
 }
@@ -79,63 +66,13 @@ export class InitializableVersion extends BaseContract {
 
   interface: InitializableVersionInterface;
 
-  functions: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
+  functions: {};
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-  };
-
-  c_0x19e4eb6c(
-    c__0x19e4eb6c: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  "c_0x19e4eb6c(bytes32)"(
-    c__0x19e4eb6c: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  callStatic: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-  };
+  callStatic: {};
 
   filters: {};
 
-  estimateGas: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
+  estimateGas: {};
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-  };
-
-  populateTransaction: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-  };
+  populateTransaction: {};
 }

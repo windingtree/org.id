@@ -24,21 +24,21 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       accounts: [
         process.env.ACCOUNT_KEY as string
       ],
-      gasPrice: 'auto',
+      gasPrice: 15000000,
       ovm: true
+    },
+    arbitrumRinkeby: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
     },
     ropsten: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
       ]
-    },
-    rinkeby: {
-      url: process.env.NETWORK_RPC_URL,
-      accounts: [
-        process.env.ACCOUNT_KEY as string
-      ],
-      gasPrice: 'auto',
     },
   };
 }
@@ -53,6 +53,9 @@ const config: CustomHardhatConfig = {
           optimizer: {
             enabled: true,
             runs: 200
+          },
+          metadata: {
+            bytecodeHash: 'none',
           }
         }
       }
@@ -73,6 +76,13 @@ const config: CustomHardhatConfig = {
         mnemonic: 'test test test test test test test test test test test junk'
       },
       ovm: true
+    },
+    arbitrumLocalhost: {
+      url: 'http://127.0.0.1:7545',
+      accounts: {
+        mnemonic: 'jar deny prosper gasp flush glass core corn alarm treat leg smart'
+      },
+      gasPrice: 0
     },
     ...customNetworksConfig
   },

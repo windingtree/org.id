@@ -13,7 +13,6 @@ cache
 artifacts/build-info
 artifacts/**/*.dbg.json
 
-.openzeppelin/unknown-31337.json
-
-# Optimism Ethereum node
+# L2 nodes
 optimism
+arbitrum
