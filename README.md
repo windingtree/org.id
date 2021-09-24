@@ -42,18 +42,6 @@ yarn lint
 yarn test
 ```
 
-### Testing on the Optimism Ethereum node
-
-> Before testing you must setup an Optimism Ethereum node according to [these guidelines](./OPTIMISM.md)
-
-> Currently, testing and deployment with Optimism is not supported because of OVM solidity compiler version limitations.
-> We expecting that [in the middle of Oct 2021 version 0.8.7 will be supported by OVM](https://community.optimism.io/docs/developers/l2/future.html)
-
-```bash
-yarn node:opt
-yarn test:opt
-```
-
 ### Deployment
 
 It is required to compile contract before the deployment.
@@ -122,3 +110,24 @@ ORGiD instance deployed at: 0x8626f6940E2...F49B2d1F2C9C1199
 ```bash
 npx senv ./<PATH_TO_ENCRYPTED>.senv "npx hardhat verify --network <NETWORK_NAME> <CONTRACT_ADDRESS_TO_VERIFY>"
 ```
+
+## L2 Chains
+
+### Optimism
+
+> Before testing you must setup an Optimism Ethereum node according to [these guidelines](./OPTIMISM.md)
+
+> Currently, testing and deployment with Optimism is not supported because of OVM solidity compiler version limitations.
+> We expecting that [in the middle of Oct 2021 version 0.8.7 will be supported by OVM](https://community.optimism.io/docs/developers/l2/future.html)
+
+```bash
+yarn node:opt
+yarn test:opt
+```
+
+Before the deployment to the Optimism Mainnet the contract must be approved by the Optimism team via [this form](https://docs.google.com/forms/d/e/1FAIpQLSdKyXpXY1C4caWD3baQBK1dPjEboOJ9dpj9flc-ursqq8KU0w/viewform)
+
+### Arbitrum
+
+The ORGiD contract is deployable to the Arbitrum Testnet and Mainnet in the same way as described for the Ethereum network with same compiler parameters.
+

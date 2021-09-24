@@ -19,15 +19,17 @@ let customNetworksConfig = {};
 
 if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
   customNetworksConfig = {
-    optimismKovan: {
-      url: 'https://kovan.optimism.io',
+    optKovan: {
+      networkName: 'optKovan',
+      url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
       ],
       gasPrice: 15000000,
       ovm: true
     },
-    arbitrumRinkeby: {
+    arbRinkeby: {
+      networkName: 'arbRinkeby',
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
@@ -38,7 +40,24 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
-      ]
+      ],
+      gasPrice: 'auto',
+    },
+    optMainnet: {
+      networkName: 'optMainnet',
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
+    arbMainnet: {
+      networkName: 'arbMainnet',
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
     },
   };
 }
@@ -70,14 +89,14 @@ const config: CustomHardhatConfig = {
       "chainId": 1337,
       "initialBaseFeePerGas": 0
     },
-    optimismLocalhost: {
+    optLocalhost: {
       url: 'http://127.0.0.1:8545',
       accounts: {
         mnemonic: 'test test test test test test test test test test test junk'
       },
       ovm: true
     },
-    arbitrumLocalhost: {
+    arbLocalhost: {
       url: 'http://127.0.0.1:7545',
       accounts: {
         mnemonic: 'jar deny prosper gasp flush glass core corn alarm treat leg smart'
