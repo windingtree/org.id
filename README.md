@@ -11,7 +11,7 @@ The ORGiD smart contract supports [ERC721](https://eips.ethereum.org/EIPS/eip-72
 
 Every identifier is represented by the following metadata:
 
-- `tokenId` - NFT Id, the same as `orgId` a unique entity index, integer number which enumeration starts from the `1`;
+- `tokenId` - NFT Id, a unique entity index, integer number which enumeration starts from the `1`;
 - `orgId` - unique organization hash;
 - `owner` - an entity owner, the Ethereum address that has exceptional right to manage metadata changes and transfer ownership of the identifier;
 - `orgJsonUri` - HTTP or IPFS/IPNS link to an off-chain JSON file with data related to identifier composed in accordance to [ORG.JSON schema](https://github.com/windingtree/org.json-schema).
