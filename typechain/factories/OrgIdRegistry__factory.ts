@@ -240,9 +240,9 @@ const _abi = [
   {
     inputs: [
       {
-        internalType: "bytes32",
-        name: "orgId",
-        type: "bytes32",
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
     name: "getOrgId",
@@ -253,9 +253,9 @@ const _abi = [
         type: "bool",
       },
       {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
       },
       {
         internalType: "string",
@@ -303,6 +303,25 @@ const _abi = [
         internalType: "bytes32[]",
         name: "orgIds",
         type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
+      },
+    ],
+    name: "getTokenId",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "tokenId",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

@@ -34,7 +34,8 @@ export const createOrgId = async (
   const tx = await contractWithSigner.createOrgId(salt, orgJsonUri);
   await tx.wait();
 
-  const { exists, tokenId } = await contractWithSigner.getOrgId(orgId);
+  const tokenId = await contractWithSigner.getTokenId(orgId);
+  const { exists } = await contractWithSigner.getOrgId(tokenId);
   expect(exists).to.be.true;
 
   // OrgIdRegistry events

@@ -11,7 +11,10 @@ import "./IOrgIdRegistry.sol";
 abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721EnumerableUpgradeable {
 
   /// @dev Mapping of the organization hash to the tokenId
-  mapping (bytes32 => uint256) private _organizationTokens;
+  mapping (bytes32 => uint256) private _orgToken;
+
+  /// @dev Mapping of the tokenId to the organization hash
+  mapping (uint256 => bytes32) private _tokenOrg;
 
   /// @dev Mapping of the token Id to the orgJsonUri
   mapping (uint256 => string) private _orgJsonUris;
@@ -56,21 +59,34 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IOrgIdRegistry-getOrgId(bytes32)}.
+   * @dev See {IOrgIdRegistry-getTokenId(bytes32)}.
    */
-  function getOrgId(bytes32 orgId)
+  function getTokenId(bytes32 orgId)
+    external
+    view
+    virtual
+    override
+    returns (uint256 tokenId)
+  {
+    tokenId = _orgToken[orgId];
+  }
+
+  /**
+   * @dev See {IOrgIdRegistry-getOrgId(uint256)}.
+   */
+  function getOrgId(uint256 tokenId)
     external
     view
     virtual
     override
     returns (
       bool exists,
-      uint256 tokenId,
+      bytes32 orgId,
       string memory orgJsonUri,
       address owner
     )
   {
-    tokenId = _organizationTokens[orgId];
+    orgId = _tokenOrg[tokenId];
     exists = _exists(tokenId);
     if (exists) {
       orgJsonUri = _orgJsonUris[tokenId];
@@ -128,7 +144,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IERC721Metadata-createOrgId(bytes32,string)}.
+   * @dev See {IOrgIdRegistry-createOrgId(bytes32,string)}.
   */
   function createOrgId(
     bytes32 salt,
@@ -152,13 +168,14 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     );
     _orgIds.push(orgId);
 
-    if (_organizationTokens[orgId] != 0) {
+    if (_orgToken[orgId] != 0) {
       revert OrgIdAlreadyExists(orgId);
     }
 
     uint256 tokenId = totalSupply() + 1;
     _safeMint(orgIdOwner, tokenId);
-    _organizationTokens[orgId] = tokenId;
+    _orgToken[orgId] = tokenId;
+    _tokenOrg[tokenId] = orgId;
     _orgJsonUris[tokenId] = orgJsonUri;
 
     emit OrgIdCreated(orgId, orgIdOwner);
@@ -166,7 +183,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   }
 
   /**
-   * @dev See {IERC721Metadata-setOrgJson(bytes32,string)}.
+   * @dev See {IOrgIdRegistry-setOrgJson(bytes32,string)}.
    */
   function setOrgJson(
       bytes32 orgId,
@@ -176,17 +193,17 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     virtual
     override
   {
-    if (orgId == bytes32(0) || _organizationTokens[orgId] == 0) {
+    if (orgId == bytes32(0) || _orgToken[orgId] == 0) {
       revert OrgIdNotFound(orgId);
     }
     if (bytes(orgJsonUri).length == 0) {
       revert OrgJsonUriEmpty();
     }
-    if (ownerOf(_organizationTokens[orgId]) != _msgSender()) {
+    if (ownerOf(_orgToken[orgId]) != _msgSender()) {
       revert CalledNotByOrgIdOwner();
     }
 
-    _orgJsonUris[_organizationTokens[orgId]] = orgJsonUri;
+    _orgJsonUris[_orgToken[orgId]] = orgJsonUri;
 
     emit OrgJsonUriChanged(orgId, orgJsonUri);
   }

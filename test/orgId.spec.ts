@@ -81,7 +81,7 @@ describe('ORGiD contract', () => {
     describe('#supportsInterface(bytes4)', () => {
 
       it('should support OrgId interface [ @skip-on-coverage ]', async () => {
-        expect(await orgId.supportsInterface('0xd9d4c2b6')).to.be.true;
+        expect(await orgId.supportsInterface('0x8bf1ed02')).to.be.true;
       });
 
       it('should support ERC165 interface', async () => {
@@ -124,67 +124,82 @@ describe('ORGiD contract', () => {
       });
     });
 
-    describe('#setOrgJson(bytes32,string)', () => {
+    describe('Existed orgId function', () => {
       let org: OrgIdCreationResult;
 
       before(async () => {
         org = await createOrgId(orgId, owner1);
       });
 
-      it('should throw if zero bytes provided as orgId hash', async () => {
-        await expect(
-          orgId.setOrgJson(zeroHash, 'test')
-        ).to.revertedWith(`OrgIdNotFound("${zeroHash}")`);
+      describe('#setOrgJson(bytes32,string)', () => {
+
+        after(async () => {
+          org = await createOrgId(orgId, owner1);
+        });
+
+        it('should throw if zero bytes provided as orgId hash', async () => {
+          await expect(
+            orgId.setOrgJson(zeroHash, 'test')
+          ).to.revertedWith(`OrgIdNotFound("${zeroHash}")`);
+        });
+
+        it('should throw if provided unknown orgId hash', async () => {
+          const unknownOrgId = generateSalt();
+          await expect(
+            orgId.setOrgJson(unknownOrgId, 'test')
+          ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+        });
+
+        it('should throw if empty string provided as orgJsonUri', async () => {
+          await expect(
+            orgId.setOrgJson(org.orgId, '')
+          ).to.revertedWith('OrgJsonUriEmpty()');
+        });
+
+        it('should throw if called not by an ORGiD owner', async () => {
+          await expect(
+            orgId.connect(owner2).setOrgJson(org.orgId, 'test')
+          ).to.revertedWith('CalledNotByOrgIdOwner()');
+        });
+
+        it('should set new orgJsonUri value', async () => {
+          const newUri = 'test2';
+          await orgId.connect(owner1).setOrgJson(org.orgId, newUri);
+          const { orgJsonUri } = await orgId.getOrgId(org.tokenId);
+          expect(orgJsonUri).to.equal(newUri);
+        });
       });
 
-      it('should throw if provided unknown orgId hash', async () => {
-        const unknownOrgId = generateSalt();
-        await expect(
-          orgId.setOrgJson(unknownOrgId, 'test')
-        ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+      describe('#getTokenId(bytes32)', () => {
+
+        it('should return zero-hash if ORGiD not exists', async () => {
+          const result = await orgId.getTokenId(generateSalt());
+          expect(result).to.be.equal(0);
+        });
+
+        it('should return ORGiD', async () => {
+          const result = await orgId.getTokenId(org.orgId);
+          expect(result).to.be.equal(org.tokenId);
+        });
       });
 
-      it('should throw if empty string provided as orgJsonUri', async () => {
-        await expect(
-          orgId.setOrgJson(org.orgId, '')
-        ).to.revertedWith('OrgJsonUriEmpty()');
-      });
+      describe('#getOrgId(uint256)', () => {
 
-      it('should throw if called not by an ORGiD owner', async () => {
-        await expect(
-          orgId.connect(owner2).setOrgJson(org.orgId, 'test')
-        ).to.revertedWith('CalledNotByOrgIdOwner()');
-      });
+        it('should return zero-valued ORGiD not exists', async () => {
+          const result = await orgId.getOrgId(1000);
+          expect(result.exists).to.be.false;
+          expect(result.orgId).to.be.equal(zeroHash);
+          expect(result.orgJsonUri).to.be.equal('');
+          expect(result.owner).to.be.equal(zeroAddress);
+        });
 
-      it('should set new orgJsonUri value', async () => {
-        const newUri = 'test2';
-        await orgId.connect(owner1).setOrgJson(org.orgId, newUri);
-        const { orgJsonUri } = await orgId.getOrgId(org.orgId);
-        expect(orgJsonUri).to.equal(newUri);
-      });
-    });
-
-    describe('#getOrgId(bytes32)', () => {
-      let org: OrgIdCreationResult;
-
-      before(async () => {
-        org = await createOrgId(orgId, owner1);
-      });
-
-      it('should return zero-valued ORGiD not exists', async () => {
-        const result = await orgId.getOrgId(generateSalt());
-        expect(result.exists).to.be.false;
-        expect(result.tokenId).to.be.equal(0);
-        expect(result.orgJsonUri).to.be.equal('');
-        expect(result.owner).to.be.equal(zeroAddress);
-      });
-
-      it('should return ORGiD', async () => {
-        const result = await orgId.getOrgId(org.orgId);
-        expect(result.exists).to.be.true;
-        expect(result.tokenId).to.be.equal(org.tokenId);
-        expect(result.orgJsonUri).to.be.equal(org.orgJsonUri);
-        expect(result.owner).to.be.equal(org.orgIdOwner);
+        it('should return ORGiD', async () => {
+          const result = await orgId.getOrgId(org.tokenId);
+          expect(result.exists).to.be.true;
+          expect(result.orgId).to.be.equal(org.orgId);
+          expect(result.orgJsonUri).to.be.equal(org.orgJsonUri);
+          expect(result.owner).to.be.equal(org.orgIdOwner);
+        });
       });
     });
 
