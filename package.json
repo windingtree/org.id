@@ -10,6 +10,7 @@
   "types": "typechain/index.ts",
   "scripts": {
     "test": "npx hardhat test",
+    "test:gas": "REPORT_GAS=true npx hardhat test",
     "test:opt": "npx hardhat --network optimismLocalhost test",
     "lint": "npx solhint contracts/*.sol",
     "size": "npx hardhat size-contracts",
@@ -52,6 +53,7 @@
     "@eth-optimism/hardhat-ovm": "0.2.3",
     "@openzeppelin/hardhat-upgrades": "1.10.0",
     "hardhat-contract-sizer": "2.1.1",
+    "hardhat-gas-reporter": "1.0.4",
     "ts-node": "10.2.1",
     "ethers": "5.4.7",
     "solhint": "3.3.6",

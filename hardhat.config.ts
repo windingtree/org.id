@@ -7,6 +7,7 @@ import "@eth-optimism/hardhat-ovm";
 import '@openzeppelin/hardhat-upgrades';
 import '@typechain/hardhat';
 import 'hardhat-contract-sizer';
+import 'hardhat-gas-reporter';
 import 'solidity-coverage';
 import './scripts/tasks';
 
@@ -122,6 +123,12 @@ const config: CustomHardhatConfig = {
     disambiguatePaths: false,
     runOnCompile: true,
     strict: true,
+  },
+  gasReporter: {
+    enabled: (process.env.REPORT_GAS) ? true : false,
+    currency: 'USD',
+    coinmarketcap: process.env.COIN_MARKET_CAP_KEY,
+    gasPrice: 100
   }
 };
 
