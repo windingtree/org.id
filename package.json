@@ -8,6 +8,10 @@
   },
   "main": "index.js",
   "types": "typechain/index.ts",
+  "files": [
+    "index.js",
+    "artifacts/contracts/OrgId.sol/OrgId.json"
+  ],
   "scripts": {
     "test": "npx hardhat test",
     "test:gas": "REPORT_GAS=true npx hardhat test",
