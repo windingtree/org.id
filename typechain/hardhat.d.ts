@@ -69,6 +69,77 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OrgIdUpgradeabilityTest__factory>;
 
+    getContractAt(
+      name: "ERC721Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721Upgradeable>;
+    getContractAt(
+      name: "ERC721EnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721EnumerableUpgradeable>;
+    getContractAt(
+      name: "IERC721EnumerableUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721EnumerableUpgradeable>;
+    getContractAt(
+      name: "IERC721MetadataUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721MetadataUpgradeable>;
+    getContractAt(
+      name: "IERC721ReceiverUpgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721ReceiverUpgradeable>;
+    getContractAt(
+      name: "IERC721Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Upgradeable>;
+    getContractAt(
+      name: "ERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165Upgradeable>;
+    getContractAt(
+      name: "IERC165Upgradeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC165Upgradeable>;
+    getContractAt(
+      name: "InitializableVersion",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.InitializableVersion>;
+    getContractAt(
+      name: "IOrgIdRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IOrgIdRegistry>;
+    getContractAt(
+      name: "OrgId",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OrgId>;
+    getContractAt(
+      name: "OrgIdRegistry",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OrgIdRegistry>;
+    getContractAt(
+      name: "ERC721Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721Receiver>;
+    getContractAt(
+      name: "OrgIdUpgradeabilityTest",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OrgIdUpgradeabilityTest>;
+
     // default types
     getContractFactory(
       name: string,
@@ -79,5 +150,10 @@ declare module "hardhat/types/runtime" {
       bytecode: ethers.utils.BytesLike,
       signer?: ethers.Signer
     ): Promise<ethers.ContractFactory>;
+    getContractAt(
+      nameOrAbi: string | any[],
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<ethers.Contract>;
   }
 }

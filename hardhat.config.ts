@@ -6,6 +6,7 @@ import "@nomiclabs/hardhat-etherscan";
 import "@eth-optimism/hardhat-ovm";
 import '@openzeppelin/hardhat-upgrades';
 import '@typechain/hardhat';
+import 'hardhat-contract-sizer';
 import 'solidity-coverage';
 import './scripts/tasks';
 
@@ -115,6 +116,12 @@ const config: CustomHardhatConfig = {
     outDir: 'typechain',
     target: 'ethers-v5',
     alwaysGenerateOverloads: true,
+  },
+  contractSizer: {
+    alphaSort: true,
+    disambiguatePaths: false,
+    runOnCompile: true,
+    strict: true,
   }
 };
 

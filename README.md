@@ -113,6 +113,12 @@ yarn lint
 yarn test
 ```
 
+## Contracts size information
+
+```bash
+yarn size
+```
+
 ## Deployment
 
 It is required to compile contract before the deployment.
