@@ -106,17 +106,17 @@ ETHERSCAN_KEY=<YOUR_ETHERSCAN_API_KEY>
 yarn compile
 ```
 
+## Contracts size information
+
+```bash
+yarn size
+```
+
 ## Linting & Testing
 
 ```bash
 yarn lint
 yarn test
-```
-
-## Contracts size information
-
-```bash
-yarn size
 ```
 
 ## Deployment
