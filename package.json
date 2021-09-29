@@ -1,17 +1,15 @@
 {
   "name": "@windingtree/org.id",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "description": "ORGiD is Decentralized Identifier (DID) Protocol for Organizations",
   "license": "GPL-3.0-only",
   "publishConfig": {
     "access": "public"
   },
-  "main": "index.js",
-  "types": "typechain/index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "files": [
-    "index.js",
-    "artifacts/contracts/OrgId.sol/OrgId.json",
-    "typechain"
+    "dist"
   ],
   "scripts": {
     "test": "npx hardhat test",
@@ -20,7 +18,7 @@
     "lint": "npx solhint contracts/*.sol",
     "size": "npx hardhat size-contracts",
     "compile": "npx hardhat compile",
-    "build": "yarn compile",
+    "build": "rm -rf dist && yarn compile && tsc",
     "coverage": "npx hardhat coverage --testfiles \"test/**/*.spec.ts\"",
     "coverage:coveralls": "yarn coverage && cat coverage/lcov.info | npx coveralls",
     "node:opt": "docker-compose -f optimism/ops/docker-compose-nobuild.yml up -t 60"

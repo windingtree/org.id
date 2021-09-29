@@ -3,8 +3,10 @@ keys.json
 networks.json
 .env
 *.env
-.senv
 *.senv
+
+# Build files
+dist
 
 #Hardhat files
 coverage
