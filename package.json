@@ -1,6 +1,6 @@
 {
   "name": "@windingtree/org.id",
-  "version": "3.0.0-beta",
+  "version": "3.0.0-beta.2",
   "description": "ORGiD is Decentralized Identifier (DID) Protocol for Organizations",
   "license": "GPL-3.0-only",
   "publishConfig": {
@@ -10,7 +10,8 @@
   "types": "typechain/index.ts",
   "files": [
     "index.js",
-    "artifacts/contracts/OrgId.sol/OrgId.json"
+    "artifacts/contracts/OrgId.sol/OrgId.json",
+    "typechain"
   ],
   "scripts": {
     "test": "npx hardhat test",
