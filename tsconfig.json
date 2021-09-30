@@ -16,6 +16,11 @@
     "experimentalDecorators": true,
     "strictNullChecks": true
   },
+  "include": [
+    "hardhat.config.ts",
+    "test",
+    "typechain"
+  ],
   "exclude": [
     "node_modules"
   ],

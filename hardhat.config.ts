@@ -114,7 +114,7 @@ const config: CustomHardhatConfig = {
     timeout: 20000
   },
   typechain: {
-    outDir: 'typechain',
+    outDir: 'types',
     target: 'ethers-v5',
     alwaysGenerateOverloads: true,
   },
