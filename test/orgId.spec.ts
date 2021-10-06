@@ -3,8 +3,9 @@ import type { OrgIdCreationResult } from './helpers/setup';
 import { ethers, upgrades } from 'hardhat';
 import { expect } from 'chai';
 import { deployOrgIdContract, createOrgId } from './helpers/setup';
-import { generateSalt } from './helpers/utils';
+import { generateSalt, clone } from './helpers/utils';
 import { zeroHash, zeroAddress } from './helpers/constants';
+import { before } from 'mocha';
 
 describe('ORGiD contract', () => {
   const metaName = 'ORGiD';
@@ -84,6 +85,10 @@ describe('ORGiD contract', () => {
         expect(await orgId.supportsInterface('0x8bf1ed02')).to.be.true;
       });
 
+      it('should support OrgIdDelegates interface [ @skip-on-coverage ]', async () => {
+        expect(await orgId.supportsInterface('0x5deabe77')).to.be.true;
+      });
+
       it('should support ERC165 interface', async () => {
         expect(await orgId.supportsInterface('0x01ffc9a7')).to.be.true;
       });
@@ -124,7 +129,7 @@ describe('ORGiD contract', () => {
       });
     });
 
-    describe('Existed orgId function', () => {
+    describe('Existed orgId functions', () => {
       let org: OrgIdCreationResult;
 
       before(async () => {
@@ -139,20 +144,20 @@ describe('ORGiD contract', () => {
 
         it('should throw if zero bytes provided as orgId hash', async () => {
           await expect(
-            orgId.setOrgJson(zeroHash, 'test')
+            orgId.connect(owner1).setOrgJson(zeroHash, 'test')
           ).to.revertedWith(`OrgIdNotFound("${zeroHash}")`);
         });
 
         it('should throw if provided unknown orgId hash', async () => {
           const unknownOrgId = generateSalt();
           await expect(
-            orgId.setOrgJson(unknownOrgId, 'test')
+            orgId.connect(owner1).setOrgJson(unknownOrgId, 'test')
           ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
         });
 
         it('should throw if empty string provided as orgJsonUri', async () => {
           await expect(
-            orgId.setOrgJson(org.orgId, '')
+            orgId.connect(owner1).setOrgJson(org.orgId, '')
           ).to.revertedWith('OrgJsonUriEmpty()');
         });
 
@@ -275,6 +280,203 @@ describe('ORGiD contract', () => {
             });
           }
         });
+      });
+    });
+  });
+
+  describe('OrgIdDelegates', () => {
+    const delegates = [
+      'did1',
+      'did2',
+      'did3'
+    ];
+    let orgIdOwner: Signer;
+    let orgIdNonOwner: Signer;
+    let org: OrgIdCreationResult;
+
+    describe('#addDelegates(bytes32,string[])', () => {
+
+      before(async () => {
+        orgIdOwner = owner1;
+        orgIdNonOwner = owner2;
+        org = await createOrgId(orgId, orgIdOwner);
+      });
+
+      it('should throw if ORGiD not exists', async () => {
+        const unknownOrgId = generateSalt();
+        await expect(
+          orgId.connect(orgIdOwner).addDelegates(unknownOrgId, delegates)
+        ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+      });
+
+      it('should throw if called not by an ORGiD owner', async () => {
+        await expect(
+          orgId.connect(orgIdNonOwner).addDelegates(org.orgId, delegates)
+        ).to.revertedWith('CalledNotByOrgIdOwner()');
+      });
+
+      it('should throw if empty array provided as dids', async () => {
+        await expect(
+          orgId.connect(orgIdOwner).addDelegates(org.orgId, [])
+        ).to.revertedWith('InvalidDelegatesInput()');
+      });
+
+      it('should throw if at least one did is empty string', async () => {
+        const brokenDelegates = clone(delegates);
+        brokenDelegates[1] = '';
+        await expect(
+          orgId.connect(orgIdOwner).addDelegates(org.orgId, brokenDelegates)
+        ).to.revertedWith('InvalidDelegatesInput()');
+      });
+
+      it('should add delegates', async () => {
+        const tx = await orgId.connect(orgIdOwner)
+          .addDelegates(org.orgId, delegates);
+        await expect(tx).to
+          .emit(orgId, 'OrgIdDelegatesAdded')
+          .withArgs(org.orgId, delegates);
+      });
+    });
+
+    describe('Remove delegates', () => {
+
+      before(async () => {
+        orgIdOwner = owner1;
+        orgIdNonOwner = owner2;
+        org = await createOrgId(orgId, orgIdOwner);
+      });
+
+      describe('#removeDelegates(bytes32,string[])', () => {
+
+        before(async () => {
+          const tx = await orgId.connect(orgIdOwner)
+            .addDelegates(org.orgId, delegates);
+          await tx.wait();
+        });
+
+        it('should throw if ORGiD not exists', async () => {
+          const unknownOrgId = generateSalt();
+          await expect(
+            orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+              unknownOrgId,
+              delegates
+            )
+          ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+        });
+
+        it('should throw if called not by an ORGiD owner', async () => {
+          await expect(
+            orgId.connect(orgIdNonOwner)['removeDelegates(bytes32,string[])'](
+              org.orgId,
+              delegates
+            )
+          ).to.revertedWith('CalledNotByOrgIdOwner()');
+        });
+
+        it('should throw if empty array provided as dids', async () => {
+          await expect(
+            orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+              org.orgId,
+              []
+            )
+          ).to.revertedWith('InvalidDelegatesInput()');
+        });
+
+        it('should throw if at least one did is empty string', async () => {
+          const brokenDelegates = clone(delegates);
+          brokenDelegates[1] = '';
+          await expect(
+            orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+              org.orgId,
+              brokenDelegates
+            )
+          ).to.revertedWith('InvalidDelegatesInput()');
+        });
+
+        it('should remove delegates', async () => {
+          const delegates1 = [ delegates[1] ];
+          const delegates2 = [ delegates[0], delegates[2] ];
+          let tx = await orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+            org.orgId,
+            delegates1
+          );
+          await expect(tx).to
+            .emit(orgId, 'OrgIdDelegatesRemoved')
+            .withArgs(org.orgId, delegates1);
+          tx = await orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+            org.orgId,
+            delegates2
+          );
+          await expect(tx).to
+            .emit(orgId, 'OrgIdDelegatesRemoved')
+            .withArgs(org.orgId, delegates2);
+        });
+      });
+
+      describe('#removeDelegates(bytes32)', () => {
+
+        before(async () => {
+          const tx = await orgId.connect(orgIdOwner)
+            .addDelegates(org.orgId, delegates);
+          await tx.wait();
+        });
+
+        it('should throw if ORGiD not exists', async () => {
+          const unknownOrgId = generateSalt();
+          await expect(
+            orgId.connect(orgIdOwner)['removeDelegates(bytes32)'](
+              unknownOrgId
+            )
+          ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+        });
+
+        it('should throw if called not by an ORGiD owner', async () => {
+          await expect(
+            orgId.connect(orgIdNonOwner)['removeDelegates(bytes32)'](
+              org.orgId
+            )
+          ).to.revertedWith('CalledNotByOrgIdOwner()');
+        });
+
+        it('should remove all delegates', async () => {
+          const tx = await orgId.connect(orgIdOwner)['removeDelegates(bytes32)'](
+            org.orgId
+          );
+          await expect(tx).to
+            .emit(orgId, 'OrgIdDelegatesRemoved')
+            .withArgs(org.orgId, delegates);
+        });
+      });
+    });
+
+    describe('#getDelegates(bytes32)', () => {
+      let emptyOrg: OrgIdCreationResult;
+
+      before(async () => {
+        orgIdOwner = owner1;
+        org = await createOrgId(orgId, orgIdOwner);
+        emptyOrg = await createOrgId(orgId, orgIdOwner);
+        const tx = await orgId.connect(orgIdOwner)
+          .addDelegates(org.orgId, delegates);
+        await tx.wait();
+      });
+
+      it('should return empty array if no delegates have been added before', async () => {
+        expect(await orgId.getDelegates(emptyOrg.orgId)).to.deep.equal([]);
+      });
+
+      it('should return delegates', async () => {
+        expect(await orgId.getDelegates(org.orgId)).to.deep.equal(delegates);
+      });
+
+      it('should return delegates of updated list', async () => {
+        const delegates1 = [ delegates[1] ];
+        const delegates2 = [ delegates[0], delegates[2] ];
+        let tx = await orgId.connect(orgIdOwner)['removeDelegates(bytes32,string[])'](
+          org.orgId,
+          delegates1
+        );
+        expect(await orgId.getDelegates(org.orgId)).to.deep.equal(delegates2);
       });
     });
   });

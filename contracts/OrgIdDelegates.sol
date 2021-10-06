@@ -12,16 +12,6 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
   mapping (bytes32 => StringsSet.Set) private _delegates;
 
   /**
-   * @dev Prevents function execution if ORGiD not found
-   */
-  modifier existedOrgId(bytes32 orgId) {
-    if (!isOrgIdExists(orgId)) {
-      revert OrgIdNotFound(orgId);
-    }
-    _;
-  }
-
-  /**
    * @dev See {IERC165-supportsInterface(bytes4)}
    */
   function supportsInterface(bytes4 interfaceId)
@@ -42,7 +32,6 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
     external
     virtual
     override
-    existedOrgId(orgId)
     onlyOrgIdOwner(orgId)
   {
     if (dids.length == 0) {
@@ -58,6 +47,8 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
         revert InvalidDelegatesInput();
       }
     }
+
+    emit OrgIdDelegatesAdded(orgId, dids);
   }
 
   /**
@@ -67,7 +58,6 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
     external
     virtual
     override
-    existedOrgId(orgId)
     onlyOrgIdOwner(orgId)
   {
     if (dids.length == 0) {
@@ -83,6 +73,8 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
         revert InvalidDelegatesInput();
       }
     }
+
+    emit OrgIdDelegatesRemoved(orgId, dids);
   }
 
   /**
@@ -92,14 +84,16 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
     external
     virtual
     override
-    existedOrgId(orgId)
     onlyOrgIdOwner(orgId)
   {
+    string[] memory delegatesOrig = _delegates[orgId].get();
     bool result = _delegates[orgId].removeAll();
 
     if (!result) {
       revert InvalidDelegatesInput();
     }
+
+    emit OrgIdDelegatesRemoved(orgId, delegatesOrig);
   }
 
   /**

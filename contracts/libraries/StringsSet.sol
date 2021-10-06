@@ -59,26 +59,19 @@ library StringsSet {
 
     bytes32 hashValue = getHash(value);
 
-    if (!set._hashTable[hashValue]) {
+    if (set._hashTable[hashValue]) {
       uint256 valueIndex = set._indexes[hashValue];
-
-      uint256 toDeleteIndex = valueIndex - 1;
       uint256 lastIndex = set._values.length - 1;
 
-      if (lastIndex != toDeleteIndex) {
+      if (lastIndex != valueIndex) {
         string memory lastValue = set._values[lastIndex];
-
-        // Move the last value to the index where the value to delete is
-        set._values[toDeleteIndex] = lastValue;
-
-        // Update the index for the moved value
+        set._values[valueIndex] = lastValue;
         set._indexes[getHash(lastValue)] = valueIndex;
       }
 
-      // Delete the slot where the moved value was stored
       set._values.pop();
 
-      // Delete the index for the deleted slot
+      // Delete indexes for the deleted slot
       delete set._indexes[hashValue];
       delete set._hashTable[hashValue];
 

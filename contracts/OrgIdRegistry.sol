@@ -26,6 +26,9 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
    * @dev Prevents function execution if called not by ORGiD owner
    */
   modifier onlyOrgIdOwner(bytes32 orgId) {
+    if (orgId == bytes32(0) || _orgToken[orgId] == 0) {
+      revert OrgIdNotFound(orgId);
+    }
     if (ownerOf(_orgToken[orgId]) != _msgSender()) {
       revert CalledNotByOrgIdOwner();
     }
@@ -204,9 +207,6 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     override
     onlyOrgIdOwner(orgId)
   {
-    if (orgId == bytes32(0) || _orgToken[orgId] == 0) {
-      revert OrgIdNotFound(orgId);
-    }
     if (bytes(orgJsonUri).length == 0) {
       revert OrgJsonUriEmpty();
     }
@@ -214,18 +214,6 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     _orgJsonUris[_orgToken[orgId]] = orgJsonUri;
 
     emit OrgJsonUriChanged(orgId, orgJsonUri);
-  }
-
-  /**
-   * @dev See {IOrgIdRegistry-isOrgIdExists(bytes32)}.
-   */
-  function isOrgIdExists(bytes32 orgId)
-    internal
-    virtual
-    override
-    returns (bool)
-  {
-    return _orgToken[orgId] != 0;
   }
 
   uint256[51] private __gap;

@@ -7,7 +7,7 @@
       "hash": "0xc165bbe06ea15616f692d23f030b563f109f9f831de09c571a062c52fcc22a5e",
       "type": 2,
       "accessList": [],
-      "blockHash": "0xa82df547db99650679d4eac16f9f9c7b2e4caa7b077d051eb9f47a74933c7e3a",
+      "blockHash": "0x7a3eeb8bd63435939ba34254c649d6c864acc6b692bbcb255b622703a6a3d0d9",
       "blockNumber": 2,
       "transactionIndex": 0,
       "confirmations": 1,
@@ -44,45 +44,60 @@
   },
   "proxies": [
     {
-      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
-      "txHash": "0x4d7b808f0af35b9365a0e81e59f943609a384657c3eb84af519aa5936cd25520",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "txHash": "0x41dfa891b8413d2a445278c05027acc4cb85d9c9dab3338257d07a4683b40db3",
-      "kind": "transparent"
-    },
-    {
-      "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
-      "txHash": "0x71bb67a738e5f57d7d2ca97ed097bfd58d202566a9e91bca901282283eef9261",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
-      "txHash": "0x7bc34134361451f342ed1faada418d2b5dc516ca4f01d800e9db72d5420b40b8",
-      "kind": "transparent"
-    },
-    {
-      "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
-      "txHash": "0xb09df667445fd930fd969f861014a54adf3b748193df11983d3116c23bc02972",
-      "kind": "transparent"
-    },
-    {
       "address": "0x0B306BF915C4d645ff596e518fAf3F9669b97016",
-      "txHash": "0x81b1faeba45362a8db873fa2d228d0e052d941bc61f2c4902a69479e31e889fc",
+      "txHash": "0x2245dce7b6d335382327f5b4a333c1cdc57d0912ba4d775fa2eb8ff3afe00c5b",
       "kind": "transparent"
     },
     {
       "address": "0x959922bE3CAee4b8Cd9a407cc3ac1C251C2007B1",
-      "txHash": "0x32c1230ca053fa405b29813436eea0afb9c7d49474544d403440f4231250d036",
+      "txHash": "0xa7757b99a3ce03c480d7036ecf5fafab1f1efa8a601221002b85908d7199010d",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x9A676e781A523b5d0C0e43731313A708CB607508",
+      "txHash": "0x5d32351174945f2e91225ae387a507e17db49f098d6671d856a47d5481fdc2d9",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      "txHash": "0xc36280590fefffe2f65c81f0ec3cb2b1bdb8be31e4728126963533c648e578e5",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "txHash": "0x8b569338645ef2872fb8c483da92547ec5307e50a91a968794b24301412dc545",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x8A791620dd6260079BF849Dc5567aDC3F2FdC318",
+      "txHash": "0x29dca99d4f4403f4732275ee97f4ad7eb1b98ac6cfd37fb90e9efa48dd3b49b2",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x610178dA211FEF7D417bC0e6FeD39F05609AD788",
+      "txHash": "0x9ca759144dc2a982321eda8f4e82e79b9430c3bc7401added5e5e898b5d0b9cd",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xB7f8BC63BbcaD18155201308C8f3540b07f84F5e",
+      "txHash": "0xfbc85b98ed54099390253a87665c583503001080a282c533794306e810a1e0ea",
+      "kind": "transparent"
+    },
+    {
+      "address": "0xA51c1fc2f0D1a1b8494Ed1FE312d7C3a78Ed91C0",
+      "txHash": "0xc2e8e478a0cd53aa79e2b99b0c2957e0491633922f73966c21f449cc563f0dcc",
+      "kind": "transparent"
+    },
+    {
+      "address": "0x0DCd1Bf9A1b36cE34237eEaFef220932846BCD82",
+      "txHash": "0x59a01c4c1d5c9c208bdb45a0265a75bbd8a64a21eb4771a04a1e233755a8a8d2",
       "kind": "transparent"
     }
   ],
   "impls": {
-    "0962a44447446995bcc2b254927f17caf3a148aa2c31ddeb17e1894f01bc1fc8": {
+    "62768f67d38f1758b37767c733f016bd517722c39550275ac265a6ce86df9092": {
       "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
-      "txHash": "0x5b36ce8628d73cbc6f9500fcd7ad7762eef053d0c25ad31ce23a3de55f4502c6",
+      "txHash": "0x179178fde386a658f725c0887fb7e7b88aa94c717c5647ac261fc445a2e21cf4",
       "layout": {
         "storage": [
           {
@@ -209,15 +224,53 @@
             "contract": "OrgIdRegistry",
             "label": "__gap",
             "type": "t_array(t_uint256)51_storage",
-            "src": "contracts/OrgIdRegistry.sol:211"
+            "src": "contracts/OrgIdRegistry.sol:219"
+          },
+          {
+            "contract": "OrgIdDelegates",
+            "label": "_delegates",
+            "type": "t_mapping(t_bytes32,t_struct(Set)2932_storage)",
+            "src": "contracts/OrgIdDelegates.sol:12"
           }
         ],
         "types": {
-          "t_mapping(t_bytes32,t_uint256)": {
-            "label": "mapping(bytes32 => uint256)"
+          "t_mapping(t_bytes32,t_struct(Set)2932_storage)": {
+            "label": "mapping(bytes32 => struct StringsSet.Set)"
           },
           "t_bytes32": {
             "label": "bytes32"
+          },
+          "t_struct(Set)2932_storage": {
+            "label": "struct StringsSet.Set",
+            "members": [
+              {
+                "label": "_values",
+                "type": "t_array(t_string_storage)dyn_storage"
+              },
+              {
+                "label": "_hashTable",
+                "type": "t_mapping(t_bytes32,t_bool)"
+              },
+              {
+                "label": "_indexes",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ]
+          },
+          "t_array(t_string_storage)dyn_storage": {
+            "label": "string[]"
+          },
+          "t_string_storage": {
+            "label": "string"
+          },
+          "t_mapping(t_bytes32,t_bool)": {
+            "label": "mapping(bytes32 => bool)"
+          },
+          "t_bool": {
+            "label": "bool"
+          },
+          "t_mapping(t_bytes32,t_uint256)": {
+            "label": "mapping(bytes32 => uint256)"
           },
           "t_uint256": {
             "label": "uint256"
@@ -227,9 +280,6 @@
           },
           "t_mapping(t_uint256,t_string_storage)": {
             "label": "mapping(uint256 => string)"
-          },
-          "t_string_storage": {
-            "label": "string"
           },
           "t_array(t_bytes32)dyn_storage": {
             "label": "bytes32[]"
@@ -264,9 +314,6 @@
           "t_mapping(t_address,t_bool)": {
             "label": "mapping(address => bool)"
           },
-          "t_bool": {
-            "label": "bool"
-          },
           "t_array(t_uint256)44_storage": {
             "label": "uint256[44]"
           },
@@ -276,9 +323,9 @@
         }
       }
     },
-    "ff444f17718ff2de28e6de7d86fd6e4f273b5d4fee756a22e9f15ddb0fab4565": {
+    "364167eef335f290943b8e2e956dd06646c4aa913f83887dfce63eb8c8b0d540": {
       "address": "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "txHash": "0x431c85183c114d7427c9f9edeee31d6b75bbdafe1f8e1934b2f2634d8cf5e103",
+      "txHash": "0x2f0fa3280cfd51975ed03f674f9b640982547052426401d152c84611912f89f1",
       "layout": {
         "storage": [
           {
@@ -405,7 +452,13 @@
             "contract": "OrgIdRegistry",
             "label": "__gap",
             "type": "t_array(t_uint256)51_storage",
-            "src": "contracts/OrgIdRegistry.sol:211"
+            "src": "contracts/OrgIdRegistry.sol:219"
+          },
+          {
+            "contract": "OrgIdDelegates",
+            "label": "_delegates",
+            "type": "t_mapping(t_bytes32,t_struct(Set)2932_storage)",
+            "src": "contracts/OrgIdDelegates.sol:12"
           },
           {
             "contract": "InitializableVersion",
@@ -444,6 +497,29 @@
           },
           "t_uint256": {
             "label": "uint256"
+          },
+          "t_mapping(t_bytes32,t_struct(Set)2932_storage)": {
+            "label": "mapping(bytes32 => struct StringsSet.Set)"
+          },
+          "t_struct(Set)2932_storage": {
+            "label": "struct StringsSet.Set",
+            "members": [
+              {
+                "label": "_values",
+                "type": "t_array(t_string_storage)dyn_storage"
+              },
+              {
+                "label": "_hashTable",
+                "type": "t_mapping(t_bytes32,t_bool)"
+              },
+              {
+                "label": "_indexes",
+                "type": "t_mapping(t_bytes32,t_uint256)"
+              }
+            ]
+          },
+          "t_array(t_string_storage)dyn_storage": {
+            "label": "string[]"
           },
           "t_mapping(t_bytes32,t_uint256)": {
             "label": "mapping(bytes32 => uint256)"

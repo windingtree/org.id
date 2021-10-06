@@ -25,3 +25,7 @@ export const generateOrgId = async (salt: string, sender: Signer): Promise<strin
     ]
   );
 }
+
+// Simple object clone
+export const clone = (obj: unknown): any =>
+  JSON.parse(JSON.stringify(obj)) as any;
