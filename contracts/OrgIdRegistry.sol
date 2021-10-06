@@ -22,6 +22,16 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
   /// @dev Array with all orgIds', used for enumeration
   bytes32[] private _orgIds;
 
+  /**
+   * @dev Prevents function execution if called not by ORGiD owner
+   */
+  modifier onlyOrgIdOwner(bytes32 orgId) {
+    if (ownerOf(_orgToken[orgId]) != _msgSender()) {
+      revert CalledNotByOrgIdOwner();
+    }
+    _;
+  }
+
   /// @dev OrgIdRegistry contract initializer
   // solhint-disable-next-line func-name-mixedcase
   function __OrgIdRegistry_init() internal initializer {
@@ -192,6 +202,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     external
     virtual
     override
+    onlyOrgIdOwner(orgId)
   {
     if (orgId == bytes32(0) || _orgToken[orgId] == 0) {
       revert OrgIdNotFound(orgId);
@@ -199,13 +210,22 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     if (bytes(orgJsonUri).length == 0) {
       revert OrgJsonUriEmpty();
     }
-    if (ownerOf(_orgToken[orgId]) != _msgSender()) {
-      revert CalledNotByOrgIdOwner();
-    }
 
     _orgJsonUris[_orgToken[orgId]] = orgJsonUri;
 
     emit OrgJsonUriChanged(orgId, orgJsonUri);
+  }
+
+  /**
+   * @dev See {IOrgIdRegistry-isOrgIdExists(bytes32)}.
+   */
+  function isOrgIdExists(bytes32 orgId)
+    internal
+    virtual
+    override
+    returns (bool)
+  {
+    return _orgToken[orgId] != 0;
   }
 
   uint256[51] private __gap;

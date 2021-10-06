@@ -49,6 +49,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.InitializableVersion__factory>;
     getContractFactory(
+      name: "IOrgIdDelegates",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IOrgIdDelegates__factory>;
+    getContractFactory(
       name: "IOrgIdRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IOrgIdRegistry__factory>;
@@ -56,6 +60,10 @@ declare module "hardhat/types/runtime" {
       name: "OrgId",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OrgId__factory>;
+    getContractFactory(
+      name: "OrgIdDelegates",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.OrgIdDelegates__factory>;
     getContractFactory(
       name: "OrgIdRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -115,6 +123,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.InitializableVersion>;
     getContractAt(
+      name: "IOrgIdDelegates",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IOrgIdDelegates>;
+    getContractAt(
       name: "IOrgIdRegistry",
       address: string,
       signer?: ethers.Signer
@@ -124,6 +137,11 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.OrgId>;
+    getContractAt(
+      name: "OrgIdDelegates",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.OrgIdDelegates>;
     getContractAt(
       name: "OrgIdRegistry",
       address: string,

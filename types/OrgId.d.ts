@@ -21,10 +21,12 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface OrgIdInterface extends ethers.utils.Interface {
   functions: {
+    "addDelegates(bytes32,string[])": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getDelegates(bytes32)": FunctionFragment;
     "getOrgId(uint256)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
     "getTokenId(bytes32)": FunctionFragment;
@@ -32,6 +34,7 @@ interface OrgIdInterface extends ethers.utils.Interface {
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "removeDelegates(bytes32)": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setOrgJson(bytes32,string)": FunctionFragment;
@@ -45,6 +48,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
   };
 
   encodeFunctionData(
+    functionFragment: "addDelegates",
+    values: [BytesLike, string[]]
+  ): string;
+  encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
   ): string;
@@ -56,6 +63,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDelegates",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "getOrgId",
@@ -81,6 +92,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeDelegates",
+    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
@@ -120,6 +135,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "addDelegates",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -128,6 +147,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDelegates",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
@@ -140,6 +163,10 @@ interface OrgIdInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "removeDelegates",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -176,6 +203,8 @@ interface OrgIdInterface extends ethers.utils.Interface {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
     "OrgIdCreated(bytes32,address)": EventFragment;
+    "OrgIdDelegatesAdded(bytes32,string[])": EventFragment;
+    "OrgIdDelegatesRemoved(bytes32,string[])": EventFragment;
     "OrgJsonUriChanged(bytes32,string)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
@@ -183,6 +212,8 @@ interface OrgIdInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrgIdCreated"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgIdDelegatesAdded"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgIdDelegatesRemoved"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrgJsonUriChanged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
@@ -205,6 +236,14 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type OrgIdCreatedEvent = TypedEvent<
   [string, string] & { orgId: string; owner: string }
+>;
+
+export type OrgIdDelegatesAddedEvent = TypedEvent<
+  [string, string[]] & { orgId: string; delegates: string[] }
+>;
+
+export type OrgIdDelegatesRemovedEvent = TypedEvent<
+  [string, string[]] & { orgId: string; delegates: string[] }
 >;
 
 export type OrgJsonUriChangedEvent = TypedEvent<
@@ -259,6 +298,18 @@ export class OrgId extends BaseContract {
   interface: OrgIdInterface;
 
   functions: {
+    addDelegates(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -299,6 +350,16 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    getDelegates(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { dids: string[] }>;
+
+    "getDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { dids: string[] }>;
 
     getOrgId(
       tokenId: BigNumberish,
@@ -377,6 +438,17 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
+
+    "removeDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -482,6 +554,18 @@ export class OrgId extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  addDelegates(
+    orgId: BytesLike,
+    dids: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "addDelegates(bytes32,string[])"(
+    orgId: BytesLike,
+    dids: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -522,6 +606,13 @@ export class OrgId extends BaseContract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getDelegates(orgId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
+
+  "getDelegates(bytes32)"(
+    orgId: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
 
   getOrgId(
     tokenId: BigNumberish,
@@ -592,6 +683,17 @@ export class OrgId extends BaseContract {
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  "removeDelegates(bytes32)"(
+    orgId: BytesLike,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
+  "removeDelegates(bytes32,string[])"(
+    orgId: BytesLike,
+    dids: string[],
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -694,6 +796,18 @@ export class OrgId extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addDelegates(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -734,6 +848,16 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getDelegates(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "getDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
 
     getOrgId(
       tokenId: BigNumberish,
@@ -800,6 +924,17 @@ export class OrgId extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    "removeDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -949,6 +1084,38 @@ export class OrgId extends BaseContract {
       owner?: string | null
     ): TypedEventFilter<[string, string], { orgId: string; owner: string }>;
 
+    "OrgIdDelegatesAdded(bytes32,string[])"(
+      orgId?: BytesLike | null,
+      delegates?: null
+    ): TypedEventFilter<
+      [string, string[]],
+      { orgId: string; delegates: string[] }
+    >;
+
+    OrgIdDelegatesAdded(
+      orgId?: BytesLike | null,
+      delegates?: null
+    ): TypedEventFilter<
+      [string, string[]],
+      { orgId: string; delegates: string[] }
+    >;
+
+    "OrgIdDelegatesRemoved(bytes32,string[])"(
+      orgId?: BytesLike | null,
+      delegates?: null
+    ): TypedEventFilter<
+      [string, string[]],
+      { orgId: string; delegates: string[] }
+    >;
+
+    OrgIdDelegatesRemoved(
+      orgId?: BytesLike | null,
+      delegates?: null
+    ): TypedEventFilter<
+      [string, string[]],
+      { orgId: string; delegates: string[] }
+    >;
+
     "OrgJsonUriChanged(bytes32,string)"(
       orgId?: BytesLike | null,
       orgJsonUri?: null
@@ -985,6 +1152,18 @@ export class OrgId extends BaseContract {
   };
 
   estimateGas: {
+    addDelegates(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1023,6 +1202,16 @@ export class OrgId extends BaseContract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getDelegates(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDelegates(bytes32)"(
+      orgId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -1083,6 +1272,17 @@ export class OrgId extends BaseContract {
     "ownerOf(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "removeDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -1190,6 +1390,18 @@ export class OrgId extends BaseContract {
   };
 
   populateTransaction: {
+    addDelegates(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -1231,6 +1443,16 @@ export class OrgId extends BaseContract {
 
     "getApproved(uint256)"(
       tokenId: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDelegates(
+      orgId: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDelegates(bytes32)"(
+      orgId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -1294,6 +1516,17 @@ export class OrgId extends BaseContract {
     "ownerOf(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeDelegates(bytes32)"(
+      orgId: BytesLike,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: BytesLike,
+      dids: string[],
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(

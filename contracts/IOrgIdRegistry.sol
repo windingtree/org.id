@@ -128,4 +128,14 @@ abstract contract IOrgIdRegistry {
   )
     external
     virtual;
+
+  /**
+   * @dev Checks ORGiD existence
+   * @param orgId ORGiD hash
+   * @return bool
+   */
+  function isOrgIdExists(bytes32 orgId)
+    internal
+    virtual
+    returns (bool);
 }

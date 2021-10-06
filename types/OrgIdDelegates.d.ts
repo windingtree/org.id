@@ -19,9 +19,8 @@ import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
-interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
+interface OrgIdDelegatesInterface extends ethers.utils.Interface {
   functions: {
-    "__OrgIdV2_init()": FunctionFragment;
     "addDelegates(bytes32,string[])": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
@@ -31,7 +30,6 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
     "getOrgId(uint256)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
     "getTokenId(bytes32)": FunctionFragment;
-    "initialize()": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
     "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -46,13 +44,8 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
     "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "version()": FunctionFragment;
   };
 
-  encodeFunctionData(
-    functionFragment: "__OrgIdV2_init",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "addDelegates",
     values: [BytesLike, string[]]
@@ -85,10 +78,6 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getTokenId",
     values: [BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "initialize",
-    values?: undefined
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -140,12 +129,7 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(functionFragment: "version", values?: undefined): string;
 
-  decodeFunctionResult(
-    functionFragment: "__OrgIdV2_init",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "addDelegates",
     data: BytesLike
@@ -167,7 +151,6 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getOrgIds", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getTokenId", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "initialize", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "isApprovedForAll",
     data: BytesLike
@@ -209,7 +192,6 @@ interface OrgIdUpgradeabilityTestInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "version", data: BytesLike): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
@@ -266,7 +248,7 @@ export type TransferEvent = TypedEvent<
   [string, string, BigNumber] & { from: string; to: string; tokenId: BigNumber }
 >;
 
-export class OrgIdUpgradeabilityTest extends BaseContract {
+export class OrgIdDelegates extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -307,17 +289,9 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
     toBlock?: string | number | undefined
   ): Promise<Array<TypedEvent<EventArgsArray & EventArgsObject>>>;
 
-  interface: OrgIdUpgradeabilityTestInterface;
+  interface: OrgIdDelegatesInterface;
 
   functions: {
-    __OrgIdV2_init(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "__OrgIdV2_init()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
     addDelegates(
       orgId: BytesLike,
       dids: string[],
@@ -424,14 +398,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       orgId: BytesLike,
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { tokenId: BigNumber }>;
-
-    initialize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
-
-    "initialize()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<ContractTransaction>;
 
     isApprovedForAll(
       owner: string,
@@ -572,19 +538,7 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
-
-    version(overrides?: CallOverrides): Promise<[string]>;
-
-    "version()"(overrides?: CallOverrides): Promise<[string]>;
   };
-
-  __OrgIdV2_init(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "__OrgIdV2_init()"(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   addDelegates(
     orgId: BytesLike,
@@ -684,14 +638,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
     orgId: BytesLike,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  initialize(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
-
-  "initialize()"(
-    overrides?: Overrides & { from?: string | Promise<string> }
-  ): Promise<ContractTransaction>;
 
   isApprovedForAll(
     owner: string,
@@ -827,15 +773,7 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  version(overrides?: CallOverrides): Promise<string>;
-
-  "version()"(overrides?: CallOverrides): Promise<string>;
-
   callStatic: {
-    __OrgIdV2_init(overrides?: CallOverrides): Promise<void>;
-
-    "__OrgIdV2_init()"(overrides?: CallOverrides): Promise<void>;
-
     addDelegates(
       orgId: BytesLike,
       dids: string[],
@@ -937,10 +875,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       orgId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    initialize(overrides?: CallOverrides): Promise<void>;
-
-    "initialize()"(overrides?: CallOverrides): Promise<void>;
 
     isApprovedForAll(
       owner: string,
@@ -1075,10 +1009,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    version(overrides?: CallOverrides): Promise<string>;
-
-    "version()"(overrides?: CallOverrides): Promise<string>;
   };
 
   filters: {
@@ -1196,14 +1126,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
   };
 
   estimateGas: {
-    __OrgIdV2_init(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "__OrgIdV2_init()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
     addDelegates(
       orgId: BytesLike,
       dids: string[],
@@ -1290,14 +1212,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
     "getTokenId(bytes32)"(
       orgId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    initialize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<BigNumber>;
-
-    "initialize()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     isApprovedForAll(
@@ -1439,21 +1353,9 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
-
-    version(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "version()"(overrides?: CallOverrides): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    __OrgIdV2_init(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "__OrgIdV2_init()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
     addDelegates(
       orgId: BytesLike,
       dids: string[],
@@ -1546,14 +1448,6 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
     "getTokenId(bytes32)"(
       orgId: BytesLike,
       overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    initialize(
-      overrides?: Overrides & { from?: string | Promise<string> }
-    ): Promise<PopulatedTransaction>;
-
-    "initialize()"(
-      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     isApprovedForAll(
@@ -1695,9 +1589,5 @@ export class OrgIdUpgradeabilityTest extends BaseContract {
       tokenId: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
-
-    version(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "version()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
   };
 }
