@@ -121,8 +121,7 @@ const config: CustomHardhatConfig = {
   contractSizer: {
     alphaSort: true,
     disambiguatePaths: false,
-    runOnCompile: true,
-    strict: true,
+    runOnCompile: true
   },
   gasReporter: {
     enabled: (process.env.REPORT_GAS) ? true : false,
