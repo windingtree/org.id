@@ -1,4 +1,4 @@
-import type { HardhatUserConfig } from 'hardhat/types';
+import type { NetworkUserConfig, HardhatUserConfig } from 'hardhat/types';
 
 import '@nomiclabs/hardhat-ethers';
 import '@nomiclabs/hardhat-waffle';
@@ -17,12 +17,15 @@ export interface CustomHardhatConfig extends HardhatUserConfig {
   }
 }
 
-let customNetworksConfig = {};
+export interface CustomNetworksConfig {
+  [networkName: string]: NetworkUserConfig;
+}
+
+let customNetworksConfig: CustomNetworksConfig = {};
 
 if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
   customNetworksConfig = {
     optKovan: {
-      networkName: 'optKovan',
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
@@ -31,7 +34,6 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ovm: true
     },
     arbRinkeby: {
-      networkName: 'arbRinkeby',
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
@@ -46,7 +48,6 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       gasPrice: 'auto',
     },
     optMainnet: {
-      networkName: 'optMainnet',
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
@@ -54,7 +55,6 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       gasPrice: 'auto',
     },
     arbMainnet: {
-      networkName: 'arbMainnet',
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
@@ -88,8 +88,8 @@ const config: CustomHardhatConfig = {
   defaultNetwork: 'hardhat',
   networks: {
     hardhat: {
-      "chainId": 1337,
-      "initialBaseFeePerGas": 0
+      chainId: 1337,
+      initialBaseFeePerGas: 0
     },
     optLocalhost: {
       url: 'http://127.0.0.1:8545',
