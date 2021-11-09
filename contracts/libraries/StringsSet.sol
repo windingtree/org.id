@@ -39,7 +39,7 @@ library StringsSet {
       set._values.push(value);
       return true;
     } else {
-      return false;
+      return contains(set, hashValue);
     }
   }
 
@@ -77,7 +77,7 @@ library StringsSet {
 
       return true;
     } else {
-      return false;
+      return !contains(set, hashValue);
     }
   }
 
@@ -105,6 +105,20 @@ library StringsSet {
     } else {
       return false;
     }
+  }
+
+  /**
+   * @dev Checking if a value in the set
+   * @param set An instance of Set structure
+   * @param hashValue A hashed value to check
+   * @return bool Check result
+   */
+  function contains(Set storage set, bytes32 hashValue)
+    internal
+    view
+    returns (bool)
+  {
+    return set._hashTable[hashValue];
   }
 
   /**
