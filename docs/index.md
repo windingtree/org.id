@@ -2,7 +2,7 @@
 
 ## ORGiD identifiers registry
 
-**OrgId** is the core smart contract of the ORGiD protocol. It is a decentralized registry of unique identifiers used for the creation and managing of network-specific [DID](https://www.w3.org/TR/did-core)s'. The main idea of the ORGiD protocol is providing of the providing a Self Sovereign Identity (SSI) for every organization or person.
+**OrgId** is the core smart contract of the ORGiD protocol. It is a decentralized registry of unique identifiers used for the creation and managing of network-specific [DID](https://www.w3.org/TR/did-core)s'. The main idea of the ORGiD protocol is providing a Self Sovereign Identity (SSI) for every organization or person.
 
 The ORGiD smart contract supports [ERC721](https://eips.ethereum.org/EIPS/eip-721) interface, so every entity represented by the unique Id is recognizable as NFT.
 
