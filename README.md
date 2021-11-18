@@ -1,6 +1,8 @@
 [![Build Status](https://travis-ci.org/windingtree/org.id.svg?branch=master)](https://travis-ci.org/windingtree/org.id)
 [![Coverage Status](https://coveralls.io/repos/github/windingtree/org.id/badge.svg?branch=orgid-nft)](https://coveralls.io/github/windingtree/org.id?branch=orgid-nft&v=3.0)
 
+# ORGiD smart contract
+
 ## Documentation
 
 - [ORGiD smart contract documentation](docs/index.md)
