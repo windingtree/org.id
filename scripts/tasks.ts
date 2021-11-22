@@ -1,7 +1,7 @@
 import { task } from 'hardhat/config';
 
 // Deployment task
-task('deploy', 'Deploys the token')
+task('deploy', 'Deploys the ORGiD contract')
   .setAction(async (_, hre) => {
     const contractName = 'OrgId';
     const contract = await hre.ethers.getContractFactory(contractName);
@@ -26,7 +26,7 @@ task('transfer', 'Transfer proxy admin ownership')
   });
 
 // Upgrade task
-task('upgrade', 'Upgrade the token')
+task('upgrade', 'Upgrade the ORGiD contract')
   .addParam('name', 'Name of the new contract implementation')
   .addParam('proxy', 'Address of the proxy to upgrade')
   .setAction(async (args, hre) => {

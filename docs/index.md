@@ -1,5 +1,11 @@
 # ORGiD smart contract
 
+## Deployments
+
+- Ropsten Testnet: [0x405005a015EA0E24889D6963447Bb0D646D91C83](https://ropsten.etherscan.io/address/0x405005a015EA0E24889D6963447Bb0D646D91C83#readProxyContract)
+- Rinkeby Testnet: [0x877c5532B2a76148334CBfA32779A0b9ee414FBE](https://rinkeby.etherscan.io/address/0x877c5532B2a76148334CBfA32779A0b9ee414FBE#readProxyContract)
+- Arbitrum Rinkeby Testnet: [0x3925A9d5554508b65a6490c450FB294A9173948B](https://rinkeby-explorer.arbitrum.io/address/0x3925A9d5554508b65a6490c450FB294A9173948B)
+
 ## ORGiD identifiers registry
 
 **OrgId** is the core smart contract of the ORGiD protocol. It is a decentralized registry of unique identifiers used for the creation and managing of network-specific [DID](https://www.w3.org/TR/did-core)s'. The main idea of the ORGiD protocol is providing a Self Sovereign Identity (SSI) for every organization or person.
