@@ -57,6 +57,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IOrgIdRegistry__factory>;
     getContractFactory(
+<<<<<<< HEAD
+=======
+      name: "StringsSet",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.StringsSet__factory>;
+    getContractFactory(
+>>>>>>> develop
       name: "OrgId",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OrgId__factory>;
@@ -73,6 +80,13 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ERC721Receiver__factory>;
     getContractFactory(
+<<<<<<< HEAD
+=======
+      name: "NonERC721Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.NonERC721Receiver__factory>;
+    getContractFactory(
+>>>>>>> develop
       name: "OrgIdUpgradeabilityTest",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.OrgIdUpgradeabilityTest__factory>;
@@ -133,6 +147,14 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IOrgIdRegistry>;
     getContractAt(
+<<<<<<< HEAD
+=======
+      name: "StringsSet",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.StringsSet>;
+    getContractAt(
+>>>>>>> develop
       name: "OrgId",
       address: string,
       signer?: ethers.Signer
@@ -153,6 +175,14 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.ERC721Receiver>;
     getContractAt(
+<<<<<<< HEAD
+=======
+      name: "NonERC721Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.NonERC721Receiver>;
+    getContractAt(
+>>>>>>> develop
       name: "OrgIdUpgradeabilityTest",
       address: string,
       signer?: ethers.Signer

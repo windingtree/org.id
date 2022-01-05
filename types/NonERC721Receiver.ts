@@ -11,10 +11,7 @@ import {
   PopulatedTransaction,
   BaseContract,
   ContractTransaction,
-<<<<<<< HEAD
-=======
   CallOverrides,
->>>>>>> develop
 } from "ethers";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
@@ -26,34 +23,30 @@ import type {
   OnEvent,
 } from "./common";
 
-export interface InitializableVersionInterface extends ethers.utils.Interface {
-<<<<<<< HEAD
-  functions: {};
-=======
+export interface NonERC721ReceiverInterface extends ethers.utils.Interface {
   functions: {
-    "c_0x19e4eb6c(bytes32)": FunctionFragment;
+    "c_0xa2b921e2(bytes32)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "c_0x19e4eb6c",
+    functionFragment: "c_0xa2b921e2",
     values: [BytesLike]
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "c_0x19e4eb6c",
+    functionFragment: "c_0xa2b921e2",
     data: BytesLike
   ): Result;
->>>>>>> develop
 
   events: {};
 }
 
-export interface InitializableVersion extends BaseContract {
+export interface NonERC721Receiver extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: InitializableVersionInterface;
+  interface: NonERC721ReceiverInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -74,47 +67,36 @@ export interface InitializableVersion extends BaseContract {
   once: OnEvent<this>;
   removeListener: OnEvent<this>;
 
-<<<<<<< HEAD
-  functions: {};
-
-  callStatic: {};
-
-  filters: {};
-
-  estimateGas: {};
-
-  populateTransaction: {};
-=======
   functions: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0xa2b921e2(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<[void]>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0xa2b921e2(bytes32)"(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<[void]>;
   };
 
-  c_0x19e4eb6c(
-    c__0x19e4eb6c: BytesLike,
+  c_0xa2b921e2(
+    c__0xa2b921e2: BytesLike,
     overrides?: CallOverrides
   ): Promise<void>;
 
-  "c_0x19e4eb6c(bytes32)"(
-    c__0x19e4eb6c: BytesLike,
+  "c_0xa2b921e2(bytes32)"(
+    c__0xa2b921e2: BytesLike,
     overrides?: CallOverrides
   ): Promise<void>;
 
   callStatic: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0xa2b921e2(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0xa2b921e2(bytes32)"(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -122,27 +104,26 @@ export interface InitializableVersion extends BaseContract {
   filters: {};
 
   estimateGas: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0xa2b921e2(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0xa2b921e2(bytes32)"(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    c_0x19e4eb6c(
-      c__0x19e4eb6c: BytesLike,
+    c_0xa2b921e2(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    "c_0x19e4eb6c(bytes32)"(
-      c__0x19e4eb6c: BytesLike,
+    "c_0xa2b921e2(bytes32)"(
+      c__0xa2b921e2: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
   };
->>>>>>> develop
 }

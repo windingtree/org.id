@@ -204,6 +204,35 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
+<<<<<<< HEAD
+=======
+        name: "c__0xc39a2e1c",
+        type: "bytes32",
+      },
+    ],
+    name: "c_0xc39a2e1c",
+    outputs: [],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "c__0xf29f1bae",
+        type: "bytes32",
+      },
+    ],
+    name: "c_0xf29f1bae",
+    outputs: [],
+    stateMutability: "pure",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+>>>>>>> develop
         name: "salt",
         type: "bytes32",
       },
