@@ -26,6 +26,7 @@ import type {
 
 export interface IOrgIdRegistryInterface extends ethers.utils.Interface {
   functions: {
+    "c_0xc39a2e1c(bytes32)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
     "getOrgId(uint256)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
@@ -33,6 +34,10 @@ export interface IOrgIdRegistryInterface extends ethers.utils.Interface {
     "setOrgJson(bytes32,string)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "c_0xc39a2e1c",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "createOrgId",
     values: [BytesLike, string]
@@ -54,6 +59,10 @@ export interface IOrgIdRegistryInterface extends ethers.utils.Interface {
     values: [BytesLike, string]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "c_0xc39a2e1c",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "createOrgId",
     data: BytesLike
@@ -114,6 +123,16 @@ export interface IOrgIdRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,
@@ -183,6 +202,16 @@ export interface IOrgIdRegistry extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  c_0xc39a2e1c(
+    c__0xc39a2e1c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0xc39a2e1c(bytes32)"(
+    c__0xc39a2e1c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
   createOrgId(
     salt: BytesLike,
     orgJsonUri: string,
@@ -247,6 +276,16 @@ export interface IOrgIdRegistry extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,
@@ -332,6 +371,16 @@ export interface IOrgIdRegistry extends BaseContract {
   };
 
   estimateGas: {
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,
@@ -383,6 +432,16 @@ export interface IOrgIdRegistry extends BaseContract {
   };
 
   populateTransaction: {
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,

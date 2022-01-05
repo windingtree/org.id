@@ -12,10 +12,12 @@ export type { IERC165Upgradeable } from "./IERC165Upgradeable";
 export type { InitializableVersion } from "./InitializableVersion";
 export type { IOrgIdDelegates } from "./IOrgIdDelegates";
 export type { IOrgIdRegistry } from "./IOrgIdRegistry";
+export type { StringsSet } from "./StringsSet";
 export type { OrgId } from "./OrgId";
 export type { OrgIdDelegates } from "./OrgIdDelegates";
 export type { OrgIdRegistry } from "./OrgIdRegistry";
 export type { ERC721Receiver } from "./ERC721Receiver";
+export type { NonERC721Receiver } from "./NonERC721Receiver";
 export type { OrgIdUpgradeabilityTest } from "./OrgIdUpgradeabilityTest";
 
 export { ERC721Upgradeable__factory } from "./factories/ERC721Upgradeable__factory";
@@ -29,8 +31,10 @@ export { IERC165Upgradeable__factory } from "./factories/IERC165Upgradeable__fac
 export { InitializableVersion__factory } from "./factories/InitializableVersion__factory";
 export { IOrgIdDelegates__factory } from "./factories/IOrgIdDelegates__factory";
 export { IOrgIdRegistry__factory } from "./factories/IOrgIdRegistry__factory";
+export { StringsSet__factory } from "./factories/StringsSet__factory";
 export { OrgId__factory } from "./factories/OrgId__factory";
 export { OrgIdDelegates__factory } from "./factories/OrgIdDelegates__factory";
 export { OrgIdRegistry__factory } from "./factories/OrgIdRegistry__factory";
 export { ERC721Receiver__factory } from "./factories/ERC721Receiver__factory";
+export { NonERC721Receiver__factory } from "./factories/NonERC721Receiver__factory";
 export { OrgIdUpgradeabilityTest__factory } from "./factories/OrgIdUpgradeabilityTest__factory";

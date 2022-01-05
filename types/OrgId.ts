@@ -29,6 +29,11 @@ export interface OrgIdInterface extends ethers.utils.Interface {
     "addDelegates(bytes32,string[])": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "c_0x3bed8f0b(bytes32)": FunctionFragment;
+    "c_0x44655cf7(bytes32)": FunctionFragment;
+    "c_0xc39a2e1c(bytes32)": FunctionFragment;
+    "c_0xf29f1bae(bytes32)": FunctionFragment;
+    "c_0xf78ce2b1(bytes32)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getDelegates(bytes32)": FunctionFragment;
@@ -61,6 +66,26 @@ export interface OrgIdInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "c_0x3bed8f0b",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "c_0x44655cf7",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "c_0xc39a2e1c",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "c_0xf29f1bae",
+    values: [BytesLike]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "c_0xf78ce2b1",
+    values: [BytesLike]
+  ): string;
   encodeFunctionData(
     functionFragment: "createOrgId",
     values: [BytesLike, string]
@@ -146,6 +171,26 @@ export interface OrgIdInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0x3bed8f0b",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0x44655cf7",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0xc39a2e1c",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0xf29f1bae",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "c_0xf78ce2b1",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "createOrgId",
     data: BytesLike
@@ -332,6 +377,56 @@ export interface OrgId extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
+
+    c_0x3bed8f0b(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0x3bed8f0b(bytes32)"(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    c_0x44655cf7(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0x44655cf7(bytes32)"(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    c_0xf29f1bae(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0xf29f1bae(bytes32)"(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    c_0xf78ce2b1(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
+
+    "c_0xf78ce2b1(bytes32)"(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[void]>;
 
     createOrgId(
       salt: BytesLike,
@@ -589,6 +684,56 @@ export interface OrgId extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  c_0x3bed8f0b(
+    c__0x3bed8f0b: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0x3bed8f0b(bytes32)"(
+    c__0x3bed8f0b: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  c_0x44655cf7(
+    c__0x44655cf7: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0x44655cf7(bytes32)"(
+    c__0x44655cf7: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  c_0xc39a2e1c(
+    c__0xc39a2e1c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0xc39a2e1c(bytes32)"(
+    c__0xc39a2e1c: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  c_0xf29f1bae(
+    c__0xf29f1bae: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0xf29f1bae(bytes32)"(
+    c__0xf29f1bae: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  c_0xf78ce2b1(
+    c__0xf78ce2b1: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
+  "c_0xf78ce2b1(bytes32)"(
+    c__0xf78ce2b1: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<void>;
+
   createOrgId(
     salt: BytesLike,
     orgJsonUri: string,
@@ -830,6 +975,56 @@ export interface OrgId extends BaseContract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    c_0x3bed8f0b(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0x3bed8f0b(bytes32)"(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    c_0x44655cf7(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0x44655cf7(bytes32)"(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    c_0xf29f1bae(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0xf29f1bae(bytes32)"(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    c_0xf78ce2b1(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "c_0xf78ce2b1(bytes32)"(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     createOrgId(
       salt: BytesLike,
@@ -1144,6 +1339,56 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    c_0x3bed8f0b(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0x3bed8f0b(bytes32)"(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0x44655cf7(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0x44655cf7(bytes32)"(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0xf29f1bae(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0xf29f1bae(bytes32)"(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    c_0xf78ce2b1(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "c_0xf78ce2b1(bytes32)"(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     createOrgId(
       salt: BytesLike,
       orgJsonUri: string,
@@ -1382,6 +1627,56 @@ export interface OrgId extends BaseContract {
 
     "balanceOf(address)"(
       owner: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0x3bed8f0b(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0x3bed8f0b(bytes32)"(
+      c__0x3bed8f0b: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0x44655cf7(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0x44655cf7(bytes32)"(
+      c__0x44655cf7: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0xc39a2e1c(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0xc39a2e1c(bytes32)"(
+      c__0xc39a2e1c: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0xf29f1bae(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0xf29f1bae(bytes32)"(
+      c__0xf29f1bae: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    c_0xf78ce2b1(
+      c__0xf78ce2b1: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "c_0xf78ce2b1(bytes32)"(
+      c__0xf78ce2b1: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
