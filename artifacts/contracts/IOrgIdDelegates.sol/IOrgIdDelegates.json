@@ -1,0 +1,122 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "IOrgIdDelegates",
+  "sourceName": "contracts/IOrgIdDelegates.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "InvalidDelegatesInput",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string[]",
+          "name": "delegates",
+          "type": "string[]"
+        }
+      ],
+      "name": "OrgIdDelegatesAdded",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "string[]",
+          "name": "delegates",
+          "type": "string[]"
+        }
+      ],
+      "name": "OrgIdDelegatesRemoved",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string[]",
+          "name": "dids",
+          "type": "string[]"
+        }
+      ],
+      "name": "addDelegates",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getDelegates",
+      "outputs": [
+        {
+          "internalType": "string[]",
+          "name": "dids",
+          "type": "string[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        }
+      ],
+      "name": "removeDelegates",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "orgId",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "string[]",
+          "name": "dids",
+          "type": "string[]"
+        }
+      ],
+      "name": "removeDelegates",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
