@@ -75,19 +75,6 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "c__0x44655cf7",
-        type: "bytes32",
-      },
-    ],
-    name: "c_0x44655cf7",
-    outputs: [],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
         name: "orgId",
         type: "bytes32",
       },

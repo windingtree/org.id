@@ -95,19 +95,6 @@ const _abi = [
     inputs: [
       {
         internalType: "bytes32",
-        name: "c__0xc39a2e1c",
-        type: "bytes32",
-      },
-    ],
-    name: "c_0xc39a2e1c",
-    outputs: [],
-    stateMutability: "pure",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
         name: "salt",
         type: "bytes32",
       },
