@@ -21,22 +21,6 @@ const _abi = [
     name: "ContractAlreadyInitialized",
     type: "error",
   },
-<<<<<<< HEAD
-=======
-  {
-    inputs: [
-      {
-        internalType: "bytes32",
-        name: "c__0x19e4eb6c",
-        type: "bytes32",
-      },
-    ],
-    name: "c_0x19e4eb6c",
-    outputs: [],
-    stateMutability: "pure",
-    type: "function",
-  },
->>>>>>> develop
 ];
 
 export class InitializableVersion__factory {

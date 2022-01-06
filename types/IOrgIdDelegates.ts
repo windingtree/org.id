@@ -27,10 +27,6 @@ import type {
 export interface IOrgIdDelegatesInterface extends ethers.utils.Interface {
   functions: {
     "addDelegates(bytes32,string[])": FunctionFragment;
-<<<<<<< HEAD
-=======
-    "c_0x44655cf7(bytes32)": FunctionFragment;
->>>>>>> develop
     "getDelegates(bytes32)": FunctionFragment;
     "removeDelegates(bytes32)": FunctionFragment;
   };
@@ -40,13 +36,6 @@ export interface IOrgIdDelegatesInterface extends ethers.utils.Interface {
     values: [BytesLike, string[]]
   ): string;
   encodeFunctionData(
-<<<<<<< HEAD
-=======
-    functionFragment: "c_0x44655cf7",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
->>>>>>> develop
     functionFragment: "getDelegates",
     values: [BytesLike]
   ): string;
@@ -60,13 +49,6 @@ export interface IOrgIdDelegatesInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-<<<<<<< HEAD
-=======
-    functionFragment: "c_0x44655cf7",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
->>>>>>> develop
     functionFragment: "getDelegates",
     data: BytesLike
   ): Result;
@@ -139,19 +121,6 @@ export interface IOrgIdDelegates extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-<<<<<<< HEAD
-=======
-    c_0x44655cf7(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
-    "c_0x44655cf7(bytes32)"(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[void]>;
-
->>>>>>> develop
     getDelegates(
       orgId: BytesLike,
       overrides?: CallOverrides
@@ -186,19 +155,6 @@ export interface IOrgIdDelegates extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-<<<<<<< HEAD
-=======
-  c_0x44655cf7(
-    c__0x44655cf7: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
-  "c_0x44655cf7(bytes32)"(
-    c__0x44655cf7: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<void>;
-
->>>>>>> develop
   getDelegates(orgId: BytesLike, overrides?: CallOverrides): Promise<string[]>;
 
   "getDelegates(bytes32)"(
@@ -230,19 +186,6 @@ export interface IOrgIdDelegates extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-<<<<<<< HEAD
-=======
-    c_0x44655cf7(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "c_0x44655cf7(bytes32)"(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
->>>>>>> develop
     getDelegates(
       orgId: BytesLike,
       overrides?: CallOverrides
@@ -298,19 +241,6 @@ export interface IOrgIdDelegates extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-<<<<<<< HEAD
-=======
-    c_0x44655cf7(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "c_0x44655cf7(bytes32)"(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
->>>>>>> develop
     getDelegates(
       orgId: BytesLike,
       overrides?: CallOverrides
@@ -346,19 +276,6 @@ export interface IOrgIdDelegates extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-<<<<<<< HEAD
-=======
-    c_0x44655cf7(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "c_0x44655cf7(bytes32)"(
-      c__0x44655cf7: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
->>>>>>> develop
     getDelegates(
       orgId: BytesLike,
       overrides?: CallOverrides
