@@ -60,13 +60,6 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 'auto',
     },
-    poaSokol: {
-      url: process.env.NETWORK_RPC_URL,
-      accounts: [
-        process.env.ACCOUNT_KEY as string
-      ],
-      gasPrice: 40000000000,
-    },
     optMainnet: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
@@ -82,6 +75,27 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       gasPrice: 'auto',
     },
     goerli: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
+    sokol: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 40000000000,
+    },
+    gnosis: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
+    polygon: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
