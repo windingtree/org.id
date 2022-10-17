@@ -25,6 +25,12 @@ let customNetworksConfig: CustomNetworksConfig = {};
 
 if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
   customNetworksConfig = {
+    localhost: {
+      accounts: {
+        mnemonic: 'test test test test test test test test test test test junk'
+      },
+      hardfork: 'london'
+    },
     optKovan: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
@@ -75,6 +81,13 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 'auto',
     },
+    goerli: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    }
   };
 }
 
