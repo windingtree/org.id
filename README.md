@@ -10,11 +10,11 @@
 
 ## Deployments
 
-- Gnosis Chain (100): 0xb63d48e9d1e51305a17F4d95aCa3637BBC181b44
-- Polygon (137): 0x8a093Cb94663994d19a778c7EA9161352a434c64
-- Goerli (5): 0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93
-- Sokol (77): 0xDd1231c0FD9083DA42eDd2BD4f041d0a54EF7BeE
-- Arbitrum Rinkeby (421611):0x3925A9d5554508b65a6490c450FB294A9173948B
+- Gnosis Chain (100): [0xb63d48e9d1e51305a17F4d95aCa3637BBC181b44](https://blockscout.com/xdai/mainnet/address/0xb63d48e9d1e51305a17F4d95aCa3637BBC181b44/read-proxy#address-tabs)
+- Polygon (137): [0x8a093Cb94663994d19a778c7EA9161352a434c64](https://polygonscan.com/address/0x8a093Cb94663994d19a778c7EA9161352a434c64#readProxyContract)
+- Goerli (5): [0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93](https://goerli.etherscan.io/address/0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93#readProxyContract)
+- Sokol (77): [0xDd1231c0FD9083DA42eDd2BD4f041d0a54EF7BeE](https://blockscout.com/poa/sokol/address/0xDd1231c0FD9083DA42eDd2BD4f041d0a54EF7BeE/read-proxy#address-tabs)
+
 
 ### Deprecated deployments
 

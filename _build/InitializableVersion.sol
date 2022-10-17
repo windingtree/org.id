@@ -1,6 +1,7 @@
-// SPDX-License-Identifier: GPL-3.0-only
 pragma solidity ^0.8.17;
 
+
+// SPDX-License-Identifier: GPL-3.0-only
 abstract contract InitializableVersion {
   /// @dev Versions store
   mapping(bytes32 => bool) private _versions;
