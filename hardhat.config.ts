@@ -88,6 +88,13 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 40000000000,
     },
+    columbus: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
     gnosis: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
