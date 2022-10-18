@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import { deployOrgIdContract, createOrgId } from './helpers/setup';
 import { generateSalt, clone } from './helpers/utils';
 import { zeroHash, zeroAddress } from './helpers/constants';
-import { before } from 'mocha';
+import 'mocha';
 
 describe('ORGiD contract', () => {
   const metaName = 'ORGiD';
@@ -506,11 +506,9 @@ describe('ORGiD contract', () => {
           org = await createOrgId(orgId, owner1);
         });
 
-        it('should return the token URI', async () => {
+        it('should throw when unknown tokenId provided', async () => {
           const unknownTokenId = 1000;
-          await expect(orgId.tokenURI(unknownTokenId)).to.revertedWith(
-            `TokenNotFound(${unknownTokenId})`
-          );
+          await expect(orgId.tokenURI(unknownTokenId)).to.revertedWith('TokenNotFound');
         });
 
         it('should return the token URI', async () => {

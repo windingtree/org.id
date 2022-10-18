@@ -25,6 +25,12 @@ let customNetworksConfig: CustomNetworksConfig = {};
 
 if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
   customNetworksConfig = {
+    localhost: {
+      accounts: {
+        mnemonic: 'test test test test test test test test test test test junk'
+      },
+      hardfork: 'london'
+    },
     optKovan: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
@@ -54,13 +60,6 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 'auto',
     },
-    poaSokol: {
-      url: process.env.NETWORK_RPC_URL,
-      accounts: [
-        process.env.ACCOUNT_KEY as string
-      ],
-      gasPrice: 40000000000,
-    },
     optMainnet: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
@@ -75,6 +74,34 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 'auto',
     },
+    goerli: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
+    sokol: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 40000000000,
+    },
+    gnosis: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    },
+    polygon: {
+      url: process.env.NETWORK_RPC_URL,
+      accounts: [
+        process.env.ACCOUNT_KEY as string
+      ],
+      gasPrice: 'auto',
+    }
   };
 }
 
@@ -83,21 +110,18 @@ const config: CustomHardhatConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.7',
+        version: '0.8.17',
         settings: {
           optimizer: {
             enabled: true,
             runs: 200
-          },
-          metadata: {
-            bytecodeHash: 'none',
           }
         }
       }
     ]
   },
   ovm: {
-    solcVersion: '0.8.7',
+    solcVersion: '0.8.17',
   },
   defaultNetwork: 'hardhat',
   networks: {
