@@ -14,6 +14,7 @@
 - Polygon (137): [0x8a093Cb94663994d19a778c7EA9161352a434c64](https://polygonscan.com/address/0x8a093Cb94663994d19a778c7EA9161352a434c64#readProxyContract)
 - Goerli (5): [0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93](https://goerli.etherscan.io/address/0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93#readProxyContract)
 - Sokol (77): [0xDd1231c0FD9083DA42eDd2BD4f041d0a54EF7BeE](https://blockscout.com/poa/sokol/address/0xDd1231c0FD9083DA42eDd2BD4f041d0a54EF7BeE/read-proxy#address-tabs)
+- Columbus (502): [0xd8b75be9a47ffab0b5c27a143b911af7a7bf4076](https://explorer.camino.foundation/c-chain/address/0xd8b75be9a47ffab0b5c27a143b911af7a7bf4076)
 
 
 ### Deprecated deployments
