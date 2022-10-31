@@ -28,8 +28,8 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
   /**
    * @dev See {IOrgIdDelegates-addDelegates(bytes32,string[])}
    */
-  function addDelegates(bytes32 orgId, string[] memory dids)
-    external
+  function addDelegates(bytes32 orgId, string[] calldata dids)
+    public
     virtual
     override
     onlyOrgIdOwner(orgId)
@@ -81,7 +81,7 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
    * @dev See {IOrgIdDelegates-removeDelegates(bytes32)}
    */
   function removeDelegates(bytes32 orgId)
-    external
+    public
     virtual
     override
     onlyOrgIdOwner(orgId)
@@ -100,7 +100,7 @@ abstract contract OrgIdDelegates is IOrgIdDelegates, OrgIdRegistry {
    * @dev See IOrgIdDelegates-getDelegates
    */
   function getDelegates(bytes32 orgId)
-    external
+    public
     view
     virtual
     override

@@ -109,8 +109,9 @@ abstract contract IOrgIdRegistry {
     bytes32 salt,
     string calldata orgJsonUri
   )
-    external
-    virtual;
+    public
+    virtual
+    returns (bytes32);
 
   /**
    * @dev Changes an ORG.JSON URI
@@ -126,6 +127,6 @@ abstract contract IOrgIdRegistry {
       bytes32 orgId,
       string calldata orgJsonUri
   )
-    external
+    public
     virtual;
 }

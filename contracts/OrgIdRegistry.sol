@@ -163,9 +163,10 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
     bytes32 salt,
     string calldata orgJsonUri
   )
-    external
+    public
     virtual
     override
+    returns (bytes32)
   {
     if (bytes(orgJsonUri).length == 0) {
       revert OrgJsonUriEmpty();
@@ -193,6 +194,8 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
 
     emit OrgIdCreated(orgId, orgIdOwner);
     emit OrgJsonUriChanged(orgId, orgJsonUri);
+
+    return orgId;
   }
 
   /**
@@ -202,7 +205,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
       bytes32 orgId,
       string calldata orgJsonUri
   )
-    external
+    public
     virtual
     override
     onlyOrgIdOwner(orgId)

@@ -34,8 +34,8 @@ abstract contract IOrgIdDelegates {
    * - ORGiD must exists
    * - must be called by the ORGiD owner
    */
-  function addDelegates(bytes32 orgId, string[] memory dids)
-    external
+  function addDelegates(bytes32 orgId, string[] calldata dids)
+    public
     virtual;
 
   /**
@@ -49,7 +49,7 @@ abstract contract IOrgIdDelegates {
    * - ORGiD must exists
    * - must be called by the ORGiD owner
    */
-  function removeDelegates(bytes32 orgId, string[] memory dids)
+  function removeDelegates(bytes32 orgId, string[] calldata dids)
     external
     virtual;
 
@@ -63,7 +63,7 @@ abstract contract IOrgIdDelegates {
    * - must be called by the ORGiD owner
    */
   function removeDelegates(bytes32 orgId)
-    external
+    public
     virtual;
 
   /**
@@ -72,7 +72,7 @@ abstract contract IOrgIdDelegates {
    * @return dids Array of registered ORGiDs' delegates
    */
   function getDelegates(bytes32 orgId)
-    external
+    public
     view
     virtual
     returns (string[] memory dids);
