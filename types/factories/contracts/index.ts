@@ -3,8 +3,10 @@
 /* eslint-disable */
 export * as test from "./test";
 export { IOrgIdDelegates__factory } from "./IOrgIdDelegates__factory";
+export { IOrgIdFeat__factory } from "./IOrgIdFeat__factory";
 export { IOrgIdRegistry__factory } from "./IOrgIdRegistry__factory";
 export { InitializableVersion__factory } from "./InitializableVersion__factory";
 export { OrgId__factory } from "./OrgId__factory";
 export { OrgIdDelegates__factory } from "./OrgIdDelegates__factory";
+export { OrgIdFeat__factory } from "./OrgIdFeat__factory";
 export { OrgIdRegistry__factory } from "./OrgIdRegistry__factory";

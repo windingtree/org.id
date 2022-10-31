@@ -5,9 +5,9 @@
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
 import type {
-  IOrgIdRegistry,
-  IOrgIdRegistryInterface,
-} from "../../contracts/IOrgIdRegistry";
+  IOrgIdFeat,
+  IOrgIdFeatInterface,
+} from "../../contracts/IOrgIdFeat";
 
 const _abi = [
   {
@@ -112,6 +112,29 @@ const _abi = [
         type: "bytes32",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "salt",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "string[]",
+        name: "dids",
+        type: "string[]",
+      },
+    ],
+    name: "createOrgId",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -223,17 +246,40 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "string[]",
+        name: "dids",
+        type: "string[]",
+      },
+    ],
+    name: "setOrgJson",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
 ];
 
-export class IOrgIdRegistry__factory {
+export class IOrgIdFeat__factory {
   static readonly abi = _abi;
-  static createInterface(): IOrgIdRegistryInterface {
-    return new utils.Interface(_abi) as IOrgIdRegistryInterface;
+  static createInterface(): IOrgIdFeatInterface {
+    return new utils.Interface(_abi) as IOrgIdFeatInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): IOrgIdRegistry {
-    return new Contract(address, _abi, signerOrProvider) as IOrgIdRegistry;
+  ): IOrgIdFeat {
+    return new Contract(address, _abi, signerOrProvider) as IOrgIdFeat;
   }
 }

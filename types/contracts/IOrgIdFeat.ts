@@ -27,37 +27,43 @@ import type {
   PromiseOrValue,
 } from "../common";
 
-export interface IOrgIdRegistryInterface extends utils.Interface {
+export interface IOrgIdFeatInterface extends utils.Interface {
   functions: {
     "createOrgId(bytes32,string)": FunctionFragment;
+    "createOrgId(bytes32,string,string[])": FunctionFragment;
     "getOrgId(uint256)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
     "getOrgIds()": FunctionFragment;
     "getTokenId(bytes32)": FunctionFragment;
     "setOrgJson(bytes32,string)": FunctionFragment;
+    "setOrgJson(bytes32,string,string[])": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
-      | "createOrgId"
       | "createOrgId(bytes32,string)"
+      | "createOrgId(bytes32,string,string[])"
       | "getOrgId"
       | "getOrgId(uint256)"
       | "getOrgIds(uint256,uint256)"
       | "getOrgIds()"
       | "getTokenId"
       | "getTokenId(bytes32)"
-      | "setOrgJson"
       | "setOrgJson(bytes32,string)"
+      | "setOrgJson(bytes32,string,string[])"
   ): FunctionFragment;
 
   encodeFunctionData(
-    functionFragment: "createOrgId",
+    functionFragment: "createOrgId(bytes32,string)",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "createOrgId(bytes32,string)",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    functionFragment: "createOrgId(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getOrgId",
@@ -84,20 +90,24 @@ export interface IOrgIdRegistryInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOrgJson",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
     functionFragment: "setOrgJson(bytes32,string)",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(
+    functionFragment: "setOrgJson(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
 
   decodeFunctionResult(
-    functionFragment: "createOrgId",
+    functionFragment: "createOrgId(bytes32,string)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createOrgId(bytes32,string)",
+    functionFragment: "createOrgId(bytes32,string,string[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
@@ -118,9 +128,12 @@ export interface IOrgIdRegistryInterface extends utils.Interface {
     functionFragment: "getTokenId(bytes32)",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setOrgJson", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setOrgJson(bytes32,string)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOrgJson(bytes32,string,string[])",
     data: BytesLike
   ): Result;
 
@@ -162,12 +175,12 @@ export type OrgJsonUriChangedEvent = TypedEvent<
 export type OrgJsonUriChangedEventFilter =
   TypedEventFilter<OrgJsonUriChangedEvent>;
 
-export interface IOrgIdRegistry extends BaseContract {
+export interface IOrgIdFeat extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IOrgIdRegistryInterface;
+  interface: IOrgIdFeatInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -189,15 +202,16 @@ export interface IOrgIdRegistry extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -245,28 +259,30 @@ export interface IOrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { tokenId: BigNumber }>;
 
-    setOrgJson(
-      orgId: PromiseOrValue<BytesLike>,
-      orgJsonUri: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
     "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
   };
 
-  createOrgId(
+  "createOrgId(bytes32,string)"(
     salt: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  "createOrgId(bytes32,string)"(
+  "createOrgId(bytes32,string,string[])"(
     salt: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -312,30 +328,32 @@ export interface IOrgIdRegistry extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  setOrgJson(
-    orgId: PromiseOrValue<BytesLike>,
-    orgJsonUri: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
   "setOrgJson(bytes32,string)"(
     orgId: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  callStatic: {
-    createOrgId(
-      salt: PromiseOrValue<BytesLike>,
-      orgJsonUri: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<string>;
+  "setOrgJson(bytes32,string,string[])"(
+    orgId: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
+  callStatic: {
     "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     getOrgId(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -379,15 +397,16 @@ export interface IOrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
   };
@@ -413,15 +432,16 @@ export interface IOrgIdRegistry extends BaseContract {
   };
 
   estimateGas: {
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -453,29 +473,31 @@ export interface IOrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    setOrgJson(
-      orgId: PromiseOrValue<BytesLike>,
-      orgJsonUri: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
     "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -507,15 +529,16 @@ export interface IOrgIdRegistry extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
   };

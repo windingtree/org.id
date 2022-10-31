@@ -4,10 +4,7 @@
 
 import { Contract, Signer, utils } from "ethers";
 import type { Provider } from "@ethersproject/providers";
-import type {
-  OrgIdDelegates,
-  OrgIdDelegatesInterface,
-} from "../../contracts/OrgIdDelegates";
+import type { OrgIdFeat, OrgIdFeatInterface } from "../../contracts/OrgIdFeat";
 
 const _abi = [
   {
@@ -298,6 +295,29 @@ const _abi = [
         type: "bytes32",
       },
     ],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "salt",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "string[]",
+        name: "dids",
+        type: "string[]",
+      },
+    ],
+    name: "createOrgId",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
@@ -606,6 +626,29 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "string[]",
+        name: "dids",
+        type: "string[]",
+      },
+    ],
+    name: "setOrgJson",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "bytes4",
         name: "interfaceId",
         type: "bytes4",
@@ -735,15 +778,15 @@ const _abi = [
   },
 ];
 
-export class OrgIdDelegates__factory {
+export class OrgIdFeat__factory {
   static readonly abi = _abi;
-  static createInterface(): OrgIdDelegatesInterface {
-    return new utils.Interface(_abi) as OrgIdDelegatesInterface;
+  static createInterface(): OrgIdFeatInterface {
+    return new utils.Interface(_abi) as OrgIdFeatInterface;
   }
   static connect(
     address: string,
     signerOrProvider: Signer | Provider
-  ): OrgIdDelegates {
-    return new Contract(address, _abi, signerOrProvider) as OrgIdDelegates;
+  ): OrgIdFeat {
+    return new Contract(address, _abi, signerOrProvider) as OrgIdFeat;
   }
 }

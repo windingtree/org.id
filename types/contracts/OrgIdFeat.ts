@@ -25,53 +25,98 @@ import type {
   TypedListener,
   OnEvent,
   PromiseOrValue,
-} from "../../../../../common";
+} from "../common";
 
-export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
+export interface OrgIdFeatInterface extends utils.Interface {
   functions: {
+    "addDelegates(bytes32,string[])": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
+    "createOrgId(bytes32,string)": FunctionFragment;
+    "createOrgId(bytes32,string,string[])": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
+    "getDelegates(bytes32)": FunctionFragment;
+    "getOrgId(uint256)": FunctionFragment;
+    "getOrgIds(uint256,uint256)": FunctionFragment;
+    "getOrgIds()": FunctionFragment;
+    "getTokenId(bytes32)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
+    "name()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
+    "removeDelegates(bytes32)": FunctionFragment;
+    "removeDelegates(bytes32,string[])": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
+    "setOrgJson(bytes32,string)": FunctionFragment;
+    "setOrgJson(bytes32,string,string[])": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
+    "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
+    "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
   };
 
   getFunction(
     nameOrSignatureOrTopic:
+      | "addDelegates"
+      | "addDelegates(bytes32,string[])"
       | "approve"
       | "approve(address,uint256)"
       | "balanceOf"
       | "balanceOf(address)"
+      | "createOrgId(bytes32,string)"
+      | "createOrgId(bytes32,string,string[])"
       | "getApproved"
       | "getApproved(uint256)"
+      | "getDelegates"
+      | "getDelegates(bytes32)"
+      | "getOrgId"
+      | "getOrgId(uint256)"
+      | "getOrgIds(uint256,uint256)"
+      | "getOrgIds()"
+      | "getTokenId"
+      | "getTokenId(bytes32)"
       | "isApprovedForAll"
       | "isApprovedForAll(address,address)"
+      | "name"
+      | "name()"
       | "ownerOf"
       | "ownerOf(uint256)"
+      | "removeDelegates(bytes32)"
+      | "removeDelegates(bytes32,string[])"
       | "safeTransferFrom(address,address,uint256)"
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setApprovalForAll"
       | "setApprovalForAll(address,bool)"
+      | "setOrgJson(bytes32,string)"
+      | "setOrgJson(bytes32,string,string[])"
       | "supportsInterface"
       | "supportsInterface(bytes4)"
+      | "symbol"
+      | "symbol()"
       | "tokenByIndex"
       | "tokenByIndex(uint256)"
       | "tokenOfOwnerByIndex"
       | "tokenOfOwnerByIndex(address,uint256)"
+      | "tokenURI"
+      | "tokenURI(uint256)"
       | "totalSupply"
       | "totalSupply()"
       | "transferFrom"
       | "transferFrom(address,address,uint256)"
   ): FunctionFragment;
 
+  encodeFunctionData(
+    functionFragment: "addDelegates",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>[]]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "addDelegates(bytes32,string[])",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>[]]
+  ): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
@@ -89,12 +134,56 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
+    functionFragment: "createOrgId(bytes32,string)",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createOrgId(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "getApproved",
     values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved(uint256)",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDelegates",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getDelegates(bytes32)",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOrgId",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOrgId(uint256)",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOrgIds(uint256,uint256)",
+    values: [PromiseOrValue<BigNumberish>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getOrgIds()",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenId",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getTokenId(bytes32)",
+    values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(
     functionFragment: "isApprovedForAll",
@@ -104,6 +193,8 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     functionFragment: "isApprovedForAll(address,address)",
     values: [PromiseOrValue<string>, PromiseOrValue<string>]
   ): string;
+  encodeFunctionData(functionFragment: "name", values?: undefined): string;
+  encodeFunctionData(functionFragment: "name()", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "ownerOf",
     values: [PromiseOrValue<BigNumberish>]
@@ -111,6 +202,14 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "ownerOf(uint256)",
     values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeDelegates(bytes32)",
+    values: [PromiseOrValue<BytesLike>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "removeDelegates(bytes32,string[])",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>[]]
   ): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom(address,address,uint256)",
@@ -138,6 +237,18 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
+    functionFragment: "setOrgJson(bytes32,string)",
+    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "setOrgJson(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
+  encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [PromiseOrValue<BytesLike>]
   ): string;
@@ -145,6 +256,8 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     functionFragment: "supportsInterface(bytes4)",
     values: [PromiseOrValue<BytesLike>]
   ): string;
+  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
+  encodeFunctionData(functionFragment: "symbol()", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [PromiseOrValue<BigNumberish>]
@@ -160,6 +273,14 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "tokenOfOwnerByIndex(address,uint256)",
     values: [PromiseOrValue<string>, PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenURI",
+    values: [PromiseOrValue<BigNumberish>]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "tokenURI(uint256)",
+    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "totalSupply",
@@ -186,6 +307,14 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     ]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "addDelegates",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "addDelegates(bytes32,string[])",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "approve(address,uint256)",
@@ -197,11 +326,45 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "createOrgId(bytes32,string)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOrgId(bytes32,string,string[])",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
     functionFragment: "getApproved(uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDelegates",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getDelegates(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getOrgId(uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getOrgIds(uint256,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getOrgIds()",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "getTokenId", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getTokenId(bytes32)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -212,9 +375,19 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     functionFragment: "isApprovedForAll(address,address)",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "name()", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "ownerOf(uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeDelegates(bytes32)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "removeDelegates(bytes32,string[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -234,6 +407,14 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
+    functionFragment: "setOrgJson(bytes32,string)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOrgJson(bytes32,string,string[])",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
@@ -241,6 +422,8 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
     functionFragment: "supportsInterface(bytes4)",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "symbol()", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
     data: BytesLike
@@ -255,6 +438,11 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "tokenOfOwnerByIndex(address,uint256)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "tokenURI(uint256)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -277,6 +465,11 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Initialized(uint8)": EventFragment;
+    "OrgIdCreated(bytes32,address)": EventFragment;
+    "OrgIdDelegatesAdded(bytes32,string[])": EventFragment;
+    "OrgIdDelegatesRemoved(bytes32,string[])": EventFragment;
+    "OrgJsonUriChanged(bytes32,string)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
@@ -287,6 +480,24 @@ export interface IERC721EnumerableUpgradeableInterface extends utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "ApprovalForAll(address,address,bool)"
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized(uint8)"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgIdCreated"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "OrgIdCreated(bytes32,address)"
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgIdDelegatesAdded"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "OrgIdDelegatesAdded(bytes32,string[])"
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgIdDelegatesRemoved"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "OrgIdDelegatesRemoved(bytes32,string[])"
+  ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "OrgJsonUriChanged"): EventFragment;
+  getEvent(
+    nameOrSignatureOrTopic: "OrgJsonUriChanged(bytes32,string)"
   ): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
   getEvent(
@@ -318,6 +529,60 @@ export type ApprovalForAllEvent = TypedEvent<
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
 
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
+
+export interface OrgIdCreatedEventObject {
+  orgId: string;
+  owner: string;
+}
+export type OrgIdCreatedEvent = TypedEvent<
+  [string, string],
+  OrgIdCreatedEventObject
+>;
+
+export type OrgIdCreatedEventFilter = TypedEventFilter<OrgIdCreatedEvent>;
+
+export interface OrgIdDelegatesAddedEventObject {
+  orgId: string;
+  delegates: string[];
+}
+export type OrgIdDelegatesAddedEvent = TypedEvent<
+  [string, string[]],
+  OrgIdDelegatesAddedEventObject
+>;
+
+export type OrgIdDelegatesAddedEventFilter =
+  TypedEventFilter<OrgIdDelegatesAddedEvent>;
+
+export interface OrgIdDelegatesRemovedEventObject {
+  orgId: string;
+  delegates: string[];
+}
+export type OrgIdDelegatesRemovedEvent = TypedEvent<
+  [string, string[]],
+  OrgIdDelegatesRemovedEventObject
+>;
+
+export type OrgIdDelegatesRemovedEventFilter =
+  TypedEventFilter<OrgIdDelegatesRemovedEvent>;
+
+export interface OrgJsonUriChangedEventObject {
+  orgId: string;
+  orgJsonUri: string;
+}
+export type OrgJsonUriChangedEvent = TypedEvent<
+  [string, string],
+  OrgJsonUriChangedEventObject
+>;
+
+export type OrgJsonUriChangedEventFilter =
+  TypedEventFilter<OrgJsonUriChangedEvent>;
+
 export interface TransferEventObject {
   from: string;
   to: string;
@@ -330,12 +595,12 @@ export type TransferEvent = TypedEvent<
 
 export type TransferEventFilter = TypedEventFilter<TransferEvent>;
 
-export interface IERC721EnumerableUpgradeable extends BaseContract {
+export interface OrgIdFeat extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
 
-  interface: IERC721EnumerableUpgradeableInterface;
+  interface: OrgIdFeatInterface;
 
   queryFilter<TEvent extends TypedEvent>(
     event: TypedEventFilter<TEvent>,
@@ -357,6 +622,18 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    addDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
@@ -372,22 +649,89 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     balanceOf(
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { balance: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
     "balanceOf(address)"(
       owner: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { balance: BigNumber }>;
+    ): Promise<[BigNumber]>;
+
+    "createOrgId(bytes32,string)"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[string] & { operator: string }>;
+    ): Promise<[string]>;
 
     "getApproved(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[string] & { operator: string }>;
+    ): Promise<[string]>;
+
+    getDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { dids: string[] }>;
+
+    "getDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { dids: string[] }>;
+
+    getOrgId(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, string, string] & {
+        exists: boolean;
+        orgId: string;
+        orgJsonUri: string;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, string, string] & {
+        exists: boolean;
+        orgId: string;
+        orgJsonUri: string;
+        owner: string;
+      }
+    >;
+
+    "getOrgIds(uint256,uint256)"(
+      cursor: PromiseOrValue<BigNumberish>,
+      count: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { orgIds: string[] }>;
+
+    "getOrgIds()"(
+      overrides?: CallOverrides
+    ): Promise<[string[]] & { orgIds: string[] }>;
+
+    getTokenId(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
+
+    "getTokenId(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
@@ -401,15 +745,30 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[boolean]>;
 
+    name(overrides?: CallOverrides): Promise<[string]>;
+
+    "name()"(overrides?: CallOverrides): Promise<[string]>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[string] & { owner: string }>;
+    ): Promise<[string]>;
 
     "ownerOf(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[string] & { owner: string }>;
+    ): Promise<[string]>;
+
+    "removeDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: PromiseOrValue<string>,
@@ -428,13 +787,26 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
     "setApprovalForAll(address,bool)"(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "setOrgJson(bytes32,string)"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -447,6 +819,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<[boolean]>;
+
+    symbol(overrides?: CallOverrides): Promise<[string]>;
+
+    "symbol()"(overrides?: CallOverrides): Promise<[string]>;
 
     tokenByIndex(
       index: PromiseOrValue<BigNumberish>,
@@ -470,6 +846,16 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
+    tokenURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
+    "tokenURI(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -488,6 +874,18 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
   };
+
+  addDelegates(
+    orgId: PromiseOrValue<BytesLike>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "addDelegates(bytes32,string[])"(
+    orgId: PromiseOrValue<BytesLike>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   approve(
     to: PromiseOrValue<string>,
@@ -511,6 +909,19 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  "createOrgId(bytes32,string)"(
+    salt: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "createOrgId(bytes32,string,string[])"(
+    salt: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   getApproved(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -520,6 +931,58 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  getDelegates(
+    orgId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "getDelegates(bytes32)"(
+    orgId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  getOrgId(
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, string, string, string] & {
+      exists: boolean;
+      orgId: string;
+      orgJsonUri: string;
+      owner: string;
+    }
+  >;
+
+  "getOrgId(uint256)"(
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<
+    [boolean, string, string, string] & {
+      exists: boolean;
+      orgId: string;
+      orgJsonUri: string;
+      owner: string;
+    }
+  >;
+
+  "getOrgIds(uint256,uint256)"(
+    cursor: PromiseOrValue<BigNumberish>,
+    count: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string[]>;
+
+  "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
+
+  getTokenId(
+    orgId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
+
+  "getTokenId(bytes32)"(
+    orgId: PromiseOrValue<BytesLike>,
+    overrides?: CallOverrides
+  ): Promise<BigNumber>;
 
   isApprovedForAll(
     owner: PromiseOrValue<string>,
@@ -533,6 +996,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
+  name(overrides?: CallOverrides): Promise<string>;
+
+  "name()"(overrides?: CallOverrides): Promise<string>;
+
   ownerOf(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -542,6 +1009,17 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
   ): Promise<string>;
+
+  "removeDelegates(bytes32)"(
+    orgId: PromiseOrValue<BytesLike>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "removeDelegates(bytes32,string[])"(
+    orgId: PromiseOrValue<BytesLike>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: PromiseOrValue<string>,
@@ -560,13 +1038,26 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
   setApprovalForAll(
     operator: PromiseOrValue<string>,
-    _approved: PromiseOrValue<boolean>,
+    approved: PromiseOrValue<boolean>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
   "setApprovalForAll(address,bool)"(
     operator: PromiseOrValue<string>,
-    _approved: PromiseOrValue<boolean>,
+    approved: PromiseOrValue<boolean>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "setOrgJson(bytes32,string)"(
+    orgId: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "setOrgJson(bytes32,string,string[])"(
+    orgId: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -579,6 +1070,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     interfaceId: PromiseOrValue<BytesLike>,
     overrides?: CallOverrides
   ): Promise<boolean>;
+
+  symbol(overrides?: CallOverrides): Promise<string>;
+
+  "symbol()"(overrides?: CallOverrides): Promise<string>;
 
   tokenByIndex(
     index: PromiseOrValue<BigNumberish>,
@@ -602,6 +1097,16 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
+  tokenURI(
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
+  "tokenURI(uint256)"(
+    tokenId: PromiseOrValue<BigNumberish>,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -621,6 +1126,18 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    addDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
@@ -643,6 +1160,19 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "createOrgId(bytes32,string)"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -652,6 +1182,58 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    getDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "getDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    getOrgId(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, string, string] & {
+        exists: boolean;
+        orgId: string;
+        orgJsonUri: string;
+        owner: string;
+      }
+    >;
+
+    "getOrgId(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<
+      [boolean, string, string, string] & {
+        exists: boolean;
+        orgId: string;
+        orgJsonUri: string;
+        owner: string;
+      }
+    >;
+
+    "getOrgIds(uint256,uint256)"(
+      cursor: PromiseOrValue<BigNumberish>,
+      count: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string[]>;
+
+    "getOrgIds()"(overrides?: CallOverrides): Promise<string[]>;
+
+    getTokenId(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTokenId(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
 
     isApprovedForAll(
       owner: PromiseOrValue<string>,
@@ -665,6 +1247,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
+    name(overrides?: CallOverrides): Promise<string>;
+
+    "name()"(overrides?: CallOverrides): Promise<string>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -674,6 +1260,17 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<string>;
+
+    "removeDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: PromiseOrValue<string>,
@@ -692,13 +1289,26 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "setApprovalForAll(address,bool)"(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setOrgJson(bytes32,string)"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -711,6 +1321,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<boolean>;
+
+    symbol(overrides?: CallOverrides): Promise<string>;
+
+    "symbol()"(overrides?: CallOverrides): Promise<string>;
 
     tokenByIndex(
       index: PromiseOrValue<BigNumberish>,
@@ -733,6 +1347,16 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    tokenURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "tokenURI(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -776,6 +1400,45 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
+    "OrgIdCreated(bytes32,address)"(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null
+    ): OrgIdCreatedEventFilter;
+    OrgIdCreated(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      owner?: PromiseOrValue<string> | null
+    ): OrgIdCreatedEventFilter;
+
+    "OrgIdDelegatesAdded(bytes32,string[])"(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      delegates?: null
+    ): OrgIdDelegatesAddedEventFilter;
+    OrgIdDelegatesAdded(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      delegates?: null
+    ): OrgIdDelegatesAddedEventFilter;
+
+    "OrgIdDelegatesRemoved(bytes32,string[])"(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      delegates?: null
+    ): OrgIdDelegatesRemovedEventFilter;
+    OrgIdDelegatesRemoved(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      delegates?: null
+    ): OrgIdDelegatesRemovedEventFilter;
+
+    "OrgJsonUriChanged(bytes32,string)"(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      orgJsonUri?: null
+    ): OrgJsonUriChangedEventFilter;
+    OrgJsonUriChanged(
+      orgId?: PromiseOrValue<BytesLike> | null,
+      orgJsonUri?: null
+    ): OrgJsonUriChangedEventFilter;
+
     "Transfer(address,address,uint256)"(
       from?: PromiseOrValue<string> | null,
       to?: PromiseOrValue<string> | null,
@@ -789,6 +1452,18 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
   };
 
   estimateGas: {
+    addDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
@@ -811,6 +1486,19 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    "createOrgId(bytes32,string)"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -818,6 +1506,44 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     "getApproved(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getOrgId(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOrgId(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOrgIds(uint256,uint256)"(
+      cursor: PromiseOrValue<BigNumberish>,
+      count: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getOrgIds()"(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getTokenId(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "getTokenId(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -833,6 +1559,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
+    name(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "name()"(overrides?: CallOverrides): Promise<BigNumber>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -841,6 +1571,17 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     "ownerOf(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "removeDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -860,13 +1601,26 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
     "setApprovalForAll(address,bool)"(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "setOrgJson(bytes32,string)"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -879,6 +1633,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
+
+    symbol(overrides?: CallOverrides): Promise<BigNumber>;
+
+    "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenByIndex(
       index: PromiseOrValue<BigNumberish>,
@@ -899,6 +1657,16 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     "tokenOfOwnerByIndex(address,uint256)"(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    tokenURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    "tokenURI(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -922,6 +1690,18 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
   };
 
   populateTransaction: {
+    addDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "addDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
@@ -944,6 +1724,19 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    "createOrgId(bytes32,string)"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -951,6 +1744,44 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     "getApproved(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getDelegates(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getOrgId(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrgId(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrgIds(uint256,uint256)"(
+      cursor: PromiseOrValue<BigNumberish>,
+      count: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getOrgIds()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getTokenId(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "getTokenId(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
@@ -966,6 +1797,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     ownerOf(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -974,6 +1809,17 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     "ownerOf(uint256)"(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "removeDelegates(bytes32)"(
+      orgId: PromiseOrValue<BytesLike>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "removeDelegates(bytes32,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
@@ -993,13 +1839,26 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
 
     setApprovalForAll(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
     "setApprovalForAll(address,bool)"(
       operator: PromiseOrValue<string>,
-      _approved: PromiseOrValue<boolean>,
+      approved: PromiseOrValue<boolean>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "setOrgJson(bytes32,string)"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "setOrgJson(bytes32,string,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1012,6 +1871,10 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       interfaceId: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
+
+    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenByIndex(
       index: PromiseOrValue<BigNumberish>,
@@ -1032,6 +1895,16 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
     "tokenOfOwnerByIndex(address,uint256)"(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    tokenURI(
+      tokenId: PromiseOrValue<BigNumberish>,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    "tokenURI(uint256)"(
+      tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

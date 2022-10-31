@@ -31,7 +31,7 @@ export const createOrgId = async (
   const orgIdOwner = await from.getAddress();
 
   const contractWithSigner = contract.connect(from);
-  const tx = await contractWithSigner.createOrgId(salt, orgJsonUri);
+  const tx = await contractWithSigner['createOrgId(bytes32,string)'](salt, orgJsonUri);
   await tx.wait();
 
   const tokenId = await contractWithSigner.getTokenId(orgId);
@@ -47,6 +47,57 @@ export const createOrgId = async (
     orgId,
     orgJsonUri
   );
+
+  // ERG721 events
+  expect(tx).to.emit(contract, 'Transfer').withArgs(
+    zeroAddress,
+    orgIdOwner,
+    tokenId
+  );
+
+  return {
+    salt,
+    orgId,
+    orgIdOwner,
+    orgJsonUri,
+    tokenId
+  };
+}
+
+// Create an orgId with delegates
+export const createOrgIdWithDelegates = async (
+  contract: Contract,
+  from: Signer,
+  salt = generateSalt(),
+  orgJsonUri = 'test',
+  delegates: string[]
+): Promise<OrgIdCreationResult> => {
+  const orgId = await generateOrgId(salt, from);
+  const orgIdOwner = await from.getAddress();
+
+  const contractWithSigner = contract.connect(from);
+  const tx = await contractWithSigner['createOrgId(bytes32,string,string[])'](salt, orgJsonUri, delegates);
+  await tx.wait();
+
+  const tokenId = await contractWithSigner.getTokenId(orgId);
+  const { exists } = await contractWithSigner.getOrgId(tokenId);
+  expect(exists).to.be.true;
+
+  // OrgIdRegistry events
+  expect(tx).to.emit(contract, 'OrgIdCreated').withArgs(
+    orgId,
+    orgIdOwner
+  );
+  expect(tx).to.emit(contract, 'OrgJsonUriChanged').withArgs(
+    orgId,
+    orgJsonUri
+  );
+
+  // OrgIdDelegates events
+  if (delegates.length > 0) {
+    expect(tx).to.emit(orgId, 'OrgIdDelegatesAdded')
+    .withArgs(orgId, delegates);
+  }
 
   // ERG721 events
   expect(tx).to.emit(contract, 'Transfer').withArgs(

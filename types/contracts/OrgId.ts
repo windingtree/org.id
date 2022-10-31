@@ -33,6 +33,7 @@ export interface OrgIdInterface extends utils.Interface {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "createOrgId(bytes32,string)": FunctionFragment;
+    "createOrgId(bytes32,string,string[])": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "getDelegates(bytes32)": FunctionFragment;
     "getOrgId(uint256)": FunctionFragment;
@@ -49,6 +50,7 @@ export interface OrgIdInterface extends utils.Interface {
     "safeTransferFrom(address,address,uint256,bytes)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
     "setOrgJson(bytes32,string)": FunctionFragment;
+    "setOrgJson(bytes32,string,string[])": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
     "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
@@ -66,8 +68,8 @@ export interface OrgIdInterface extends utils.Interface {
       | "approve(address,uint256)"
       | "balanceOf"
       | "balanceOf(address)"
-      | "createOrgId"
       | "createOrgId(bytes32,string)"
+      | "createOrgId(bytes32,string,string[])"
       | "getApproved"
       | "getApproved(uint256)"
       | "getDelegates"
@@ -92,8 +94,8 @@ export interface OrgIdInterface extends utils.Interface {
       | "safeTransferFrom(address,address,uint256,bytes)"
       | "setApprovalForAll"
       | "setApprovalForAll(address,bool)"
-      | "setOrgJson"
       | "setOrgJson(bytes32,string)"
+      | "setOrgJson(bytes32,string,string[])"
       | "supportsInterface"
       | "supportsInterface(bytes4)"
       | "symbol"
@@ -135,12 +137,16 @@ export interface OrgIdInterface extends utils.Interface {
     values: [PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "createOrgId",
+    functionFragment: "createOrgId(bytes32,string)",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "createOrgId(bytes32,string)",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    functionFragment: "createOrgId(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "getApproved",
@@ -242,12 +248,16 @@ export interface OrgIdInterface extends utils.Interface {
     values: [PromiseOrValue<string>, PromiseOrValue<boolean>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOrgJson",
+    functionFragment: "setOrgJson(bytes32,string)",
     values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
   ): string;
   encodeFunctionData(
-    functionFragment: "setOrgJson(bytes32,string)",
-    values: [PromiseOrValue<BytesLike>, PromiseOrValue<string>]
+    functionFragment: "setOrgJson(bytes32,string,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
   ): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
@@ -327,11 +337,11 @@ export interface OrgIdInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createOrgId",
+    functionFragment: "createOrgId(bytes32,string)",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "createOrgId(bytes32,string)",
+    functionFragment: "createOrgId(bytes32,string,string[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -412,9 +422,12 @@ export interface OrgIdInterface extends utils.Interface {
     functionFragment: "setApprovalForAll(address,bool)",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setOrgJson", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "setOrgJson(bytes32,string)",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "setOrgJson(bytes32,string,string[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -468,6 +481,7 @@ export interface OrgIdInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "OrgIdCreated(bytes32,address)": EventFragment;
     "OrgIdDelegatesAdded(bytes32,string[])": EventFragment;
     "OrgIdDelegatesRemoved(bytes32,string[])": EventFragment;
@@ -483,6 +497,8 @@ export interface OrgIdInterface extends utils.Interface {
   getEvent(
     nameOrSignatureOrTopic: "ApprovalForAll(address,address,bool)"
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized(uint8)"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrgIdCreated"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "OrgIdCreated(bytes32,address)"
@@ -528,6 +544,13 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OrgIdCreatedEventObject {
   orgId: string;
@@ -649,15 +672,16 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[BigNumber]>;
 
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -781,7 +805,7 @@ export interface OrgId extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -797,15 +821,16 @@ export interface OrgId extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -908,15 +933,16 @@ export interface OrgId extends BaseContract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  createOrgId(
+  "createOrgId(bytes32,string)"(
     salt: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  "createOrgId(bytes32,string)"(
+  "createOrgId(bytes32,string,string[])"(
     salt: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1038,7 +1064,7 @@ export interface OrgId extends BaseContract {
     from: PromiseOrValue<string>,
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
-    _data: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1054,15 +1080,16 @@ export interface OrgId extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  setOrgJson(
+  "setOrgJson(bytes32,string)"(
     orgId: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
-  "setOrgJson(bytes32,string)"(
+  "setOrgJson(bytes32,string,string[])"(
     orgId: PromiseOrValue<BytesLike>,
     orgJsonUri: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1165,15 +1192,16 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createOrgId(
-      salt: PromiseOrValue<BytesLike>,
-      orgJsonUri: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
     "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      overrides?: CallOverrides
+    ): Promise<string>;
+
+    "createOrgId(bytes32,string,string[])"(
+      salt: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1291,7 +1319,7 @@ export interface OrgId extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1307,15 +1335,16 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1407,6 +1436,9 @@ export interface OrgId extends BaseContract {
       approved?: null
     ): ApprovalForAllEventFilter;
 
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
+
     "OrgIdCreated(bytes32,address)"(
       orgId?: PromiseOrValue<BytesLike> | null,
       owner?: PromiseOrValue<string> | null
@@ -1490,15 +1522,16 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1606,7 +1639,7 @@ export interface OrgId extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1622,15 +1655,16 @@ export interface OrgId extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1734,15 +1768,16 @@ export interface OrgId extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    createOrgId(
+    "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    "createOrgId(bytes32,string)"(
+    "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1850,7 +1885,7 @@ export interface OrgId extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -1866,15 +1901,16 @@ export interface OrgId extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    setOrgJson(
+    "setOrgJson(bytes32,string)"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
-    "setOrgJson(bytes32,string)"(
+    "setOrgJson(bytes32,string,string[])"(
       orgId: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 

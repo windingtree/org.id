@@ -2,7 +2,7 @@ import type { Signer } from 'ethers';
 import type { OrgIdCreationResult } from './helpers/setup';
 import { ethers, upgrades } from 'hardhat';
 import { expect } from 'chai';
-import { deployOrgIdContract, createOrgId } from './helpers/setup';
+import { deployOrgIdContract, createOrgId, createOrgIdWithDelegates } from './helpers/setup';
 import { generateSalt, clone } from './helpers/utils';
 import { zeroHash, zeroAddress } from './helpers/constants';
 import 'mocha';
@@ -144,32 +144,32 @@ describe('ORGiD contract', () => {
 
         it('should throw if zero bytes provided as orgId hash', async () => {
           await expect(
-            orgId.connect(owner1).setOrgJson(zeroHash, 'test')
+            orgId.connect(owner1)['setOrgJson(bytes32,string)'](zeroHash, 'test')
           ).to.revertedWith(`OrgIdNotFound("${zeroHash}")`);
         });
 
         it('should throw if provided unknown orgId hash', async () => {
           const unknownOrgId = generateSalt();
           await expect(
-            orgId.connect(owner1).setOrgJson(unknownOrgId, 'test')
+            orgId.connect(owner1)['setOrgJson(bytes32,string)'](unknownOrgId, 'test')
           ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
         });
 
         it('should throw if empty string provided as orgJsonUri', async () => {
           await expect(
-            orgId.connect(owner1).setOrgJson(org.orgId, '')
+            orgId.connect(owner1)['setOrgJson(bytes32,string)'](org.orgId, '')
           ).to.revertedWith('OrgJsonUriEmpty()');
         });
 
         it('should throw if called not by an ORGiD owner', async () => {
           await expect(
-            orgId.connect(owner2).setOrgJson(org.orgId, 'test')
+            orgId.connect(owner2)['setOrgJson(bytes32,string)'](org.orgId, 'test')
           ).to.revertedWith('CalledNotByOrgIdOwner()');
         });
 
         it('should set new orgJsonUri value', async () => {
           const newUri = 'test2';
-          await orgId.connect(owner1).setOrgJson(org.orgId, newUri);
+          await orgId.connect(owner1)['setOrgJson(bytes32,string)'](org.orgId, newUri);
           const { orgJsonUri } = await orgId.getOrgId(org.tokenId);
           expect(orgJsonUri).to.equal(newUri);
         });
@@ -481,6 +481,70 @@ describe('ORGiD contract', () => {
     });
   });
 
+  describe('OrgIdFeat', () => {
+    const delegates = ['did1', 'did2'];
+
+    describe('#createOrgId(bytes32,string,string[])', () => {
+
+      it('should throw if empty string provided as orgJsonUri', async () => {
+        await expect(
+          createOrgIdWithDelegates(orgId, owner1, generateSalt(), '', delegates)
+        ).to.revertedWith('OrgJsonUriEmpty()');
+      });
+
+      it('should throw if ORGiD already exists', async () => {
+        const org = await createOrgId(orgId, owner1);
+        await expect(
+          createOrgIdWithDelegates(orgId, owner1, org.salt, org.orgJsonUri, delegates)
+        ).to.revertedWith(`OrgIdAlreadyExists("${org.orgId}")`);
+      });
+
+      it('should create new ORGiD', async () => {
+        await createOrgIdWithDelegates(orgId, owner1, generateSalt(), 'uri1', delegates);
+      });
+    });
+
+    describe('#setOrgJson(bytes32,string,string[])', () => {
+      let org: OrgIdCreationResult;
+
+      before(async () => {
+        org = await createOrgId(orgId, owner1);
+      });
+
+      it('should throw if zero bytes provided as orgId hash', async () => {
+        await expect(
+          orgId.connect(owner1)['setOrgJson(bytes32,string,string[])'](zeroHash, 'test', delegates)
+        ).to.revertedWith(`OrgIdNotFound("${zeroHash}")`);
+      });
+
+      it('should throw if provided unknown orgId hash', async () => {
+        const unknownOrgId = generateSalt();
+        await expect(
+          orgId.connect(owner1)['setOrgJson(bytes32,string,string[])'](unknownOrgId, 'test', delegates)
+        ).to.revertedWith(`OrgIdNotFound("${unknownOrgId}")`);
+      });
+
+      it('should throw if empty string provided as orgJsonUri', async () => {
+        await expect(
+          orgId.connect(owner1)['setOrgJson(bytes32,string,string[])'](org.orgId, '', delegates)
+        ).to.revertedWith('OrgJsonUriEmpty()');
+      });
+
+      it('should throw if called not by an ORGiD owner', async () => {
+        await expect(
+          orgId.connect(owner2)['setOrgJson(bytes32,string,string[])'](org.orgId, 'test', delegates)
+        ).to.revertedWith('CalledNotByOrgIdOwner()');
+      });
+
+      it('should set new orgJsonUri value', async () => {
+        const newUri = 'test2';
+        await orgId.connect(owner1)['setOrgJson(bytes32,string,string[])'](org.orgId, newUri, delegates);
+        const { orgJsonUri } = await orgId.getOrgId(org.tokenId);
+        expect(orgJsonUri).to.equal(newUri);
+      });
+    });
+  });
+
   describe('ERC721', () => {
 
     describe('Metadata', () => {
@@ -561,7 +625,7 @@ describe('ORGiD contract', () => {
 
         it('should throw if token not exists', async () => {
           await expect(orgId.ownerOf(1000))
-            .to.revertedWith('ERC721: owner query for nonexistent token');
+            .to.revertedWith('ERC721: invalid token ID');
         });
 
         it('should return balance of token', async () => {
@@ -663,7 +727,7 @@ describe('ORGiD contract', () => {
           await expect(
             orgId.connect(owner2).approve(owner2Address, org.tokenId)
           ).to.revertedWith(
-            'ERC721: approve caller is not owner nor approved for all'
+            'ERC721: approve caller is not token owner nor approved for all'
           );
         });
 
@@ -677,7 +741,7 @@ describe('ORGiD contract', () => {
 
         it('should throw if token not exists', async () => {
           await expect(orgId.getApproved(1000))
-            .to.revertedWith('ERC721: approved query for nonexistent token');
+            .to.revertedWith('ERC721: invalid token ID');
         });
 
         it('should return address of approved operator', async () => {
@@ -721,7 +785,7 @@ describe('ORGiD contract', () => {
 
         it('should throw if called by not approved operator or owner', async () => {
           await expect(orgId.transferFrom(ownerAddress, owner2Address, 1))
-            .to.revertedWith('ERC721: transfer caller is not owner nor approved');
+            .to.revertedWith('ERC721: caller is not token owner nor approved');
         });
 
         it('should transfer token to new owner', async () => {
@@ -748,7 +812,7 @@ describe('ORGiD contract', () => {
               owner3Address,
               org.tokenId
             )
-          ).to.revertedWith('ERC721: transfer caller is not owner nor approved');
+          ).to.revertedWith('ERC721: caller is not token owner nor approved');
         });
 
         it('should throw if transferred to the non-ERC721Receiver', async () => {
