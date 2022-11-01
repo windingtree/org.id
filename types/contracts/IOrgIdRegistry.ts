@@ -329,13 +329,13 @@ export interface IOrgIdRegistry extends BaseContract {
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     getOrgId(
       tokenId: PromiseOrValue<BigNumberish>,

@@ -4,8 +4,10 @@
 import type * as test from "./test";
 export type { test };
 export type { IOrgIdDelegates } from "./IOrgIdDelegates";
+export type { IOrgIdFeat } from "./IOrgIdFeat";
 export type { IOrgIdRegistry } from "./IOrgIdRegistry";
 export type { InitializableVersion } from "./InitializableVersion";
 export type { OrgId } from "./OrgId";
 export type { OrgIdDelegates } from "./OrgIdDelegates";
+export type { OrgIdFeat } from "./OrgIdFeat";
 export type { OrgIdRegistry } from "./OrgIdRegistry";

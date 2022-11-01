@@ -462,13 +462,13 @@ export interface IERC721EnumerableUpgradeable extends BaseContract {
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
     "tokenOfOwnerByIndex(address,uint256)"(
       owner: PromiseOrValue<string>,
       index: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
-    ): Promise<[BigNumber] & { tokenId: BigNumber }>;
+    ): Promise<[BigNumber]>;
 
     totalSupply(overrides?: CallOverrides): Promise<[BigNumber]>;
 

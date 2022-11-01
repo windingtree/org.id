@@ -452,6 +452,7 @@ export interface OrgIdDelegatesInterface extends utils.Interface {
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
+    "Initialized(uint8)": EventFragment;
     "OrgIdCreated(bytes32,address)": EventFragment;
     "OrgIdDelegatesAdded(bytes32,string[])": EventFragment;
     "OrgIdDelegatesRemoved(bytes32,string[])": EventFragment;
@@ -467,6 +468,8 @@ export interface OrgIdDelegatesInterface extends utils.Interface {
   getEvent(
     nameOrSignatureOrTopic: "ApprovalForAll(address,address,bool)"
   ): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Initialized(uint8)"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OrgIdCreated"): EventFragment;
   getEvent(
     nameOrSignatureOrTopic: "OrgIdCreated(bytes32,address)"
@@ -512,6 +515,13 @@ export type ApprovalForAllEvent = TypedEvent<
 >;
 
 export type ApprovalForAllEventFilter = TypedEventFilter<ApprovalForAllEvent>;
+
+export interface InitializedEventObject {
+  version: number;
+}
+export type InitializedEvent = TypedEvent<[number], InitializedEventObject>;
+
+export type InitializedEventFilter = TypedEventFilter<InitializedEvent>;
 
 export interface OrgIdCreatedEventObject {
   orgId: string;
@@ -757,7 +767,7 @@ export interface OrgIdDelegates extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -1006,7 +1016,7 @@ export interface OrgIdDelegates extends BaseContract {
     from: PromiseOrValue<string>,
     to: PromiseOrValue<string>,
     tokenId: PromiseOrValue<BigNumberish>,
-    _data: PromiseOrValue<BytesLike>,
+    data: PromiseOrValue<BytesLike>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -1137,13 +1147,13 @@ export interface OrgIdDelegates extends BaseContract {
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     "createOrgId(bytes32,string)"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
       overrides?: CallOverrides
-    ): Promise<void>;
+    ): Promise<string>;
 
     getApproved(
       tokenId: PromiseOrValue<BigNumberish>,
@@ -1255,7 +1265,7 @@ export interface OrgIdDelegates extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1370,6 +1380,9 @@ export interface OrgIdDelegates extends BaseContract {
       operator?: PromiseOrValue<string> | null,
       approved?: null
     ): ApprovalForAllEventFilter;
+
+    "Initialized(uint8)"(version?: null): InitializedEventFilter;
+    Initialized(version?: null): InitializedEventFilter;
 
     "OrgIdCreated(bytes32,address)"(
       orgId?: PromiseOrValue<BytesLike> | null,
@@ -1562,7 +1575,7 @@ export interface OrgIdDelegates extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -1798,7 +1811,7 @@ export interface OrgIdDelegates extends BaseContract {
       from: PromiseOrValue<string>,
       to: PromiseOrValue<string>,
       tokenId: PromiseOrValue<BigNumberish>,
-      _data: PromiseOrValue<BytesLike>,
+      data: PromiseOrValue<BytesLike>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
