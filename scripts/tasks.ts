@@ -1,4 +1,5 @@
 import { task } from 'hardhat/config';
+// import { OrgId__factory } from '../types';
 
 // Deployment task
 task('deploy', 'Deploys the ORGiD contract')
@@ -49,4 +50,13 @@ task('prepare', 'Prepare an upgrade')
     console.log(`Deploying the ${contractName} instance...`);
     const instanceAddress = await hre.upgrades.prepareUpgrade(proxyAddress, contract);
     console.log(`${contractName} instance deployed at: ${instanceAddress}`);
+  });
+
+task('fork', 'Testing the fork')
+  .setAction(async (args, hre) => {
+    // const contract = OrgId__factory.connect(
+    //   '0xe02dF24d8dFdd37B21690DB30F4813cf6c4D9D93',
+    //   hre.ethers.provider.getSigner('0xa338e8AbdC1b3893ba54E200C888Dbb96e45623F')
+    // );
+    //
   });
