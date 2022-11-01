@@ -543,6 +543,61 @@ describe('ORGiD contract', () => {
         expect(orgJsonUri).to.equal(newUri);
       });
     });
+
+    describe('#createOrgIdFor(bytes32,string,address,string[])', () => {
+      const delegates = ['did1', 'did2'];
+
+      it('should throw if an ORGiD is already exists', async () => {
+        const org = await createOrgId(orgId, owner1);
+        const owner = await owner1.getAddress();
+        await expect(
+          orgId.connect(owner1).createOrgIdFor(org.orgId, org.orgJsonUri, owner, delegates)
+        ).to.revertedWith(`OrgIdAlreadyExists("${org.orgId}")`);
+      });
+
+      it('should throw if orgJsonUri is empty string', async () => {
+        const owner = await owner1.getAddress();
+        await expect(
+          orgId.connect(owner1).createOrgIdFor(generateSalt(), '', owner, delegates)
+        ).to.revertedWith('OrgJsonUriEmpty()');
+      });
+
+      it('should create an ORGiD for the owner address', async () => {
+        const owner = await owner1.getAddress();
+        const contract = orgId.connect(owner1);
+        const newOrgId = generateSalt();
+        const jsonUri = 'uri';
+        const tx = await contract.createOrgIdFor(
+          newOrgId, jsonUri, owner, delegates
+        );
+        await tx.wait();
+
+        // OrgIdRegistry events
+        expect(tx).to.emit(contract, 'OrgIdCreated').withArgs(
+          newOrgId,
+          owner
+        );
+        expect(tx).to.emit(contract, 'OrgJsonUriChanged').withArgs(
+          newOrgId,
+          jsonUri
+        );
+
+        // OrgIdDelegates events
+        if (delegates.length > 0) {
+          expect(tx).to.emit(orgId, 'OrgIdDelegatesAdded')
+          .withArgs(orgId, delegates);
+        }
+
+        const tokenId = await contract.getTokenId(newOrgId);
+
+        // ERG721 events
+        expect(tx).to.emit(contract, 'Transfer').withArgs(
+          zeroAddress,
+          owner,
+          tokenId
+        );
+      });
+    });
   });
 
   describe('ERC721', () => {

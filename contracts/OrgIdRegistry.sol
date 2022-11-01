@@ -75,7 +75,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
    * @dev See {IOrgIdRegistry-getTokenId(bytes32)}.
    */
   function getTokenId(bytes32 orgId)
-    external
+    public
     view
     virtual
     override
@@ -186,14 +186,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
       revert OrgIdAlreadyExists(orgId);
     }
 
-    uint256 tokenId = totalSupply() + 1;
-    _safeMint(orgIdOwner, tokenId);
-    _orgToken[orgId] = tokenId;
-    _tokenOrg[tokenId] = orgId;
-    _orgJsonUris[tokenId] = orgJsonUri;
-
-    emit OrgIdCreated(orgId, orgIdOwner);
-    emit OrgJsonUriChanged(orgId, orgJsonUri);
+    setOrgIdToken(orgId, orgJsonUri, orgIdOwner);
 
     return orgId;
   }
@@ -216,6 +209,26 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
 
     _orgJsonUris[_orgToken[orgId]] = orgJsonUri;
 
+    emit OrgJsonUriChanged(orgId, orgJsonUri);
+  }
+
+  /**
+   * @dev Saves an ORGiD to the storage and sets a new token
+   */
+  function setOrgIdToken(
+    bytes32 orgId,
+    string memory orgJsonUri,
+    address orgIdOwner
+  )
+    internal
+  {
+    uint256 tokenId = totalSupply() + 1;
+    _safeMint(orgIdOwner, tokenId);
+    _orgToken[orgId] = tokenId;
+    _tokenOrg[tokenId] = orgId;
+    _orgJsonUris[tokenId] = orgJsonUri;
+
+    emit OrgIdCreated(orgId, orgIdOwner);
     emit OrgJsonUriChanged(orgId, orgJsonUri);
   }
 

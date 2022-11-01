@@ -49,7 +49,7 @@ abstract contract IOrgIdRegistry {
    * @return tokenId Token Id
    */
   function getTokenId(bytes32 orgId)
-    external
+    public
     view
     virtual
     returns (uint256 tokenId);

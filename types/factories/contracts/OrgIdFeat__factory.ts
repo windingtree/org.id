@@ -324,6 +324,34 @@ const _abi = [
   {
     inputs: [
       {
+        internalType: "bytes32",
+        name: "orgId",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "orgJsonUri",
+        type: "string",
+      },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "string[]",
+        name: "dids",
+        type: "string[]",
+      },
+    ],
+    name: "createOrgIdFor",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "uint256",
         name: "tokenId",
         type: "uint256",

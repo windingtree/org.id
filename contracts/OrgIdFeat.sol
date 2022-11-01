@@ -53,6 +53,34 @@ abstract contract OrgIdFeat is IOrgIdFeat, OrgIdRegistry, OrgIdDelegates {
   }
 
   /**
+   * @dev See {IOrgIdFeat-createOrgIdFor(bytes32,string,address,string[])}
+   */
+  function createOrgIdFor(
+    bytes32 orgId,
+    string calldata orgJsonUri,
+    address owner,
+    string[] calldata dids
+  )
+    external
+    virtual
+    override
+  {
+    if (getTokenId(orgId) != 0) {
+      revert OrgIdAlreadyExists(orgId);
+    }
+
+    if (bytes(orgJsonUri).length == 0) {
+      revert OrgJsonUriEmpty();
+    }
+
+    setOrgIdToken(orgId, orgJsonUri, owner);
+
+    if (dids.length > 0) {
+      addDelegates(orgId, dids);
+    }
+  }
+
+  /**
    * @dev See {IERC165-supportsInterface}.
    */
   function supportsInterface(bytes4 interfaceId)

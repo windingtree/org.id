@@ -31,6 +31,7 @@ export interface IOrgIdFeatInterface extends utils.Interface {
   functions: {
     "createOrgId(bytes32,string)": FunctionFragment;
     "createOrgId(bytes32,string,string[])": FunctionFragment;
+    "createOrgIdFor(bytes32,string,address,string[])": FunctionFragment;
     "getOrgId(uint256)": FunctionFragment;
     "getOrgIds(uint256,uint256)": FunctionFragment;
     "getOrgIds()": FunctionFragment;
@@ -43,6 +44,8 @@ export interface IOrgIdFeatInterface extends utils.Interface {
     nameOrSignatureOrTopic:
       | "createOrgId(bytes32,string)"
       | "createOrgId(bytes32,string,string[])"
+      | "createOrgIdFor"
+      | "createOrgIdFor(bytes32,string,address,string[])"
       | "getOrgId"
       | "getOrgId(uint256)"
       | "getOrgIds(uint256,uint256)"
@@ -61,6 +64,24 @@ export interface IOrgIdFeatInterface extends utils.Interface {
     functionFragment: "createOrgId(bytes32,string,string[])",
     values: [
       PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createOrgIdFor",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>,
+      PromiseOrValue<string>[]
+    ]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "createOrgIdFor(bytes32,string,address,string[])",
+    values: [
+      PromiseOrValue<BytesLike>,
+      PromiseOrValue<string>,
       PromiseOrValue<string>,
       PromiseOrValue<string>[]
     ]
@@ -108,6 +129,14 @@ export interface IOrgIdFeatInterface extends utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "createOrgId(bytes32,string,string[])",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOrgIdFor",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "createOrgIdFor(bytes32,string,address,string[])",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getOrgId", data: BytesLike): Result;
@@ -215,6 +244,22 @@ export interface IOrgIdFeat extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
+    createOrgIdFor(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
+    "createOrgIdFor(bytes32,string,address,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<ContractTransaction>;
+
     getOrgId(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -286,6 +331,22 @@ export interface IOrgIdFeat extends BaseContract {
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
+  createOrgIdFor(
+    orgId: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
+  "createOrgIdFor(bytes32,string,address,string[])"(
+    orgId: PromiseOrValue<BytesLike>,
+    orgJsonUri: PromiseOrValue<string>,
+    owner: PromiseOrValue<string>,
+    dids: PromiseOrValue<string>[],
+    overrides?: Overrides & { from?: PromiseOrValue<string> }
+  ): Promise<ContractTransaction>;
+
   getOrgId(
     tokenId: PromiseOrValue<BigNumberish>,
     overrides?: CallOverrides
@@ -351,6 +412,22 @@ export interface IOrgIdFeat extends BaseContract {
     "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    createOrgIdFor(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    "createOrgIdFor(bytes32,string,address,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
       dids: PromiseOrValue<string>[],
       overrides?: CallOverrides
     ): Promise<void>;
@@ -445,6 +522,22 @@ export interface IOrgIdFeat extends BaseContract {
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
+    createOrgIdFor(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
+    "createOrgIdFor(bytes32,string,address,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<BigNumber>;
+
     getOrgId(
       tokenId: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
@@ -497,6 +590,22 @@ export interface IOrgIdFeat extends BaseContract {
     "createOrgId(bytes32,string,string[])"(
       salt: PromiseOrValue<BytesLike>,
       orgJsonUri: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    createOrgIdFor(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
+      dids: PromiseOrValue<string>[],
+      overrides?: Overrides & { from?: PromiseOrValue<string> }
+    ): Promise<PopulatedTransaction>;
+
+    "createOrgIdFor(bytes32,string,address,string[])"(
+      orgId: PromiseOrValue<BytesLike>,
+      orgJsonUri: PromiseOrValue<string>,
+      owner: PromiseOrValue<string>,
       dids: PromiseOrValue<string>[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;

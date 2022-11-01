@@ -42,4 +42,25 @@ abstract contract IOrgIdFeat is IOrgIdRegistry {
   )
     external
     virtual;
+
+  /**
+   * @dev Created an ORGiD for known owner
+   * @param orgId ORGiD hash
+   * @param orgJsonUri New ORG.JSON URI
+   * @param owner A known owner address
+   * @param dids DIDs of delegates
+   *
+   * Requirements:
+   * - `orgId` must exists
+   * - `orgJsonUri` must not be an empty string
+   * - function caller must be an owner of `orgId`
+   */
+  function createOrgIdFor(
+    bytes32 orgId,
+    string calldata orgJsonUri,
+    address owner,
+    string[] calldata dids
+  )
+    external
+    virtual;
 }
