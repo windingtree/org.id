@@ -37,7 +37,7 @@ abstract contract OrgIdRegistry is IOrgIdRegistry, Initializable, ERC721Enumerab
 
   /// @dev OrgIdRegistry contract initializer
   // solhint-disable-next-line func-name-mixedcase
-  function __OrgIdRegistry_init() internal initializer {
+  function __OrgIdRegistry_init() internal onlyInitializing {
     __ERC721Enumerable_init();
   }
 
