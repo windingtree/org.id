@@ -21,7 +21,7 @@ const _abi = [
     name: "ContractAlreadyInitialized",
     type: "error",
   },
-];
+] as const;
 
 export class InitializableVersion__factory {
   static readonly abi = _abi;

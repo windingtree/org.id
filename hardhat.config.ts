@@ -14,6 +14,14 @@ import './scripts/tasks';
 export interface CustomHardhatConfig extends HardhatUserConfig {
   etherscan: {
     apiKey: string;
+    customChains: {
+      network: string;
+      chainId: number;
+      urls: {
+          apiURL: string;
+          browserURL: string;
+      };
+    }[]
   }
 }
 
@@ -81,12 +89,11 @@ if (process.env.NETWORK_RPC_URL && process.env.ACCOUNT_KEY) {
       ],
       gasPrice: 'auto',
     },
-    sokol: {
+    chiado: {
       url: process.env.NETWORK_RPC_URL,
       accounts: [
         process.env.ACCOUNT_KEY as string
       ],
-      gasPrice: 40000000000,
     },
     columbus: {
       url: process.env.NETWORK_RPC_URL,
@@ -153,7 +160,17 @@ const config: CustomHardhatConfig = {
     ...customNetworksConfig
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_KEY as string
+    apiKey: process.env.ETHERSCAN_KEY as string,
+    customChains: [
+      {
+        network: "chiado",
+        chainId: 10200,
+        urls: {
+          apiURL: "https://api.blockscout.chiadochain.net/api",
+          browserURL: "https://blockscout.chiadochain.net",
+        },
+      }
+    ]
   } ,
   mocha: {
     timeout: 20000

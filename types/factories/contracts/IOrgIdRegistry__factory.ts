@@ -223,7 +223,7 @@ const _abi = [
     stateMutability: "nonpayable",
     type: "function",
   },
-];
+] as const;
 
 export class IOrgIdRegistry__factory {
   static readonly abi = _abi;
