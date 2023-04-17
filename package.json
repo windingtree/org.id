@@ -44,7 +44,7 @@
   },
   "homepage": "https://github.com/windingtree/org.id/tree/master#readme",
   "dependencies": {
-    "@openzeppelin/contracts-upgradeable": "4.7.3"
+    "@openzeppelin/contracts-upgradeable": "4.8.3"
   },
   "devDependencies": {
     "@types/node": "18.11.18",
